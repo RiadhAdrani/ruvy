@@ -1,0 +1,12 @@
+.github
+vscode
+docs
+README.md
+src/**/*.test.js
+src/**/*.test.ts
+.eslintignore
+.eslintrc
+.gitignore
+jest.config.js
+tsconfig.json
+package-lock.json
