@@ -1,3 +1,5 @@
+import { Callback } from "./common";
+
 export interface CommonRoute {
   path: string;
   redirectTo?: string;
@@ -10,4 +12,11 @@ export interface RawRoute extends CommonRoute {
 
 export interface Route extends CommonRoute {
   fragments: Array<string>;
+  isDynamic: boolean;
+}
+
+export interface RouterConfig {
+  onStateChange: Callback;
+  base?: string;
+  scrollToTop?: boolean;
 }

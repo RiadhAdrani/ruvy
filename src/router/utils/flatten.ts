@@ -18,11 +18,12 @@ const flatten = (_items: Array<RawRoute>, parent?: string): Record<string, Route
     const root = `${parent ?? ""}${parent === "/" ? "" : "/"}`;
     const path = `${root}${item.path}`.replace("//", "/");
     const fragments = path.split("/").filter((fragment) => !isBlank(fragment));
+    const isDynamic = fragments.some((f) => f[0] === ":");
 
     const valid = { ...item };
     delete valid.routes;
 
-    const route: Route = { ...valid, fragments, path };
+    const route: Route = { ...valid, fragments, path, isDynamic };
 
     output = { ...output, [path]: route };
 
