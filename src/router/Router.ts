@@ -1,5 +1,5 @@
 import { Callback, RawRoute, Route, RouterConfig } from "../types";
-import { flatten } from "./utils";
+import { findRouteFromList, flatten, getParams, getRouteFromUrl } from "./utils";
 
 export default class Router {
   routes: Record<string, Route> = {};
@@ -7,13 +7,23 @@ export default class Router {
   scrollToTop = false;
   onStateChange: Callback;
 
+  get path(): string {
+    return getRouteFromUrl(this.base);
+  }
+
+  get route(): Route | undefined {
+    return findRouteFromList(this.path, this.routes);
+  }
+
+  get params(): Record<string, string> {
+    return getParams(this.path, this.route?.path ?? "");
+  }
+
   constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterConfig) {
     this.onStateChange = onStateChange;
     this.base = base ?? this.base;
     this.scrollToTop = scrollToTop ?? false;
     this.routes = flatten(routes);
-
-    // we need to calculate current route
 
     window.addEventListener("popstate", () => {
       this.onStateChange();
