@@ -1,5 +1,6 @@
 import { copy, isArray, isBlank } from "@riadh-adrani/utility-js";
 import { RawRoute, Route } from "../../types";
+import fragmentize from "./fragmentize";
 
 const flatten = (_items: Array<RawRoute>, parent?: string): Record<string, Route> => {
   const items = copy(_items);
@@ -17,7 +18,7 @@ const flatten = (_items: Array<RawRoute>, parent?: string): Record<string, Route
 
     const root = `${parent ?? ""}${parent === "/" ? "" : "/"}`;
     const path = `${root}${item.path}`.replace("//", "/");
-    const fragments = path.split("/").filter((fragment) => !isBlank(fragment));
+    const fragments = fragmentize(path);
     const isDynamic = fragments.some((f) => f[0] === ":");
 
     const valid = { ...item };

@@ -1,8 +1,8 @@
-import { isBlank } from "@riadh-adrani/utility-js";
 import { Route } from "../../types";
+import fragmentize from "./fragmentize";
 
 export default (path: string, record: Record<string, Route>): Route | undefined => {
-  const fragments = path.split("/").filter((f) => !isBlank(f));
+  const fragments = fragmentize(path);
 
   if (fragments.length === 0) {
     if (path === "/") {
