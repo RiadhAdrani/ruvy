@@ -21,6 +21,4 @@ const router = new Router(
   }
 );
 
-router.push("/yet/world?token=gfdlkmsq");
-
-console.log(getRouteFromUrl());
+router.replace("/hello");

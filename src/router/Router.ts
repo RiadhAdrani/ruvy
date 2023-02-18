@@ -31,13 +31,13 @@ export default class Router {
   }
 
   push(path: string) {
-    history.pushState({ path }, "", path);
+    history.pushState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
   }
 
   replace(path: string) {
-    history.replaceState({ path }, "", path);
+    history.replaceState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
   }

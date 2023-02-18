@@ -1,5 +1,9 @@
-export default (_base = ""): string => {
-  const base = `/${_base}`;
+import { isBlank } from "@riadh-adrani/utility-js";
 
-  return location.pathname.substring(base.length);
+export default (base = ""): string => {
+  if (!isBlank(base)) {
+    return location.pathname.substring(`/${base}`.length);
+  } else {
+    return location.pathname;
+  }
 };
