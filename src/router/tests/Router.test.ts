@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vitest } from "vitest";
+import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { Callback, RawRoute, Route } from "../../types";
 import Router from "../Router";
 
@@ -10,8 +10,8 @@ describe("Router class", () => {
   let onChange: Callback;
   let router: Router;
 
-  beforeAll(() => {
-    location.pathname = "/";
+  beforeEach(() => {
+    history.go(-10)
 
     onChange = vitest.fn(() => 0);
 
@@ -35,7 +35,7 @@ describe("Router class", () => {
     expect(location.pathname).toBe("/hello");
     expect(history.state).toStrictEqual({ path: "/hello" });
     expect(history.length).toBe(2);
-    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 
   it("should get current path", () => {
@@ -60,4 +60,12 @@ describe("Router class", () => {
     expect(route.isDynamic).toBe(false);
     expect(route.path).toBe("/test");
   });
+
+  it('should get params', () => {
+    router.push("/test/123");
+
+    const params = router.params;
+
+    expect(params).toStrictEqual({ id: '123' })
+  })
 });
