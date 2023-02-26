@@ -1,24 +1,15 @@
-import { Router } from "./router";
-import { getRouteFromUrl } from "./router/utils";
+import { createComponent, transformComponentTemplate } from "./component/Component"
 
-const router = new Router(
-  [
-    {
-      path: "/",
-      routes: [
-        { path: "about" },
-        { path: "feed" },
-        { path: "other" },
-        { path: "user", routes: [{ path: ":id" }] },
-      ],
-    },
-  ],
-  {
-    onStateChange: () => {
-      // console.log("hello");
-    },
-    base: "yet",
+/** @jsx createComponent */
+
+const App = createComponent(({ }) => {
+  return {
+    tag: 'a',
+    children: ['Hello', () => { }],
+    onClick: () => 0,
+    onChange: () => 0,
+    ns: 'http://www.w3.org/1998/Math/MathML'
   }
-);
+})
 
-router.replace("/hello");
+

@@ -31,12 +31,16 @@ export default class Router {
   }
 
   push(path: string) {
+    // TODO : we need to check if path is the same
+
     history.pushState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
   }
 
   replace(path: string) {
+    // TODO : we need to check if path is the same
+
     history.replaceState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
