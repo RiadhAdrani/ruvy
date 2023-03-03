@@ -1,4 +1,4 @@
-import { areEqual, copy } from "@riadh-adrani/utility-js";
+import { areEqual, copy } from "@riadh-adrani/utils";
 import { Callback, StoreItem, StoreItemsCollection } from "../types";
 import Store from "./Store";
 

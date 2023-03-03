@@ -1,5 +1,5 @@
 import { Callback } from "../types";
-import { isFunction } from "@riadh-adrani/utility-js";
+import { isFunction } from "@riadh-adrani/utils";
 
 export default class Context<T> {
   data?: T;

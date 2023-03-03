@@ -1,4 +1,4 @@
-import { copy, hasProperty } from "@riadh-adrani/utility-js";
+import { copy, hasProperty } from "@riadh-adrani/utils";
 import { EffectCallback, StateArray, StoreEffectsCollection, StoreItemsCollection } from "../types";
 
 export default class Store {

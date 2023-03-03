@@ -1,4 +1,4 @@
-import { copy, isArray, isBlank } from "@riadh-adrani/utility-js";
+import { copy, isArray, isBlank } from "@riadh-adrani/utils";
 import { RawRoute, Route } from "../../types";
 import fragmentize from "./fragmentize";
 

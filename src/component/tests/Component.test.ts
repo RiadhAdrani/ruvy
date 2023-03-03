@@ -1,86 +1,73 @@
 import { it, describe, expect } from "vitest";
-import { RawComponentTemplate } from "../../types";
-import { isValidRawComponent, transformComponentTemplate } from "../Component";
+import { createComponent } from "../Component";
 
 describe("Component", () => {
-  it.each([
-    [{}, false],
-    ["", false],
-    [0, true],
-    [true, true],
-    [false, true],
-    [() => 1, true],
-  ])("should validate child %s", (child, expected) => {
-    expect(isValidRawComponent(child)).toBe(expected);
-  });
-
-  describe("transformComponentTemplate", () => {
-    it.each([[""], [" "], [false], [true], [{}]])("should throw when tag is invalid", (tag) => {
-      const template = { tag } as RawComponentTemplate;
-
-      expect(() => transformComponentTemplate(template)).toThrow();
+  describe("createComponent", () => {
+    it("should throw when tag is empty", () => {
+      expect(() => createComponent("", {})).toThrow();
     });
 
-    it("should assign default values", () => {
-      const template = { tag: "div" };
-
-      expect(transformComponentTemplate(template)).toStrictEqual({
+    it("should create a component template with minimal props", () => {
+      expect(createComponent("div", {})).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
         children: [],
-        events: {},
         attributes: {},
+        events: {},
       });
     });
 
-    it("should add children as single element", () => {
-      const template = { tag: "div", children: "test" };
+    it("should override tag", () => {
+      expect(createComponent("div", { tag: "a" })).toStrictEqual({
+        tag: "a",
+        ns: "http://www.w3.org/1999/xhtml",
+        children: [],
+        attributes: {},
+        events: {},
+      });
+    });
 
-      expect(transformComponentTemplate(template)).toStrictEqual({
+    it("should add array of children", () => {
+      expect(createComponent("div", { children: ["1", 2, true] })).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
-        children: ["test"],
-        events: {},
+        children: ["1", 2, true],
         attributes: {},
+        events: {},
       });
     });
 
-    it("should filter children array", () => {
-      const template = { tag: "div", children: ["test", undefined, null] };
-
-      expect(transformComponentTemplate(template)).toStrictEqual({
+    it("should add single children in array", () => {
+      expect(createComponent("div", { children: "1" })).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
-        children: ["test"],
-        events: {},
+        children: ["1"],
         attributes: {},
+        events: {},
       });
     });
 
-    it("should add events", () => {
+    it("should add event", () => {
       const onClick = () => undefined;
-      const onChange = () => undefined;
 
-      const template = { tag: "div", onClick, onChange };
-
-      expect(transformComponentTemplate(template)).toStrictEqual({
+      expect(createComponent("div", { onClick })).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
         children: [],
-        events: { onClick, onChange },
         attributes: {},
+        events: { onClick },
       });
     });
 
-    it("should add attributes", () => {
-      const template = { tag: "div", class: "test", id: "test" };
+    it("should add unknown key as attribute", () => {
+      const test = "test";
 
-      expect(transformComponentTemplate(template)).toStrictEqual({
+      expect(createComponent("div", { test })).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
         children: [],
+        attributes: { test },
         events: {},
-        attributes: { class: "test", id: "test" },
       });
     });
   });

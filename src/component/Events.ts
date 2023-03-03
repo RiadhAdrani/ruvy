@@ -1,4 +1,4 @@
-import { isFunction } from "@riadh-adrani/utility-js";
+import { isFunction } from "@riadh-adrani/utils";
 
 const isValidName = (name: string): boolean => {
   return /^on[A-Z]{1}[a-z]{1,}$/.test(name);
@@ -6,6 +6,6 @@ const isValidName = (name: string): boolean => {
 
 const isValid = (name: string, callback: unknown) => {
   return isValidName(name) && isFunction(callback);
-}
+};
 
-export default { isValid, isValidName }
+export default { isValid, isValidName };

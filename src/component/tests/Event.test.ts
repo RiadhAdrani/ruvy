@@ -1,5 +1,5 @@
 import { it, describe, expect } from "vitest";
-import Event from "../Event";
+import Event from "../Events";
 
 describe("Event", () => {
   it.each([
@@ -12,10 +12,10 @@ describe("Event", () => {
   });
 
   it.each([
-    ["onClick", true, () => { }],
-    ["onClick", false, ''],
+    ["onClick", true, () => {}],
+    ["onClick", false, ""],
     ["onChange", false, {}],
-    ["click", false, () => { }],
+    ["click", false, () => {}],
   ])("should validate event %s to %s", (name, expected, callback) => {
     expect(Event.isValid(name, callback)).toBe(expected);
   });

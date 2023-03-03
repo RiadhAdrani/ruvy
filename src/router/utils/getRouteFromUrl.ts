@@ -1,4 +1,4 @@
-import { isBlank } from "@riadh-adrani/utility-js";
+import { isBlank } from "@riadh-adrani/utils";
 
 export default (base = ""): string => {
   if (!isBlank(base)) {

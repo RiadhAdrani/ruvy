@@ -1,4 +1,4 @@
-import { areEqual } from "@riadh-adrani/utility-js";
+import { areEqual } from "@riadh-adrani/utils";
 import { StoreEffect, StoreEffectsCollection } from "../types";
 import Store from "./Store";
 
