@@ -21,6 +21,7 @@ export interface ComponentTemplate {
   events: Record<string, IEventHandler>;
   ns: Namespace;
   children: Array<PrimitiveComponentTemplate | ComponentTemplate>;
+  symbol: symbol;
 }
 
 export enum IComponentType {
@@ -29,10 +30,19 @@ export enum IComponentType {
   Fragment = "#fragment",
 }
 
+export const IComponentSymbolId = "ruvy-component";
+
+export const IComponentSymbol = Symbol.for(IComponentSymbolId);
+
 export interface IComponent<T = Node> extends Omit<ComponentTemplate, "children"> {
   id: string;
   children: Array<IComponent>;
   domNode?: T;
   parent?: IComponent;
   type: IComponentType;
+}
+
+export interface ITextComponent extends IComponent<Text> {
+  data: string;
+  type: IComponentType.Text;
 }
