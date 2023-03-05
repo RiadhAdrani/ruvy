@@ -1,13 +1,28 @@
-import { createComponent, transformRawComponentTemplate } from "./component/Component";
+import { createComponent, processComponent, renderComponent } from "./component";
 
-/** @jsx createComponent */
-
-const App = createComponent(({}) => {
-  return {
-    tag: "a",
-    children: ["Hello", () => {}],
-    onClick: () => 0,
-    onChange: () => 0,
-    ns: "http://www.w3.org/1998/Math/MathML",
-  };
+const component = createComponent("div", {
+  children: [
+    "Hello",
+    "World",
+    createComponent("input", {
+      oninput: () => {},
+    }),
+  ],
+  onClick: () => {
+    console.log("hello world");
+  },
+  class: ["container", "content"],
+  id: "me",
+  style: {
+    color: "red",
+    "font-weight": "bold",
+  },
+  "data-title": "test",
+  dataset: {
+    titler: "titler",
+  },
 });
+
+const processed = processComponent(component);
+
+document.body.append(renderComponent(processed));

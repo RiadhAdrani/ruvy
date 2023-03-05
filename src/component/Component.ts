@@ -19,6 +19,12 @@ import {
   Tag,
 } from "../types";
 import Events from "./Events";
+import {
+  createElement,
+  createTextNode,
+  DomAttribute,
+  DomEventHandler,
+} from "@riadh-adrani/dom-control-js";
 
 export const createComponent = (tag: Tag, props: Record<string, unknown>): ComponentTemplate => {
   const out: ComponentTemplate = {} as unknown as ComponentTemplate;
@@ -158,4 +164,30 @@ export const processComponent = (
   });
 
   return out;
+};
+
+export const renderComponent = (component: IComponent): Node => {
+  if (component.type === IComponentType.Fragment) {
+    throw "Unexpected Type: cannot render a fragment component.";
+  }
+
+  let el: Node;
+
+  if (component.type === IComponentType.Text) {
+    el = createTextNode((component as ITextComponent).data);
+  } else {
+    el = createElement(component.tag, {
+      attributes: component.attributes as unknown as Record<string, DomAttribute>,
+      events: component.events as unknown as Record<string, DomEventHandler>,
+      namespace: component.ns,
+    });
+
+    component.children.forEach((child) => {
+      el.appendChild(renderComponent(child));
+    });
+  }
+
+  component.domNode = el;
+
+  return el;
 };
