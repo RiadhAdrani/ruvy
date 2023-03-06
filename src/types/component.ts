@@ -1,4 +1,5 @@
 import { StringWithAutoComplete } from "@riadh-adrani/utils";
+import { Callback } from "./common";
 
 export type IAttribute = string | number | boolean | undefined | Record<string, unknown> | null;
 
@@ -45,4 +46,10 @@ export interface IComponent<T = Node> extends Omit<ComponentTemplate, "children"
 export interface ITextComponent extends IComponent<Text> {
   data: string;
   type: IComponentType.Text;
+}
+
+export interface IComponentUpdateActions {
+  id: string;
+  actions: Array<Callback>;
+  children: Array<IComponentUpdateActions>;
 }

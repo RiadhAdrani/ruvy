@@ -1,4 +1,5 @@
 import {
+  areEqual,
   forEachKey,
   hasProperty,
   isArray,
@@ -9,11 +10,13 @@ import {
   omit,
 } from "@riadh-adrani/utils";
 import {
+  Callback,
   ComponentTemplate,
   IAttribute,
   IComponent,
   IComponentSymbol,
   IComponentType,
+  IComponentUpdateActions,
   IEventHandler,
   ITextComponent,
   Namespace,
@@ -24,8 +27,16 @@ import {
   createElement,
   createTextNode,
   DomAttribute,
+  DomChild,
   DomEventHandler,
+  injectNode,
   isElementInDocument,
+  removeAttribute,
+  removeEvent,
+  removeNode,
+  setAttribute,
+  setEvent,
+  setTextNodeData,
 } from "@riadh-adrani/dom-control-js";
 
 export const createComponent = (tag: Tag, props: Record<string, unknown>): ComponentTemplate => {
@@ -202,19 +213,134 @@ export const isMounted = (component: IComponent): boolean => {
   return isRendered(component) && isElementInDocument(component.domNode);
 };
 
-export const updateComponent = (current: IComponent, updated: IComponent) => {
-  if (!isRendered(current)) {
+export const collectComponentUpdates = (
+  current: IComponent,
+  updated: IComponent
+): IComponentUpdateActions => {
+  if (!isMounted(current)) {
     throw "Unexpected State: cannot update a non-rendered component";
   }
 
-  const { attributes, children, events, id, ns, tag, type } = updated;
+  const updateActions: IComponentUpdateActions = { actions: [], id: current.id, children: [] };
 
-  if (current.tag !== tag) {
-    // TODO : we replace the current dom node with a newly rendered
-    const domNode = renderComponent(updated);
+  const { attributes, children, events, ns, tag, type } = updated;
 
-    current.domNode!.parentElement?.replaceChild(current.domNode!, domNode);
+  if (current.tag !== tag || current.ns !== ns) {
+    const action = () => {
+      const domNode = renderComponent(updated);
 
-    return;
+      current.domNode!.parentElement?.replaceChild(current.domNode!, domNode);
+    };
+
+    updateActions.actions.push(action);
+  } else if (current.type === updated.type && type === IComponentType.Text) {
+    const newText = (updated as ITextComponent).data;
+
+    const updateTextAction = () => {
+      setTextNodeData(current.domNode as Text, newText);
+    };
+
+    updateActions.actions.push(updateTextAction);
+  } else {
+    {
+      // ? Attributes
+      const oldAttrs = current.attributes;
+      const newAttrs = attributes;
+      const combined: Record<string, IAttribute> = { ...oldAttrs, ...newAttrs };
+
+      forEachKey((key, value) => {
+        let action: Callback | undefined;
+
+        if (hasProperty(newAttrs, key)) {
+          if (hasProperty(oldAttrs, key)) {
+            if (!areEqual(newAttrs[key], oldAttrs[key])) {
+              action = () => {
+                setAttribute(key, value as DomAttribute, current.domNode as Element);
+              };
+            }
+          } else {
+            action = () => {
+              setAttribute(key, value as DomAttribute, current.domNode as Element);
+            };
+          }
+        } else {
+          action = () => {
+            removeAttribute(key, current.domNode as Element);
+          };
+        }
+
+        if (action) {
+          updateActions.actions.push(action);
+        }
+      }, combined);
+    }
+
+    {
+      // ? Events
+      const oldEv = current.events;
+      const newEv = events;
+      const combined: Record<string, IEventHandler> = { ...oldEv, ...newEv };
+
+      forEachKey((key, value) => {
+        let action: Callback | undefined;
+
+        if (hasProperty(newEv, key)) {
+          action = () => {
+            setEvent(key, value, current.domNode as Element);
+          };
+        } else {
+          action = () => {
+            removeEvent(key, current.domNode as Element);
+          };
+        }
+
+        if (action) {
+          updateActions.actions.push(action);
+        }
+      }, combined);
+    }
+
+    {
+      // ? Children
+      const oldCh = current.children;
+      const newCh = children;
+
+      if (oldCh.length > newCh.length) {
+        while (oldCh.length > newCh.length) {
+          const removed = oldCh.pop()!;
+
+          const removeExcessiveChild = () => {
+            removeNode(removed.domNode as HTMLElement);
+          };
+
+          updateActions.actions.push(removeExcessiveChild);
+        }
+      } else if (oldCh.length < newCh.length) {
+        for (let i = oldCh.length; i < newCh.length; i++) {
+          const added = newCh[i];
+
+          oldCh.push(added);
+
+          const addMissingChild = () => {
+            const rendered = renderComponent(added);
+
+            injectNode(rendered as DomChild, current.domNode as HTMLElement);
+          };
+
+          updateActions.actions.push(addMissingChild);
+        }
+      }
+
+      for (let i = 0; i < oldCh.length; i++) {
+        const oc = oldCh[i];
+        const uc = newCh[i];
+
+        const childUpdateAction = collectComponentUpdates(oc, uc);
+
+        updateActions.children.push(childUpdateAction);
+      }
+    }
   }
+
+  return updateActions;
 };
