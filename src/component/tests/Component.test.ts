@@ -1,5 +1,12 @@
-import { it, describe, expect } from "vitest";
-import { ComponentTemplate, IComponent, IComponentSymbol, IComponentType } from "../../types";
+import { isTextNode, isElement } from "@riadh-adrani/dom-control-js";
+import { it, describe, expect, vitest } from "vitest";
+import {
+  ComponentTemplate,
+  IComponent,
+  IComponentSymbol,
+  IComponentType,
+  ITextComponent,
+} from "../../types";
 import {
   createComponent,
   createId,
@@ -7,6 +14,7 @@ import {
   isComponent,
   isFragment,
   processComponent,
+  renderComponent,
 } from "../Component";
 
 describe("Component", () => {
@@ -364,6 +372,93 @@ describe("Component", () => {
         parent: undefined,
         symbol: IComponentSymbol,
       });
+    });
+  });
+
+  describe("renderComponent", () => {
+    it("should throw when trying to render a fragment", () => {
+      const component: IComponent = {
+        attributes: {},
+        events: {},
+        children: [],
+        id: "0",
+        ns: "http://www.w3.org/1999/xhtml",
+        symbol: IComponentSymbol,
+        tag: IComponentType.Fragment,
+        type: IComponentType.Fragment,
+      };
+
+      expect(() => renderComponent(component)).toThrow(
+        "Unexpected Type: cannot render a fragment component."
+      );
+    });
+
+    it("should render a text node", () => {
+      const component: ITextComponent = {
+        attributes: {},
+        events: {},
+        children: [],
+        id: "0",
+        ns: "http://www.w3.org/1999/xhtml",
+        symbol: IComponentSymbol,
+        tag: IComponentType.Text,
+        type: IComponentType.Text,
+        data: "test",
+      };
+
+      const node = renderComponent(component);
+
+      expect(component.domNode).toStrictEqual(node);
+      expect(isTextNode(node)).toBe(true);
+    });
+
+    it("should render an html element", () => {
+      const component = processComponent(createComponent("div", {}));
+
+      const node = renderComponent(component);
+
+      expect(component.domNode).toStrictEqual(node);
+      expect(isElement(node)).toBe(true);
+      expect((node as HTMLDivElement).outerHTML).toBe("<div></div>");
+    });
+
+    it("should render attributes", () => {
+      const component = processComponent(createComponent("div", { class: "test" }));
+
+      const node = renderComponent<HTMLDivElement>(component);
+
+      expect(node.outerHTML).toBe('<div class="test"></div>');
+      expect(node.className).toBe("test");
+    });
+
+    it("should add events", () => {
+      const fn = vitest.fn();
+
+      const component = processComponent(createComponent("div", { onClick: fn }));
+
+      const node = renderComponent<HTMLDivElement>(component);
+
+      node.click();
+
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+
+    it("should render children recursively (1st level)", () => {
+      const component = processComponent(createComponent("div", { children: ["test"] }));
+
+      const node = renderComponent<HTMLDivElement>(component);
+
+      expect(node.outerHTML).toBe("<div>test</div>");
+    });
+
+    it("should render children recursively (2nd level)", () => {
+      const component = processComponent(
+        createComponent("div", { children: ["test", createComponent("p", { children: ["deep"] })] })
+      );
+
+      const node = renderComponent<HTMLDivElement>(component);
+
+      expect(node.outerHTML).toBe("<div>test<p>deep</p></div>");
     });
   });
 });

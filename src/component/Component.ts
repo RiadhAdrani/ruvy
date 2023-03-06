@@ -3,6 +3,7 @@ import {
   hasProperty,
   isArray,
   isBlank,
+  isDefined,
   isNumber,
   isPrimitiveType,
   omit,
@@ -24,6 +25,7 @@ import {
   createTextNode,
   DomAttribute,
   DomEventHandler,
+  isElementInDocument,
 } from "@riadh-adrani/dom-control-js";
 
 export const createComponent = (tag: Tag, props: Record<string, unknown>): ComponentTemplate => {
@@ -166,7 +168,7 @@ export const processComponent = (
   return out;
 };
 
-export const renderComponent = (component: IComponent): Node => {
+export const renderComponent = <T extends Node>(component: IComponent): T => {
   if (component.type === IComponentType.Fragment) {
     throw "Unexpected Type: cannot render a fragment component.";
   }
@@ -189,5 +191,30 @@ export const renderComponent = (component: IComponent): Node => {
 
   component.domNode = el;
 
-  return el;
+  return el as T;
+};
+
+export const isRendered = (component: IComponent): boolean => {
+  return isDefined(component.domNode);
+};
+
+export const isMounted = (component: IComponent): boolean => {
+  return isRendered(component) && isElementInDocument(component.domNode);
+};
+
+export const updateComponent = (current: IComponent, updated: IComponent) => {
+  if (!isRendered(current)) {
+    throw "Unexpected State: cannot update a non-rendered component";
+  }
+
+  const { attributes, children, events, id, ns, tag, type } = updated;
+
+  if (current.tag !== tag) {
+    // TODO : we replace the current dom node with a newly rendered
+    const domNode = renderComponent(updated);
+
+    current.domNode!.parentElement?.replaceChild(current.domNode!, domNode);
+
+    return;
+  }
 };
