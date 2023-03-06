@@ -117,7 +117,7 @@ export const processComponent = (
 ): IComponent => {
   const { children } = template;
 
-  const out: IComponent = omit(template, "children") as unknown as IComponent;
+  const out: IComponent = omit(template, "children") as IComponent;
 
   if (out.tag === IComponentType.Fragment) {
     throw "Unexpected type: Should not process fragment component. this error could happen when the root element is a fragment.";

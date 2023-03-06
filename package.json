@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "@riadh-adrani/dom-control-js": "^1.0.14",
-    "@riadh-adrani/utils": "^0.35.0"
+    "@riadh-adrani/utils": "^0.35.1"
   }
 }

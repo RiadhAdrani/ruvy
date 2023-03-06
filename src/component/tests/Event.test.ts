@@ -6,6 +6,7 @@ describe("Event", () => {
     ["onClick", true],
     ["click", false],
     ["onChange", true],
+    ["onclick", true],
     ["on Click", false],
   ])("should validate name %s to %s", (name, expected) => {
     expect(Event.isValidName(name)).toBe(expected);

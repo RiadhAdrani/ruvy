@@ -1,7 +1,8 @@
 import { isFunction } from "@riadh-adrani/utils";
+import { isOnEventName } from "@riadh-adrani/dom-control-js";
 
 const isValidName = (name: string): boolean => {
-  return /^on[A-Z]{1}[a-z]{1,}$/.test(name);
+  return isOnEventName(name);
 };
 
 const isValid = (name: string, callback: unknown) => {

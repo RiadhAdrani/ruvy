@@ -8,8 +8,11 @@ const component = createComponent("div", {
       oninput: () => {},
     }),
   ],
-  onClick: () => {
-    console.log("hello world");
+  onMouseEnter: () => {
+    console.log("hello");
+  },
+  onContextMenu: (e: Event) => {
+    e.preventDefault();
   },
   class: ["container", "content"],
   id: "me",
