@@ -16,12 +16,12 @@ export type Tag = StringWithAutoComplete<keyof HTMLElementTagNameMap>;
 
 export type PrimitiveComponentTemplate = string | number | null | undefined | boolean;
 
-export interface ComponentTemplate {
+export interface IComponentTemplate {
   tag: Tag;
   attributes: Record<string, IAttribute>;
-  events: Record<string, IEventHandler>;
+  events: Record<string, Callback>;
   ns: Namespace;
-  children: Array<PrimitiveComponentTemplate | ComponentTemplate>;
+  children: Array<PrimitiveComponentTemplate | IComponentTemplate>;
   symbol: symbol;
 }
 
@@ -35,7 +35,7 @@ export const IComponentSymbolId = "ruvy-component";
 
 export const IComponentSymbol = Symbol.for(IComponentSymbolId);
 
-export interface IComponent<T = Node> extends Omit<ComponentTemplate, "children"> {
+export interface IComponent<T = Node> extends Omit<IComponentTemplate, "children"> {
   id: string;
   children: Array<IComponent>;
   domNode?: T;
@@ -48,8 +48,13 @@ export interface ITextComponent extends IComponent<Text> {
   type: IComponentType.Text;
 }
 
+export interface IUpdateAction {
+  reason: string;
+  callback: Callback;
+}
+
 export interface IComponentUpdateActions {
   id: string;
-  actions: Array<Callback>;
+  actions: Array<IUpdateAction>;
   children: Array<IComponentUpdateActions>;
 }

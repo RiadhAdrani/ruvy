@@ -1,31 +1,36 @@
-import { createComponent, processComponent, renderComponent } from "./component";
+import { range } from "@riadh-adrani/utils";
+import {
+  createComponent,
+  processComponent,
+  renderComponent,
+  diffComponents,
+  executeUpdateCallbacks,
+} from "./component";
 
-const component = createComponent("div", {
-  children: [
-    "Hello",
-    "World",
-    createComponent("input", {
-      oninput: () => {},
-    }),
-  ],
-  onMouseEnter: () => {
-    console.log("hello");
-  },
-  onContextMenu: (e: Event) => {
-    e.preventDefault();
-  },
-  class: ["container", "content"],
-  id: "me",
-  style: {
-    color: "red",
-    "font-weight": "bold",
-  },
-  "data-title": "test",
-  dataset: {
-    titler: "titler",
-  },
-});
+let n: number = 5;
 
-const processed = processComponent(component);
+const onClick = () => {
+  n = n + 1;
+
+  const updates = diffComponents(processed, processComponent(component()));
+
+  console.log(updates);
+
+  executeUpdateCallbacks(updates);
+};
+
+const component = (tag: "div" | "input" = "div") =>
+  createComponent(tag, {
+    children: range(n),
+    onClick,
+    style: {
+      color: "red",
+      fontWeight: "bold",
+      fontSize: "3em",
+      cursor: "pointer",
+    },
+  });
+
+const processed = processComponent(component());
 
 document.body.append(renderComponent(processed));

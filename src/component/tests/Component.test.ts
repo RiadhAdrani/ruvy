@@ -1,7 +1,7 @@
 import { isTextNode, isElement } from "@riadh-adrani/dom-control-js";
-import { it, describe, expect, vitest } from "vitest";
+import { it, describe, expect, vitest, beforeEach } from "vitest";
 import {
-  ComponentTemplate,
+  IComponentTemplate,
   IComponent,
   IComponentSymbol,
   IComponentType,
@@ -11,6 +11,8 @@ import {
   createComponent,
   createId,
   createTextComponent,
+  diffComponents,
+  executeUpdateCallbacks,
   isComponent,
   isFragment,
   processComponent,
@@ -177,7 +179,7 @@ describe("Component", () => {
 
   describe("processComponent", () => {
     it("should create a basic component with minimal options", () => {
-      const component: ComponentTemplate = {
+      const component: IComponentTemplate = {
         attributes: {},
         children: [],
         events: {},
@@ -201,7 +203,7 @@ describe("Component", () => {
     });
 
     it(`it should throw when tag is of type ${IComponentType.Fragment}`, () => {
-      const component: ComponentTemplate = {
+      const component: IComponentTemplate = {
         attributes: {},
         children: [],
         events: {},
@@ -214,7 +216,7 @@ describe("Component", () => {
     });
 
     it("should transform primitive children to text components", () => {
-      const component: ComponentTemplate = {
+      const component: IComponentTemplate = {
         attributes: {},
         children: ["test", 2],
         events: {},
@@ -267,7 +269,7 @@ describe("Component", () => {
     });
 
     it("should unload fragment children in parent", () => {
-      const component: ComponentTemplate = {
+      const component: IComponentTemplate = {
         attributes: {},
         children: [
           {
@@ -459,6 +461,295 @@ describe("Component", () => {
       const node = renderComponent<HTMLDivElement>(component);
 
       expect(node.outerHTML).toBe("<div>test<p>deep</p></div>");
+    });
+  });
+
+  describe("diffComponents", () => {
+    let current: IComponent;
+
+    const mount = (component: IComponent) => {
+      document.body.innerHTML = "";
+      document.body.append(renderComponent(component));
+    };
+
+    beforeEach(() => {
+      current = processComponent(createComponent("div", {}));
+      mount(current);
+    });
+
+    it("should throw when current component is not mounted", () => {
+      const current: IComponent = processComponent(createComponent("div", {}));
+
+      expect(() => diffComponents(current, current)).toThrow(
+        "Unexpected State: cannot update a non-rendered component"
+      );
+    });
+
+    it("should replace component with different tag", () => {
+      const updated: IComponent = processComponent(createComponent("p", {}));
+
+      const actions = diffComponents(current, updated);
+
+      expect(actions.children).toStrictEqual([]);
+      expect(actions.id).toBe("0");
+
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual([
+        `replace-of-tags-ns:(div|http://www.w3.org/1999/xhtml) => (p|http://www.w3.org/1999/xhtml)`,
+      ]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<p></p>");
+    });
+
+    it("should replace component with different namespaces", () => {
+      const updated: IComponent = processComponent(
+        createComponent("svg", { ns: "http://www.w3.org/2000/svg" })
+      );
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual([
+        `replace-of-tags-ns:(div|http://www.w3.org/1999/xhtml) => (svg|http://www.w3.org/2000/svg)`,
+      ]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<svg></svg>");
+    });
+
+    it("should update component with text component", () => {
+      document.body.innerHTML = "";
+
+      const current: IComponent = processComponent(
+        createComponent("div", { children: createComponent("a", { href: "www.google.com" }) })
+      );
+
+      const updated: IComponent = processComponent(
+        createComponent("div", { children: ["test-2"] })
+      );
+
+      mount(current);
+
+      const actions = diffComponents(current, updated);
+      const named = actions.children.map((a) => a.actions[0].reason);
+
+      expect(named).toStrictEqual([
+        "replace-of-tags-ns:(a|http://www.w3.org/1999/xhtml) => (#text|http://www.w3.org/1999/xhtml)",
+      ]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<div>test-2</div>");
+    });
+
+    it("should update text data", () => {
+      document.body.innerHTML = "";
+
+      const current: IComponent = processComponent(createComponent("div", { children: ["test"] }));
+
+      const updated: IComponent = processComponent(
+        createComponent("div", { children: ["test-2"] })
+      );
+
+      mount(current);
+
+      const actions = diffComponents(current, updated);
+      const named = actions.children.map((a) => a.actions[0].reason);
+
+      expect(named).toStrictEqual(["update-text-data"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<div>test-2</div>");
+    });
+
+    it("should not update same text data", () => {
+      document.body.innerHTML = "";
+
+      const current: IComponent = processComponent(createComponent("div", { children: ["test"] }));
+
+      const updated: IComponent = processComponent(createComponent("div", { children: ["test"] }));
+
+      mount(current);
+
+      const actions = diffComponents(current, updated);
+      const named = actions.children.map((a) => a.actions);
+
+      expect(named).toStrictEqual([[]]);
+    });
+
+    it("should add new attribute", () => {
+      const updated: IComponent = processComponent(createComponent("div", { class: "test" }));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["add-attribute-class"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe('<div class="test"></div>');
+    });
+
+    it("should update attribute", () => {
+      const current: IComponent = processComponent(createComponent("div", { class: "test" }));
+
+      mount(current);
+
+      const updated: IComponent = processComponent(createComponent("div", { class: "test2" }));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["update-attribute-class"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe('<div class="test2"></div>');
+    });
+
+    it("should remove attribute", () => {
+      const current: IComponent = processComponent(createComponent("div", { class: "test" }));
+
+      mount(current);
+
+      const updated: IComponent = processComponent(createComponent("div", {}));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["remove-attribute-class"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<div></div>");
+    });
+
+    it("should set event", () => {
+      (current.domNode as HTMLElement).click();
+
+      const onClick = vitest.fn();
+
+      const updated: IComponent = processComponent(createComponent("div", { onClick }));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["set-event-onClick"]);
+
+      executeUpdateCallbacks(actions);
+
+      (current.domNode as HTMLElement).click();
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("should update event", () => {
+      const onClick = vitest.fn();
+      const onClick2 = vitest.fn();
+
+      const current: IComponent = processComponent(createComponent("div", { onClick }));
+
+      mount(current);
+
+      const updated: IComponent = processComponent(createComponent("div", { onClick: onClick2 }));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["set-event-onClick"]);
+
+      executeUpdateCallbacks(actions);
+
+      (current.domNode as HTMLElement).click();
+
+      expect(onClick).toHaveBeenCalledTimes(0);
+      expect(onClick2).toHaveBeenCalledTimes(1);
+    });
+
+    it("should remove event", () => {
+      const onClick = vitest.fn();
+
+      const current: IComponent = processComponent(createComponent("div", { onClick }));
+
+      mount(current);
+
+      (current.domNode as HTMLElement).click();
+
+      const updated: IComponent = processComponent(createComponent("div", {}));
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["remove-event-onClick"]);
+
+      executeUpdateCallbacks(actions);
+
+      (current.domNode as HTMLElement).click();
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("should remove excess children from current", () => {
+      const current: IComponent = processComponent(
+        createComponent("div", { children: ["test-1", "test-2"] })
+      );
+
+      const updated: IComponent = processComponent(
+        createComponent("div", { children: ["test-1"] })
+      );
+
+      mount(current);
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["remove-excess-child-0-1"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<div>test-1</div>");
+    });
+
+    it("should add new children to current", () => {
+      const updated: IComponent = processComponent(
+        createComponent("div", { children: ["test-1", "test-2"] })
+      );
+
+      const current: IComponent = processComponent(
+        createComponent("div", { children: ["test-1"] })
+      );
+
+      mount(current);
+
+      const actions = diffComponents(current, updated);
+      const named = actions.actions.map((a) => a.reason);
+
+      expect(named).toStrictEqual(["add-new-child-0-1"]);
+
+      executeUpdateCallbacks(actions);
+
+      expect(document.body.innerHTML).toBe("<div>test-1test-2</div>");
+    });
+
+    it("should update children recursively (1st level)", () => {
+      const current: IComponent = processComponent(
+        createComponent("div", { children: ["test-1", "test-2"] })
+      );
+
+      const updated: IComponent = processComponent(
+        createComponent("div", { children: ["test-2", "test-1"] })
+      );
+
+      mount(current);
+
+      executeUpdateCallbacks(diffComponents(current, updated));
+
+      expect(document.body.innerHTML).toBe("<div>test-2test-1</div>");
     });
   });
 });

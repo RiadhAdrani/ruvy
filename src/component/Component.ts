@@ -7,11 +7,12 @@ import {
   isDefined,
   isNumber,
   isPrimitiveType,
+  isString,
   omit,
 } from "@riadh-adrani/utils";
 import {
   Callback,
-  ComponentTemplate,
+  IComponentTemplate,
   IAttribute,
   IComponent,
   IComponentSymbol,
@@ -21,6 +22,7 @@ import {
   ITextComponent,
   Namespace,
   Tag,
+  IUpdateAction,
 } from "../types";
 import Events from "./Events";
 import {
@@ -39,15 +41,21 @@ import {
   setTextNodeData,
 } from "@riadh-adrani/dom-control-js";
 
-export const createComponent = (tag: Tag, props: Record<string, unknown>): ComponentTemplate => {
-  const out: ComponentTemplate = {} as unknown as ComponentTemplate;
+export const createComponent = (tag: Tag, props: Record<string, unknown>): IComponentTemplate => {
+  const out: IComponentTemplate = {} as unknown as IComponentTemplate;
 
   if (isBlank(tag)) {
     throw `Component tag (${tag}) is not valid`;
   }
 
   out.tag = tag;
-  out.ns = "http://www.w3.org/1999/xhtml";
+
+  if (isString(out.ns) && !isBlank(out.ns)) {
+    out.ns = props.ns as Namespace;
+  } else {
+    out.ns = "http://www.w3.org/1999/xhtml";
+  }
+
   out.children = [];
   out.attributes = {};
   out.events = {};
@@ -65,16 +73,16 @@ export const createComponent = (tag: Tag, props: Record<string, unknown>): Compo
 
     if (key === "children") {
       if (isArray(value)) {
-        out.children = value as Array<ComponentTemplate>;
+        out.children = value as Array<IComponentTemplate>;
       } else {
-        out.children = [value as ComponentTemplate];
+        out.children = [value as IComponentTemplate];
       }
 
       return;
     }
 
     if (Events.isValid(key, value)) {
-      out.events[key] = value as IEventHandler;
+      out.events[key] = value as Callback;
 
       return;
     }
@@ -96,7 +104,7 @@ export const isComponent = (obj: unknown): boolean => {
 };
 
 export const isFragment = (obj: unknown): boolean => {
-  return isComponent(obj) && (obj as ComponentTemplate).tag === IComponentType.Fragment;
+  return isComponent(obj) && (obj as IComponentTemplate).tag === IComponentType.Fragment;
 };
 
 export const createId = (index?: number, parent?: IComponent): string => {
@@ -124,7 +132,7 @@ export const createTextComponent = (
 };
 
 export const processComponent = (
-  template: ComponentTemplate,
+  template: IComponentTemplate,
   index?: number,
   parent?: IComponent
 ): IComponent => {
@@ -168,7 +176,7 @@ export const processComponent = (
     }
 
     if (isComponent(child)) {
-      out.children.push(processComponent(child as ComponentTemplate, index, out));
+      out.children.push(processComponent(child as IComponentTemplate, index, out));
 
       i = i + 1;
 
@@ -213,7 +221,7 @@ export const isMounted = (component: IComponent): boolean => {
   return isRendered(component) && isElementInDocument(component.domNode);
 };
 
-export const collectComponentUpdates = (
+export const diffComponents = (
   current: IComponent,
   updated: IComponent
 ): IComponentUpdateActions => {
@@ -229,18 +237,24 @@ export const collectComponentUpdates = (
     const action = () => {
       const domNode = renderComponent(updated);
 
-      current.domNode!.parentElement?.replaceChild(current.domNode!, domNode);
+      (current.domNode as Element).replaceWith(domNode);
     };
 
-    updateActions.actions.push(action);
+    updateActions.actions.push({
+      reason: `replace-of-tags-ns:(${current.tag}|${current.ns}) => (${updated.tag}|${updated.ns})`,
+      callback: action,
+    });
   } else if (current.type === updated.type && type === IComponentType.Text) {
     const newText = (updated as ITextComponent).data;
+    const oldText = (current as ITextComponent).data;
 
-    const updateTextAction = () => {
-      setTextNodeData(current.domNode as Text, newText);
-    };
+    if (!areEqual(newText, oldText)) {
+      const updateTextAction = () => {
+        setTextNodeData(current.domNode as Text, newText);
+      };
 
-    updateActions.actions.push(updateTextAction);
+      updateActions.actions.push({ reason: "update-text-data", callback: updateTextAction });
+    }
   } else {
     {
       // ? Attributes
@@ -249,23 +263,32 @@ export const collectComponentUpdates = (
       const combined: Record<string, IAttribute> = { ...oldAttrs, ...newAttrs };
 
       forEachKey((key, value) => {
-        let action: Callback | undefined;
+        let action: IUpdateAction | undefined;
 
         if (hasProperty(newAttrs, key)) {
           if (hasProperty(oldAttrs, key)) {
             if (!areEqual(newAttrs[key], oldAttrs[key])) {
-              action = () => {
-                setAttribute(key, value as DomAttribute, current.domNode as Element);
+              action = {
+                reason: `update-attribute-${key}`,
+                callback: () => {
+                  setAttribute(key, value as DomAttribute, current.domNode as Element);
+                },
               };
             }
           } else {
-            action = () => {
-              setAttribute(key, value as DomAttribute, current.domNode as Element);
+            action = {
+              reason: `add-attribute-${key}`,
+              callback: () => {
+                setAttribute(key, value as DomAttribute, current.domNode as Element);
+              },
             };
           }
         } else {
-          action = () => {
-            removeAttribute(key, current.domNode as Element);
+          action = {
+            reason: `remove-attribute-${key}`,
+            callback: () => {
+              removeAttribute(key, current.domNode as Element);
+            },
           };
         }
 
@@ -282,15 +305,21 @@ export const collectComponentUpdates = (
       const combined: Record<string, IEventHandler> = { ...oldEv, ...newEv };
 
       forEachKey((key, value) => {
-        let action: Callback | undefined;
+        let action: IUpdateAction | undefined;
 
         if (hasProperty(newEv, key)) {
-          action = () => {
-            setEvent(key, value, current.domNode as Element);
+          action = {
+            reason: `set-event-${key}`,
+            callback: () => {
+              setEvent(key, value, current.domNode as Element);
+            },
           };
         } else {
-          action = () => {
-            removeEvent(key, current.domNode as Element);
+          action = {
+            reason: `remove-event-${key}`,
+            callback: () => {
+              removeEvent(key.toLowerCase(), current.domNode as Element);
+            },
           };
         }
 
@@ -305,7 +334,11 @@ export const collectComponentUpdates = (
       const oldCh = current.children;
       const newCh = children;
 
+      let to: number = newCh.length;
+
       if (oldCh.length > newCh.length) {
+        to = newCh.length;
+
         while (oldCh.length > newCh.length) {
           const removed = oldCh.pop()!;
 
@@ -313,9 +346,14 @@ export const collectComponentUpdates = (
             removeNode(removed.domNode as HTMLElement);
           };
 
-          updateActions.actions.push(removeExcessiveChild);
+          updateActions.actions.push({
+            reason: `remove-excess-child-${removed.id}`,
+            callback: removeExcessiveChild,
+          });
         }
       } else if (oldCh.length < newCh.length) {
+        to = oldCh.length;
+
         for (let i = oldCh.length; i < newCh.length; i++) {
           const added = newCh[i];
 
@@ -327,15 +365,18 @@ export const collectComponentUpdates = (
             injectNode(rendered as DomChild, current.domNode as HTMLElement);
           };
 
-          updateActions.actions.push(addMissingChild);
+          updateActions.actions.push({
+            reason: `add-new-child-${added.id}`,
+            callback: addMissingChild,
+          });
         }
       }
 
-      for (let i = 0; i < oldCh.length; i++) {
+      for (let i = 0; i < to; i++) {
         const oc = oldCh[i];
         const uc = newCh[i];
 
-        const childUpdateAction = collectComponentUpdates(oc, uc);
+        const childUpdateAction = diffComponents(oc, uc);
 
         updateActions.children.push(childUpdateAction);
       }
@@ -343,4 +384,10 @@ export const collectComponentUpdates = (
   }
 
   return updateActions;
+};
+
+export const executeUpdateCallbacks = (action: IComponentUpdateActions) => {
+  action.actions.forEach((action) => action.callback());
+
+  action.children.forEach((child) => executeUpdateCallbacks(child));
 };
