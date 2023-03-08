@@ -1,5 +1,6 @@
 import {
   areEqual,
+  copyKeys,
   forEachKey,
   hasProperty,
   isArray,
@@ -23,6 +24,7 @@ import {
   Namespace,
   Tag,
   IUpdateAction,
+  IComponentTemplateModifiers,
 } from "../types";
 import Events from "./Events";
 import {
@@ -41,7 +43,11 @@ import {
   setTextNodeData,
 } from "@riadh-adrani/dom-control-js";
 
-export const createComponent = (tag: Tag, props: Record<string, unknown>): IComponentTemplate => {
+export const createComponent = (
+  tag: Tag,
+  props: Record<string, unknown>,
+  modifiers?: IComponentTemplateModifiers
+): IComponentTemplate => {
   const out: IComponentTemplate = {} as unknown as IComponentTemplate;
 
   if (isBlank(tag)) {
@@ -73,7 +79,9 @@ export const createComponent = (tag: Tag, props: Record<string, unknown>): IComp
 
     if (key === "children") {
       if (isArray(value)) {
-        out.children = value as Array<IComponentTemplate>;
+        out.children = (value as Array<IComponentTemplate>).filter(
+          (child) => !(isString(child) && isBlank(child as unknown as string))
+        );
       } else {
         out.children = [value as IComponentTemplate];
       }
@@ -82,7 +90,11 @@ export const createComponent = (tag: Tag, props: Record<string, unknown>): IComp
     }
 
     if (Events.isValid(key, value)) {
-      out.events[key] = value as Callback;
+      const eventWrapper = modifiers?.eventWrapper;
+
+      const callback = eventWrapper ? () => eventWrapper(value as Callback) : (value as Callback);
+
+      out.events[key] = callback;
 
       return;
     }
@@ -234,16 +246,17 @@ export const diffComponents = (
   const { attributes, children, events, ns, tag, type } = updated;
 
   if (current.tag !== tag || current.ns !== ns) {
-    const action = () => {
-      const domNode = renderComponent(updated);
+    const currentNode = current.domNode as Element;
 
-      (current.domNode as Element).replaceWith(domNode);
+    const callback = () => {
+      const domNode = renderComponent(current);
+      currentNode.replaceWith(domNode);
     };
+    const reason = `replace-of-tags-ns:(${current.tag}|${current.ns}) => (${updated.tag}|${updated.ns})`;
 
-    updateActions.actions.push({
-      reason: `replace-of-tags-ns:(${current.tag}|${current.ns}) => (${updated.tag}|${updated.ns})`,
-      callback: action,
-    });
+    updateActions.actions.push({ reason, callback });
+
+    copyKeys(updated, current, "parent", "domNode");
   } else if (current.type === updated.type && type === IComponentType.Text) {
     const newText = (updated as ITextComponent).data;
     const oldText = (current as ITextComponent).data;
@@ -252,6 +265,8 @@ export const diffComponents = (
       const updateTextAction = () => {
         setTextNodeData(current.domNode as Text, newText);
       };
+
+      copyKeys(updated, current, "parent", "domNode");
 
       updateActions.actions.push({ reason: "update-text-data", callback: updateTextAction });
     }
@@ -381,6 +396,8 @@ export const diffComponents = (
         updateActions.children.push(childUpdateAction);
       }
     }
+
+    copyKeys(updated, current, "parent", "domNode", "children");
   }
 
   return updateActions;

@@ -25,6 +25,10 @@ export interface IComponentTemplate {
   symbol: symbol;
 }
 
+export interface IComponentTemplateModifiers {
+  eventWrapper?: (callback: Callback) => void;
+}
+
 export enum IComponentType {
   Standard = "#standard",
   Text = "#text",

@@ -184,10 +184,10 @@
   resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.35.0.tgz#b5476bfd686d57e7d1de71128b3cb37fc2d1960a"
   integrity sha512-yUqkUaJnEwl4QQBQCAiuSJbaN5JriFX7omZxSohoKkS0XHwMcwavMfdzfF/xtFPO5Z/5Hhv/XY5qjxvwKyemrg==
 
-"@riadh-adrani/utils@^0.35.1":
-  version "0.35.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.35.1.tgz#f8f5ea3c7289a7b4b80dfe689197f2ca5b8d0464"
-  integrity sha512-RmwFwlEoNGI8KBj72GKOAgFJ1bS2U9jP2RKcxAteojW2DzhCSCEcBoslHWwvV69iDsM1nxubmG5AAyCw612PKA==
+"@riadh-adrani/utils@^0.36.1":
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.36.1.tgz#8ce6d1f4904de61bc31108243392d744e8656fe1"
+  integrity sha512-Zyo6QwDN/A4R+OiYxfY1wVXEfGn+U/zLdoMMJYovlQpgwo3FcHyu2kPvwgSpKIMZn2oDB6uGoxItpGgovrYOrg==
 
 "@tootallnate/once@2":
   version "2.0.0"

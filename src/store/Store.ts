@@ -1,4 +1,4 @@
-import { copy, hasProperty } from "@riadh-adrani/utils";
+import { copy, forEachKey, hasProperty } from "@riadh-adrani/utils";
 import { EffectCallback, StateArray, StoreEffectsCollection, StoreItemsCollection } from "../types";
 
 export default class Store {
@@ -93,13 +93,21 @@ export default class Store {
     collection.clean(item, wasUsed);
   }
 
+  launchEffects() {
+    forEachKey((name, value) => {
+      forEachKey((key) => {
+        this.runEffect(name, key);
+      }, value.items);
+    }, this.effects);
+  }
+
   resetUsage() {
     Object.keys(this.items).forEach((name) => {
       this.items[name].used = [];
     });
 
     Object.keys(this.effects).forEach((name) => {
-      this.items[name].used = [];
+      this.effects[name].used = [];
     });
   }
 }

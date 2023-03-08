@@ -27,7 +27,7 @@ export default class Context<T> {
     }
   }
 
-  use<R = void>(callback: Callback<R>, data: T): R {
+  use<R = void>(callback: Callback<R>, data: T, onEnd?: Callback): R {
     if (!isFunction(callback)) {
       throw "Unexpected Input : callback is not a function.";
     }
@@ -35,6 +35,8 @@ export default class Context<T> {
     this.start(data);
     const returned = callback();
     this.end();
+
+    onEnd?.();
 
     return returned;
   }

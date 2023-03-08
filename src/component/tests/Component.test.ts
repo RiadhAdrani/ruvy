@@ -1,4 +1,5 @@
 import { isTextNode, isElement } from "@riadh-adrani/dom-control-js";
+import { hasProperty, omit } from "@riadh-adrani/utils";
 import { it, describe, expect, vitest, beforeEach } from "vitest";
 import {
   IComponentTemplate,
@@ -499,8 +500,11 @@ describe("Component", () => {
         `replace-of-tags-ns:(div|http://www.w3.org/1999/xhtml) => (p|http://www.w3.org/1999/xhtml)`,
       ]);
 
-      executeUpdateCallbacks(actions);
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
+      executeUpdateCallbacks(actions);
       expect(document.body.innerHTML).toBe("<p></p>");
     });
 
@@ -516,8 +520,11 @@ describe("Component", () => {
         `replace-of-tags-ns:(div|http://www.w3.org/1999/xhtml) => (svg|http://www.w3.org/2000/svg)`,
       ]);
 
-      executeUpdateCallbacks(actions);
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
+      executeUpdateCallbacks(actions);
       expect(document.body.innerHTML).toBe("<svg></svg>");
     });
 
@@ -541,8 +548,11 @@ describe("Component", () => {
         "replace-of-tags-ns:(a|http://www.w3.org/1999/xhtml) => (#text|http://www.w3.org/1999/xhtml)",
       ]);
 
-      executeUpdateCallbacks(actions);
+      const omittedCurrent = omit(current.children[0], "domNode", "parent");
+      const omittedUpdate = omit(updated.children[0], "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
+      executeUpdateCallbacks(actions);
       expect(document.body.innerHTML).toBe("<div>test-2</div>");
     });
 
@@ -560,7 +570,13 @@ describe("Component", () => {
       const actions = diffComponents(current, updated);
       const named = actions.children.map((a) => a.actions[0].reason);
 
+      expect((current.children[0] as ITextComponent).data).toBe("test-2");
+
       expect(named).toStrictEqual(["update-text-data"]);
+
+      const omittedCurrent = omit(current.children[0], "domNode", "parent");
+      const omittedUpdate = omit(updated.children[0], "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
       executeUpdateCallbacks(actions);
 
@@ -579,6 +595,10 @@ describe("Component", () => {
       const actions = diffComponents(current, updated);
       const named = actions.children.map((a) => a.actions);
 
+      const omittedCurrent = omit(current.children[0], "domNode", "parent");
+      const omittedUpdate = omit(updated.children[0], "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
+
       expect(named).toStrictEqual([[]]);
     });
 
@@ -590,8 +610,13 @@ describe("Component", () => {
 
       expect(named).toStrictEqual(["add-attribute-class"]);
 
-      executeUpdateCallbacks(actions);
+      expect(current.attributes["class"]).toBe("test");
 
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
+
+      executeUpdateCallbacks(actions);
       expect(document.body.innerHTML).toBe('<div class="test"></div>');
     });
 
@@ -607,8 +632,13 @@ describe("Component", () => {
 
       expect(named).toStrictEqual(["update-attribute-class"]);
 
-      executeUpdateCallbacks(actions);
+      expect(current.attributes["class"]).toBe("test2");
 
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
+
+      executeUpdateCallbacks(actions);
       expect(document.body.innerHTML).toBe('<div class="test2"></div>');
     });
 
@@ -623,6 +653,10 @@ describe("Component", () => {
       const named = actions.actions.map((a) => a.reason);
 
       expect(named).toStrictEqual(["remove-attribute-class"]);
+
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
       executeUpdateCallbacks(actions);
 
@@ -640,6 +674,12 @@ describe("Component", () => {
       const named = actions.actions.map((a) => a.reason);
 
       expect(named).toStrictEqual(["set-event-onClick"]);
+
+      expect(current.events["onClick"]).toStrictEqual(onClick);
+
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
       executeUpdateCallbacks(actions);
 
@@ -661,7 +701,13 @@ describe("Component", () => {
       const actions = diffComponents(current, updated);
       const named = actions.actions.map((a) => a.reason);
 
+      expect(current.events["onClick"]).toStrictEqual(onClick2);
+
       expect(named).toStrictEqual(["set-event-onClick"]);
+
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
 
       executeUpdateCallbacks(actions);
 
@@ -687,6 +733,12 @@ describe("Component", () => {
 
       expect(named).toStrictEqual(["remove-event-onClick"]);
 
+      expect(hasProperty(current.events, "onClick")).toBe(false);
+
+      const omittedCurrent = omit(current, "domNode", "parent");
+      const omittedUpdate = omit(updated, "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
+
       executeUpdateCallbacks(actions);
 
       (current.domNode as HTMLElement).click();
@@ -710,6 +762,11 @@ describe("Component", () => {
 
       expect(named).toStrictEqual(["remove-excess-child-0-1"]);
 
+      const omittedCurrent = omit(current.children[0], "domNode", "parent");
+      const omittedUpdate = omit(updated.children[0], "domNode", "parent");
+      expect(omittedCurrent).toStrictEqual(omittedUpdate);
+      expect(current.children.length).toBe(1);
+
       executeUpdateCallbacks(actions);
 
       expect(document.body.innerHTML).toBe("<div>test-1</div>");
@@ -730,13 +787,14 @@ describe("Component", () => {
       const named = actions.actions.map((a) => a.reason);
 
       expect(named).toStrictEqual(["add-new-child-0-1"]);
+      expect(current.children.length).toBe(2);
 
       executeUpdateCallbacks(actions);
 
       expect(document.body.innerHTML).toBe("<div>test-1test-2</div>");
     });
 
-    it("should update children recursively (1st level)", () => {
+    it("should update children recursively", () => {
       const current: IComponent = processComponent(
         createComponent("div", { children: ["test-1", "test-2"] })
       );
