@@ -14,7 +14,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "jsxFactory": "createJsxElement",
+    "jsx": "react"
   },
   "include": ["src"]
 }

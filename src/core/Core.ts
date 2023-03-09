@@ -1,5 +1,5 @@
 import { isElement } from "@riadh-adrani/dom-control-js";
-import { isFunction } from "@riadh-adrani/utils";
+import { isFunction, isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
   executeUpdateCallbacks,
@@ -118,4 +118,24 @@ export const createComponent = (tag: Tag, options?: Record<string, unknown>) => 
   };
 
   return createComponentUnWrapped(tag, opts, { eventWrapper });
+};
+
+declare global {
+  function createJsxElement(
+    tag: Tag,
+    options?: Record<string, unknown>,
+    ...children: Array<unknown>
+  ): IComponentTemplate;
+}
+
+export const createJsxElement = (
+  tag: Tag | Callback<IComponentTemplate>,
+  options?: Record<string, unknown>,
+  ...children: Array<unknown>
+): IComponentTemplate => {
+  if (isString(tag)) {
+    return createComponent(tag as Tag, { ...options, children });
+  }
+
+  return (tag as (options: unknown) => IComponentTemplate)(options);
 };
