@@ -172,17 +172,12 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@riadh-adrani/dom-control-js@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-control-js/-/dom-control-js-1.0.14.tgz#71bfa4f98af6940c540b723dfa3543f847709b98"
-  integrity sha512-NUUg4CL1wSbjiuXhUt98FUHG275Qsyo3h12+FUv8RJbLLA22vp/VtwqaGs0mldcPBr6P/7Ec0EMJRibYQvoPgg==
+"@riadh-adrani/dom-utils@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.1.tgz#2a3f43ef60c29cf5eb625e63f996282d577b3f63"
+  integrity sha512-rb9G5i6dPApalh+o87C92cudnnMjj/l+vyD8RCV+kl5LOSi/SxRBn1k5dNWnWXzmZ8i4czqdhSxcEmbvn0Ea1A==
   dependencies:
-    "@riadh-adrani/utils" "^0.35.0"
-
-"@riadh-adrani/utils@^0.35.0":
-  version "0.35.0"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.35.0.tgz#b5476bfd686d57e7d1de71128b3cb37fc2d1960a"
-  integrity sha512-yUqkUaJnEwl4QQBQCAiuSJbaN5JriFX7omZxSohoKkS0XHwMcwavMfdzfF/xtFPO5Z/5Hhv/XY5qjxvwKyemrg==
+    "@riadh-adrani/utils" "^0.36.1"
 
 "@riadh-adrani/utils@^0.36.1":
   version "0.36.1"

@@ -1,4 +1,4 @@
-import { isTextNode, isElement } from "@riadh-adrani/dom-control-js";
+import { isTextNode, isElement } from "@riadh-adrani/dom-utils";
 import { hasProperty, omit } from "@riadh-adrani/utils";
 import { it, describe, expect, vitest, beforeEach } from "vitest";
 import {

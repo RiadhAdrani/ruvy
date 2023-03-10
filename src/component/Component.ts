@@ -41,7 +41,7 @@ import {
   setAttribute,
   setEvent,
   setTextNodeData,
-} from "@riadh-adrani/dom-control-js";
+} from "@riadh-adrani/dom-utils";
 
 export const createComponent = (
   tag: Tag,

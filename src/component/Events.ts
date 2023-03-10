@@ -1,5 +1,5 @@
 import { isFunction } from "@riadh-adrani/utils";
-import { isOnEventName } from "@riadh-adrani/dom-control-js";
+import { isOnEventName } from "@riadh-adrani/dom-utils";
 
 const isValidName = (name: string): boolean => {
   return isOnEventName(name);
