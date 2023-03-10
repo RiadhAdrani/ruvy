@@ -24,7 +24,7 @@ mountApp({
           onInput={(e: Event) => setValue((e.target as unknown as Record<string, string>).value)}
         />
         {value}
-        <Component name="yes" />
+        <Component name="true" />
       </div>
     );
   },

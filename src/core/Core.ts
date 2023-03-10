@@ -1,4 +1,4 @@
-import { isElement } from "@riadh-adrani/dom-control-js";
+import { isElement } from "@riadh-adrani/dom-utils";
 import { isFunction, isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
