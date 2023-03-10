@@ -90,11 +90,15 @@ export const createComponent = (
     }
 
     if (Events.isValid(key, value)) {
-      const eventWrapper = modifiers?.eventWrapper;
+      const eventWrapper =
+        modifiers?.eventWrapper ??
+        ((fn: Callback) => {
+          fn();
+        });
 
-      const callback = eventWrapper
-        ? (e: Event) => eventWrapper(() => (value as (e: Event) => void)(e))
-        : (value as Callback);
+      const callback = ((e: unknown) => {
+        eventWrapper(() => (value as (e: unknown) => void)(e));
+      }) as Callback;
 
       out.events[key] = callback as Callback;
 

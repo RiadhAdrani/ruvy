@@ -73,14 +73,17 @@ describe("Component", () => {
     it("should add event", () => {
       const onClick = () => undefined;
 
-      expect(createComponent("div", { onClick })).toStrictEqual({
+      const component = createComponent("div", { onClick });
+
+      expect(omit(component, "events")).toStrictEqual({
         tag: "div",
         ns: "http://www.w3.org/1999/xhtml",
         children: [],
         attributes: {},
-        events: { onClick },
         symbol: IComponentSymbol,
       });
+
+      expect(component.events["onClick"]).toBeTruthy();
     });
 
     it("should add unknown key as attribute", () => {
@@ -675,8 +678,6 @@ describe("Component", () => {
 
       expect(named).toStrictEqual(["set-event-onClick"]);
 
-      expect(current.events["onClick"]).toStrictEqual(onClick);
-
       const omittedCurrent = omit(current, "domNode", "parent");
       const omittedUpdate = omit(updated, "domNode", "parent");
       expect(omittedCurrent).toStrictEqual(omittedUpdate);
@@ -700,8 +701,6 @@ describe("Component", () => {
 
       const actions = diffComponents(current, updated);
       const named = actions.actions.map((a) => a.reason);
-
-      expect(current.events["onClick"]).toStrictEqual(onClick2);
 
       expect(named).toStrictEqual(["set-event-onClick"]);
 
