@@ -1,4 +1,4 @@
-import { mountApp, setState, createJsxElement } from "./core";
+import { mountApp, createJsxElement, navigate, Outlet, createRouter, getParams } from "./core";
 
 const hostElement = document.getElementById("app")!;
 
@@ -8,23 +8,49 @@ declare global {
   }
 }
 
-const Component = ({ name = "Loading..." }: { name?: string }) => {
-  return <div>{name}</div>;
-};
+createRouter(
+  [
+    {
+      path: "/",
+      object: () => "Hello",
+      routes: [
+        { path: "home", object: () => <div class="HomeSweetHome">Home Sweet Home</div> },
+        {
+          path: "/user",
+          object: () => {
+            return (
+              <div>
+                <Outlet />
+              </div>
+            );
+          },
+          routes: [
+            {
+              path: "/:id",
+              object: () => {
+                const { id } = getParams<{ id: string }>();
+
+                return <div class="hometh">Ruvy : {id}</div>;
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  {}
+);
 
 mountApp({
   hostElement,
   callback: () => {
-    const [value, setValue] = setState("text", "1");
-
     return (
       <div class="home" id="me">
-        <input
-          value={value}
-          onInput={(e: Event) => setValue((e.target as unknown as Record<string, string>).value)}
-        />
-        {value}
-        <Component name="true" />
+        <nav style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
+          Root
+        </nav>
+        <nav onClick={() => navigate("/home")}>Home</nav>
+        <Outlet />
       </div>
     );
   },

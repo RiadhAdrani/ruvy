@@ -2,7 +2,7 @@ import { copy, isArray, isBlank } from "@riadh-adrani/utils";
 import { RawRoute, Route } from "../../types";
 import fragmentize from "./fragmentize";
 
-const flatten = (_items: Array<RawRoute>, parent?: string): Record<string, Route> => {
+const flatten = <T>(_items: Array<RawRoute>, parent?: string): Record<string, Route<T>> => {
   const items = copy(_items);
 
   let output: Record<string, Route> = {};
@@ -33,7 +33,7 @@ const flatten = (_items: Array<RawRoute>, parent?: string): Record<string, Route
     }
   });
 
-  return output;
+  return output as Record<string, Route<T>>;
 };
 
 export default flatten;

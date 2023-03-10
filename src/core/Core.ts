@@ -1,5 +1,4 @@
-import { isElement } from "@riadh-adrani/dom-utils";
-import { isFunction, isString } from "@riadh-adrani/utils";
+import { isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
   executeUpdateCallbacks,
@@ -8,94 +7,129 @@ import {
   createComponent as createComponentUnWrapped,
 } from "../component";
 import { Context } from "../context";
+import { Router } from "../router";
 import { Scheduler } from "../scheduler";
 import { createEffectCollection, createStateCollection, Store } from "../store";
-import { Callback, IComponent, IComponentTemplate, StateArray, Tag } from "../types";
+import {
+  Callback,
+  IComponent,
+  IComponentTemplate,
+  StateArray,
+  Tag,
+  PrimitiveComponentTemplate,
+  RouterConfig,
+  RawRoute,
+} from "../types";
 import { IMountConfig } from "../types/core";
 
-let current: IComponent;
-let host: HTMLElement;
-let shouldUpdate = false;
-let fn: Callback<IComponentTemplate>;
+export class Core {
+  static singleton: Core = new Core();
 
-const batchContext = new Context<boolean>();
-const scheduler = new Scheduler();
-const store = new Store();
+  fn: Callback<IComponentTemplate> = undefined as unknown as Callback<IComponentTemplate>;
 
-store.createItemsStore(() =>
-  createStateCollection(store, {
-    name: "state",
-    checkEqual: true,
-    forceSet: false,
-    keepUnused: false,
-    onChanged: () => onStateUpdate(),
-  })
-);
+  current: IComponent = undefined as unknown as IComponent;
+  host: HTMLElement = undefined as unknown as HTMLElement;
 
-store.createEffectsStore(() =>
-  createEffectCollection(store, {
-    name: "effect",
-    keepUnused: false,
-  })
-);
+  shouldUpdate: boolean = false;
+  batchContext = new Context<boolean>();
+  scheduler = new Scheduler();
+  store = new Store();
+  router: Router<Callback<IComponentTemplate | PrimitiveComponentTemplate>> =
+    undefined as unknown as Router<Callback<IComponentTemplate | PrimitiveComponentTemplate>>;
+  routerContext = new Context<number>();
 
-const executeRoutine = (isUpdate = true) => {
-  if (!isUpdate) {
-    current = processComponent(fn());
-    host.appendChild(renderComponent(current));
-  } else {
-    const updated = processComponent(fn());
-    const actions = diffComponents(current, updated);
+  constructor() {
+    this.store.createItemsStore(() =>
+      createStateCollection(this.store, {
+        name: "state",
+        checkEqual: true,
+        forceSet: false,
+        keepUnused: false,
+        onChanged: () => this.onStateUpdate(),
+      })
+    );
 
-    executeUpdateCallbacks(actions);
+    this.store.createEffectsStore(() =>
+      createEffectCollection(this.store, {
+        name: "effect",
+        keepUnused: false,
+      })
+    );
+
+    Core.singleton = this;
   }
 
-  store.launchEffects();
-  store.resetUsage();
-};
+  onStateUpdate() {
+    this.shouldUpdate = true;
 
-const onStateUpdate = () => {
-  shouldUpdate = true;
+    if (this.batchContext.data === true) {
+      return;
+    }
 
-  if (batchContext.data === true) {
-    return;
+    this.scheduler.schedule({
+      date: Date.now(),
+      id: `${Date.now()}`,
+      type: "update",
+      callback: () => {
+        this.executeRoutine();
+      },
+    });
   }
 
-  scheduler.schedule({
-    date: Date.now(),
-    id: `${Date.now()}`,
-    type: "update",
-    callback: () => {
-      executeRoutine();
-    },
-  });
-};
+  executeRoutine(isUpdate: boolean = true) {
+    if (!isUpdate) {
+      this.current = processComponent(this.fn());
+      this.host.appendChild(renderComponent(this.current));
+    } else {
+      const updated = processComponent(this.fn());
+      const actions = diffComponents(this.current, updated);
+
+      executeUpdateCallbacks(actions);
+    }
+
+    this.store.launchEffects();
+    this.store.resetUsage();
+  }
+}
 
 export const mountApp = ({ callback, hostElement }: IMountConfig) => {
-  if (!isFunction(callback)) {
-    throw "Unexpected prop: app callback is not a function.";
-  }
+  Core.singleton.fn = callback;
+  Core.singleton.host = hostElement;
 
-  if (isElement(hostElement)) {
-    host = hostElement;
-  } else {
-    host = document.body;
-  }
-
-  scheduler.schedule({
+  Core.singleton.scheduler.schedule({
     date: Date.now(),
     id: Date.now().toString(),
     type: "render",
     callback: () => {
-      fn = callback;
-
-      executeRoutine(false);
+      Core.singleton.executeRoutine(false);
     },
   });
 };
 
+export const createRouter = (
+  routes: Array<RawRoute<Callback<IComponentTemplate | PrimitiveComponentTemplate>>>,
+  config: Omit<RouterConfig, "onStateChange">
+) => {
+  Core.singleton.router = new Router(routes, {
+    ...config,
+    onStateChange: () => {
+      Core.singleton.onStateUpdate();
+    },
+  });
+};
+
+export const Outlet = (): IComponentTemplate | PrimitiveComponentTemplate => {
+  const router = Core.singleton.router;
+
+  return router.useContext(() => {
+    const obj = router.object;
+
+    return obj ? obj() : "";
+  });
+};
+
 export const setState = <T>(key: string, value: T): StateArray<T> => {
-  return store.setItem<T>("state", key, value);
+  return Core.singleton.store.setItem<T>("state", key, value);
 };
 
 export const setEffect = (
@@ -103,30 +137,22 @@ export const setEffect = (
   key: string,
   dependencies: unknown = undefined
 ): void => {
-  store.setEffect("effect", key, callback, dependencies);
+  Core.singleton.store.setEffect("effect", key, callback, dependencies);
 };
 
 export const createComponent = (tag: Tag, options?: Record<string, unknown>) => {
   const opts = options ?? {};
 
   const eventWrapper = (callback: Callback) => {
-    batchContext.use(callback, true, () => {
-      if (shouldUpdate) {
-        executeRoutine();
+    Core.singleton.batchContext.use(callback, true, () => {
+      if (Core.singleton.shouldUpdate) {
+        Core.singleton.executeRoutine();
       }
     });
   };
 
   return createComponentUnWrapped(tag, opts, { eventWrapper });
 };
-
-declare global {
-  function createJsxElement(
-    tag: Tag,
-    options?: Record<string, unknown>,
-    ...children: Array<unknown>
-  ): IComponentTemplate;
-}
 
 export const createJsxElement = (
   tag: Tag | Callback<IComponentTemplate>,
@@ -138,4 +164,12 @@ export const createJsxElement = (
   }
 
   return (tag as (options: unknown) => IComponentTemplate)(options);
+};
+
+export const navigate = (path: string) => {
+  Core.singleton.router.push(path);
+};
+
+export const getParams = <T = Record<string, string>>() => {
+  return Core.singleton.router.params as T;
 };

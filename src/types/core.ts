@@ -1,10 +1,7 @@
 import { Callback } from "./common";
-import { IComponent, IComponentTemplate } from "./component";
+import { IComponentTemplate } from "./component";
 
-export type IRuvyConfig = {
-  callback: Callback<IComponentTemplate>;
+export interface IMountConfig {
   hostElement: HTMLElement;
-  current: IComponent;
-};
-
-export type IMountConfig = Omit<IRuvyConfig, "current">;
+  callback: Callback<IComponentTemplate>;
+}

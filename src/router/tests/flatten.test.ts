@@ -14,7 +14,7 @@ describe("flatten", () => {
   it("should flatten an array of raw routes", () => {
     const routes: Array<RawRoute> = [
       { path: "/", title: "Home" },
-      { path: "test-2", title: "Test 2" },
+      { path: "test-2", title: "Test 2", object: "component" },
       { path: "test", title: "Test", redirectTo: "/test-2" },
     ];
 
@@ -30,6 +30,7 @@ describe("flatten", () => {
         fragments: ["test-2"],
         title: "Test 2",
         isDynamic: false,
+        object: "component",
       },
       "/test": {
         path: "/test",

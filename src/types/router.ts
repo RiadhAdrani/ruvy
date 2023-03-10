@@ -1,16 +1,17 @@
 import { Callback } from "./common";
 
-export interface CommonRoute {
+export interface CommonRoute<T = unknown> {
   path: string;
   redirectTo?: string;
   title?: string;
+  object?: T;
 }
 
-export interface RawRoute extends CommonRoute {
+export interface RawRoute<T = unknown> extends CommonRoute<T> {
   routes?: Array<RawRoute>;
 }
 
-export interface Route extends CommonRoute {
+export interface Route<T = unknown> extends CommonRoute<T> {
   fragments: Array<string>;
   isDynamic: boolean;
 }
