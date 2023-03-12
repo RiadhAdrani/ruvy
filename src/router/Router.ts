@@ -1,6 +1,6 @@
 import { Context } from "../context";
 import { Callback, RawRoute, Route, RouterConfig } from "../types";
-import { findRouteFromList, flatten, getParams, getRouteFromUrl } from "./utils";
+import { findRouteFromList, flatten, fragmentize, getParams, getRouteFromUrl } from "./utils";
 
 export default class Router<T = unknown> {
   routes: Record<string, Route<T>> = {};
@@ -18,13 +18,35 @@ export default class Router<T = unknown> {
     return findRouteFromList(this.path, this.routes) as Route<T>;
   }
 
-  get params(): Record<string, string> {
-    return getParams(this.path, this.route?.path ?? "");
+  get nearestRoute(): Route<T> | undefined {
+    const fragments = fragmentize(this.path);
+
+    let route: Route<T> | undefined;
+
+    if (fragments.length === 0) {
+      route = findRouteFromList<T>("/", this.routes);
+    }
+
+    for (let i = 0; i < fragments.length; i++) {
+      const maybePath = `/${fragments.slice(0, i + 1).join("/")}`;
+
+      const maybeRoute = findRouteFromList(maybePath, this.routes);
+
+      if (maybeRoute) {
+        route = maybeRoute as Route<T>;
+      }
+    }
+
+    return route;
   }
 
-  get object(): T | undefined {
+  get params(): Record<string, string> {
+    return getParams(this.path, this.nearestRoute?.path ?? "");
+  }
+
+  get component(): T | undefined {
     const depth = this.context.data;
-    const current = this.route;
+    const current = this.nearestRoute;
 
     if (depth === undefined) {
       return undefined;
@@ -34,25 +56,29 @@ export default class Router<T = unknown> {
       return undefined;
     }
 
-    if (current.fragments.length <= depth) {
+    console.log(depth);
+
+    if (current.fragments.length < depth) {
       return undefined;
     }
 
     const expected = `/${current.fragments.join("/")}`;
 
-    const expectedRoute = findRouteFromList(expected, this.routes);
+    const expectedRoute = findRouteFromList<T>(expected, this.routes);
 
     if (!expectedRoute) {
       return undefined;
     }
 
-    return expectedRoute.object as T;
+    return expectedRoute.component;
   }
 
   useContext<R>(callback: Callback<R>) {
     const depth = this.context.data ?? -1;
 
-    return this.context.use(callback, depth + 1);
+    return this.context.use(callback, depth + 1, () => {
+      console.log("has ended: ", this.context.data);
+    });
   }
 
   constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterConfig) {

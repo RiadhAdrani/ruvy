@@ -1,12 +1,12 @@
 import { Route } from "../../types";
 import fragmentize from "./fragmentize";
 
-export default (path: string, record: Record<string, Route>): Route | undefined => {
+export default <T>(path: string, record: Record<string, Route>): Route<T> | undefined => {
   const fragments = fragmentize(path);
 
   if (fragments.length === 0) {
     if (path === "/") {
-      return record[path];
+      return record[path] as Route<T>;
     } else {
       return undefined;
     }
@@ -25,7 +25,7 @@ export default (path: string, record: Record<string, Route>): Route | undefined 
       );
 
       if (exact) {
-        return exact;
+        return exact as Route<T>;
       }
 
       const first = withSameLength
@@ -44,7 +44,7 @@ export default (path: string, record: Record<string, Route>): Route | undefined 
           })
         );
 
-      return first;
+      return first as Route<T>;
     }
   }
 };
