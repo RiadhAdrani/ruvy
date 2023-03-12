@@ -16,7 +16,9 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "jsxFactory": "createJsxElement",
-    "jsx": "react"
+    "jsxFragmentFactory": "createJsxFragmentElement",
+    "jsx": "react",
+    "types": ["./src/types/global"]
   },
   "include": ["src"]
 }

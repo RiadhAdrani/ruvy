@@ -1,33 +1,34 @@
-import { mountApp, createJsxElement, navigate, Outlet, createRouter, getParams } from "./core";
+import { mountApp, Outlet, createRouter, getParams } from "./core";
 
 const hostElement = document.getElementById("app")!;
 
-declare global {
-  namespace JSX {
-    type IntrinsicElements = Record<string, Record<string, unknown>>;
-  }
-}
+const Home = () => {
+  return <div class={["HomeSweetHome"]}>Home Sweet Home</div>;
+};
+
+const User = () => {
+  return (
+    <div>
+      <h1>Home</h1>
+      <Outlet />
+    </div>
+  );
+};
 
 createRouter(
   [
     {
       path: "/",
-      object: () => "Hello",
+      component: () => <Home />,
       routes: [
-        { path: "home", object: () => <div class="HomeSweetHome">Home Sweet Home</div> },
+        { path: "home", component: Home },
         {
           path: "/user",
-          object: () => {
-            return (
-              <div>
-                <Outlet />
-              </div>
-            );
-          },
+          component: User,
           routes: [
             {
               path: "/:id",
-              object: () => {
+              component: () => {
                 const { id } = getParams<{ id: string }>();
 
                 return <div class="hometh">Ruvy : {id}</div>;
@@ -44,12 +45,22 @@ createRouter(
 mountApp({
   hostElement,
   callback: () => {
+    const [value, setValue] = setState("text", "world");
+
+    setEffect(() => {
+      // setValue("hello");
+    }, "on-mounted");
+
     return (
       <div class="home" id="me">
-        <nav style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-          Root
-        </nav>
-        <nav onClick={() => navigate("/home")}>Home</nav>
+        <div>
+          <nav>
+            <a href="/">Home</a>
+            <a href="/user">User</a>
+          </nav>
+        </div>
+        <input value={value} onInput={(e) => setValue(e.currentTarget.value)} />
+        <h1>{value}</h1>
         <Outlet />
       </div>
     );
