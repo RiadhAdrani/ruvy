@@ -1,5 +1,5 @@
 import { Callback } from "../types";
-import { isFunction } from "@riadh-adrani/utils";
+import { isDefined, isFunction } from "@riadh-adrani/utils";
 
 export default class Context<T> {
   data?: T;
@@ -18,7 +18,7 @@ export default class Context<T> {
   }
 
   end(): void {
-    if (this.data) {
+    if (isDefined(this.data)) {
       if (this.stack.length > 0) {
         this.data = this.stack.pop();
       } else {
