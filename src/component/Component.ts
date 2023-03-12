@@ -25,6 +25,7 @@ import {
   Tag,
   IUpdateAction,
   IComponentTemplateModifiers,
+  PrimitiveComponentTemplate,
 } from "../types";
 import Events from "./Events";
 import {
@@ -145,6 +146,19 @@ export const createTextComponent = (
     type: IComponentType.Text,
     domNode: undefined,
     parent,
+    symbol: IComponentSymbol,
+  };
+};
+
+export const createFragmentTemplate = (
+  children: Array<IComponentTemplate | PrimitiveComponentTemplate>
+): IComponentTemplate => {
+  return {
+    attributes: {},
+    children,
+    events: {},
+    ns: "http://www.w3.org/1999/xhtml",
+    tag: IComponentType.Fragment,
     symbol: IComponentSymbol,
   };
 };
