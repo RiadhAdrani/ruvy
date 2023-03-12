@@ -13,6 +13,12 @@ describe("Context class", () => {
     expect(ctx.stack).toStrictEqual([]);
   });
 
+  it("should throw when context data is undefined", () => {
+    const ctx = new Context<undefined>();
+
+    expect(ctx.start).toThrow("Unexpected Data: context data cannot be undefined.");
+  });
+
   it("should start a new context", () => {
     ctx.start("test");
     expect(ctx.data).toBe("test");

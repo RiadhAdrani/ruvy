@@ -10,6 +10,10 @@ export default class Context<T> {
   }
 
   start(data: T): void {
+    if (!isDefined(data)) {
+      throw "Unexpected Data: context data cannot be undefined.";
+    }
+
     if (this.data != undefined) {
       this.stack.push(this.data);
     }
