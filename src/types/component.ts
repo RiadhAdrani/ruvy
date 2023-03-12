@@ -25,6 +25,8 @@ export interface IComponentTemplate {
   symbol: symbol;
 }
 
+export type FunctionComponent = Callback<PrimitiveComponentTemplate | IComponentTemplate>;
+
 export interface IComponentTemplateModifiers {
   eventWrapper?: (callback: Callback) => void;
 }
@@ -50,6 +52,10 @@ export interface IComponent<T = Node> extends Omit<IComponentTemplate, "children
 export interface ITextComponent extends IComponent<Text> {
   data: string;
   type: IComponentType.Text;
+}
+
+export interface IFragmentComponent extends IComponent<Text> {
+  type: IComponentType.Fragment;
 }
 
 export interface IUpdateAction {
