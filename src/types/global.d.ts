@@ -1,15 +1,19 @@
 import { Arrayable } from "@riadh-adrani/utils";
+import { StateArray } from "./store";
 
 export {};
 
 declare global {
   function setState<T>(key: string, value: T): StateArray<T>;
+
   function setEffect(callback: Callback, key: string, dependencies?: unknown): void;
+
   function createJsxElement(
     tag: Tag | FunctionComponent,
     options?: Record<string, unknown>,
     ...children: Array<unknown>
   ): IComponentTemplate;
+
   function createJsxFragmentElement(
     _: unknown,
     ...children: Array<PrimitiveComponentTemplate | IComponentTemplate>

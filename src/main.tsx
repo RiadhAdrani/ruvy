@@ -46,6 +46,7 @@ mountApp({
   hostElement,
   callback: () => {
     const [value, setValue] = setState("text", "world");
+    const [length, setLength] = setState("count", value.length);
 
     setEffect(() => {
       // setValue("hello");
@@ -59,8 +60,16 @@ mountApp({
             <a href="/user">User</a>
           </nav>
         </div>
-        <input value={value} onInput={(e) => setValue(e.currentTarget.value)} />
-        <h1>{value}</h1>
+        <input
+          value={value}
+          onInput={(e) => {
+            setValue(e.currentTarget.value);
+            setLength(e.currentTarget.value.length);
+          }}
+        />
+        <h1>
+          {value} : {length}
+        </h1>
         <Outlet />
       </div>
     );

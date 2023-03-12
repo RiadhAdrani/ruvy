@@ -56,8 +56,6 @@ export default class Router<T = unknown> {
       return undefined;
     }
 
-    console.log(depth);
-
     if (current.fragments.length < depth) {
       return undefined;
     }
@@ -76,9 +74,7 @@ export default class Router<T = unknown> {
   useContext<R>(callback: Callback<R>) {
     const depth = this.context.data ?? -1;
 
-    return this.context.use(callback, depth + 1, () => {
-      console.log("has ended: ", this.context.data);
-    });
+    return this.context.use(callback, depth + 1);
   }
 
   constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterConfig) {

@@ -1,4 +1,5 @@
-import { isString } from "@riadh-adrani/utils";
+import { isElement } from "@riadh-adrani/dom-utils";
+import { isFunction, isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
   executeUpdateCallbacks,
@@ -60,6 +61,31 @@ export class Core {
     Core.singleton = this;
   }
 
+  executeRoutine(isUpdate: boolean = true) {
+    if (!isFunction(this.fn)) {
+      throw "Unexpected Type: app callback is not a function.";
+    }
+
+    if (!isElement(this.host)) {
+      throw "Unexpected Type: host element is not a Dom element.";
+    }
+
+    if (!isUpdate) {
+      this.current = processComponent(this.fn());
+      this.host.appendChild(renderComponent(this.current));
+    } else {
+      const updated = processComponent(this.fn());
+      const actions = diffComponents(this.current, updated);
+
+      executeUpdateCallbacks(actions);
+    }
+
+    this.store.launchEffects();
+    this.store.resetUsage();
+
+    this.shouldUpdate = false;
+  }
+
   onStateUpdate() {
     this.shouldUpdate = true;
 
@@ -75,21 +101,6 @@ export class Core {
         this.executeRoutine();
       },
     });
-  }
-
-  executeRoutine(isUpdate: boolean = true) {
-    if (!isUpdate) {
-      this.current = processComponent(this.fn());
-      this.host.appendChild(renderComponent(this.current));
-    } else {
-      const updated = processComponent(this.fn());
-      const actions = diffComponents(this.current, updated);
-
-      executeUpdateCallbacks(actions);
-    }
-
-    this.store.launchEffects();
-    this.store.resetUsage();
   }
 }
 
