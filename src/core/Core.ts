@@ -19,6 +19,7 @@ import {
   PrimitiveComponentTemplate,
   RouterConfig,
   RawRoute,
+  FunctionComponent,
 } from "../types";
 import { IMountConfig } from "../types/core";
 
@@ -107,7 +108,7 @@ export const mountApp = ({ callback, hostElement }: IMountConfig) => {
 };
 
 export const createRouter = (
-  routes: Array<RawRoute<Callback<IComponentTemplate | PrimitiveComponentTemplate>>>,
+  routes: Array<RawRoute<FunctionComponent>>,
   config: Omit<RouterConfig, "onStateChange">
 ) => {
   Core.singleton.router = new Router(routes, {
@@ -122,10 +123,30 @@ export const Outlet = (): IComponentTemplate | PrimitiveComponentTemplate => {
   const router = Core.singleton.router;
 
   return router.useContext(() => {
-    const obj = router.object;
+    const obj = router.component;
 
     return obj ? obj() : "";
   });
+};
+
+export const If = ({
+  condition,
+  valid,
+  inValid,
+}: {
+  condition: boolean;
+  valid: FunctionComponent;
+  inValid?: FunctionComponent;
+}) => {
+  if (condition) {
+    return valid();
+  } else {
+    if (inValid) {
+      return inValid();
+    }
+  }
+
+  return "";
 };
 
 export const setState = <T>(key: string, value: T): StateArray<T> => {
@@ -155,7 +176,7 @@ export const createComponent = (tag: Tag, options?: Record<string, unknown>) => 
 };
 
 export const createJsxElement = (
-  tag: Tag | Callback<IComponentTemplate>,
+  tag: Tag | FunctionComponent,
   options?: Record<string, unknown>,
   ...children: Array<unknown>
 ): IComponentTemplate => {
@@ -163,7 +184,17 @@ export const createJsxElement = (
     return createComponent(tag as Tag, { ...options, children });
   }
 
-  return (tag as (options: unknown) => IComponentTemplate)(options);
+  return (tag as (options: unknown, ...children: Array<unknown>) => IComponentTemplate)(
+    options,
+    ...children
+  );
+};
+
+export const createJsxFragmentElement = (
+  _: unknown,
+  ...children: Array<PrimitiveComponentTemplate | IComponentTemplate>
+): Array<unknown> => {
+  return children;
 };
 
 export const navigate = (path: string) => {
@@ -173,3 +204,8 @@ export const navigate = (path: string) => {
 export const getParams = <T = Record<string, string>>() => {
   return Core.singleton.router.params as T;
 };
+
+(window as unknown as Record<string, unknown>).setState = setState;
+(window as unknown as Record<string, unknown>).setEffect = setEffect;
+(window as unknown as Record<string, unknown>).createJsxElement = createJsxElement;
+(window as unknown as Record<string, unknown>).createJsxFragmentElement = createJsxFragmentElement;
