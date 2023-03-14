@@ -88,6 +88,12 @@ export default class Router<T = unknown> {
     });
   }
 
+  isNavigatable(path: string): boolean {
+    const maybe = findRouteFromList<T>(path, this.routes);
+
+    return maybe !== undefined;
+  }
+
   push(path: string) {
     // TODO : we need to check if path is the same
 

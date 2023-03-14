@@ -45,32 +45,24 @@ createRouter(
 mountApp({
   hostElement,
   callback: () => {
-    const [value, setValue] = setState("text", "world");
-    const [length, setLength] = setState("count", value.length);
-
-    setEffect(() => {
-      // setValue("hello");
-    }, "on-mounted");
+    const [volume, setVolume] = setState("volume", 1);
 
     return (
       <div class="home" id="me">
-        <div>
-          <nav>
-            <a href="/">Home</a>
-            <a href="/user">User</a>
-          </nav>
-        </div>
         <input
-          value={value}
+          type="range"
+          min={0}
+          max={100}
           onInput={(e) => {
-            setValue(e.currentTarget.value);
-            setLength(e.currentTarget.value.length);
+            setVolume(Number(e.currentTarget.value) / 100);
           }}
         />
-        <h1>
-          {value} : {length}
-        </h1>
-        <Outlet />
+        <video width={320} height={200} volume={volume} controls>
+          <source
+            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+            type="video/mp4"
+          />
+        </video>
       </div>
     );
   },

@@ -104,6 +104,21 @@ export class Core {
   }
 }
 
+document.addEventListener("click", (e) => {
+  const ev = e as unknown as DOMEvent<MouseEvent>;
+
+  if (ev.target.tagName.toLocaleLowerCase() !== "a") {
+    return;
+  }
+
+  const path: string | null = (ev.target as unknown as HTMLAnchorElement).getAttribute("href");
+
+  if (path && Core.singleton.router.isNavigatable(path)) {
+    e.preventDefault();
+    navigate(path);
+  }
+});
+
 export const mountApp = ({ callback, hostElement }: IMountConfig) => {
   Core.singleton.fn = callback;
   Core.singleton.host = hostElement;
