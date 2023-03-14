@@ -1,7 +1,6 @@
-import { Arrayable } from "@riadh-adrani/utils";
+import { DomEventHandler } from "@riadh-adrani/dom-utils";
+import { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
 import { StateArray } from "./store";
-
-export {};
 
 declare global {
   function setState<T>(key: string, value: T): StateArray<T>;
@@ -31,9 +30,82 @@ declare global {
   ) => void;
 
   interface DOMEvents<E extends Element> {
-    onClick: DOMEventHandler<MouseEvent, E>;
-    onInput: DOMEventHandler<InputEvent, E>;
+    onAnimationEnd: DomEventHandler<AnimationEvent, E>;
+    onAnimationIteration: DomEventHandler<AnimationEvent, E>;
+    onAnimationStart: DomEventHandler<AnimationEvent, E>;
+    onBlur: DomEventHandler<FocusEvent, E>;
+    onCanPlay: DomEventHandler<Event, E>;
+    onCanPlayThrough: DomEventHandler<Event, E>;
     onChange: DOMEventHandler<InputEvent, E>;
+    onContextMenu: DomEventHandler<MouseEvent, E>;
+    onCopy: DomEventHandler<ClipboardEvent, E>;
+    onCut: DomEventHandler<ClipboardEvent, E>;
+    onDurationChange: DomEventHandler<Event, E>;
+    onEnded: DomEventHandler<Event, E>;
+    onFocus: DomEventHandler<FocusEvent, E>;
+    onFocusIn: DomEventHandler<FocusEvent, E>;
+    onFocusOut: DomEventHandler<FocusEvent, E>;
+    onInvalid: DomEventHandler<Event, E>;
+    onPaste: DomEventHandler<ClipboardEvent, E>;
+    onPause: DomEventHandler<Event, E>;
+    onPlay: DomEventHandler<Event, E>;
+    onPlaying: DomEventHandler<Event, E>;
+    onProgress: DomEventHandler<Event, E>;
+    onRateChange: DomEventHandler<Event, E>;
+    onResize: DomEventHandler<UIEvent, E>;
+    onReset: DomEventHandler<Event, E>;
+    onScroll: DomEventHandler<Event, E>;
+    onSeeked: DomEventHandler<Event, E>;
+    onSeeking: DomEventHandler<Event, E>;
+    onSelect: DomEventHandler<Event, E>;
+    onShow: DomEventHandler<Event, E>;
+    onStalled: DomEventHandler<Event, E>;
+    onSubmit: DomEventHandler<SubmitEvent, E>;
+    onSuspend: DomEventHandler<Event, E>;
+    onTimeUpdate: DomEventHandler<Event, E>;
+    onToggle: DomEventHandler<Event, E>;
+    onTransitionEnd: DomEventHandler<TransitionEvent>;
+    onVolumeChange: DomEventHandler<Event, E>;
+    onWaiting: DomEventHandler<Event, E>;
+    onWheel: DomEventHandler<WheelEvent, E>;
+    onInput: DOMEventHandler<InputEvent, E>;
+    onDrag: DomEventHandler<DragEvent, E>;
+    onDragEnd: DomEventHandler<DragEvent, E>;
+    onDragEnter: DomEventHandler<DragEvent, E>;
+    onDragLeave: DomEventHandler<DragEvent, E>;
+    onDragOver: DomEventHandler<DragEvent, E>;
+    onDragStart: DomEventHandler<DragEvent, E>;
+    onDrop: DomEventHandler<DragEvent, E>;
+
+    onKeyDown: DomEventHandler<KeyboardEvent, E>;
+    onKeyPress: DomEventHandler<KeyboardEvent, E>;
+    onKeyUp: DomEventHandler<KeyboardEvent, E>;
+
+    onClick: DOMEventHandler<MouseEvent, E>;
+    onDblClick: DOMEventHandler<MouseEvent, E>;
+    onMouseDown: DomEventHandler<MouseEvent, E>;
+    onMouseEnter: DomEventHandler<MouseEvent, E>;
+    onMouseLeave: DomEventHandler<MouseEvent, E>;
+    onMouseMove: DomEventHandler<MouseEvent, E>;
+    onMouseOver: DomEventHandler<MouseEvent, E>;
+    onMouseOut: DomEventHandler<MouseEvent, E>;
+    onMouseUp: DomEventHandler<MouseEvent, E>;
+
+    onPointerOver: DomEventHandler<PointerEvent, E>;
+    onPointerEnter: DomEventHandler<PointerEvent, E>;
+    onPointerDown: DomEventHandler<PointerEvent, E>;
+    onPointerMove: DomEventHandler<PointerEvent, E>;
+    onPointerUp: DomEventHandler<PointerEvent, E>;
+    onPointerCancel: DomEventHandler<PointerEvent, E>;
+    onPointerOut: DomEventHandler<PointerEvent, E>;
+    onPointerLeave: DomEventHandler<PointerEvent, E>;
+    onGotPointerCapture: DomEventHandler<PointerEvent, E>;
+    onLostPointerCapture: DomEventHandler<PointerEvent, E>;
+
+    onTouchCancel: DomEventHandler<TouchEvent, E>;
+    onTouchEnd: DomEventHandler<TouchEvent, E>;
+    onTouchMove: DomEventHandler<TouchEvent, E>;
+    onTouchStart: DomEventHandler<TouchEvent, E>;
   }
 
   interface CommonProps {
@@ -41,6 +113,24 @@ declare global {
     id: string;
     style: Record<string, unknown> | string; // TODO : correct style type
     value: string | number;
+    lang: string;
+    accessKey: string;
+    autocapitalize: StringWithAutoComplete<
+      "off" | "none" | "on" | "sentences" | "words" | "characters"
+    >;
+    contentEditable: StringWithAutoComplete<"true" | "false">;
+    contextmenu: string;
+    compact: string;
+    dir: StringWithAutoComplete<"ltr" | "rtl" | "auto">;
+    draggable: StringWithAutoComplete<"true" | "false">;
+    hidden: boolean;
+    playsinline: string;
+    role: string;
+    slot: string;
+    spellcheck: StringWithAutoComplete<"true" | "false">;
+    tabindex: string;
+    title: string;
+    translate: StringWithAutoComplete<"yes" | "no">;
   }
 
   interface ComponentProps<E extends Element = HTMLElement>
