@@ -31,7 +31,12 @@ createRouter(
               component: () => {
                 const { id } = getParams<{ id: string }>();
 
-                return <div class="hometh">Ruvy : {id}</div>;
+                return (
+                  <div class="hometh">
+                    <div>id : {id}</div>
+                    <Outlet />
+                  </div>
+                );
               },
             },
           ],
@@ -42,27 +47,26 @@ createRouter(
   {}
 );
 
+const routes = [
+  { title: "Home", to: "/" },
+  { title: "User", to: "/user" },
+  { title: "Me", to: "/user/me" },
+];
+
 mountApp({
   hostElement,
   callback: () => {
-    const [volume, setVolume] = setState("volume", 1);
-
     return (
-      <div class="home" id="me">
-        <input
-          type="range"
-          min={0}
-          max={100}
-          onInput={(e) => {
-            setVolume(Number(e.currentTarget.value) / 100);
-          }}
-        />
-        <video width={320} height={200} volume={volume} controls>
-          <source
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
-            type="video/mp4"
-          />
-        </video>
+      <div>
+        <div>
+          <a href="www.google.com">Google</a>
+          {routes.map((item) => (
+            <a href={item.to} style={{ padding: ["10px", "20px"] }}>
+              <span>{item.title}</span>
+            </a>
+          ))}
+        </div>
+        <Outlet />
       </div>
     );
   },

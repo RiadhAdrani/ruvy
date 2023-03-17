@@ -1,5 +1,5 @@
-import { isElement } from "@riadh-adrani/dom-utils";
-import { isFunction, isString } from "@riadh-adrani/utils";
+import { isElement, setEvent } from "@riadh-adrani/dom-utils";
+import { isArray, isFunction, isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
   executeUpdateCallbacks,
@@ -23,6 +23,7 @@ import {
   FunctionComponent,
 } from "../types";
 import { IMountConfig } from "../types/core";
+import { getClosestAnchorParent } from "./utils";
 
 export class Core {
   static singleton: Core = new Core();
@@ -104,20 +105,24 @@ export class Core {
   }
 }
 
-document.addEventListener("click", (e) => {
-  const ev = e as unknown as DOMEvent<MouseEvent>;
+setEvent(
+  "onClick",
+  (e) => {
+    const ev = e as unknown as DOMEvent<MouseEvent>;
 
-  if (ev.target.tagName.toLocaleLowerCase() !== "a") {
-    return;
-  }
+    const anchorEl = getClosestAnchorParent(ev.target);
 
-  const path: string | null = (ev.target as unknown as HTMLAnchorElement).getAttribute("href");
+    if (anchorEl) {
+      const path: string | null = anchorEl.getAttribute("href");
 
-  if (path && Core.singleton.router.isNavigatable(path)) {
-    e.preventDefault();
-    navigate(path);
-  }
-});
+      if (path && Core.singleton.router.isNavigatable(path)) {
+        navigate(path);
+        e.preventDefault();
+      }
+    }
+  },
+  document
+);
 
 export const mountApp = ({ callback, hostElement }: IMountConfig) => {
   Core.singleton.fn = callback;
@@ -206,13 +211,23 @@ export const createJsxElement = (
   options?: Record<string, unknown>,
   ...children: Array<unknown>
 ): IComponentTemplate => {
+  const $children: Array<unknown> = [];
+
+  children.forEach((child) => {
+    if (isArray(child)) {
+      $children.push(...(child as Array<unknown>));
+    } else {
+      $children.push(child);
+    }
+  });
+
   if (isString(tag)) {
-    return createComponent(tag as Tag, { ...options, children });
+    return createComponent(tag as Tag, { ...options, children: $children });
   }
 
   return (tag as (options: unknown, ...children: Array<unknown>) => IComponentTemplate)(
     options,
-    ...children
+    ...$children
   );
 };
 

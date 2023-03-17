@@ -1,3 +1,4 @@
+import { isBlank } from "@riadh-adrani/utils";
 import { Context } from "../context";
 import { Callback, RawRoute, Route, RouterConfig } from "../types";
 import { findRouteFromList, flatten, fragmentize, getParams, getRouteFromUrl } from "./utils";
@@ -30,10 +31,10 @@ export default class Router<T = unknown> {
     for (let i = 0; i < fragments.length; i++) {
       const maybePath = `/${fragments.slice(0, i + 1).join("/")}`;
 
-      const maybeRoute = findRouteFromList(maybePath, this.routes);
+      const maybeRoute = findRouteFromList<T>(maybePath, this.routes);
 
       if (maybeRoute) {
-        route = maybeRoute as Route<T>;
+        route = maybeRoute;
       }
     }
 
@@ -56,19 +57,19 @@ export default class Router<T = unknown> {
       return undefined;
     }
 
-    if (current.fragments.length < depth) {
+    if (current.fragments.length === 0 && depth === 0) {
+      return findRouteFromList<T>("/", this.routes)?.component;
+    }
+
+    if (current.fragments.length <= depth) {
       return undefined;
     }
 
-    const expected = `/${current.fragments.join("/")}`;
+    const expected = `/${current.fragments.slice(0, depth + 1).join("/")}`;
 
     const expectedRoute = findRouteFromList<T>(expected, this.routes);
 
-    if (!expectedRoute) {
-      return undefined;
-    }
-
-    return expectedRoute.component;
+    return expectedRoute?.component;
   }
 
   useContext<R>(callback: Callback<R>) {
@@ -88,14 +89,22 @@ export default class Router<T = unknown> {
     });
   }
 
-  isNavigatable(path: string): boolean {
-    const maybe = findRouteFromList<T>(path, this.routes);
+  shouldTriggerUpdate(path: string): boolean {
+    if (isBlank(path)) {
+      return false;
+    }
 
-    return maybe !== undefined;
+    return path.trim() !== this.path;
+  }
+
+  isNavigatable(path: string): boolean {
+    return path[0] === "/";
   }
 
   push(path: string) {
-    // TODO : we need to check if path is the same
+    if (!this.shouldTriggerUpdate(path)) {
+      return;
+    }
 
     history.pushState({ path }, "", `${this.base}${path}`);
 
@@ -103,7 +112,9 @@ export default class Router<T = unknown> {
   }
 
   replace(path: string) {
-    // TODO : we need to check if path is the same
+    if (!this.shouldTriggerUpdate(path)) {
+      return;
+    }
 
     history.replaceState({ path }, "", `${this.base}${path}`);
 

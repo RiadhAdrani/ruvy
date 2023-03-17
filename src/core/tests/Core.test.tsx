@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vitest } from "vitest";
-import { Core, createComponent } from "../Core";
+import { Core } from "../Core";
 
 describe("Core", () => {
   let core: Core;
@@ -29,7 +29,7 @@ describe("Core", () => {
 
   describe("executeRoutine", () => {
     beforeEach(() => {
-      core.fn = () => createComponent("div");
+      core.fn = () => <div></div>;
       core.host = document.body;
     });
 
@@ -43,7 +43,7 @@ describe("Core", () => {
 
     it("should throw when host is undefined", () => {
       core = new Core();
-      core.fn = () => createComponent("div");
+      core.fn = () => <div></div>;
 
       expect(() => core.executeRoutine()).toThrow(
         "Unexpected Type: host element is not a Dom element."
@@ -67,7 +67,7 @@ describe("Core", () => {
     it("should update tree", () => {
       let children = 1;
 
-      core.fn = () => createComponent("div", { children });
+      core.fn = () => <div>{children}</div>;
       core.host = document.body;
       core.executeRoutine(false);
 
@@ -88,7 +88,7 @@ describe("Core", () => {
 
   describe("onStateUpdate", () => {
     beforeEach(() => {
-      core.fn = () => createComponent("div");
+      core.fn = () => <div></div>;
       core.host = document.body;
       core.executeRoutine(false);
     });

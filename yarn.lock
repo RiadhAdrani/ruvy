@@ -172,10 +172,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@riadh-adrani/dom-utils@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.1.tgz#2a3f43ef60c29cf5eb625e63f996282d577b3f63"
-  integrity sha512-rb9G5i6dPApalh+o87C92cudnnMjj/l+vyD8RCV+kl5LOSi/SxRBn1k5dNWnWXzmZ8i4czqdhSxcEmbvn0Ea1A==
+"@riadh-adrani/dom-utils@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.2.tgz#2bd4134733418142dad78d50143b00bfb0e46005"
+  integrity sha512-2uYQfN50SH29+EoPkqPTGuufhoftgtFpQ39YoQ8sfSls5K4OT5AfSKvegsOIGQupLBJeIsUYpIM+fD8YG5vDgw==
   dependencies:
     "@riadh-adrani/utils" "^0.36.1"
 
