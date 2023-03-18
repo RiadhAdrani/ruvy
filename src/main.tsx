@@ -59,7 +59,6 @@ mountApp({
     return (
       <div>
         <div>
-          <a href="www.google.com">Google</a>
           {routes.map((item) => (
             <a href={item.to} style={{ padding: ["10px", "20px"] }}>
               <span>{item.title}</span>

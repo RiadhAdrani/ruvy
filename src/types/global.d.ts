@@ -1,5 +1,6 @@
 import { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
 import { StateArray } from "./store";
+import type * as CSS from "csstype";
 
 declare global {
   function setState<T>(key: string, value: T): StateArray<T>;
@@ -107,10 +108,15 @@ declare global {
     onTouchStart: DOMEventHandler<TouchEvent, E>;
   }
 
+  export type Selector = { [key in keyof CSS.Properties]: Arrayable<string, number> } & Record<
+    string,
+    unknown
+  >;
+
   interface CommonProps {
     class: Arrayable<string>;
     id: string;
-    style: Record<string, unknown> | string; // TODO : correct style type
+    style: Selector | string; // TODO : correct style type
     value: string | number;
     lang: string;
     accessKey: string;
