@@ -64,6 +64,7 @@ mountApp({
               <span>{item.title}</span>
             </a>
           ))}
+          <input value={1} />
         </div>
         <Outlet />
       </div>

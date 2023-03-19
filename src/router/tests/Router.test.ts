@@ -171,6 +171,8 @@ describe("Router class", () => {
     ["/user", true],
     ["/test", true],
     ["/usa", true],
+    ["www.google.com", false],
+    ["http://localhost:5173/", false],
   ])("should determine if path (%s) is navigatable (%s)", (path, expected) => {
     expect(router.isNavigatable(path)).toBe(expected);
   });
