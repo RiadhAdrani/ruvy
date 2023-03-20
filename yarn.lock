@@ -172,17 +172,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@riadh-adrani/dom-utils@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.2.tgz#2bd4134733418142dad78d50143b00bfb0e46005"
-  integrity sha512-2uYQfN50SH29+EoPkqPTGuufhoftgtFpQ39YoQ8sfSls5K4OT5AfSKvegsOIGQupLBJeIsUYpIM+fD8YG5vDgw==
+"@riadh-adrani/dom-utils@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.3.tgz#1cb2b38dafe14aafdfad13eaa80ff4515ad1cb87"
+  integrity sha512-A7jmwJHRsJzUPZS0CFP+omca8qn9bM21Rwhy6MNvyGQtfT7UO22AcAd1rOjC7FaJzfjiuVM4xg9u85abF4/Ang==
   dependencies:
-    "@riadh-adrani/utils" "^0.36.1"
+    "@riadh-adrani/utils" "^0.37.0"
 
-"@riadh-adrani/utils@^0.36.1":
-  version "0.36.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.36.1.tgz#8ce6d1f4904de61bc31108243392d744e8656fe1"
-  integrity sha512-Zyo6QwDN/A4R+OiYxfY1wVXEfGn+U/zLdoMMJYovlQpgwo3FcHyu2kPvwgSpKIMZn2oDB6uGoxItpGgovrYOrg==
+"@riadh-adrani/utils@^0.37.0":
+  version "0.37.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.37.0.tgz#e25fc7b138e63884fd6d225ec608707b855a692e"
+  integrity sha512-J0fv/kSs1n0TmJIzrqyS1Xm5C0nT5PFe9BCTQuo4nKPo1hyMz0N+Jzk0jWT91s9OybPXUOKVanLMsPADwZU4RQ==
 
 "@tootallnate/once@2":
   version "2.0.0"

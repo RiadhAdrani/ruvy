@@ -123,10 +123,10 @@ declare global {
   interface CommonProps {
     class: Arrayable<string>;
     id: string;
-    style: Selector | string; // TODO : correct style type
+    style: Selector | string;
     value: string | number;
     lang: string;
-    accessKey: string;
+    accesskey: string;
     autocapitalize: StringWithAutoComplete<
       "off" | "none" | "on" | "sentences" | "words" | "characters"
     >;
