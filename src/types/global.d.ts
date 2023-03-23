@@ -120,7 +120,60 @@ declare global {
     unknown
   >;
 
-  interface CommonProps {
+  interface Aria {
+    autocomplete: string;
+    checked: string;
+    disabled: string;
+    errormessage: string;
+    expanded: string;
+    haspopup: string;
+    hidden: string;
+    invalid: string;
+    label: string;
+    level: string;
+    modal: string;
+    multiline: string;
+    multiselectable: string;
+    orientation: string;
+    placeholder: string;
+    pressed: string;
+    readonly: string;
+    required: string;
+    selected: string;
+    sort: string;
+    valuemax: string;
+    valuemin: string;
+    valuenow: string;
+    valuetext: string;
+    busy: string;
+    live: string;
+    relevant: string;
+    atomic: string;
+    dropeffect: string;
+    grabbed: string;
+    activedescendant: string;
+    colcount: string;
+    colindex: string;
+    colspan: string;
+    controls: string;
+    describedby: string;
+    description: string;
+    details: string;
+    flowto: string;
+    labelledby: string;
+    owns: string;
+    posinset: string;
+    rowindes: string;
+    rowspan: string;
+    setsize: string;
+    current: string;
+    keyshortcuts: string;
+    roledescription: string;
+  }
+
+  type AriaProps = { [key in `aria-${keyof Aria}`]: string | number | boolean };
+
+  interface CommonProps extends AriaProps {
     class: Arrayable<string>;
     id: string;
     style: Selector | string;

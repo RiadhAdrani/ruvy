@@ -10,7 +10,7 @@ mountApp({
     return (
       <div>
         <input value={value} onInput={(e) => setValue(e.currentTarget.value)} />
-        <br accesskey="z" />
+        <br />
         <span>value: {value}</span>
       </div>
     );
