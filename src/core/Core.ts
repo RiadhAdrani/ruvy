@@ -1,4 +1,4 @@
-import { isElement, setEvent } from "@riadh-adrani/dom-utils";
+import { isElement, setEvent, HTML_NS, SVG_NS, MATH_NS } from "@riadh-adrani/dom-utils";
 import { isArray, isFunction, isString } from "@riadh-adrani/utils";
 import {
   diffComponents,
@@ -212,6 +212,17 @@ export const createJsxElement = (
   ...children: Array<unknown>
 ): IComponentTemplate => {
   const $children: Array<unknown> = [];
+  const $options = options || {};
+
+  if (options) {
+    if (options.svg === true) {
+      $options.ns = SVG_NS;
+    } else if (options.math === true) {
+      $options.ns = MATH_NS;
+    } else if (options.html === true) {
+      $options.ns = HTML_NS;
+    }
+  }
 
   children.forEach((child) => {
     if (isArray(child)) {
@@ -222,7 +233,7 @@ export const createJsxElement = (
   });
 
   if (isString(tag)) {
-    return createComponent(tag as Tag, { ...options, children: $children });
+    return createComponent(tag as Tag, { ...$options, children: $children });
   }
 
   return (tag as (options: unknown, ...children: Array<unknown>) => IComponentTemplate)(
@@ -246,7 +257,9 @@ export const getParams = <T = Record<string, string>>() => {
   return Core.singleton.router.params as T;
 };
 
-(window as unknown as Record<string, unknown>).setState = setState;
-(window as unknown as Record<string, unknown>).setEffect = setEffect;
-(window as unknown as Record<string, unknown>).createJsxElement = createJsxElement;
-(window as unknown as Record<string, unknown>).createJsxFragmentElement = createJsxFragmentElement;
+const win = window as unknown as Record<string, unknown>;
+
+win.setState = setState;
+win.setEffect = setEffect;
+win.createJsxElement = createJsxElement;
+win.createJsxFragmentElement = createJsxFragmentElement;
