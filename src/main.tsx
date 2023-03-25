@@ -9,7 +9,7 @@ mountApp({
 
     return (
       <div>
-        <svg svg viewBox="0 0 24 24">
+        <svg svg>
           <a svg>Hello World</a>
         </svg>
         <input value={value} onInput={(e) => setValue(e.currentTarget.value)} />
