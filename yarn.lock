@@ -172,18 +172,18 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@riadh-adrani/dom-utils@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.6.tgz#6bd2d0def1df99a477c03236f12f9543bca74e65"
-  integrity sha512-Lipi/nudO1XVlRfgOeZXhz2Nstbu9BWEb52iMyF+2ScV/HtfXMI9rLU+M/I8s6izJQ7o/PRXxAO07T7J1VxrwA==
+"@riadh-adrani/dom-utils@1.0.7-esm":
+  version "1.0.7-esm"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.0.7-esm.tgz#832708e9d42d55e154495246cf63533d7e599b22"
+  integrity sha512-DIr7CvsP8bE+j0HE6zRxHwmQceLgZRJ28MYE9PzVtm66mTA/uBF0WYniSCXmYfU327wkCwUIQO+VvZU8es6uUQ==
   dependencies:
-    "@riadh-adrani/utils" "^0.37.0"
+    "@riadh-adrani/utils" "^0.38.3-esm"
     camelcase "^7.0.1"
 
-"@riadh-adrani/utils@^0.37.0":
-  version "0.37.0"
-  resolved "https://registry.npmjs.org/@riadh-adrani/utils/-/utils-0.37.0.tgz"
-  integrity sha512-J0fv/kSs1n0TmJIzrqyS1Xm5C0nT5PFe9BCTQuo4nKPo1hyMz0N+Jzk0jWT91s9OybPXUOKVanLMsPADwZU4RQ==
+"@riadh-adrani/utils@^0.38.3-esm":
+  version "0.38.3-esm"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.38.3-esm.tgz#fa2b1cf58a425116cf179bc19635dd3bbcdbbab1"
+  integrity sha512-KDzZooZj7yMeisRNNLpBnLiQyzlAQH5Fdy+N2tByHsUf2FH9ekEMlE3qOPKeTXMzKHY1A1yDPh2vdS3VQV01lQ==
 
 "@tootallnate/once@2":
   version "2.0.0"

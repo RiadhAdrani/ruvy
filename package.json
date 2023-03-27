@@ -20,8 +20,8 @@
     "vitest": "^0.28.5"
   },
   "dependencies": {
-    "@riadh-adrani/dom-utils": "1.0.6",
-    "@riadh-adrani/utils": "^0.37.0",
+    "@riadh-adrani/dom-utils": "1.0.7-esm",
+    "@riadh-adrani/utils": "^0.38.3-esm",
     "csstype": "^3.1.1"
   }
 }
