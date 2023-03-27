@@ -4,7 +4,7 @@ export interface CommonRoute<T = unknown> {
   path: string;
   redirectTo?: string;
   title?: string;
-  component?: T;
+  component: T;
 }
 
 export interface RawRoute<T = unknown> extends CommonRoute<T> {

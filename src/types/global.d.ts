@@ -1,5 +1,5 @@
-import { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
-import { StateArray } from "./store";
+import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
+import type { StateArray } from "./store.js";
 import type * as CSS from "csstype";
 import {
   FunctionComponent,

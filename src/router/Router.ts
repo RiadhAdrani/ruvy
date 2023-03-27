@@ -1,7 +1,13 @@
 import { isBlank } from "@riadh-adrani/utils";
-import { Context } from "../context";
-import { Callback, RawRoute, Route, RouterConfig } from "../types";
-import { findRouteFromList, flatten, fragmentize, getParams, getRouteFromUrl } from "./utils";
+import { Context } from "../context/index.js";
+import { Callback, RawRoute, Route, RouterConfig } from "../types/index.js";
+import {
+  findRouteFromList,
+  flatten,
+  fragmentize,
+  getParams,
+  getRouteFromUrl,
+} from "./utils/index.js";
 
 export default class Router<T = unknown> {
   routes: Record<string, Route<T>> = {};
@@ -109,6 +115,7 @@ export default class Router<T = unknown> {
     history.pushState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
+    this.updateTitle();
   }
 
   replace(path: string) {
@@ -119,5 +126,12 @@ export default class Router<T = unknown> {
     history.replaceState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
+    this.updateTitle();
+  }
+
+  updateTitle() {
+    if (this.nearestRoute?.title) {
+      document.title = this.nearestRoute?.title;
+    }
   }
 }
