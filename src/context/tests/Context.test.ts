@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import Context from "../Context";
+import Context from "../Context.js";
 
 describe("Context class", () => {
   let ctx: Context<string>;

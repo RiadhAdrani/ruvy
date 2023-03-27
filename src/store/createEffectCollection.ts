@@ -1,6 +1,6 @@
 import { areEqual } from "@riadh-adrani/utils";
-import { StoreEffect, StoreEffectsCollection } from "../types";
-import Store from "./Store";
+import { StoreEffect, StoreEffectsCollection } from "../types/index.js";
+import Store from "./Store.js";
 
 type Options = {
   name: string;

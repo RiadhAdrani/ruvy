@@ -1,4 +1,4 @@
-import { Callback } from "./common";
+import type { Callback } from "./common.js";
 
 export type Task = {
   callback: Callback;

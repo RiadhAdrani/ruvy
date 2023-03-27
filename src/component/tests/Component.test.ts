@@ -7,7 +7,7 @@ import {
   IComponentSymbol,
   IComponentType,
   ITextComponent,
-} from "../../types";
+} from "../../types/index.js";
 import {
   createComponent,
   createId,
@@ -18,7 +18,7 @@ import {
   isFragment,
   processComponent,
   renderComponent,
-} from "../Component";
+} from "../Component.js";
 
 describe("Component", () => {
   describe("createComponent", () => {

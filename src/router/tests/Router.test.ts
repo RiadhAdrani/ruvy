@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vitest } from "vitest";
-import { Callback, RawRoute, Route } from "../../types";
-import Router from "../Router";
+import { Callback, RawRoute, Route } from "../../types/index.js";
+import Router from "../Router.js";
 
 const testId: RawRoute = { path: ":id", component: "test-id" };
 const test: RawRoute = { path: "test", component: "test", routes: [testId] };
@@ -18,7 +18,7 @@ describe("Router class", () => {
   beforeEach(() => {
     history.replaceState(undefined, "", "/");
 
-    onChange = vitest.fn(() => {});
+    onChange = vitest.fn(() => 0);
 
     router = new Router([root], {
       onStateChange: onChange,

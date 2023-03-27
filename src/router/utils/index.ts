@@ -1,5 +1,5 @@
-export { default as flatten } from "./flatten";
-export { default as getRouteFromUrl } from "./getRouteFromUrl";
-export { default as findRouteFromList } from "./findRouteFormList";
-export { default as fragmentize } from "./fragmentize";
-export { default as getParams } from "./getParams";
+export { default as flatten } from "./flatten.js";
+export { default as getRouteFromUrl } from "./getRouteFromUrl.js";
+export { default as findRouteFromList } from "./findRouteFormList.js";
+export { default as fragmentize } from "./fragmentize.js";
+export { default as getParams } from "./getParams.js";

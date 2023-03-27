@@ -1,3 +1,4 @@
-export type Callback<T = void> = () => T;
+import { Arrayable } from "@riadh-adrani/utils";
 
-export type Arrayable<T> = T | Array<T>;
+export type { Arrayable };
+export type Callback<T = void> = () => T;

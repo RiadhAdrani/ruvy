@@ -1,5 +1,5 @@
-import { Route } from "../../types";
-import fragmentize from "./fragmentize";
+import { Route } from "../../types/index.js";
+import fragmentize from "./fragmentize.js";
 
 export default <T>(path: string, record: Record<string, Route>): Route<T> | undefined => {
   const fragments = fragmentize(path);

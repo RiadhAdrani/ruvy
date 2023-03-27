@@ -1,5 +1,5 @@
 import { it, describe, expect } from "vitest";
-import { getParams } from "../utils";
+import { getParams } from "../utils/index.js";
 
 describe("getParams", () => {
   it.each([

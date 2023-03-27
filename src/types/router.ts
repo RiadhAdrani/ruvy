@@ -1,4 +1,4 @@
-import { Callback } from "./common";
+import type { Callback } from "./common.js";
 
 export interface CommonRoute<T = unknown> {
   path: string;

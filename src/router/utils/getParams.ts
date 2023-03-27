@@ -1,4 +1,4 @@
-import { fragmentize } from ".";
+import fragmentize from "./fragmentize.js";
 
 export default <T extends Record<string, unknown>>(path: string, template: string): T => {
   const params: Record<string, string> = {};

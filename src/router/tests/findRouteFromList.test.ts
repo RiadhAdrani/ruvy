@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Route } from "../../types";
-import { findRouteFromList as find } from "../utils";
+import { Route } from "../../types/index.js";
+import { findRouteFromList as find } from "../utils/index.js";
 
 describe("findRouteFromList", () => {
   const root = { path: "/", fragments: [], isDynamic: false };

@@ -27,7 +27,7 @@ declare global {
 
   type DOMEventTarget<T extends Element> = Event & T;
 
-  interface DOMEvent<E extends Event = Event, T extends Element = HTMLElement> extends Event {
+  interface DOMEvent<E extends Event = Event, T extends Element = HTMLElement> extends Event, E {
     target: DOMEventTarget<HTMLElement>;
     currentTarget: DOMEventTarget<T>;
   }
@@ -198,7 +198,7 @@ declare global {
     translate: StringWithAutoComplete<"yes" | "no">;
   }
 
-  type ComponentProps<E extends Element = HTMLElement, T extends {} = {}> = Record<
+  type ComponentProps<E extends Element = HTMLElement, T extends object = object> = Record<
     string | number,
     unknown
   > &

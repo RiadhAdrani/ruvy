@@ -26,8 +26,8 @@ import {
   IUpdateAction,
   IComponentTemplateModifiers,
   PrimitiveComponentTemplate,
-} from "../types";
-import Events from "./Events";
+} from "../types/index.js";
+import Events from "./Events.js";
 import {
   createElement,
   createTextNode,
@@ -375,7 +375,7 @@ export const diffComponents = (
         to = newCh.length;
 
         while (oldCh.length > newCh.length) {
-          const removed = oldCh.pop()!;
+          const removed = oldCh.pop() as IComponent;
 
           const removeExcessiveChild = () => {
             removeNode(removed.domNode as HTMLElement);

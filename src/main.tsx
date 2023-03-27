@@ -1,6 +1,6 @@
-import { mountApp } from "./core";
+import { mountApp } from "./core/index.js";
 
-const hostElement = document.getElementById("app")!;
+const hostElement = document.getElementById("app") as HTMLDivElement;
 
 mountApp({
   hostElement,

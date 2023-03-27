@@ -1,2 +1,2 @@
-export { default as Events } from "./Events";
-export * from "./Component";
+export { default as Events } from "./Events.js";
+export * from "./Component.js";

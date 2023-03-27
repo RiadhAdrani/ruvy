@@ -6,11 +6,11 @@ import {
   processComponent,
   renderComponent,
   createComponent as createComponentUnWrapped,
-} from "../component";
-import { Context } from "../context";
-import { Router } from "../router";
-import { Scheduler } from "../scheduler";
-import { createEffectCollection, createStateCollection, Store } from "../store";
+} from "../component/index.js";
+import { Context } from "../context/index.js";
+import { Router } from "../router/index.js";
+import { Scheduler } from "../scheduler/index.js";
+import { createEffectCollection, createStateCollection, Store } from "../store/index.js";
 import {
   Callback,
   IComponent,
@@ -21,9 +21,9 @@ import {
   RouterConfig,
   RawRoute,
   FunctionComponent,
-} from "../types";
-import { IMountConfig } from "../types/core";
-import { getClosestAnchorParent } from "./utils";
+} from "../types/index.js";
+import { IMountConfig } from "../types/index.js";
+import { getClosestAnchorParent } from "./utils/index.js";
 
 export class Core {
   static singleton: Core = new Core();
@@ -33,7 +33,7 @@ export class Core {
   current: IComponent = undefined as unknown as IComponent;
   host: HTMLElement = undefined as unknown as HTMLElement;
 
-  shouldUpdate: boolean = false;
+  shouldUpdate = false;
   batchContext = new Context<boolean>();
   scheduler = new Scheduler();
   store = new Store();
@@ -62,7 +62,7 @@ export class Core {
     Core.singleton = this;
   }
 
-  executeRoutine(isUpdate: boolean = true) {
+  executeRoutine(isUpdate = true) {
     if (!isFunction(this.fn)) {
       throw "Unexpected Type: app callback is not a function.";
     }

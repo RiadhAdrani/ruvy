@@ -1,5 +1,5 @@
 import { StringWithAutoComplete } from "@riadh-adrani/utils";
-import { Callback } from "./common";
+import type { Callback } from "./common.js";
 
 export type IAttribute = string | number | boolean | undefined | Record<string, unknown> | null;
 
