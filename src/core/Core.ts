@@ -134,6 +134,7 @@ export const mountApp = ({ callback, hostElement }: IMountConfig) => {
     type: "render",
     callback: () => {
       Core.singleton.executeRoutine(false);
+      Core.singleton.router?.updateTitle();
     },
   });
 };

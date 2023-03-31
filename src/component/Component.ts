@@ -7,7 +7,7 @@ import {
   isBlank,
   isDefined,
   isNumber,
-  isPrimitiveType,
+  isPrimitive,
   isString,
   omit,
 } from "@riadh-adrani/utils";
@@ -185,7 +185,7 @@ export const processComponent = (
   let i = 0;
 
   children.forEach((child, index) => {
-    if (isPrimitiveType(child)) {
+    if (isPrimitive(child)) {
       out.children.push(createTextComponent(`${child}`, index, out));
 
       i = i + 1;
@@ -195,7 +195,7 @@ export const processComponent = (
 
     if (isFragment(child)) {
       (child as IComponent).children.forEach((fc) => {
-        const processedFragmentChild = isPrimitiveType(fc)
+        const processedFragmentChild = isPrimitive(fc)
           ? createTextComponent(`${fc}`, i, out)
           : processComponent(fc, i, out);
 
