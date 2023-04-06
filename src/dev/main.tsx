@@ -1,6 +1,10 @@
 import { mountApp } from "../index.js";
 
+const App = () => {
+  return <div>Hello World</div>;
+};
+
 mountApp({
-  callback: () => <div>Hello World</div>,
-  hostElement: document.getElementById("root") as HTMLElement,
+  callback: App,
+  hostElement: document.getElementById("app") as HTMLElement,
 });
