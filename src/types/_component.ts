@@ -50,17 +50,21 @@ export interface MemoizedHook {
 
 export type HookDispatcher = () => StateArray<unknown>;
 
-export interface ComputedComponent<T = Node> extends Omit<ComponentTemplate, "props"> {
-  elementTag: ComponentTag;
-  currentProps: Record<string, unknown>;
+export interface ComputedComponent<T = Node> extends Omit<ComponentTemplate, "props" | "children"> {
   attributes: Record<string, Arrayable<DomAttribute>>;
-  events: Record<string, Arrayable<DomEvent>>;
+  events: Record<string, DomEvent>;
   ns: Namespace;
   nodeType: ComponentNodeType;
   instance?: T;
-  parent?: ComputedComponent<T>;
+  parent?: ComputedComponent<unknown>;
   key: string | number;
-  hooks: Record<string, MemoizedHook>;
+  children: Array<ComputedComponent | undefined>;
+  memoizedHooks: Record<string, MemoizedHook>;
+  memoizedProps: Record<string, unknown>;
+}
+
+export interface ComputedTextComponent extends ComputedComponent<Text> {
+  data: string;
 }
 
 export interface ComponentUpdateActionItem {

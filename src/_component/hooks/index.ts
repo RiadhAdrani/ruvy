@@ -2,7 +2,7 @@ import { Callback, areEqual, cast } from "@riadh-adrani/utils";
 import { Core } from "../../core/Core.js";
 import { ComputedComponent, HookType, MemoizedHook } from "../../types/_component.js";
 import { StateArray } from "../../types/store.js";
-import { getComponentParentPath } from "../component.js";
+import { getComponentParentPath } from "../utils/index.js";
 import Context from "../../context/Context.js";
 
 let hookIndex = 0;
@@ -36,14 +36,14 @@ export const dispatchHook = <T = unknown>(type: HookType, initialValue: T): Stat
   const index = hookIndex;
 
   const key = createHookKey(type, index, component);
-  const current: MemoizedHook | undefined = component.hooks[key];
+  const current: MemoizedHook | undefined = component.memoizedHooks[key];
 
   let stateArray = [] as unknown as StateArray<T>;
 
   // if no current, we create a new state in the store
   if (!current) {
     if (index === 0) {
-      component.hooks[key] = { index, initialValue, key, type };
+      component.memoizedHooks[key] = { index, initialValue, key, type };
 
       stateArray = Core.singleton.store.setItem(type, key, initialValue);
     } else {

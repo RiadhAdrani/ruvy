@@ -25,11 +25,11 @@ describe("hooks", () => {
     root = {
       attributes: {},
       children: [],
-      currentProps: {},
+      memoizedProps: {},
       elementTag: "div",
       elementType: "div",
       events: {},
-      hooks: {},
+      memoizedHooks: {},
       key: 0,
       nodeType: ComponentNodeType.Standard,
       ns: Namespace.html,
@@ -39,11 +39,11 @@ describe("hooks", () => {
     grandParent = {
       attributes: {},
       children: [],
-      currentProps: {},
+      memoizedProps: {},
       elementTag: "div",
       elementType: "div",
       events: {},
-      hooks: {},
+      memoizedHooks: {},
       key: 0,
       nodeType: ComponentNodeType.Standard,
       ns: Namespace.html,
@@ -54,11 +54,11 @@ describe("hooks", () => {
     parent = {
       attributes: {},
       children: [],
-      currentProps: {},
+      memoizedProps: {},
       elementTag: "div",
       elementType: "div",
       events: {},
-      hooks: {},
+      memoizedHooks: {},
       key: 0,
       nodeType: ComponentNodeType.Standard,
       ns: Namespace.html,
@@ -69,11 +69,11 @@ describe("hooks", () => {
     child = {
       attributes: {},
       children: [],
-      currentProps: {},
+      memoizedProps: {},
       elementTag: "div",
       elementType: "div",
       events: {},
-      hooks: {},
+      memoizedHooks: {},
       key: 0,
       nodeType: ComponentNodeType.Standard,
       ns: Namespace.html,
@@ -112,7 +112,7 @@ describe("hooks", () => {
         dispatchHook(HookType.state, 0);
       }, root);
 
-      expect(root.hooks["[useState]-[0]-[0]"]).toStrictEqual<MemoizedHook>({
+      expect(root.memoizedHooks["[useState]-[0]-[0]"]).toStrictEqual<MemoizedHook>({
         index: 0,
         initialValue: 0,
         key: "[useState]-[0]-[0]",
@@ -142,7 +142,7 @@ describe("hooks", () => {
         dispatchHook(HookType.state, 0);
       }, root);
 
-      expect(root.hooks["[useState]-[0]-[0]"]).toStrictEqual<MemoizedHook>({
+      expect(root.memoizedHooks["[useState]-[0]-[0]"]).toStrictEqual<MemoizedHook>({
         index: 0,
         initialValue: 0,
         key: "[useState]-[0]-[0]",
@@ -178,7 +178,7 @@ describe("hooks", () => {
       }, root);
 
       expect(count).toBe(1);
-      expect(root.hooks["[useState]-[0]-[0]"].initialValue).toBe(1);
+      expect(root.memoizedHooks["[useState]-[0]-[0]"].initialValue).toBe(1);
     });
   });
 });

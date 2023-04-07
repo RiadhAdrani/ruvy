@@ -9,37 +9,25 @@ import {
 import { resetHooksIndex, useHooksContext } from "./hooks/index.js";
 import { CallbackWithArgs } from "../types/common.js";
 
-export const getComponentParentPath = (
-  component: ComputedComponent<unknown>
-): Array<number | string> => {
-  const path = [component.key];
-
-  if (component.parent) {
-    path.push(...getComponentParentPath(component.parent));
-  }
-
-  return path.flat(Infinity);
-};
-
 export const createInitialComponent = <T>({
   parent,
   key,
-  currentProps,
+  memoizedProps,
   elementType,
 }: Pick<
   ComputedComponent,
-  "parent" | "key" | "elementType" | "currentProps"
+  "parent" | "key" | "elementType" | "memoizedProps"
 >): ComputedComponent<T> => {
   return {
     parent,
     key,
     attributes: {},
     children: [],
-    currentProps,
+    memoizedProps,
     elementType,
     elementTag: "div",
     events: {},
-    hooks: {},
+    memoizedHooks: {},
     nodeType: ComponentNodeType.Standard,
     ns: Namespace.html,
     symbol: ComponentSymbol,
@@ -64,7 +52,7 @@ export const computeComponent = <T>(
   // initialize computed component with parent and key
   let computed = createInitialComponent({
     ...template,
-    currentProps: template.props,
+    memoizedProps: template.props,
     key,
     parent,
   });
