@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vitest } from "vitest";
-import { Core } from "../Core";
+import { Core } from "../Core.js";
 
 describe("Core", () => {
   let core: Core;

@@ -1,6 +1,7 @@
 import { Arrayable, Callback, StringWithAutoComplete } from "@riadh-adrani/utils";
 import { CallbackWithArgs } from "./common.js";
 import { DomAttribute, DomEvent } from "@riadh-adrani/dom-utils";
+import { StateArray } from "./store.js";
 
 export enum Namespace {
   svg = "http://www.w3.org/2000/svg",
@@ -13,11 +14,18 @@ export enum ComponentNodeType {
   Text = "#text",
 }
 
+export enum HookType {
+  state = "useState",
+  effect = "useEffect",
+}
+
 export const ComponentSymbol = Symbol.for("ruvy-component");
 
 export enum ComponentUpdateActionType {}
 
-export type ComponentType = StringWithAutoComplete<keyof HTMLElementTagNameMap> | Callback;
+export type ComponentTag = StringWithAutoComplete<keyof HTMLElementTagNameMap>;
+
+export type ComponentType = ComponentTag | Callback;
 
 export interface ComponentTemplate {
   elementType: ComponentType;
@@ -29,19 +37,30 @@ export interface ComponentTemplate {
 export type EventWrapper = CallbackWithArgs<[Event]>;
 
 export interface ComponentModifiers {
-  events?: {
-    wrapper?: EventWrapper;
-  };
+  eventWrapper: EventWrapper;
+  contextWrapper: CallbackWithArgs<[ComputedComponent, ComputedComponent | undefined]>;
 }
 
+export interface MemoizedHook {
+  type: HookType;
+  key: string;
+  index: number;
+  initialValue: unknown;
+}
+
+export type HookDispatcher = () => StateArray<unknown>;
+
 export interface ComputedComponent<T = Node> extends Omit<ComponentTemplate, "props"> {
+  elementTag: ComponentTag;
   currentProps: Record<string, unknown>;
   attributes: Record<string, Arrayable<DomAttribute>>;
   events: Record<string, Arrayable<DomEvent>>;
   ns: Namespace;
   nodeType: ComponentNodeType;
   instance?: T;
-  parent: ComputedComponent<Element>;
+  parent?: ComputedComponent<T>;
+  key: string | number;
+  hooks: Record<string, MemoizedHook>;
 }
 
 export interface ComponentUpdateActionItem {
