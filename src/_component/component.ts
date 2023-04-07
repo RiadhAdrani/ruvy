@@ -59,7 +59,7 @@ export const computeComponent = <T>(
   key: string | number,
   current?: ComputedComponent
 ): ComputedComponent<T> => {
-  const { elementType, props } = template;
+  const { elementType, props, children } = template;
 
   // initialize computed component with parent and key
   let computed = createInitialComponent({
@@ -87,6 +87,10 @@ export const computeComponent = <T>(
   resetHooksIndex();
 
   // compute children and add them to the component
+  children.forEach((child) => {
+    // TODO : process child
+    child;
+  });
 
   // return parent
   return computed as ComputedComponent<T>;
