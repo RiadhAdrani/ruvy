@@ -544,6 +544,12 @@ declare global {
   }
 
   namespace JSX {
+    interface Element {
+      type: string | Callback;
+      props: Record<string, unknown>;
+      children: Array<unknown>;
+    }
+
     interface IntrinsicElements extends Record<string, unknown> {
       a: ComponentProps<HTMLAnchorElement, AProps>;
       abbr: ComponentProps;
