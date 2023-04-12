@@ -47,9 +47,6 @@ export const isBranchTemplateTextChild = (o: unknown): boolean => {
   return (isString(o) || isNumber(o) || (isObject(o) && !isNull(o))) && !isBranchTemplate(o);
 };
 
-/**
- * @deprecated
- */
 export const isBranchTemplateChild = (o: unknown): boolean => {
   return isBranchTemplate(o) || isBranchTemplateTextChild(o);
 };
