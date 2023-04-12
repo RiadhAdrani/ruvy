@@ -13,9 +13,6 @@ import {
 } from "@riadh-adrani/utils";
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 
-/**
- * @deprecated
- */
 export const isBranchTemplate = (o: unknown): boolean => {
   if (!isObject(o) || isNull(o) || isUndefined(o)) {
     return false;

@@ -1,6 +1,29 @@
 import { describe, expect, it, vitest } from "vitest";
-import { getTag, haveSameTagAndType } from "./index.js";
+import { getTag, haveSameTagAndType, isBranchTemplate } from "./index.js";
 import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
+import { omit } from "@riadh-adrani/utils";
+
+describe("isBranchTemplate", () => {
+  const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
+  const templateNoChildren = omit(template, "children");
+  const templateNoProps = omit(template, "props");
+  const templateNoSymbol = omit(template, "symbol");
+  const templateNoType = omit(template, "type");
+
+  it.each([
+    ["test", false],
+    [1, false],
+    [true, false],
+    [{}, false],
+    [templateNoChildren, false],
+    [templateNoProps, false],
+    [templateNoSymbol, false],
+    [templateNoType, false],
+    [template, true],
+  ])("should determine if object is branch template", (obj, res) => {
+    expect(isBranchTemplate(obj)).toBe(res);
+  });
+});
 
 describe("getTag", () => {
   const fc: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: vitest.fn() };
