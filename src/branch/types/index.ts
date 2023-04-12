@@ -6,6 +6,7 @@ export enum BranchTag {
   Root = "#-root-branch",
   Fragment = "#-fragment-branch",
   Text = "#-text-branch",
+  Null = "#-null-branch",
 }
 
 export enum HookType {

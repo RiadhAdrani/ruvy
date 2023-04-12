@@ -12,7 +12,7 @@ import {
   isTrue,
   isUndefined,
 } from "@riadh-adrani/utils";
-import { BranchSymbol } from "../types/index.js";
+import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 
 /**
  * @deprecated
@@ -51,7 +51,7 @@ export const isBranchTemplate = (o: unknown): boolean => {
  * @deprecated
  */
 export const isBranchTemplateTextChild = (o: unknown): boolean => {
-  return isString(o) || isNumber(o) || isObject(o) || isTrue(o === true);
+  return isString(o) || isNumber(o) || (isObject(o) && !isNull(o)) || isTrue(o === true);
 };
 
 /**
@@ -59,4 +59,38 @@ export const isBranchTemplateTextChild = (o: unknown): boolean => {
  */
 export const isBranchTemplateChild = (o: unknown): boolean => {
   return isBranchTemplate(o) || isBranchTemplateTextChild(o);
+};
+
+/**
+ * @deprecated
+ */
+export const getBranchTypeByTemplate = (o: unknown): BranchTag => {
+  if (isBranchTemplate(o)) {
+    const type = cast<BranchTemplate>(o).type;
+
+    if (isFunction(type)) {
+      return BranchTag.Function;
+    }
+
+    if (type === BranchTag.Fragment) {
+      return BranchTag.Fragment;
+    }
+
+    if (isString(type)) {
+      return BranchTag.Element;
+    }
+  }
+
+  if (isBranchTemplateChild(o)) {
+    return BranchTag.Text;
+  }
+
+  return BranchTag.Null;
+};
+
+/**
+ * @deprecated
+ */
+export const haveSameBranchAndTemplateType = (branch: Branch, template: unknown): boolean => {
+  return getBranchTypeByTemplate(branch) === getBranchTypeByTemplate(template);
 };

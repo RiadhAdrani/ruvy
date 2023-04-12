@@ -24,7 +24,6 @@ import {
 } from "../types/index.js";
 import { IMountConfig } from "../types/index.js";
 import { getClosestAnchorParent } from "./utils/index.js";
-import { HookType } from "../types/_component.js";
 
 export class Core {
   static singleton: Core = new Core();
@@ -50,23 +49,6 @@ export class Core {
         forceSet: false,
         keepUnused: false,
         onChanged: () => this.onStateUpdate(),
-      })
-    );
-
-    this.store.createItemsStore(() =>
-      createStateCollection(this.store, {
-        name: HookType.state,
-        checkEqual: true,
-        forceSet: true,
-        keepUnused: false,
-        onChanged: () => this.onStateUpdate(),
-      })
-    );
-
-    this.store.createEffectsStore(() =>
-      createEffectCollection(this.store, {
-        name: HookType.effect,
-        keepUnused: false,
       })
     );
 
