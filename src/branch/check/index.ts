@@ -43,11 +43,8 @@ export const isBranchTemplate = (o: unknown): boolean => {
   return true;
 };
 
-/**
- * @deprecated
- */
 export const isBranchTemplateTextChild = (o: unknown): boolean => {
-  return isString(o) || isNumber(o) || (isObject(o) && !isNull(o));
+  return (isString(o) || isNumber(o) || (isObject(o) && !isNull(o))) && !isBranchTemplate(o);
 };
 
 /**
