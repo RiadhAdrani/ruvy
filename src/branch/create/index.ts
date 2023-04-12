@@ -1,7 +1,7 @@
 import { BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 
 /**
- * @deprecated creates a component template.
+ * creates a component template.
  * @param type component type
  * @param props component props
  * @param children component children
