@@ -63,7 +63,7 @@ export const dispatchSetState = <T = unknown>(
   const setter = (value: T) => {
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
-      // notify of update if changed
+      // TODO : notify of update if changed
     }
   };
 
