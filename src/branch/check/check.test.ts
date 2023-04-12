@@ -1,8 +1,8 @@
 import { describe, expect, it, vitest } from "vitest";
-import { getBranchTypeByTemplate } from "./index.js";
-import { BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
+import { getTag, haveSameTagAndType } from "./index.js";
+import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 
-describe("getBranchTypeByTemplate", () => {
+describe("getTag", () => {
   const fc: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: vitest.fn() };
   const fr: BranchTemplate = {
     children: [],
@@ -16,13 +16,152 @@ describe("getBranchTypeByTemplate", () => {
     ["hello", BranchTag.Text],
     [1, BranchTag.Text],
     [{}, BranchTag.Text],
-    [true, BranchTag.Text],
+    [true, BranchTag.Null],
     [null, BranchTag.Null],
     [undefined, BranchTag.Null],
     [fc, BranchTag.Function],
     [fr, BranchTag.Fragment],
     [div, BranchTag.Element],
   ])("should return correct branch type (%s) => (%s)", (obj, expected) => {
-    expect(getBranchTypeByTemplate(obj)).toBe(expected);
+    expect(getTag(obj)).toBe(expected);
+  });
+});
+
+describe("haveSameTagAndType", () => {
+  const fn = vitest.fn();
+  const fn2 = vitest.fn();
+
+  const fc: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: fn };
+  const fc2: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: fn2 };
+  const fcBranch: Branch = {
+    children: [],
+    hooks: {},
+    key: 0,
+    pendingActions: [],
+    props: {},
+    status: BranchStatus.Mounted,
+    tag: BranchTag.Function,
+    type: fn,
+  };
+
+  const fr: BranchTemplate = {
+    children: [],
+    props: {},
+    symbol: BranchSymbol,
+    type: BranchTag.Fragment,
+  };
+  const fr2: BranchTemplate = {
+    children: [],
+    props: {},
+    symbol: BranchSymbol,
+    type: BranchTag.Fragment,
+  };
+  const frBranch: Branch = {
+    children: [],
+    hooks: {},
+    key: 0,
+    pendingActions: [],
+    props: {},
+    status: BranchStatus.Mounted,
+    tag: BranchTag.Fragment,
+    type: BranchTag.Fragment,
+  };
+
+  const el: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
+  const el2: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "button" };
+  const elBranch: Branch = {
+    children: [],
+    hooks: {},
+    key: 0,
+    pendingActions: [],
+    props: {},
+    status: BranchStatus.Mounted,
+    tag: BranchTag.Element,
+    type: "div",
+  };
+
+  const text = "text";
+  const text2 = "text-2";
+  const textBranch: Branch = {
+    children: [],
+    hooks: {},
+    key: 0,
+    pendingActions: [],
+    props: {},
+    status: BranchStatus.Mounted,
+    tag: BranchTag.Text,
+    type: BranchTag.Text,
+  };
+
+  const nullBranch: Branch = {
+    children: [],
+    hooks: {},
+    key: 0,
+    pendingActions: [],
+    props: {},
+    status: BranchStatus.Mounted,
+    tag: BranchTag.Null,
+    type: BranchTag.Null,
+  };
+
+  it.each([
+    // function
+    [fcBranch, fc, true],
+    [fcBranch, fc2, false],
+    [fcBranch, fr, false],
+    [fcBranch, el, false],
+    [fcBranch, text, false],
+    [fcBranch, text, false],
+    [fcBranch, 1, false],
+    [fcBranch, null, false],
+
+    // fragment
+    [frBranch, fc, false],
+    [frBranch, fc2, false],
+    [frBranch, fr, true],
+    [frBranch, fr2, true],
+    [frBranch, el, false],
+    [frBranch, text, false],
+    [frBranch, "text", false],
+    [frBranch, 1, false],
+    [frBranch, null, false],
+
+    // element
+    [elBranch, fc, false],
+    [elBranch, fc2, false],
+    [elBranch, fr, false],
+    [elBranch, fr2, false],
+    [elBranch, el, true],
+    [elBranch, el2, false],
+    [elBranch, text, false],
+    [elBranch, "text", false],
+    [elBranch, 1, false],
+    [elBranch, null, false],
+
+    // text
+    [textBranch, fc, false],
+    [textBranch, fc2, false],
+    [textBranch, fr, false],
+    [textBranch, fr2, false],
+    [textBranch, el, false],
+    [textBranch, el2, false],
+    [textBranch, text, true],
+    [textBranch, text2, true],
+    [textBranch, 1, true],
+    [textBranch, null, false],
+
+    // null
+    [nullBranch, fc, false],
+    [nullBranch, fc2, false],
+    [nullBranch, fr, false],
+    [nullBranch, fr2, false],
+    [nullBranch, el, false],
+    [nullBranch, el2, false],
+    [nullBranch, text, false],
+    [nullBranch, text2, false],
+    [nullBranch, 1, false],
+    [nullBranch, null, true],
+  ])("should compare branch and template => (%s)", (branch, template, res) => {
+    expect(haveSameTagAndType(branch, template)).toBe(res);
   });
 });
