@@ -13,7 +13,7 @@ import {
 } from "@riadh-adrani/utils";
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 
-export const isBranchTemplate = (o: unknown): boolean => {
+export const isValidTemplate = (o: unknown): boolean => {
   if (!isObject(o) || isNull(o) || isUndefined(o)) {
     return false;
   }
@@ -43,16 +43,16 @@ export const isBranchTemplate = (o: unknown): boolean => {
   return true;
 };
 
-export const isBranchTemplateTextChild = (o: unknown): boolean => {
-  return (isString(o) || isNumber(o) || (isObject(o) && !isNull(o))) && !isBranchTemplate(o);
+export const isValidTextChild = (o: unknown): boolean => {
+  return (isString(o) || isNumber(o) || (isObject(o) && !isNull(o))) && !isValidTemplate(o);
 };
 
-export const isBranchTemplateChild = (o: unknown): boolean => {
-  return isBranchTemplate(o) || isBranchTemplateTextChild(o);
+export const isValidChild = (o: unknown): boolean => {
+  return isValidTemplate(o) || isValidTextChild(o);
 };
 
 export const getTag = (o: unknown): BranchTag => {
-  if (isBranchTemplate(o)) {
+  if (isValidTemplate(o)) {
     const type = cast<BranchTemplate>(o).type;
 
     if (isFunction(type)) {
@@ -68,7 +68,7 @@ export const getTag = (o: unknown): BranchTag => {
     }
   }
 
-  if (isBranchTemplateChild(o)) {
+  if (isValidChild(o)) {
     return BranchTag.Text;
   }
 
@@ -77,7 +77,7 @@ export const getTag = (o: unknown): BranchTag => {
 
 export const haveSameTagAndType = (branch: Branch, template: unknown): boolean => {
   if (getTag(template) === branch.tag) {
-    if (isBranchTemplate(template)) {
+    if (isValidTemplate(template)) {
       return branch.type === cast<BranchTemplate>(template).type;
     }
 
