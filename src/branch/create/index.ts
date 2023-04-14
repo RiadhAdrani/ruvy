@@ -15,19 +15,23 @@ export const createTemplate = (
 };
 
 /**
- * @deprecated
+ * creates a fragment template.
+ * @param children fragment children
+ */
+export const createFragmentTemplate = (children: Array<unknown>): BranchTemplate => {
+  return createTemplate(BranchTag.Fragment, {}, children);
+};
+
+/**
+ * creates a jsx element.
+ * @param children children
+ * @param props element props
+ * @param type element type
  */
 export const createJsxElement = (
   type: unknown,
   props: Record<string, unknown>,
   ...children: Array<unknown>
 ): BranchTemplate => {
-  return createTemplate(type, props, children);
-};
-
-/**
- * @deprecated
- */
-export const createJsxFragment = (_: unknown, ...children: Array<unknown>): BranchTemplate => {
-  return createTemplate(BranchTag.Fragment, {}, children);
+  return createTemplate(type, props ?? {}, children);
 };
