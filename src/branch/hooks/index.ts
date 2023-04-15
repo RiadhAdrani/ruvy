@@ -8,7 +8,9 @@ let index = 0;
 const ctx = new Context<Branch>();
 
 /**
- * @deprecated
+ * create a hook key with the given type and index
+ * @param type hook type
+ * @param index hook index
  */
 export const createHookKey = (type: HookType, index: number): string => {
   return `${type}@${index}`;
@@ -18,7 +20,7 @@ export const createHookKey = (type: HookType, index: number): string => {
  * @deprecated
  */
 export const dispatchHook = <T = unknown>(type: HookType, data: T, current: Branch): unknown => {
-  if (!ctx.get()) {
+  if (ctx.get() === undefined) {
     throw "cannot use hooks outside of a functional component context.";
   }
 
@@ -76,5 +78,7 @@ export const dispatchSetState = <T = unknown>(
  * @deprecated
  */
 export const useHooksContext = <R>(callback: Callback<R>, branch: Branch): R => {
-  return ctx.use(callback, branch);
+  return ctx.use(callback, branch, () => {
+    index = 0;
+  });
 };
