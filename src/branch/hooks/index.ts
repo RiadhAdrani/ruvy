@@ -3,9 +3,9 @@ import Context from "../../context/Context.js";
 import { StateArray } from "../../types/store.js";
 import { Branch, HookType } from "../types/index.js";
 
-let index = 0;
+let index = -1;
 
-const ctx = new Context<Branch>();
+export const ctx = new Context<Branch>();
 
 /**
  * create a hook key with the given type and index
@@ -75,10 +75,12 @@ export const dispatchSetState = <T = unknown>(
 };
 
 /**
- * @deprecated
+ * execute a callback within a branch context.
+ * @param callback action
+ * @param branch current branch
  */
 export const useHooksContext = <R>(callback: Callback<R>, branch: Branch): R => {
   return ctx.use(callback, branch, () => {
-    index = 0;
+    index = -1;
   });
 };
