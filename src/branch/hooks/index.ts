@@ -44,7 +44,10 @@ export const dispatchHook = <T = unknown>(type: HookType, data: T, current: Bran
 };
 
 /**
- * @deprecated
+ * dispatch set state hook.
+ * @param key hook key, should be auto-created by `dispatchHook` method.
+ * @param data data to be stored.
+ * @param current current value.
  */
 export const dispatchSetState = <T = unknown>(
   key: string,
