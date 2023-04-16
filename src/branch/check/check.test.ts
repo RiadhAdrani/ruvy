@@ -199,7 +199,7 @@ describe("haveSameTagAndType", () => {
     [nullBranch, text2, false],
     [nullBranch, 1, false],
     [nullBranch, null, true],
-  ])("should compare branch and template => (%s)", (branch, template, res) => {
+  ])("should compare branch and template : (%s) vs (%s) => (%s)", (branch, template, res) => {
     expect(haveSameTagAndType(branch, template)).toBe(res);
   });
 });

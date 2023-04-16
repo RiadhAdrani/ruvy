@@ -1,4 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
+import { CallbackWithArgs } from "../../types/common.js";
 
 export enum BranchTag {
   Function = "#-function-branch",
@@ -30,13 +31,19 @@ export type BranchProps = Record<string, unknown>;
 
 export type BranchHooks = Record<string, HookData<unknown>>;
 
-export interface BranchTemplate {
-  type: unknown;
+export type BranchKey = string | number;
+
+export interface BranchTemplate<T = unknown> {
+  type: T;
   props: Record<string, unknown>;
   children: Array<unknown>;
   symbol: typeof BranchSymbol;
-  key?: string | number;
+  key?: BranchKey;
 }
+
+export type BranchTemplateFunction = BranchTemplate<
+  CallbackWithArgs<[Record<string, unknown>], unknown>
+>;
 
 export interface HookData<T> {
   key: string;
@@ -62,5 +69,5 @@ export interface Branch {
   status: BranchStatus;
   children: Array<Branch | undefined>;
   instance?: Element | Text;
-  key: string | number;
+  key: BranchKey;
 }
