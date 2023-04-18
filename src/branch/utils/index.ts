@@ -2,7 +2,7 @@ import { forEachKey, isFunction, merge } from "@riadh-adrani/utils";
 import { Branch, BranchStatus, BranchTag, Namespace } from "../types/index.js";
 import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
 
-export const initBranch = (data?: Partial<Branch>): Branch => {
+export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {
     children: [],
     hooks: {},

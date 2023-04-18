@@ -1,5 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
-import { Branch, BranchTag } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import { createElement, createTextNode, injectNode } from "@riadh-adrani/dom-utils";
 import {
   getHtmlElementEventListeners,
@@ -9,8 +9,8 @@ import {
 } from "../../utils/index.js";
 
 /**
- * @deprecated
- * @param branch
+ * creates a rendering action for an element-ish branch
+ * @param branch target
  */
 const createRenderAction = (branch: Branch<string>): Callback => {
   return () => {
@@ -35,6 +35,7 @@ const createRenderAction = (branch: Branch<string>): Callback => {
     }
 
     branch.instance = render;
+    branch.status = BranchStatus.Mounted;
 
     const host = getElementHost(branch);
 

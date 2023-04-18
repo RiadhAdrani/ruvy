@@ -10,10 +10,10 @@ import createAction from "../actions/index.js";
  * @param parent parent branch
  * @param key element key
  */
-const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey) => {
+const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey): Branch<string> => {
   const { props, type, children } = template;
 
-  const branch: Branch = initBranch({ tag: BranchTag.Element, type, parent, key, props });
+  const branch: Branch<string> = initBranch({ tag: BranchTag.Element, type, parent, key, props });
 
   const renderAction = createAction(ActionType.Render, branch);
 

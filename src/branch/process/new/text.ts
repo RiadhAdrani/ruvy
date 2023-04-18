@@ -6,8 +6,8 @@ import { Branch, BranchKey, BranchStatus, BranchTag } from "../../types/index.js
  * @param parent parent branch
  * @param key key
  */
-const text = (data: string, parent: Branch, key: BranchKey): Branch => {
-  const branch: Branch = {
+const text = (data: string, parent: Branch, key: BranchKey): Branch<string> => {
+  const branch: Branch<string> = {
     children: [],
     hooks: {},
     key,
