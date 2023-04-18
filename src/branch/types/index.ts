@@ -24,8 +24,22 @@ export enum BranchStatus {
 export const BranchSymbol = Symbol.for("#-ruvy-branch");
 
 export enum ActionType {
-  Render = "#-render-element",
+  Render = "#-action-render-element",
+  Effect = "#-action-run-effect",
+  CleanUp = "#-action-clean-up",
 }
+
+export type Effect = Callback<Callback | void>;
+
+export interface SetEffectData {
+  deps: unknown;
+  callback: Effect;
+  cleanUp?: Effect;
+  pendingEffect?: Effect;
+  pendingCleanUp?: Effect;
+}
+
+export type SetEffectParams = Pick<SetEffectData, "callback" | "deps">;
 
 export type BranchProps = Record<string, unknown>;
 

@@ -1,7 +1,25 @@
-import { describe, expect, it, beforeEach } from "vitest";
-import { Branch, BranchStatus, BranchTag, HookType } from "../types/index.js";
-import { createHookKey, ctx, dispatchSetState, useHooksContext } from "./index.js";
+import { describe, expect, it, beforeEach, vitest } from "vitest";
+import {
+  ActionType,
+  Branch,
+  BranchAction,
+  BranchStatus,
+  BranchTag,
+  HookData,
+  HookType,
+  SetEffectData,
+} from "../types/index.js";
+import {
+  createHookKey,
+  ctx,
+  dispatchSetEffect,
+  dispatchSetState,
+  useHooksContext,
+  setEffect,
+  collectEffects,
+} from "./index.js";
 import { BranchHooks } from "../types/index.js";
+import { cast, omit } from "@riadh-adrani/utils";
 
 describe("createHookKey", () => {
   it.each([
@@ -90,5 +108,187 @@ describe("dispatchSetState", () => {
 
     set("test-2");
     expect(get()).toBe("test-2");
+  });
+});
+
+describe("dispatchSetEffect", () => {
+  let branch: Branch;
+
+  beforeEach(() => {
+    branch = {
+      children: [],
+      hooks: {},
+      key: 0,
+      pendingActions: [],
+      props: {},
+      status: BranchStatus.Pending,
+      tag: BranchTag.Element,
+      type: "div",
+    };
+  });
+
+  it("should create a hook entry", () => {
+    const key = "0";
+
+    const callback = vitest.fn();
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+    }, branch);
+
+    const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
+
+    expect(hook.key).toBe(`0`);
+    expect(hook.type).toBe(HookType.Effect);
+  });
+
+  it("should run effect/cleanup via pending", () => {
+    const key = "0";
+
+    const cleanup = vitest.fn();
+    const callback = vitest.fn(() => cleanup);
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+    }, branch);
+
+    const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
+
+    hook.data.pendingEffect?.();
+
+    expect(callback).toHaveBeenCalledOnce();
+    expect(hook.data.pendingEffect).toBe(undefined);
+
+    // trigger clean up manually
+    hook.data.pendingCleanUp = hook.data.cleanUp;
+
+    hook.data.pendingCleanUp?.();
+    expect(cleanup).toHaveBeenCalledOnce();
+    expect(hook.data.pendingCleanUp).toBe(undefined);
+    expect(hook.data.cleanUp).toBe(undefined);
+  });
+
+  it("should not override data when reexecuted", () => {
+    const key = "0";
+
+    const cleanup = vitest.fn();
+    const callback = vitest.fn(() => cleanup);
+    const callback2 = vitest.fn();
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+    }, branch);
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback: callback2, deps: undefined }, branch);
+    }, branch);
+
+    const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
+
+    expect(hook.data.callback).toStrictEqual(callback);
+  });
+
+  it("should override data when deps changes", () => {
+    const key = "0";
+
+    const cleanup = vitest.fn();
+    const callback = vitest.fn(() => cleanup);
+
+    const cleanup2 = vitest.fn();
+    const callback2 = vitest.fn(() => cleanup2);
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+    }, branch);
+
+    useHooksContext(() => {
+      dispatchSetEffect(key, { callback: callback2, deps: 1 }, branch);
+    }, branch);
+
+    const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
+
+    expect(hook.data.callback).toStrictEqual(callback2);
+    expect(hook.data.deps).toStrictEqual(1);
+
+    hook.data.pendingEffect?.();
+
+    expect(callback).toHaveBeenCalledTimes(0);
+    expect(callback2).toHaveBeenCalledOnce();
+    expect(hook.data.pendingEffect).toBe(undefined);
+
+    // trigger clean up manually
+    hook.data.pendingCleanUp = hook.data.cleanUp;
+
+    hook.data.pendingCleanUp?.();
+
+    expect(cleanup).toHaveBeenCalledTimes(0);
+    expect(cleanup2).toHaveBeenCalledOnce();
+    expect(hook.data.pendingCleanUp).toBe(undefined);
+    expect(hook.data.cleanUp).toBe(undefined);
+  });
+});
+
+describe("collectEffects", () => {
+  let branch: Branch;
+
+  beforeEach(() => {
+    branch = {
+      children: [],
+      hooks: {},
+      key: 0,
+      pendingActions: [],
+      props: {},
+      status: BranchStatus.Pending,
+      tag: BranchTag.Element,
+      type: "div",
+    };
+  });
+
+  it("should collect pending effects", () => {
+    const cleanup = vitest.fn();
+    const callback = vitest.fn(() => cleanup);
+
+    useHooksContext(() => {
+      setEffect(callback);
+    }, branch);
+
+    const hook = branch.hooks[`${HookType.Effect}@0`] as HookData<SetEffectData>;
+    expect(hook).toBeDefined();
+
+    const { pendingEffect } = hook.data;
+
+    const actions = collectEffects(branch);
+
+    expect(actions.length).toBe(1);
+    expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
+      callback: pendingEffect!,
+      type: ActionType.Effect,
+    });
+  });
+
+  it("should collect pending cleanup", () => {
+    const cleanup = vitest.fn();
+    const callback = vitest.fn(() => cleanup);
+
+    useHooksContext(() => {
+      setEffect(callback);
+    }, branch);
+
+    const hook = branch.hooks[`${HookType.Effect}@0`] as HookData<SetEffectData>;
+    expect(hook).toBeDefined();
+
+    const { pendingEffect } = hook.data;
+
+    pendingEffect?.();
+
+    hook.data.pendingCleanUp = hook.data.cleanUp;
+
+    const actions = collectEffects(branch);
+
+    expect(actions.length).toBe(1);
+    expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
+      callback: hook.data.cleanUp!,
+      type: ActionType.CleanUp,
+    });
   });
 });
