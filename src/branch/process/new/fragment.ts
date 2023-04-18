@@ -4,7 +4,13 @@ import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";
 import { initBranch } from "../../utils/index.js";
 
-export default (template: BranchTemplateFragment, parent: Branch, key: BranchKey): Branch => {
+/**
+ * create a new fragment branch from a template.
+ * @param template fragment template
+ * @param parent parent branch
+ * @param key key
+ */
+const fragment = (template: BranchTemplateFragment, parent: Branch, key: BranchKey): Branch => {
   const { type, children, props } = template;
 
   const branch: Branch = initBranch({ key, props, type, parent, tag: BranchTag.Fragment });
@@ -17,3 +23,5 @@ export default (template: BranchTemplateFragment, parent: Branch, key: BranchKey
 
   return branch;
 };
+
+export default fragment;

@@ -1,10 +1,10 @@
 import { Branch, BranchKey, BranchStatus, BranchTag } from "../../types/index.js";
 
 /**
- * @deprecated
- * @param container
- * @param child
- * @returns
+ * create new text branch from data.
+ * @param data text to be displayed, could be a string, number...
+ * @param parent parent branch
+ * @param key key
  */
 const text = (data: string, parent: Branch, key: BranchKey): Branch => {
   const branch: Branch = {

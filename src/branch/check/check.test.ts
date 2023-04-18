@@ -56,6 +56,7 @@ describe("getTag", () => {
     [1, BranchTag.Text],
     [{}, BranchTag.Text],
     [true, BranchTag.Null],
+    [false, BranchTag.Null],
     [null, BranchTag.Null],
     [undefined, BranchTag.Null],
     [fc, BranchTag.Function],

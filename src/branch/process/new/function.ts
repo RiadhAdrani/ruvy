@@ -5,7 +5,13 @@ import process from "../index.js";
 import { getTag } from "../../check/index.js";
 import { initBranch } from "../../utils/index.js";
 
-export default (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {
+/**
+ * create a function branch from a template.
+ * @param template function template
+ * @param parent parent branch
+ * @param key key
+ */
+const fn = (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {
   const { props, type } = template;
 
   const branch: Branch = initBranch({ key, props, tag: BranchTag.Function, type, parent });
@@ -20,3 +26,5 @@ export default (template: BranchTemplateFunction, parent: Branch, key: BranchKey
 
   return branch;
 };
+
+export default fn;

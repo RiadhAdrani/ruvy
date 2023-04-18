@@ -3,6 +3,7 @@ import {
   hasProperty,
   isArray,
   isBlank,
+  isBoolean,
   isDefined,
   isFunction,
   isNull,
@@ -65,6 +66,15 @@ export const isValidChild = (o: unknown): boolean => {
 };
 
 /**
+ * @deprecated
+ * @param o
+ * @returns
+ */
+export const isNullishChild = (o: unknown): boolean => {
+  return isNull(o) || isUndefined(o) || isBoolean(o);
+};
+
+/**
  * compute tag from a template/object.
  * @param o object
  */
@@ -83,6 +93,10 @@ export const getTag = (o: unknown): BranchTag => {
     if (isString(type)) {
       return BranchTag.Element;
     }
+  }
+
+  if (isNullishChild(o)) {
+    return BranchTag.Null;
   }
 
   if (isValidChild(o)) {

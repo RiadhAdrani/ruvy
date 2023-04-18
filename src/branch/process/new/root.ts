@@ -2,10 +2,9 @@ import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import process from "../index.js";
 
 /**
- * @deprecated
- * @param container
- * @param child
- * @returns
+ * create the root branch.
+ * @param container html container.
+ * @param child child template
  */
 const root = (container: HTMLElement, child: unknown): Branch => {
   const branch: Branch = {

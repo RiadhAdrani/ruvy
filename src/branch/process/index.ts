@@ -18,7 +18,6 @@ const process = (
   key: BranchKey,
   index: number
 ): Branch => {
-  // ? if branch is undefined, a new branch will be added to the parent
   return isUndefined(current)
     ? createNewBranch(template, parent, key)
     : diffBranches(template, current!, parent, key, index);

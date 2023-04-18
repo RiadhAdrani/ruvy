@@ -14,7 +14,11 @@ import fragment from "./fragment.js";
 import text from "./text.js";
 
 /**
- * @deprecated
+ * create a brand new branch from a given template
+ * @param template jsx, string, number...
+ * @param parent parent branch
+ * @param key branch key
+ * @returns
  */
 const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Branch => {
   switch (getTag(template)) {
@@ -34,7 +38,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return empty(parent, key);
     }
     default: {
-      throw "Invalid branch template";
+      throw "Invalid template tag: this error should not happen !!!";
     }
   }
 };

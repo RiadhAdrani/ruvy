@@ -3,6 +3,12 @@ import { initBranch } from "../../utils/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";
 
+/**
+ * create a new branch element from a template.
+ * @param template element template
+ * @param parent parent branch
+ * @param key element key
+ */
 const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey) => {
   const { props, type, children } = template;
 
