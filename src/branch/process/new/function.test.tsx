@@ -25,7 +25,6 @@ describe("new.function", () => {
       tag: BranchTag.Function,
       type: fn,
       parent: cast<Branch>({}),
-      instance: undefined,
     });
   });
 
@@ -55,7 +54,6 @@ describe("new.function", () => {
       tag: BranchTag.Function,
       type: fn,
       parent: cast<Branch>({}),
-      instance: undefined,
     });
   });
 });
