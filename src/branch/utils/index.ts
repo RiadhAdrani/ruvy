@@ -1,5 +1,6 @@
-import { merge } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, BranchTag } from "../types/index.js";
+import { forEachKey, isFunction, merge } from "@riadh-adrani/utils";
+import { Branch, BranchStatus, BranchTag, Namespace } from "../types/index.js";
+import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
 
 export const initBranch = (data?: Partial<Branch>): Branch => {
   const initial: Branch = {
@@ -14,4 +15,81 @@ export const initBranch = (data?: Partial<Branch>): Branch => {
   };
 
   return merge(initial, data ?? {});
+};
+
+export const Namespaces = Object.keys(Namespace).map(
+  (key) => (Namespace as Record<string, string>)[key]
+) as Array<Namespace>;
+
+/**
+ * retrieve namespace from `ns` prop.
+ * @param branch branch
+ */
+export const getNamespace = (branch: Branch): Namespace => {
+  return Namespaces.includes(branch.props.ns as Namespace)
+    ? (branch.props.ns as Namespace)
+    : Namespace.HTML;
+};
+
+/**
+ * Ignored props, which should not be rendered into the DOM.
+ */
+export const IgnoredProps = ["ns", "children", "key"];
+
+/**
+ * create an object of html attributes from the branch props.
+ * @param branch branch
+ */
+export const getHtmlElementProps = (branch: Branch): Record<string, DomAttribute> => {
+  const props: Record<string, DomAttribute> = {};
+
+  forEachKey((key, value) => {
+    if (IgnoredProps.includes(key) || isOnEventName(key)) {
+      return;
+    }
+
+    props[key] = value as DomAttribute;
+  }, branch.props);
+
+  return props;
+};
+
+/**
+ * create an object of event listeners from the branch props.
+ * @param branch branch
+ */
+export const getHtmlElementEventListeners = (branch: Branch): Record<string, DomEventHandler> => {
+  const events: Record<string, DomEventHandler> = {};
+
+  forEachKey((key, value) => {
+    if (isOnEventName(key) && isFunction(value)) {
+      events[key] = value as DomEventHandler;
+    }
+  }, branch.props);
+
+  return events;
+};
+
+/**
+ * checks if a branch is a host element.
+ * @param branch branch
+ */
+export const isHostBranch = (branch: Branch): boolean => {
+  return [BranchTag.Element, BranchTag.Root].includes(branch.tag);
+};
+
+/**
+ * retrieve the closest host element.
+ * @param branch current
+ */
+export const getElementHost = (branch: Branch): Element => {
+  if (branch.parent) {
+    if (isHostBranch(branch.parent)) {
+      return branch.parent.instance as Element;
+    }
+
+    return getElementHost(branch.parent);
+  } else {
+    throw "Unable to locate the hosting branch.";
+  }
 };

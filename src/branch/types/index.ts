@@ -2,6 +2,12 @@ import { Callback } from "@riadh-adrani/utils";
 import { CallbackWithArgs } from "../../types/common.js";
 import { createFragmentTemplate } from "../create/index.js";
 
+export enum Namespace {
+  HTML = "http://www.w3.org/1999/xhtml",
+  SVG = "http://www.w3.org/2000/svg",
+  MATH = "http://www.w3.org/1998/Math/MathML",
+}
+
 export enum BranchTag {
   Function = "#-function-branch",
   Element = "#-element-branch",
@@ -75,16 +81,16 @@ export interface BranchAction {
   callback: Callback;
 }
 
-export interface Branch {
+export interface Branch<Type = unknown> {
   text?: string;
   tag: BranchTag;
-  type: unknown;
+  type: Type;
   props: BranchProps;
   hooks: BranchHooks;
   pendingActions: Array<BranchAction>;
   parent?: Branch;
   status: BranchStatus;
   children: Array<Branch | undefined>;
-  instance?: Element | Text;
+  instance?: Node;
   key: BranchKey;
 }
