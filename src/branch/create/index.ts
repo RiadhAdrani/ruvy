@@ -1,4 +1,4 @@
-import { BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
+import { BranchSymbol, BranchTemplate } from "../types/index.js";
 
 /**
  * creates a component template.
@@ -24,8 +24,8 @@ export const createTemplate = <T = unknown>(
  * creates a fragment template.
  * @param children fragment children
  */
-export const createFragmentTemplate = (children: Array<unknown>): BranchTemplate => {
-  return createTemplate(BranchTag.Fragment, {}, children);
+export const createFragmentTemplate = (children: Array<unknown>): Array<unknown> => {
+  return children;
 };
 
 /**

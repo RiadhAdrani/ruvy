@@ -1,7 +1,7 @@
-import { cast, isUndefined } from "@riadh-adrani/utils";
-import { getTag, haveSameTagAndType, isValidTemplate } from "../check/index.js";
-import { Branch, BranchStatus, BranchTag, BranchTemplate } from "../types/index.js";
-import createNewBranch from "./createNewBranch.js";
+import { isUndefined } from "@riadh-adrani/utils";
+import { Branch, BranchKey } from "../types/index.js";
+import createNewBranch from "./new/index.js";
+import diffBranches from "./diff/index.js";
 
 /**
  * @deprecated
@@ -11,16 +11,17 @@ import createNewBranch from "./createNewBranch.js";
  * @param key
  * @returns
  */
-export default (
+const process = (
   template: unknown,
   current: Branch | undefined,
   parent: Branch,
-  key: string | number
+  key: BranchKey,
+  index: number
 ): Branch => {
   // ? if branch is undefined, a new branch will be added to the parent
-  if (isUndefined(current)) {
-    return createNewBranch();
-  }
-
-  return undefined as unknown as Branch;
+  return isUndefined(current)
+    ? createNewBranch(template, parent, key)
+    : diffBranches(template, current!, parent, key, index);
 };
+
+export default process;

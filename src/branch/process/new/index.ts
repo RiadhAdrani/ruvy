@@ -1,0 +1,42 @@
+import { getTag } from "../../check/index.js";
+import { createFragmentTemplate } from "../../create/index.js";
+import {
+  Branch,
+  BranchKey,
+  BranchTag,
+  BranchTemplate,
+  BranchTemplateFunction,
+} from "../../types/index.js";
+import fn from "../new/function.js";
+import el from "./element.js";
+import empty from "./empty.js";
+import fragment from "./fragment.js";
+import text from "./text.js";
+
+/**
+ * @deprecated
+ */
+const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Branch => {
+  switch (getTag(template)) {
+    case BranchTag.Function: {
+      return fn(template as BranchTemplateFunction, parent, key);
+    }
+    case BranchTag.Element: {
+      return el(template as BranchTemplate<string>, parent, key);
+    }
+    case BranchTag.Fragment: {
+      return fragment(template as BranchTemplate<typeof createFragmentTemplate>, parent, key);
+    }
+    case BranchTag.Text: {
+      return text(`${template}`, parent, key);
+    }
+    case BranchTag.Null: {
+      return empty(parent, key);
+    }
+    default: {
+      throw "Invalid branch template";
+    }
+  }
+};
+
+export default createNewBranch;

@@ -1,5 +1,6 @@
 import { Callback } from "@riadh-adrani/utils";
 import { CallbackWithArgs } from "../../types/common.js";
+import { createFragmentTemplate } from "../create/index.js";
 
 export enum BranchTag {
   Function = "#-function-branch",
@@ -58,6 +59,8 @@ export interface BranchTemplate<T = unknown> {
 export type BranchTemplateFunction = BranchTemplate<
   CallbackWithArgs<[Record<string, unknown>], unknown>
 >;
+
+export type BranchTemplateFragment = BranchTemplate<typeof createFragmentTemplate>;
 
 export interface HookData<T> {
   key: string;
