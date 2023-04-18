@@ -14,7 +14,7 @@ describe("createTemplate", () => {
     expect(template).toStrictEqual<BranchTemplate>({
       type: "div",
       children: [],
-      props: {},
+      props: { children: [] },
       symbol: BranchSymbol,
       key: undefined,
     });
@@ -26,7 +26,7 @@ describe("createTemplate", () => {
     expect(template).toStrictEqual<BranchTemplate>({
       type: "div",
       children: [],
-      props: { key: 1 },
+      props: { key: 1, children: [] },
       symbol: BranchSymbol,
       key: 1,
     });
@@ -40,7 +40,7 @@ describe("createJsxElement", () => {
     expect(template).toStrictEqual<BranchTemplate>({
       type: "div",
       children: [],
-      props: { class: "test" },
+      props: { class: "test", children: [] },
       symbol: BranchSymbol,
       key: undefined,
     });
@@ -56,7 +56,7 @@ describe("createJsxElement", () => {
     expect(template).toStrictEqual<BranchTemplate>({
       type: "div",
       children: ["Hello"],
-      props: { class: "test", key: "2" },
+      props: { class: "test", key: "2", children: ["Hello"] },
       symbol: BranchSymbol,
       key: "2",
     });
@@ -70,7 +70,7 @@ describe("createJsxFragment", () => {
     expect(template).toStrictEqual<BranchTemplate>({
       type: createFragmentTemplate,
       children: [],
-      props: {},
+      props: { children: [] },
       symbol: BranchSymbol,
       key: undefined,
     });

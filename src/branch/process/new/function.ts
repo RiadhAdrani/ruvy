@@ -6,6 +6,9 @@ import {
   BranchTemplateFunction,
 } from "../../types/index.js";
 import { useHooksContext } from "../../hooks/index.js";
+import { collectPendingEffect } from "../common/index.js";
+import process from "../index.js";
+import { getTag } from "../../check/index.js";
 
 export default (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {
   const { props, type } = template;
@@ -25,10 +28,11 @@ export default (template: BranchTemplateFunction, parent: Branch, key: BranchKey
 
   const child = useHooksContext(() => type(props), branch);
 
-  // TODO collect effects that should be executed
+  branch.pendingActions.push(...collectPendingEffect(branch));
 
-  // TODO process and add children
-  // branch.children = [process(child, undefined, branch, 0)];
+  if (getTag(child) !== BranchTag.Null) {
+    branch.children = [process(child, undefined, branch, 0)];
+  }
 
   return branch;
 };

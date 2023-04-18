@@ -11,7 +11,13 @@ export const createTemplate = <T = unknown>(
   props: Record<string, unknown>,
   children: Array<unknown>
 ): BranchTemplate<T> => {
-  return { type, props, children, symbol: BranchSymbol, key: (props.key as string) ?? undefined };
+  return {
+    type,
+    props: { ...props, children },
+    children,
+    symbol: BranchSymbol,
+    key: (props.key as string) ?? undefined,
+  };
 };
 
 /**
