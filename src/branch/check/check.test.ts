@@ -2,6 +2,7 @@ import { describe, expect, it, vitest } from "vitest";
 import { getTag, haveSameTagAndType, isValidTemplate, isValidTextChild } from "./index.js";
 import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 import { omit } from "@riadh-adrani/utils";
+import { createFragmentTemplate } from "../create/index.js";
 
 describe("isBranchTemplate", () => {
   const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
@@ -46,7 +47,7 @@ describe("getTag", () => {
     children: [],
     props: {},
     symbol: BranchSymbol,
-    type: BranchTag.Fragment,
+    type: createFragmentTemplate,
   };
   const div: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
 
@@ -86,13 +87,13 @@ describe("haveSameTagAndType", () => {
     children: [],
     props: {},
     symbol: BranchSymbol,
-    type: BranchTag.Fragment,
+    type: createFragmentTemplate,
   };
   const fr2: BranchTemplate = {
     children: [],
     props: {},
     symbol: BranchSymbol,
-    type: BranchTag.Fragment,
+    type: createFragmentTemplate,
   };
   const frBranch: Branch = {
     children: [],
@@ -102,7 +103,7 @@ describe("haveSameTagAndType", () => {
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Fragment,
-    type: BranchTag.Fragment,
+    type: createFragmentTemplate,
   };
 
   const el: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };

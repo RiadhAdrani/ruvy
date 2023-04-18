@@ -16,11 +16,17 @@ export const createHookKey = (type: HookType, index: number): string => {
   return `${type}@${index}`;
 };
 
+export const setState = <T>(initValue: T): StateArray<T> => {
+  return dispatchHook<StateArray<T>>(HookType.State, initValue);
+};
+
 /**
  * @deprecated
  */
-export const dispatchHook = <T = unknown>(type: HookType, data: T, current: Branch): unknown => {
-  if (ctx.get() === undefined) {
+export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T): R => {
+  const branch = ctx.get();
+
+  if (branch === undefined) {
     throw "cannot use hooks outside of a functional component context.";
   }
 
@@ -32,7 +38,7 @@ export const dispatchHook = <T = unknown>(type: HookType, data: T, current: Bran
 
   switch (type) {
     case HookType.State: {
-      output = dispatchSetState(key, data, current);
+      output = dispatchSetState(key, data, branch);
       break;
     }
     default: {
@@ -40,7 +46,7 @@ export const dispatchHook = <T = unknown>(type: HookType, data: T, current: Bran
     }
   }
 
-  return output;
+  return output as R;
 };
 
 /**

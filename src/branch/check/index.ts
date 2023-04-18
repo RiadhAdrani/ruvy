@@ -12,6 +12,7 @@ import {
   isUndefined,
 } from "@riadh-adrani/utils";
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
+import { createFragmentTemplate } from "../create/index.js";
 
 /**
  * checks if the given is a valid component template
@@ -71,12 +72,12 @@ export const getTag = (o: unknown): BranchTag => {
   if (isValidTemplate(o)) {
     const type = cast<BranchTemplate>(o).type;
 
-    if (isFunction(type)) {
-      return BranchTag.Function;
+    if (type === createFragmentTemplate) {
+      return BranchTag.Fragment;
     }
 
-    if (type === BranchTag.Fragment) {
-      return BranchTag.Fragment;
+    if (isFunction(type)) {
+      return BranchTag.Function;
     }
 
     if (isString(type)) {

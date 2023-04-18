@@ -6,11 +6,11 @@ import { BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
  * @param props component props
  * @param children component children
  */
-export const createTemplate = (
-  type: unknown,
+export const createTemplate = <T = unknown>(
+  type: T,
   props: Record<string, unknown>,
   children: Array<unknown>
-): BranchTemplate => {
+): BranchTemplate<T> => {
   return { type, props, children, symbol: BranchSymbol, key: (props.key as string) ?? undefined };
 };
 
