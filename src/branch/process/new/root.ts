@@ -19,7 +19,7 @@ const root = (container: HTMLElement, child: unknown): Branch => {
     instance: container,
   };
 
-  branch.children = [process(child, undefined, branch, 0, 0)];
+  branch.children = [process(child, undefined, branch, 0)];
 
   return branch;
 };

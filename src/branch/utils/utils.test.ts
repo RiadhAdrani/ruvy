@@ -6,9 +6,11 @@ import {
   getElementHost,
   initBranch,
   isHostBranch,
+  getCorrectKey,
 } from "./index.js";
 import { BranchTag, Namespace } from "../types/index.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
+import { createTemplate } from "../create/index.js";
 
 describe("utils", () => {
   describe("getNamespace", () => {
@@ -106,6 +108,17 @@ describe("utils", () => {
       const branch = initBranch({ type: "div", parent });
 
       expect(getElementHost(branch)).toStrictEqual(parentInstance);
+    });
+  });
+
+  describe("getCorrectKey", () => {
+    it.each([
+      [createTemplate("div", { key: 1 }, []), 3, 1],
+      [createTemplate("div", {}, []), 1, 1],
+      ["hello", 0, 0],
+      [null, 0, 0],
+    ])("should get correct key", (template, index, expected) => {
+      expect(getCorrectKey(template, index)).toBe(expected);
     });
   });
 });

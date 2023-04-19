@@ -19,7 +19,7 @@ const fragment = (template: BranchTemplateFragment, parent: Branch, key: BranchK
 
   branch.pendingActions.push(...collectPendingEffect(branch));
 
-  branch.children = fragmentChildren.map((ch) => process(ch, undefined, branch, 0, 0));
+  branch.children = fragmentChildren.map((ch, index) => process(ch, undefined, branch, index));
 
   return branch;
 };

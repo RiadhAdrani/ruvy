@@ -19,7 +19,7 @@ const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey): B
 
   branch.pendingActions.push(...collectPendingEffect(branch), renderAction);
 
-  branch.children = children.map((child, index) => process(child, undefined, branch, index, index));
+  branch.children = children.map((child, index) => process(child, undefined, branch, index));
 
   return branch;
 };

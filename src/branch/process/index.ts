@@ -1,7 +1,8 @@
 import { isUndefined } from "@riadh-adrani/utils";
-import { Branch, BranchKey } from "../types/index.js";
+import { Branch } from "../types/index.js";
 import createNewBranch from "./new/index.js";
 import diffBranches from "./diff/index.js";
+import { getCorrectKey } from "../utils/index.js";
 
 /**
  * @deprecated
@@ -15,12 +16,13 @@ const process = (
   template: unknown,
   current: Branch | undefined,
   parent: Branch,
-  key: BranchKey,
   index: number
 ): Branch => {
+  const $key = getCorrectKey(template, index);
+
   return isUndefined(current)
-    ? createNewBranch(template, parent, key)
-    : diffBranches(template, current!, parent, key, index);
+    ? createNewBranch(template, parent, $key)
+    : diffBranches(template, current!, parent, $key, index);
 };
 
 export default process;

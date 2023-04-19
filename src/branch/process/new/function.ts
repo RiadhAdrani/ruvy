@@ -21,7 +21,7 @@ const fn = (template: BranchTemplateFunction, parent: Branch, key: BranchKey): B
   branch.pendingActions.push(...collectPendingEffect(branch));
 
   if (getTag(child) !== BranchTag.Null) {
-    branch.children = [process(child, undefined, branch, 0, 0)];
+    branch.children = [process(child, undefined, branch, 0)];
   }
 
   return branch;

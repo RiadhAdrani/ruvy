@@ -1,6 +1,14 @@
-import { forEachKey, isFunction, merge } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, BranchTag, Namespace } from "../types/index.js";
+import { cast, forEachKey, isFunction, merge } from "@riadh-adrani/utils";
+import {
+  Branch,
+  BranchKey,
+  BranchStatus,
+  BranchTag,
+  BranchTemplate,
+  Namespace,
+} from "../types/index.js";
 import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
+import { isValidTemplate } from "../check/index.js";
 
 export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {
@@ -92,4 +100,13 @@ export const getElementHost = (branch: Branch): Element => {
   } else {
     throw "Unable to locate the hosting branch.";
   }
+};
+
+/**
+ * compute the correct key from a template or return the index otherwise.
+ * @param template child
+ * @param index index in parent
+ */
+export const getCorrectKey = (template: unknown, index: number): BranchKey => {
+  return isValidTemplate(template) ? cast<BranchTemplate>(template).key ?? index : index;
 };
