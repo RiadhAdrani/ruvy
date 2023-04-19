@@ -90,7 +90,7 @@ export interface Branch<Type = unknown> {
   pendingActions: Array<BranchAction>;
   parent?: Branch;
   status: BranchStatus;
-  children: Array<Branch | undefined>;
+  children: Array<Branch>;
   instance?: Node;
   key: BranchKey;
 }

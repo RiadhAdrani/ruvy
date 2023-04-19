@@ -4,19 +4,19 @@
 import { createJsxElement } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
-import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionType, BranchStatus, BranchTag } from "../../types/index.js";
 import text from "./text.js";
+import { omit } from "@riadh-adrani/utils";
 
 describe("new.text", () => {
   it("should create a text branch", () => {
     const parent = initBranch();
     const div = text("test", parent, 0);
 
-    expect(div).toStrictEqual<Branch>({
+    expect(omit(div, "pendingActions")).toStrictEqual({
       children: [],
       hooks: {},
       key: 0,
-      pendingActions: [],
       props: {},
       status: BranchStatus.Pending,
       tag: BranchTag.Text,
@@ -24,5 +24,8 @@ describe("new.text", () => {
       parent,
       text: "test",
     });
+
+    expect(div.pendingActions.length).toBe(1);
+    expect(div.pendingActions[0].type).toBe(ActionType.Render);
   });
 });

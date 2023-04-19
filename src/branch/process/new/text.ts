@@ -1,4 +1,5 @@
-import { Branch, BranchKey, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from "../../types/index.js";
+import createAction from "../actions/index.js";
 
 /**
  * create new text branch from data.
@@ -20,7 +21,7 @@ const text = (data: string, parent: Branch, key: BranchKey): Branch<string> => {
     parent,
   };
 
-  // TODO : render and append to parent
+  branch.pendingActions.push(createAction(ActionType.Render, branch));
 
   return branch;
 };
