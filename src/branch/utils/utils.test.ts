@@ -75,7 +75,7 @@ describe("utils", () => {
       [BranchTag.Function, false],
       [BranchTag.Null, false],
       [BranchTag.Root, true],
-      [BranchTag.Text, false],
+      [BranchTag.Text, true],
     ])("should determine if (%s) is host => (%s)", (tag, res) => {
       expect(isHostBranch(initBranch({ tag }))).toBe(res);
     });

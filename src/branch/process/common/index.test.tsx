@@ -7,11 +7,18 @@ import { beforeEach, describe, expect, it, vitest } from "vitest";
 import root from "../new/root.js";
 import { commit } from "./index.js";
 import { setState } from "../../hooks/index.js";
+import { Branch } from "../../types/index.js";
 
 describe("common", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
   });
+
+  const expectPendingActionsToBeEmpty = (branch: Branch) => {
+    expect(branch.pendingActions).toStrictEqual([]);
+
+    branch.children.forEach(expectPendingActionsToBeEmpty);
+  };
 
   describe("commit", () => {
     it("should render tree into the dom", () => {
@@ -26,6 +33,8 @@ describe("common", () => {
       const branch = root(document.body, <App />);
 
       commit(branch);
+
+      expectPendingActionsToBeEmpty(branch);
 
       expect(document.body.innerHTML).toBe("<div><button>Click me</button></div>");
     });

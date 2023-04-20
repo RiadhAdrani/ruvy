@@ -20,7 +20,7 @@ describe("createRenderAction", () => {
   it("should throw when branch is non-element", () => {
     const branch = initBranch() as Branch<string>;
 
-    expect(createRenderAction(branch)).toThrow(`Cannot render a non-element element.`);
+    expect(createRenderAction(branch)).toThrow(`Cannot render a non-host branch.`);
   });
 
   it("should inject text in the root", () => {

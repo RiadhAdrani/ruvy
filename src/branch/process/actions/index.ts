@@ -1,6 +1,7 @@
 import { Callback } from "@riadh-adrani/utils";
 import { ActionType, Branch, BranchAction } from "../../types/index.js";
 import createRenderAction from "./render.js";
+import createUnmountAction from "./unmount.js";
 
 /**
  * @deprecated
@@ -14,6 +15,9 @@ const createAction = (type: ActionType, branch: Branch): BranchAction => {
     case ActionType.Render: {
       callback = createRenderAction(branch as Branch<string>);
       break;
+    }
+    case ActionType.Unmount: {
+      callback = createUnmountAction(branch as Branch<string>);
     }
     default: {
       throw `Unknown action type (${type})`;

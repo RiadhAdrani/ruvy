@@ -6,6 +6,7 @@ import {
   getHtmlElementProps,
   getNamespace,
   getElementHost,
+  isHostBranch,
 } from "../../utils/index.js";
 
 /**
@@ -15,8 +16,8 @@ import {
 const createRenderAction = (branch: Branch<string>): Callback => {
   return () => {
     // check if branch tag is Text or Element
-    if (![BranchTag.Text, BranchTag.Element].includes(branch.tag)) {
-      throw `Cannot render a non-element element.`;
+    if (!isHostBranch(branch)) {
+      throw `Cannot render a non-host branch.`;
     }
 
     let render: Node;
