@@ -21,7 +21,7 @@ describe("new.fragment", () => {
       key: 0,
       pendingActions: [],
       props: { children: [] },
-      status: BranchStatus.Pending,
+      status: BranchStatus.Mounting,
       tag: BranchTag.Fragment,
       type: createFragmentTemplate,
       parent,

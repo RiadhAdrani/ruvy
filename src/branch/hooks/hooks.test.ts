@@ -38,7 +38,7 @@ describe("useHooksContext", () => {
     key: 0,
     pendingActions: [],
     props: {},
-    status: BranchStatus.Pending,
+    status: BranchStatus.Mounting,
     tag: BranchTag.Element,
     type: "div",
   };
@@ -60,7 +60,7 @@ describe("dispatchSetState", () => {
       key: 0,
       pendingActions: [],
       props: {},
-      status: BranchStatus.Pending,
+      status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
     };
@@ -121,7 +121,7 @@ describe("dispatchSetEffect", () => {
       key: 0,
       pendingActions: [],
       props: {},
-      status: BranchStatus.Pending,
+      status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
     };
@@ -238,7 +238,7 @@ describe("collectEffects", () => {
       key: 0,
       pendingActions: [],
       props: {},
-      status: BranchStatus.Pending,
+      status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
     };
@@ -288,7 +288,7 @@ describe("collectEffects", () => {
     expect(actions.length).toBe(1);
     expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
       callback: hook.data.cleanUp!,
-      type: ActionType.CleanUp,
+      type: ActionType.Cleanup,
     });
   });
 });

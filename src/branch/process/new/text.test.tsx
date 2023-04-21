@@ -18,7 +18,7 @@ describe("new.text", () => {
       hooks: {},
       key: 0,
       props: {},
-      status: BranchStatus.Pending,
+      status: BranchStatus.Mounting,
       tag: BranchTag.Text,
       type: BranchTag.Text,
       parent,

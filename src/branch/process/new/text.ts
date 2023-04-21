@@ -14,7 +14,7 @@ const text = (data: string, parent: Branch, key: BranchKey): Branch<string> => {
     key,
     pendingActions: [],
     props: {},
-    status: BranchStatus.Pending,
+    status: BranchStatus.Mounting,
     tag: BranchTag.Text,
     type: BranchTag.Text,
     text: data,
