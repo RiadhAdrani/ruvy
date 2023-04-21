@@ -1,11 +1,17 @@
 import { Callback } from "@riadh-adrani/utils";
 import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
-import { createElement, createTextNode, injectNode } from "@riadh-adrani/dom-utils";
 import {
+  createElement,
+  createTextNode,
+  injectNode,
+  replaceNodeWith,
+} from "@riadh-adrani/dom-utils";
+import {
+  getChildHostBranch,
   getHtmlElementEventListeners,
   getHtmlElementProps,
   getNamespace,
-  getElementHost,
+  getParentHostBranch,
   isHostBranch,
 } from "../../utils/index.js";
 
@@ -38,9 +44,22 @@ const createRenderAction = (branch: Branch<string>): Callback => {
     branch.instance = render;
     branch.status = BranchStatus.Mounted;
 
-    const host = getElementHost(branch);
+    let host = getParentHostBranch(branch);
 
-    injectNode(render as Element, host);
+    if (branch.old) {
+      // find closest Host element, and replace it
+      const hostBranch = getChildHostBranch(branch.old);
+
+      if (hostBranch) {
+        replaceNodeWith(hostBranch.instance as Element, render as Element);
+      } else {
+        // no host to replace, just inject it.
+        injectNode(render as Element, host);
+      }
+    } else {
+      // inject it directly.
+      injectNode(render as Element, host);
+    }
   };
 };
 

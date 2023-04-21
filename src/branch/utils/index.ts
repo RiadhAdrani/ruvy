@@ -17,7 +17,7 @@ export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
     key: 0,
     pendingActions: [],
     props: {},
-    status: BranchStatus.Pending,
+    status: BranchStatus.Mounting,
     tag: BranchTag.Null,
     type: BranchTag.Null,
   };
@@ -83,20 +83,20 @@ export const getHtmlElementEventListeners = (branch: Branch): Record<string, Dom
  * @param branch branch
  */
 export const isHostBranch = (branch: Branch): boolean => {
-  return [BranchTag.Element, BranchTag.Root].includes(branch.tag);
+  return [BranchTag.Element, BranchTag.Root, BranchTag.Text].includes(branch.tag);
 };
 
 /**
  * retrieve the closest host element.
  * @param branch current
  */
-export const getElementHost = (branch: Branch): Element => {
+export const getParentHostBranch = (branch: Branch): Element => {
   if (branch.parent) {
     if (isHostBranch(branch.parent)) {
       return branch.parent.instance as Element;
     }
 
-    return getElementHost(branch.parent);
+    return getParentHostBranch(branch.parent);
   } else {
     throw "Unable to locate the hosting branch.";
   }
@@ -109,4 +109,38 @@ export const getElementHost = (branch: Branch): Element => {
  */
 export const getCorrectKey = (template: unknown, index: number): BranchKey => {
   return isValidTemplate(template) ? cast<BranchTemplate>(template).key ?? index : index;
+};
+
+/**
+ * @deprecated
+ * @param parent
+ * @param key
+ * @returns
+ */
+export const getCurrentBranchWithKey = <T = unknown>(
+  parent: Branch,
+  key: BranchKey
+): Branch<T> | undefined => {
+  return cast<Array<Branch<T>>>(parent.children).find((child) => child.key === key);
+};
+
+/**
+ * @deprecated
+ * @param branch
+ * @returns
+ */
+export const getChildHostBranch = (branch: Branch): Branch | undefined => {
+  if (isHostBranch(branch)) {
+    return branch;
+  }
+
+  for (const child of branch.children) {
+    const host = getChildHostBranch(child);
+
+    if (host) {
+      return host;
+    }
+  }
+
+  return undefined;
 };

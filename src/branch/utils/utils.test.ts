@@ -3,7 +3,7 @@ import {
   getHtmlElementEventListeners,
   getHtmlElementProps,
   getNamespace,
-  getElementHost,
+  getParentHostBranch,
   initBranch,
   isHostBranch,
   getCorrectKey,
@@ -85,13 +85,15 @@ describe("utils", () => {
     const root = initBranch({ tag: BranchTag.Root, type: BranchTag.Root, instance: document.body });
 
     it("should throw when host is not found", () => {
-      expect(() => getElementHost(initBranch())).toThrow("Unable to locate the hosting branch.");
+      expect(() => getParentHostBranch(initBranch())).toThrow(
+        "Unable to locate the hosting branch."
+      );
     });
 
     it("should get root as host element", () => {
       const branch = initBranch({ type: "div", parent: root });
 
-      expect(getElementHost(branch)).toStrictEqual(document.body);
+      expect(getParentHostBranch(branch)).toStrictEqual(document.body);
     });
 
     it("should get the closest host element", () => {
@@ -107,7 +109,7 @@ describe("utils", () => {
       });
       const branch = initBranch({ type: "div", parent });
 
-      expect(getElementHost(branch)).toStrictEqual(parentInstance);
+      expect(getParentHostBranch(branch)).toStrictEqual(parentInstance);
     });
   });
 
