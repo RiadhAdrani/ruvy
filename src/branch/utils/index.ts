@@ -90,10 +90,10 @@ export const isHostBranch = (branch: Branch): boolean => {
  * retrieve the closest host element.
  * @param branch current
  */
-export const getParentHostBranch = (branch: Branch): Element => {
+export const getParentHostBranch = (branch: Branch): Branch => {
   if (branch.parent) {
     if (isHostBranch(branch.parent)) {
-      return branch.parent.instance as Element;
+      return branch.parent;
     }
 
     return getParentHostBranch(branch.parent);
@@ -143,4 +143,45 @@ export const getChildHostBranch = (branch: Branch): Branch | undefined => {
   }
 
   return undefined;
+};
+
+/**
+ * get index in dom according to the closest host parent.
+ * @param branch target
+ */
+export const getHostBranchIndexFromHostParent = (
+  branch: Branch,
+  parent?: Branch
+): { index: number; found: boolean } => {
+  let idx = 0;
+  let wasFound = false;
+
+  const parentHost = parent ?? getParentHostBranch(branch);
+
+  for (const child of parentHost.children) {
+    if (wasFound) {
+      break;
+    }
+
+    if (child === branch) {
+      wasFound = true;
+      break;
+    }
+
+    if (isHostBranch(child)) {
+      idx = idx + 1;
+      continue;
+    } else {
+      const { found, index } = getHostBranchIndexFromHostParent(branch, child);
+
+      idx = idx + index;
+
+      if (found) {
+        wasFound = true;
+        break;
+      }
+    }
+  }
+
+  return { index: idx, found: wasFound };
 };
