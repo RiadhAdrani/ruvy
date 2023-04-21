@@ -25,16 +25,34 @@ export enum HookType {
 
 export enum BranchStatus {
   Mounted = "#-mounted",
-  Pending = "#-pending",
+  Mounting = "#-pending",
+  Unmounting = "#-un-mounting",
+  Unmounted = "#-un-mounted",
 }
 
 export const BranchSymbol = Symbol.for("#-ruvy-branch");
 
 export enum ActionType {
   Render = "#-action-render-element",
+  Reorder = "#-action-order-elements",
+  Cleanup = "#-action-clean-up-effects",
   Effect = "#-action-run-effect",
-  CleanUp = "#-action-clean-up",
+  Unmount = "#-action-unmount-element",
+  UpdateProps = "#-action-update-props",
+  Unmounted = "#-action-unmounted-effect",
 }
+
+export const ActionPriority: { [key in ActionType]: number } = (() => {
+  return [
+    ActionType.Render,
+    ActionType.Unmount,
+    ActionType.Unmounted,
+    ActionType.Reorder,
+    ActionType.UpdateProps,
+    ActionType.Cleanup,
+    ActionType.Effect,
+  ].map((key, index) => ({ [key]: index })) as unknown as { [key in ActionType]: number };
+})();
 
 export type Effect = Callback<Callback | void>;
 
@@ -93,4 +111,15 @@ export interface Branch<Type = unknown> {
   children: Array<Branch>;
   instance?: Node;
   key: BranchKey;
+  old?: Branch;
+  flags?: {
+    willBeReplaced?: boolean;
+  };
+}
+
+export interface PropDiff<T = unknown> {
+  prop: string;
+  value: T;
+  op: "set" | "update" | "remove";
+  priority: number;
 }

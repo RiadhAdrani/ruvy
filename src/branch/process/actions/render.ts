@@ -8,6 +8,7 @@ import {
 } from "@riadh-adrani/dom-utils";
 import {
   getChildHostBranch,
+  getHostBranchIndexFromHostParent,
   getHtmlElementEventListeners,
   getHtmlElementProps,
   getNamespace,
@@ -46,19 +47,15 @@ const createRenderAction = (branch: Branch<string>): Callback => {
 
     let host = getParentHostBranch(branch);
 
-    if (branch.old) {
-      // find closest Host element, and replace it
-      const hostBranch = getChildHostBranch(branch.old);
+    const existingHostBranch = branch.old ? getChildHostBranch(branch.old) : undefined;
 
-      if (hostBranch) {
-        replaceNodeWith(hostBranch.instance as Element, render as Element);
-      } else {
-        // no host to replace, just inject it.
-        injectNode(render as Element, host);
-      }
+    if (existingHostBranch) {
+      replaceNodeWith(existingHostBranch.instance as Element, render as Element);
     } else {
+      const { index } = getHostBranchIndexFromHostParent(branch);
+
       // inject it directly.
-      injectNode(render as Element, host);
+      injectNode(render as Element, host.instance as Element, index);
     }
   };
 };

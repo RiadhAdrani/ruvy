@@ -153,7 +153,7 @@ export const collectEffects = (branch: Branch): Array<BranchAction> => {
         effects.push({
           callback: data.pendingCleanUp,
           requestTime: Date.now(),
-          type: ActionType.CleanUp,
+          type: ActionType.Cleanup,
         });
       }
 
@@ -169,6 +169,19 @@ export const collectEffects = (branch: Branch): Array<BranchAction> => {
 
   return effects;
 };
+
+export const unmountEffects = (branch: Branch) =>
+  forEachKey((_, hook) => {
+    if (hook.type === HookType.Effect) {
+      const { data } = cast<HookData<SetEffectData>>(hook);
+
+      data.pendingEffect = undefined;
+
+      if (data.cleanUp) {
+        data.pendingCleanUp = data.cleanUp;
+      }
+    }
+  }, branch.hooks);
 
 /**
  * dispatch set state hook.

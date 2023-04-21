@@ -5,7 +5,7 @@
 import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import root from "../new/root.js";
-import { commit } from "./index.js";
+import { collectActions, commit } from "./index.js";
 import { setState } from "../../hooks/index.js";
 import { Branch } from "../../types/index.js";
 
@@ -32,7 +32,9 @@ describe("common", () => {
 
       const branch = root(document.body, <App />);
 
-      commit(branch);
+      const actions = collectActions(branch);
+
+      commit(actions);
 
       expectPendingActionsToBeEmpty(branch);
 
@@ -58,7 +60,9 @@ describe("common", () => {
 
       const branch = root(document.body, <App />);
 
-      commit(branch);
+      const actions = collectActions(branch);
+
+      commit(actions);
 
       expect(document.body.innerHTML).toBe(
         "<div><button>0</button><button>1</button><button>2</button></div>"
@@ -86,7 +90,9 @@ describe("common", () => {
 
       const branch = root(document.body, <App />);
 
-      commit(branch);
+      const actions = collectActions(branch);
+
+      commit(actions);
 
       expect(document.body.innerHTML).toBe(
         "<div><button>0</button><button>1</button><button>2</button></div>"
@@ -108,7 +114,9 @@ describe("common", () => {
 
       const branch = root(document.body, <App />);
 
-      commit(branch);
+      const actions = collectActions(branch);
+
+      commit(actions);
 
       const btn = document.getElementById("btn");
       btn?.click();

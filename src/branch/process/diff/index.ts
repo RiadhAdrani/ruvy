@@ -1,4 +1,7 @@
-import { Branch, BranchKey } from "../../types/index.js";
+import { haveSameTagAndType } from "../../check/index.js";
+import { Branch } from "../../types/index.js";
+import { unmountBranch } from "../common/index.js";
+import process from "../index.js";
 
 /**
  * @deprecated
@@ -13,10 +16,35 @@ const diffBranches = (
   template: unknown,
   current: Branch,
   parent: Branch,
-  key: BranchKey,
   index: number
 ): Branch => {
-  return undefined as unknown as Branch;
+  current.old = undefined;
+
+  if (haveSameTagAndType(current, template)) {
+    // we perform diffing
+    const tag = current.tag;
+
+    switch (tag) {
+    }
+
+    // diff children
+  } else {
+    // we move current to old,
+    const old = current;
+
+    // collect unmount effects,
+    unmountBranch(old);
+
+    // compute the new one and merge it
+    const newBranch = process(template, undefined, parent, index);
+
+    newBranch.old = old;
+
+    // replace current with newly computed one.
+    current = newBranch;
+  }
+
+  return current;
 };
 
 export default diffBranches;

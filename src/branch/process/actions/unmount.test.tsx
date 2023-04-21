@@ -11,7 +11,7 @@ import text from "../new/text.js";
 import createUnmountAction from "./unmount.js";
 import { removeNode } from "@riadh-adrani/dom-utils";
 
-describe("createRenderAction", () => {
+describe("createUnmountAction", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
   });
