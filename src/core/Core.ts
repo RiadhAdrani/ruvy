@@ -1,22 +1,13 @@
-import { isElement, setEvent, HTML_NS, SVG_NS, MATH_NS } from "@riadh-adrani/dom-utils";
-import { isArray, isFunction, isString } from "@riadh-adrani/utils";
-import {
-  diffComponents,
-  executeUpdateCallbacks,
-  processComponent,
-  renderComponent,
-  createComponent as createComponentUnWrapped,
-} from "../component/index.js";
+import { isElement, setEvent } from "@riadh-adrani/dom-utils";
+import { isFunction } from "@riadh-adrani/utils";
 import { Context } from "../context/index.js";
 import { Router } from "../router/index.js";
 import { Scheduler } from "../scheduler/index.js";
 import { createEffectCollection, createStateCollection, Store } from "../store/index.js";
 import {
   Callback,
-  IComponent,
   IComponentTemplate,
   StateArray,
-  Tag,
   PrimitiveComponentTemplate,
   RouterConfig,
   RawRoute,
@@ -24,13 +15,18 @@ import {
 } from "../types/index.js";
 import { IMountConfig } from "../types/index.js";
 import { getClosestAnchorParent } from "./utils/index.js";
+import { Branch } from "../branch/types/index.js";
+import root from "../branch/process/new/root.js";
+import { createFragmentTemplate, createJsxElement, createTemplate } from "../branch/index.js";
+import { collectActions, commit } from "../branch/process/common/index.js";
+import process from "../branch/process/index.js";
 
 export class Core {
   static singleton: Core = new Core();
 
-  fn: Callback<IComponentTemplate> = undefined as unknown as Callback<IComponentTemplate>;
+  fn: Callback<unknown> = undefined as unknown as Callback<unknown>;
 
-  current: IComponent = undefined as unknown as IComponent;
+  current: Branch = undefined as unknown as Branch;
   host: HTMLElement = undefined as unknown as HTMLElement;
 
   shouldUpdate = false;
@@ -71,15 +67,15 @@ export class Core {
       throw "Unexpected Type: host element is not a Dom element.";
     }
 
-    if (!isUpdate) {
-      this.current = processComponent(this.fn());
-      this.host.appendChild(renderComponent(this.current));
-    } else {
-      const updated = processComponent(this.fn());
-      const actions = diffComponents(this.current, updated);
+    const template = createTemplate(this.fn, {}, []);
 
-      executeUpdateCallbacks(actions);
+    if (!isUpdate) {
+      this.current = root(this.host, template);
+    } else {
+      process(template, this.current.children[0], this.current, 0);
     }
+
+    commit(collectActions(this.current));
 
     this.store.launchEffects();
     this.store.resetUsage();
@@ -173,63 +169,6 @@ export const setEffect = (
   Core.singleton.store.setEffect("effect", key, callback, dependencies);
 };
 
-export const createComponent = (tag: Tag, options?: Record<string, unknown>) => {
-  const opts = options ?? {};
-
-  const eventWrapper = (callback: Callback) => {
-    Core.singleton.batchContext.use(callback, true, () => {
-      if (Core.singleton.shouldUpdate) {
-        Core.singleton.executeRoutine();
-      }
-    });
-  };
-
-  return createComponentUnWrapped(tag, opts, { eventWrapper });
-};
-
-export const createJsxElement = (
-  tag: Tag | FunctionComponent,
-  options?: Record<string, unknown>,
-  ...children: Array<unknown>
-): IComponentTemplate => {
-  const $children: Array<unknown> = [];
-  const $options = options || {};
-
-  if (options) {
-    if (options.svg === true) {
-      $options.ns = SVG_NS;
-    } else if (options.math === true) {
-      $options.ns = MATH_NS;
-    } else if (options.html === true) {
-      $options.ns = HTML_NS;
-    }
-  }
-
-  children.forEach((child) => {
-    if (isArray(child)) {
-      $children.push(...(child as Array<unknown>));
-    } else {
-      $children.push(child);
-    }
-  });
-
-  if (isString(tag)) {
-    return createComponent(tag as Tag, { ...$options, children: $children });
-  }
-
-  return (tag as (options: unknown, ...children: Array<unknown>) => IComponentTemplate)(
-    options,
-    ...$children
-  );
-};
-
-export const createJsxFragmentElement = (
-  _: unknown,
-  ...children: Array<PrimitiveComponentTemplate | IComponentTemplate>
-): Array<unknown> => {
-  return children;
-};
-
 export const navigate = (path: string) => {
   Core.singleton.router.push(path);
 };
@@ -243,4 +182,4 @@ const win = window as unknown as Record<string, unknown>;
 win.setState = setState;
 win.setEffect = setEffect;
 win.createJsxElement = createJsxElement;
-win.createJsxFragmentElement = createJsxFragmentElement;
+win.createJsxFragmentElement = createFragmentTemplate;

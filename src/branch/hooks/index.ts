@@ -10,6 +10,7 @@ import {
   SetEffectData,
   SetEffectParams,
 } from "../types/index.js";
+import { Core } from "../../core/Core.js";
 
 let index = -1;
 
@@ -208,7 +209,9 @@ export const dispatchSetState = <T = unknown>(
   const setter = (value: T) => {
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
+
       // TODO : notify of update if changed
+      Core.singleton.executeRoutine(true);
     }
   };
 

@@ -57,6 +57,8 @@ const createRenderAction = (branch: Branch<string>): Callback => {
       // inject it directly.
       injectNode(render as Element, host.instance as Element, index);
     }
+
+    branch.status = BranchStatus.Mounted;
   };
 };
 

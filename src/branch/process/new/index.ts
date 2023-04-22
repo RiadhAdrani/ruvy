@@ -21,7 +21,9 @@ import text from "./text.js";
  * @returns
  */
 const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Branch => {
-  switch (getTag(template)) {
+  const tag = getTag(template);
+
+  switch (tag) {
     case BranchTag.Function: {
       return fn(template as BranchTemplateFunction, parent, key);
     }

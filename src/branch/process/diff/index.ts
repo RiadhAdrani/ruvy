@@ -65,23 +65,23 @@ const diffBranches = (
     }
 
     const oldChildrenKeys = current.children.map((child) => child.key);
-    const newChildrenKey = children.map((child, index) => getCorrectKey(child, index));
+    const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
 
     children.forEach((child, index) => {
       const key = getCorrectKey(child, index);
 
       const maybeBranch = getCurrentBranchWithKey(current, key);
 
-      const branchChild = process(child, maybeBranch, current, index);
-
       if (!maybeBranch) {
-        current.children.push(branchChild);
+        throw "Unable to diff branches: current not found.";
       }
+
+      diffBranches(child, maybeBranch, current, index);
     });
 
     // remove excess children
     oldChildrenKeys.forEach((key) => {
-      if (!newChildrenKey.includes(key)) {
+      if (!newChildrenKeys.includes(key)) {
         const maybeBranch = getCurrentBranchWithKey(current, key);
 
         if (maybeBranch) {
@@ -93,7 +93,7 @@ const diffBranches = (
     });
 
     // rearrange current.children
-    newChildrenKey.forEach((key, newIndex) => {
+    newChildrenKeys.forEach((key, newIndex) => {
       const oldIndex = current.children.findIndex((child) => child.key === key);
 
       if (oldIndex !== newIndex) {
@@ -135,11 +135,15 @@ const diffBranches = (
 
     // compute the new one and merge it
     const newBranch = process(template, undefined, parent, index);
-
     newBranch.old = old;
 
     // replace current with newly computed one.
-    current = newBranch;
+    // bruh : current = newBranch;
+
+    const parentChildren = current.parent!.children;
+    const i = parentChildren.findIndex((child) => child === old);
+
+    parentChildren[i] = newBranch;
   }
 
   return current;

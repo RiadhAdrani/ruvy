@@ -16,7 +16,7 @@ export const createTemplate = <T = unknown>(
     props: { ...props, children },
     children,
     symbol: BranchSymbol,
-    key: (props.key as string) ?? undefined,
+    key: (props?.key as string) ?? undefined,
   };
 };
 

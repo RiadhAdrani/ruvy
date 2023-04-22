@@ -42,7 +42,7 @@ export const collectActions = (branch: Branch): Array<BranchAction> => {
   const actions: Array<BranchAction> = [];
 
   if (branch.old) {
-    actions.push(...branch.old.pendingActions);
+    actions.push(...collectActions(branch.old));
   }
 
   actions.push(...branch.pendingActions);
