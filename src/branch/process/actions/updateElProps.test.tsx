@@ -3,7 +3,7 @@
 // @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 import { beforeEach, describe, expect, it, vitest } from "vitest";
-import el from "../new/element.js";
+import element from "../new/element.js";
 import root from "../new/root.js";
 import createRenderAction from "./render.js";
 import { diffElProps } from "../diff/element.js";
@@ -18,12 +18,12 @@ describe("updateElProps", () => {
   it("should update attribute", () => {
     const parent = root(document.body, null);
 
-    const div = el((<div class="test" />) as any, parent, 0);
+    const div = element((<div class="test" />) as any, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe('<div class="test"></div>');
 
-    const div2 = el((<div class="test-2" />) as any, parent, 0);
+    const div2 = element((<div class="test-2" />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -33,12 +33,12 @@ describe("updateElProps", () => {
   it("should add attribute", () => {
     const parent = root(document.body, null);
 
-    const div = el((<div />) as any, parent, 0);
+    const div = element((<div />) as any, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe("<div></div>");
 
-    const div2 = el((<div class="test" />) as any, parent, 0);
+    const div2 = element((<div class="test" />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -48,12 +48,12 @@ describe("updateElProps", () => {
   it("should remove an attribute", () => {
     const parent = root(document.body, null);
 
-    const div = el((<div class="test" />) as any, parent, 0);
+    const div = element((<div class="test" />) as any, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe('<div class="test"></div>');
 
-    const div2 = el((<div />) as any, parent, 0);
+    const div2 = element((<div />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -65,10 +65,10 @@ describe("updateElProps", () => {
 
     const onClick = vitest.fn();
 
-    const div = el((<div />) as any, parent, 0);
+    const div = element((<div />) as any, parent, 0);
     createRenderAction(div)();
 
-    const div2 = el((<div onClick={onClick} />) as any, parent, 0);
+    const div2 = element((<div onClick={onClick} />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();
@@ -84,10 +84,10 @@ describe("updateElProps", () => {
     const onClick = vitest.fn();
     const onClick2 = vitest.fn();
 
-    const div = el((<div onClick={onClick} />) as any, parent, 0);
+    const div = element((<div onClick={onClick} />) as any, parent, 0);
     createRenderAction(div)();
 
-    const div2 = el((<div onClick={onClick2} />) as any, parent, 0);
+    const div2 = element((<div onClick={onClick2} />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();
@@ -103,10 +103,10 @@ describe("updateElProps", () => {
 
     const onClick = vitest.fn();
 
-    const div = el((<div onClick={onClick} />) as any, parent, 0);
+    const div = element((<div onClick={onClick} />) as any, parent, 0);
     createRenderAction(div)();
 
-    const div2 = el((<div />) as any, parent, 0);
+    const div2 = element((<div />) as any, parent, 0);
     const diffs = diffElProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();

@@ -1,8 +1,24 @@
 import { haveSameTagAndType } from "../../check/index.js";
-import { Branch, BranchTag, BranchTemplate } from "../../types/index.js";
+import {
+  ActionType,
+  Branch,
+  BranchTag,
+  BranchTemplate,
+  BranchTemplateFragment,
+  BranchTemplateFunction,
+} from "../../types/index.js";
+import {
+  getClosestHostBranches,
+  getCorrectKey,
+  getCurrentBranchWithKey,
+} from "../../utils/index.js";
+import createAction from "../actions/index.js";
 import { unmountBranch } from "../common/index.js";
 import process from "../index.js";
 import el from "./element.js";
+import fragment from "./fragment.js";
+import fn from "./function.js";
+import text from "./text.js";
 
 /**
  * @deprecated
@@ -33,22 +49,83 @@ const diffBranches = (
         break;
       }
       case BranchTag.Text: {
-        // TODO
+        children = text(current as Branch<string>, template as string);
         break;
       }
       case BranchTag.Fragment: {
-        // TODO
+        children = fragment(template as BranchTemplateFragment);
         break;
       }
       case BranchTag.Function: {
-        // TODO
+        children = fn(current, template as BranchTemplateFunction);
         break;
       }
       default:
         break;
     }
 
-    // TODO : diff children, keys position etc...
+    const oldChildrenKeys = current.children.map((child) => child.key);
+    const newChildrenKey = children.map((child, index) => getCorrectKey(child, index));
+
+    children.forEach((child, index) => {
+      const key = getCorrectKey(child, index);
+
+      const maybeBranch = getCurrentBranchWithKey(current, key);
+
+      const branchChild = process(child, maybeBranch, current, index);
+
+      if (!maybeBranch) {
+        current.children.push(branchChild);
+      }
+    });
+
+    // remove excess children
+    oldChildrenKeys.forEach((key) => {
+      if (!newChildrenKey.includes(key)) {
+        const maybeBranch = getCurrentBranchWithKey(current, key);
+
+        if (maybeBranch) {
+          unmountBranch(maybeBranch);
+
+          current.pendingActions.push(createAction(ActionType.RemoveBranch, maybeBranch));
+        }
+      }
+    });
+
+    // rearrange current.children
+    newChildrenKey.forEach((key, newIndex) => {
+      const oldIndex = current.children.findIndex((child) => child.key === key);
+
+      if (oldIndex !== newIndex) {
+        // we need to change the index locally
+
+        const branch = getCurrentBranchWithKey(current, key);
+
+        if (!branch) {
+          throw "Branch not found to be rearranged.";
+        }
+
+        const newChildren = [
+          ...current.children.slice(0, oldIndex),
+          ...current.children.slice(oldIndex + 1),
+        ];
+
+        const newWithBranch = [
+          ...newChildren.slice(0, newIndex),
+          branch,
+          ...newChildren.slice(newIndex + 1),
+        ];
+
+        current.children = newWithBranch;
+
+        // we need to get Host element(s) and rearrange them
+        const hosts = getClosestHostBranches(branch);
+
+        hosts.forEach((host) => {
+          current.pendingActions.push(createAction(ActionType.Reorder, host));
+        });
+      }
+    });
   } else {
     // we move current to old,
     const old = current;

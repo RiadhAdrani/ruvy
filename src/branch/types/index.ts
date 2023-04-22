@@ -41,6 +41,7 @@ export enum ActionType {
   UpdateProps = "#-action-update-props",
   UpdateText = "#-action-text-node",
   Unmounted = "#-action-unmounted-effect",
+  RemoveBranch = "#action-remove-branch",
 }
 
 export const ActionPriority: { [key in ActionType]: number } = (() => {
@@ -48,6 +49,7 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
     ActionType.Render,
     ActionType.Unmount,
     ActionType.Unmounted,
+    ActionType.RemoveBranch,
     ActionType.Reorder,
     ActionType.UpdateProps,
     ActionType.UpdateText,

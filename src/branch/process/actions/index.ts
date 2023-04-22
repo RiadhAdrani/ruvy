@@ -4,6 +4,8 @@ import createRenderAction from "./render.js";
 import createUnmountAction from "./unmount.js";
 import createElPropsUpdateAction from "./updateElProps.js";
 import createTextUpdateAction from "./updateText.js";
+import createRemoveBranchAction from "./removeBranch.js";
+import createReorderHostElement from "./reorderElement.js";
 
 /**
  * @deprecated
@@ -28,6 +30,14 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     }
     case ActionType.UpdateText: {
       callback = createTextUpdateAction(branch as Branch<string>, data as string);
+      break;
+    }
+    case ActionType.RemoveBranch: {
+      callback = createRemoveBranchAction(branch);
+      break;
+    }
+    case ActionType.Reorder: {
+      callback = createReorderHostElement(branch);
       break;
     }
     default: {

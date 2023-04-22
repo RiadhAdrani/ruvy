@@ -10,7 +10,11 @@ import createAction from "../actions/index.js";
  * @param parent parent branch
  * @param key element key
  */
-const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey): Branch<string> => {
+const element = (
+  template: BranchTemplate<string>,
+  parent: Branch,
+  key: BranchKey
+): Branch<string> => {
   const { props, type, children } = template;
 
   const branch: Branch<string> = initBranch({ tag: BranchTag.Element, type, parent, key, props });
@@ -24,4 +28,4 @@ const el = (template: BranchTemplate<string>, parent: Branch, key: BranchKey): B
   return branch;
 };
 
-export default el;
+export default element;

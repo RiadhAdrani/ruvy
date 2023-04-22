@@ -8,7 +8,7 @@ import {
   BranchTemplateFunction,
 } from "../../types/index.js";
 import fn from "../new/function.js";
-import el from "./element.js";
+import element from "./element.js";
 import empty from "./empty.js";
 import fragment from "./fragment.js";
 import text from "./text.js";
@@ -26,7 +26,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return fn(template as BranchTemplateFunction, parent, key);
     }
     case BranchTag.Element: {
-      return el(template as BranchTemplate<string>, parent, key);
+      return element(template as BranchTemplate<string>, parent, key);
     }
     case BranchTag.Fragment: {
       return fragment(template as BranchTemplate<typeof createFragmentTemplate>, parent, key);

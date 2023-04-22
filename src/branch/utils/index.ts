@@ -185,3 +185,15 @@ export const getHostBranchIndexFromHostParent = (
 
   return { index: idx, found: wasFound };
 };
+
+export const getClosestHostBranches = (branch: Branch): Array<Branch> => {
+  const out: Array<Branch> = [];
+
+  if (isHostBranch(branch)) {
+    return [branch];
+  }
+
+  branch.children.forEach((child) => out.push(...getClosestHostBranches(child)));
+
+  return out;
+};

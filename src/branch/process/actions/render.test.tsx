@@ -8,7 +8,7 @@ import { initBranch } from "../../utils/index.js";
 import createRenderAction from "./render.js";
 import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import text from "../new/text.js";
-import el from "../new/element.js";
+import element from "../new/element.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
 
 describe("createRenderAction", () => {
@@ -36,7 +36,7 @@ describe("createRenderAction", () => {
   });
 
   it("should inject div in the root", () => {
-    const branch = el((<div />) as any, root, 0);
+    const branch = element((<div />) as any, root, 0);
 
     createRenderAction(branch)();
 
@@ -47,7 +47,7 @@ describe("createRenderAction", () => {
   });
 
   it("should inject div with props", () => {
-    const branch = el((<div class="test" id="test" />) as any, root, 0);
+    const branch = element((<div class="test" id="test" />) as any, root, 0);
 
     createRenderAction(branch)();
 
@@ -57,7 +57,7 @@ describe("createRenderAction", () => {
   it("should inject div with events", () => {
     const onClick = vitest.fn();
 
-    const branch = el((<div onClick={onClick} />) as any, root, 0);
+    const branch = element((<div onClick={onClick} />) as any, root, 0);
 
     createRenderAction(branch)();
 
@@ -82,7 +82,7 @@ describe("createRenderAction", () => {
       status: BranchStatus.Mounted,
     });
 
-    const branch = el((<div />) as any, root, 0);
+    const branch = element((<div />) as any, root, 0);
     branch.old = oldBranch;
 
     createRenderAction(branch)();
@@ -111,7 +111,7 @@ describe("createRenderAction", () => {
       })
     );
 
-    const branch = el((<div />) as any, root, 0);
+    const branch = element((<div />) as any, root, 0);
     branch.old = oldBranch;
 
     createRenderAction(branch)();
