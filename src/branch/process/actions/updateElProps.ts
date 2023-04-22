@@ -11,7 +11,7 @@ import {
 
 const createElPropsUpdateAction = (branch: Branch<string>, diffs: Array<PropDiff>): Callback => {
   return () => {
-    // we can sort by priority
+    // TODO : we can sort by priority
 
     diffs.forEach((diff) => {
       const { op, prop, value } = diff;

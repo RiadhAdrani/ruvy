@@ -47,7 +47,9 @@ export const collectActions = (branch: Branch): Array<BranchAction> => {
 
   actions.push(...branch.pendingActions);
 
-  branch.children.forEach((child) => actions.push(...collectActions(child)));
+  branch.children.forEach((child) => {
+    actions.push(...collectActions(child));
+  });
 
   return actions;
 };

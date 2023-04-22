@@ -3,6 +3,7 @@ import { ActionType, Branch, BranchAction, PropDiff } from "../../types/index.js
 import createRenderAction from "./render.js";
 import createUnmountAction from "./unmount.js";
 import createElPropsUpdateAction from "./updateElProps.js";
+import createTextUpdateAction from "./updateText.js";
 
 /**
  * @deprecated
@@ -19,9 +20,15 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     }
     case ActionType.Unmount: {
       callback = createUnmountAction(branch as Branch<string>);
+      break;
     }
     case ActionType.UpdateProps: {
       callback = createElPropsUpdateAction(branch as Branch<string>, data as Array<PropDiff>);
+      break;
+    }
+    case ActionType.UpdateText: {
+      callback = createTextUpdateAction(branch as Branch<string>, data as string);
+      break;
     }
     default: {
       throw `Unknown action type (${type})`;

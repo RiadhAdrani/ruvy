@@ -1,7 +1,8 @@
 import { haveSameTagAndType } from "../../check/index.js";
-import { Branch } from "../../types/index.js";
+import { Branch, BranchTag, BranchTemplate } from "../../types/index.js";
 import { unmountBranch } from "../common/index.js";
 import process from "../index.js";
+import el from "./element.js";
 
 /**
  * @deprecated
@@ -24,10 +25,30 @@ const diffBranches = (
     // we perform diffing
     const tag = current.tag;
 
+    let children: Array<unknown> = [];
+
     switch (tag) {
+      case BranchTag.Element: {
+        children = el(current as Branch<string>, template as BranchTemplate<string>);
+        break;
+      }
+      case BranchTag.Text: {
+        // TODO
+        break;
+      }
+      case BranchTag.Fragment: {
+        // TODO
+        break;
+      }
+      case BranchTag.Function: {
+        // TODO
+        break;
+      }
+      default:
+        break;
     }
 
-    // diff children
+    // TODO : diff children, keys position etc...
   } else {
     // we move current to old,
     const old = current;

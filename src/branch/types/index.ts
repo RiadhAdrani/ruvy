@@ -39,6 +39,7 @@ export enum ActionType {
   Effect = "#-action-run-effect",
   Unmount = "#-action-unmount-element",
   UpdateProps = "#-action-update-props",
+  UpdateText = "#-action-text-node",
   Unmounted = "#-action-unmounted-effect",
 }
 
@@ -49,6 +50,7 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
     ActionType.Unmounted,
     ActionType.Reorder,
     ActionType.UpdateProps,
+    ActionType.UpdateText,
     ActionType.Cleanup,
     ActionType.Effect,
   ].map((key, index) => ({ [key]: index })) as unknown as { [key in ActionType]: number };
