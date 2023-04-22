@@ -12,6 +12,8 @@ const text = (current: Branch<string>, data: string): Array<unknown> => {
   // we check if text are different
   if (!areEqual(current.text, data)) {
     current.pendingActions.push(createAction(ActionType.UpdateText, current, data));
+
+    current.text = data;
   }
 
   return [];

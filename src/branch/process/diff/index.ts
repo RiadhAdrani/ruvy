@@ -49,7 +49,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Text: {
-        children = text(current as Branch<string>, template as string);
+        children = text(current as Branch<string>, `${template}`);
         break;
       }
       case BranchTag.Fragment: {
