@@ -84,6 +84,10 @@ export class Core {
   }
 
   onStateUpdate() {
+    if (!this.fn) {
+      return;
+    }
+
     this.shouldUpdate = true;
 
     if (this.batchContext.data === true) {

@@ -21,13 +21,11 @@ import fn from "./function.js";
 import text from "./text.js";
 
 /**
- * @deprecated
- * @param template
- * @param current
- * @param parent
- * @param key
- * @param index
- * @returns
+ * diff a branch an a template
+ * @param template new template
+ * @param current current branch
+ * @param parent parent
+ * @param index index in parent
  */
 const diffBranches = (
   template: unknown,

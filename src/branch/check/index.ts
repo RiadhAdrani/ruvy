@@ -66,9 +66,8 @@ export const isValidChild = (o: unknown): boolean => {
 };
 
 /**
- * @deprecated
+ * checks if a child is nullish
  * @param o
- * @returns
  */
 export const isNullishChild = (o: unknown): boolean => {
   return isNull(o) || isUndefined(o) || isBoolean(o);

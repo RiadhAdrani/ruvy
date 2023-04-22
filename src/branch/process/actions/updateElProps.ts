@@ -9,10 +9,13 @@ import {
   setEvent,
 } from "@riadh-adrani/dom-utils";
 
+/**
+ * create an action that will update an branch's instance props
+ * @param branch target
+ * @param diffs delta list
+ */
 const createElPropsUpdateAction = (branch: Branch<string>, diffs: Array<PropDiff>): Callback => {
   return () => {
-    // TODO : we can sort by priority
-
     diffs.forEach((diff) => {
       const { op, prop, value } = diff;
 

@@ -5,12 +5,11 @@ import diffBranches from "./diff/index.js";
 import { getCorrectKey } from "../utils/index.js";
 
 /**
- * @deprecated
- * @param template
- * @param current
- * @param parent
- * @param key
- * @returns
+ * process a template with its corresponding branch if it exist
+ * @param template new template
+ * @param current existing branch
+ * @param parent parent branch
+ * @param index index in parent
  */
 const process = (
   template: unknown,

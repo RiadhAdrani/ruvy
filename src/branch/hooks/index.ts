@@ -43,9 +43,6 @@ export const setEffect = (callback: EffectCallback, deps?: unknown) => {
   dispatchHook<void, SetEffectParams>(HookType.Effect, { callback, deps: deps ?? undefined });
 };
 
-/**
- * @deprecated
- */
 export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T): R => {
   const branch = ctx.get();
 
@@ -210,8 +207,7 @@ export const dispatchSetState = <T = unknown>(
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
 
-      // TODO : notify of update if changed
-      Core.singleton.executeRoutine(true);
+      Core.singleton.onStateUpdate();
     }
   };
 

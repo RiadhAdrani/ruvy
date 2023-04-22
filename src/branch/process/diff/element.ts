@@ -3,6 +3,11 @@ import { ActionType, Branch, BranchTemplate, PropDiff } from "../../types/index.
 import { IgnoredProps } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 
+/**
+ * creates a diffing array for two element props
+ * @param oldProps old props
+ * @param newProps new props
+ */
 export const diffElProps = (
   oldProps: Record<string, unknown>,
   newProps: Record<string, unknown>
@@ -33,7 +38,7 @@ export const diffElProps = (
 };
 
 /**
- * create a new branch element from a template.
+ * diffs branch element from a template.
  * @param template element template
  * @param parent parent branch
  * @param key element key

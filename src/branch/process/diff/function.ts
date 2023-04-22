@@ -3,7 +3,7 @@ import { useHooksContext } from "../../hooks/index.js";
 import { collectPendingEffect } from "../common/index.js";
 
 /**
- * create a function branch from a template.
+ * diff function branch from a template.
  * @param template function template
  * @param parent parent branch
  */

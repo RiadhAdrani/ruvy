@@ -8,9 +8,10 @@ import createRemoveBranchAction from "./removeBranch.js";
 import createReorderHostElement from "./reorderElement.js";
 
 /**
- * @deprecated
- * @param type
- * @param branch
+ * create an branch action
+ * @param type action type
+ * @param branch target branch
+ * @param data additional data, optional
  */
 const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): BranchAction => {
   let callback: Callback = () => 0;

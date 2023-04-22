@@ -112,10 +112,9 @@ export const getCorrectKey = (template: unknown, index: number): BranchKey => {
 };
 
 /**
- * @deprecated
- * @param parent
- * @param key
- * @returns
+ * retrieve a branch with a key from a parent
+ * @param parent parent branch
+ * @param key key
  */
 export const getCurrentBranchWithKey = <T = unknown>(
   parent: Branch,
@@ -125,9 +124,8 @@ export const getCurrentBranchWithKey = <T = unknown>(
 };
 
 /**
- * @deprecated
+ * get the first child host branch
  * @param branch
- * @returns
  */
 export const getChildHostBranch = (branch: Branch): Branch | undefined => {
   if (isHostBranch(branch)) {
@@ -186,6 +184,10 @@ export const getHostBranchIndexFromHostParent = (
   return { index: idx, found: wasFound };
 };
 
+/**
+ * retrieve closest host branches of a branch.
+ * @param branch starting branch
+ */
 export const getClosestHostBranches = (branch: Branch): Array<Branch> => {
   const out: Array<Branch> = [];
 

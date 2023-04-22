@@ -1,7 +1,7 @@
 import { BranchTemplateFragment } from "../../types/index.js";
 
 /**
- * create a new fragment branch from a template.
+ * diff fragment branches
  * @param template fragment template
  */
 const fragment = (template: BranchTemplateFragment): Array<unknown> => {
