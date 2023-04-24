@@ -2,23 +2,39 @@ import { haveSameTagAndType } from "../../check/index.js";
 import {
   ActionType,
   Branch,
+  BranchKey,
   BranchTag,
   BranchTemplate,
   BranchTemplateFragment,
   BranchTemplateFunction,
 } from "../../types/index.js";
-import {
-  getClosestHostBranches,
-  getCorrectKey,
-  getCurrentBranchWithKey,
-} from "../../utils/index.js";
+import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 import { unmountBranch } from "../common/index.js";
-import process from "../index.js";
+import createNewBranch from "../new/index.js";
 import el from "./element.js";
 import fragment from "./fragment.js";
 import fn from "./function.js";
 import text from "./text.js";
+
+/**
+ * unmount children's excess.
+ * @param current
+ * @param newChildrenKeys
+ */
+export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<BranchKey>): void => {
+  current.children.forEach((child) => {
+    const exists = newChildrenKeys.includes(child.key);
+
+    if (exists) {
+      return;
+    }
+
+    unmountBranch(child);
+
+    current.pendingActions.push(createAction(ActionType.RemoveBranch, child));
+  });
+};
 
 /**
  * diff a branch an a template
@@ -65,30 +81,35 @@ const diffBranches = (
     const oldChildrenKeys = current.children.map((child) => child.key);
     const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
 
+    removeChildrenExcess(current, newChildrenKeys);
+
     children.forEach((child, index) => {
       const key = getCorrectKey(child, index);
 
-      const maybeBranch = getCurrentBranchWithKey(current, key);
+      const exists = oldChildrenKeys.includes(key);
 
-      if (!maybeBranch) {
-        throw "Unable to diff branches: current not found.";
-      }
-
-      diffBranches(child, maybeBranch, current, index);
-    });
-
-    // remove excess children
-    oldChildrenKeys.forEach((key) => {
-      if (!newChildrenKeys.includes(key)) {
-        const maybeBranch = getCurrentBranchWithKey(current, key);
-
-        if (maybeBranch) {
-          unmountBranch(maybeBranch);
-
-          current.pendingActions.push(createAction(ActionType.RemoveBranch, maybeBranch));
-        }
+      if (exists) {
+        diffBranches(child, getBranchWithKey(current, key)!, current, index);
+      } else {
+        current.children.push(createNewBranch(child, current, key));
       }
     });
+
+    /**
+     * Move to UTILS
+     * @param array
+     * @param fromIndex
+     * @param toIndex
+     * @returns
+     */
+    function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
+      const arrayCopy = [...array];
+      const element = arrayCopy.splice(fromIndex, 1)[0];
+
+      arrayCopy.splice(toIndex, 0, element);
+
+      return arrayCopy;
+    }
 
     // rearrange current.children
     newChildrenKeys.forEach((key, newIndex) => {
@@ -97,24 +118,13 @@ const diffBranches = (
       if (oldIndex !== newIndex) {
         // we need to change the index locally
 
-        const branch = getCurrentBranchWithKey(current, key);
+        const branch = current.children[oldIndex];
 
         if (!branch) {
-          throw "Branch not found to be rearranged.";
+          throw `Branch with key (${key}) not found to be rearranged.`;
         }
 
-        const newChildren = [
-          ...current.children.slice(0, oldIndex),
-          ...current.children.slice(oldIndex + 1),
-        ];
-
-        const newWithBranch = [
-          ...newChildren.slice(0, newIndex),
-          branch,
-          ...newChildren.slice(newIndex + 1),
-        ];
-
-        current.children = newWithBranch;
+        current.children = moveElement(current.children, oldIndex, newIndex);
 
         // we need to get Host element(s) and rearrange them
         const hosts = getClosestHostBranches(branch);
@@ -132,7 +142,7 @@ const diffBranches = (
     unmountBranch(old);
 
     // compute the new one and merge it
-    const newBranch = process(template, undefined, parent, index);
+    const newBranch = createNewBranch(template, parent, index);
     newBranch.old = old;
 
     // replace current with newly computed one.
@@ -142,6 +152,8 @@ const diffBranches = (
     const i = parentChildren.findIndex((child) => child === old);
 
     parentChildren[i] = newBranch;
+
+    current.parent!.children[i] = newBranch;
   }
 
   return current;
