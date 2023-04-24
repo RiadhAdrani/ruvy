@@ -19,8 +19,8 @@ import text from "./text.js";
 
 /**
  * unmount children's excess.
- * @param current
- * @param newChildrenKeys
+ * @param current parent branch
+ * @param newChildrenKeys new children keys
  */
 export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<BranchKey>): void => {
   current.children.forEach((child) => {
@@ -33,6 +33,27 @@ export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<Bra
     unmountBranch(child);
 
     current.pendingActions.push(createAction(ActionType.RemoveBranch, child));
+  });
+};
+
+/**
+ * Perform diffing of the new children with the old ones.
+ * @param current parent branch
+ * @param children children templates
+ */
+export const diffNewChildren = (current: Branch, children: Array<unknown>) => {
+  const oldKeys = current.children.map((child) => child.key);
+
+  children.forEach((child, index) => {
+    const key = getCorrectKey(child, index);
+
+    const exists = oldKeys.includes(key);
+
+    if (exists) {
+      diffBranches(child, getBranchWithKey(current, key)!, current, index);
+    } else {
+      current.children.push(createNewBranch(child, current, key));
+    }
   });
 };
 
@@ -78,22 +99,11 @@ const diffBranches = (
         break;
     }
 
-    const oldChildrenKeys = current.children.map((child) => child.key);
     const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
 
     removeChildrenExcess(current, newChildrenKeys);
 
-    children.forEach((child, index) => {
-      const key = getCorrectKey(child, index);
-
-      const exists = oldChildrenKeys.includes(key);
-
-      if (exists) {
-        diffBranches(child, getBranchWithKey(current, key)!, current, index);
-      } else {
-        current.children.push(createNewBranch(child, current, key));
-      }
-    });
+    diffNewChildren(current, children);
 
     /**
      * Move to UTILS

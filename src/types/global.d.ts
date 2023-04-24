@@ -15,15 +15,12 @@ declare global {
   function setEffect(callback: Callback, key: string, dependencies?: unknown): void;
 
   function createJsxElement(
-    tag: Tag | FunctionComponent,
-    options?: Record<string, unknown>,
+    type: unknown,
+    props: Record<string, unknown>,
     ...children: Array<unknown>
-  ): IComponentTemplate;
+  ): JSX.Element;
 
-  function createJsxFragmentElement(
-    _: unknown,
-    ...children: Array<PrimitiveComponentTemplate | IComponentTemplate>
-  ): Array<unknown>;
+  function createJsxFragmentElement(_: unknown, ...children: Array<unknown>): Array<unknown>;
 
   type DOMEventTarget<T extends Element> = Event & T;
 
