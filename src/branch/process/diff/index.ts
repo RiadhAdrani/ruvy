@@ -18,6 +18,22 @@ import fn from "./function.js";
 import text from "./text.js";
 
 /**
+ * Move to UTILS
+ * @param array
+ * @param fromIndex
+ * @param toIndex
+ * @returns
+ */
+function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
+  const arrayCopy = [...array];
+  const element = arrayCopy.splice(fromIndex, 1)[0];
+
+  arrayCopy.splice(toIndex, 0, element);
+
+  return arrayCopy;
+}
+
+/**
  * unmount children's excess.
  * @param current parent branch
  * @param newChildrenKeys new children keys
@@ -53,6 +69,34 @@ export const diffNewChildren = (current: Branch, children: Array<unknown>) => {
       diffBranches(child, getBranchWithKey(current, key)!, current, index);
     } else {
       current.children.push(createNewBranch(child, current, key));
+    }
+  });
+};
+
+export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
+  const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
+
+  // rearrange current.children
+  newChildrenKeys.forEach((key, newIndex) => {
+    const oldIndex = current.children.findIndex((child) => child.key === key);
+
+    if (oldIndex !== newIndex) {
+      // we need to change the index locally
+
+      const branch = current.children[oldIndex];
+
+      if (!branch) {
+        throw `Branch with key (${key}) not found to be rearranged.`;
+      }
+
+      current.children = moveElement(current.children, oldIndex, newIndex);
+
+      // we need to get Host element(s) and rearrange them
+      const hosts = getClosestHostBranches(branch);
+
+      hosts.forEach((host) => {
+        current.pendingActions.push(createAction(ActionType.Reorder, host));
+      });
     }
   });
 };
@@ -105,45 +149,7 @@ const diffBranches = (
 
     diffNewChildren(current, children);
 
-    /**
-     * Move to UTILS
-     * @param array
-     * @param fromIndex
-     * @param toIndex
-     * @returns
-     */
-    function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
-      const arrayCopy = [...array];
-      const element = arrayCopy.splice(fromIndex, 1)[0];
-
-      arrayCopy.splice(toIndex, 0, element);
-
-      return arrayCopy;
-    }
-
-    // rearrange current.children
-    newChildrenKeys.forEach((key, newIndex) => {
-      const oldIndex = current.children.findIndex((child) => child.key === key);
-
-      if (oldIndex !== newIndex) {
-        // we need to change the index locally
-
-        const branch = current.children[oldIndex];
-
-        if (!branch) {
-          throw `Branch with key (${key}) not found to be rearranged.`;
-        }
-
-        current.children = moveElement(current.children, oldIndex, newIndex);
-
-        // we need to get Host element(s) and rearrange them
-        const hosts = getClosestHostBranches(branch);
-
-        hosts.forEach((host) => {
-          current.pendingActions.push(createAction(ActionType.Reorder, host));
-        });
-      }
-    });
+    arrangeChildren(current, children);
   } else {
     // we move current to old,
     const old = current;

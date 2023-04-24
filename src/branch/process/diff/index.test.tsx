@@ -5,8 +5,8 @@
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import root from "../new/root.js";
-import { diffNewChildren, removeChildrenExcess } from "./index.js";
-import { Branch, BranchKey, BranchStatus } from "../../types/index.js";
+import { arrangeChildren, diffNewChildren, removeChildrenExcess } from "./index.js";
+import { ActionType, Branch, BranchKey, BranchStatus } from "../../types/index.js";
 import { collectActions, commit } from "../common/index.js";
 
 describe("diffBranches", () => {
@@ -69,6 +69,24 @@ describe("diffBranches", () => {
       expect(branch.children[0].type).toBe("div");
       expect(branch.children[1].type).toBe("button");
       expect(branch.children[2].type).toBe("input");
+    });
+  });
+
+  describe("arrangeChildren", () => {
+    it("should rearrange children", () => {
+      const branch = App.children[0];
+
+      arrangeChildren(branch, [<input key={2} />, <div key={0} />, <button key={1} />]);
+
+      expect(branch.pendingActions.filter((a) => a.type === ActionType.Reorder).length).toBe(1);
+    });
+
+    it("should rearrange children", () => {
+      const branch = App.children[0];
+
+      arrangeChildren(branch, [<input key={2} />, <button key={1} />, <div key={0} />]);
+
+      expect(branch.pendingActions.filter((a) => a.type === ActionType.Reorder).length).toBe(2);
     });
   });
 });
