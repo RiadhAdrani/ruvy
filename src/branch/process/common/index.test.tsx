@@ -9,6 +9,7 @@ import { collectActions, commit, unmountBranch } from "./index.js";
 import { setState } from "../../hooks/index.js";
 import { ActionType, Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import { initBranch } from "../../utils/index.js";
+import createAction from "../actions/index.js";
 
 describe("common", () => {
   beforeEach(() => {
@@ -174,6 +175,29 @@ describe("common", () => {
 
       expect(document.body.innerHTML).toBe('<div><button id="btn">Click me</button></div>');
       expect(onClick).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("collectActions", () => {
+    const root = initBranch();
+    const parent = initBranch();
+    const child = initBranch();
+
+    root.children = [parent];
+    parent.children = [child];
+
+    root.pendingActions.push(createAction(ActionType.Effect, root));
+    parent.pendingActions.push(createAction(ActionType.Cleanup, root));
+    child.pendingActions.push(createAction(ActionType.UpdateProps, root));
+
+    it("should collect all actions recursively", () => {
+      const collection = collectActions(root);
+
+      expect(collection.map((c) => c.type)).toStrictEqual([
+        ActionType.Effect,
+        ActionType.Cleanup,
+        ActionType.UpdateProps,
+      ]);
     });
   });
 });
