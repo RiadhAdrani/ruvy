@@ -5,13 +5,28 @@
 import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import root from "../new/root.js";
-import { collectActions, commit, unmountBranch } from "./index.js";
+import { actionsSorter, collectActions, commit, unmountBranch } from "./index.js";
 import { setState } from "../../hooks/index.js";
-import { ActionType, Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import { initBranch } from "../../utils/index.js";
 import createAction from "../actions/index.js";
+import { shuffle } from "@riadh-adrani/utils";
 
 describe("common", () => {
+  it("should be an object of {action type : number}", () => {
+    expect(ActionPriority).toStrictEqual({
+      [ActionType.Unmount]: 0,
+      [ActionType.Render]: 1,
+      [ActionType.Unmounted]: 2,
+      [ActionType.RemoveBranch]: 3,
+      [ActionType.Reorder]: 4,
+      [ActionType.UpdateProps]: 5,
+      [ActionType.UpdateText]: 6,
+      [ActionType.Cleanup]: 7,
+      [ActionType.Effect]: 8,
+    });
+  });
+
   beforeEach(() => {
     document.body.innerHTML = "";
   });
@@ -187,8 +202,8 @@ describe("common", () => {
     parent.children = [child];
 
     root.pendingActions.push(createAction(ActionType.Effect, root));
-    parent.pendingActions.push(createAction(ActionType.Cleanup, root));
-    child.pendingActions.push(createAction(ActionType.UpdateProps, root));
+    parent.pendingActions.push(createAction(ActionType.Cleanup, parent));
+    child.pendingActions.push(createAction(ActionType.UpdateProps, child));
 
     it("should collect all actions recursively", () => {
       const collection = collectActions(root);
@@ -197,6 +212,43 @@ describe("common", () => {
         ActionType.Effect,
         ActionType.Cleanup,
         ActionType.UpdateProps,
+      ]);
+    });
+  });
+
+  describe("ActionSorter", () => {
+    const root = initBranch();
+    const parent = initBranch();
+    const child = initBranch();
+
+    root.children = [parent];
+    parent.children = [child];
+
+    root.pendingActions.push(createAction(ActionType.Effect, root));
+    root.pendingActions.push(createAction(ActionType.RemoveBranch, root));
+
+    parent.pendingActions.push(createAction(ActionType.Cleanup, parent));
+    parent.pendingActions.push(createAction(ActionType.Render, parent));
+    parent.pendingActions.push(createAction(ActionType.Unmount, parent));
+
+    child.pendingActions.push(createAction(ActionType.UpdateProps, child));
+    child.pendingActions.push(createAction(ActionType.UpdateText, child));
+    child.pendingActions.push(createAction(ActionType.Reorder, child));
+
+    it("should order action correclty", () => {
+      const actions = shuffle(collectActions(root));
+
+      const sorted = actions.sort(actionsSorter);
+
+      expect(sorted.map((s) => s.type)).toStrictEqual([
+        ActionType.Unmount,
+        ActionType.Render,
+        ActionType.RemoveBranch,
+        ActionType.Reorder,
+        ActionType.UpdateProps,
+        ActionType.UpdateText,
+        ActionType.Cleanup,
+        ActionType.Effect,
       ]);
     });
   });
