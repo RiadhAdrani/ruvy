@@ -20,6 +20,7 @@ export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
     status: BranchStatus.Mounting,
     tag: BranchTag.Null,
     type: BranchTag.Null,
+    unmountedChildren: [],
   };
 
   return merge(initial, data ?? {});
@@ -116,7 +117,7 @@ export const getCorrectKey = (template: unknown, index: number): BranchKey => {
  * @param parent parent branch
  * @param key key
  */
-export const getCurrentBranchWithKey = <T = unknown>(
+export const getBranchWithKey = <T = unknown>(
   parent: Branch,
   key: BranchKey
 ): Branch<T> | undefined => {

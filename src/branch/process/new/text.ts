@@ -19,6 +19,7 @@ const text = (data: string, parent: Branch, key: BranchKey): Branch<string> => {
     type: BranchTag.Text,
     text: data,
     parent,
+    unmountedChildren: [],
   };
 
   branch.pendingActions.push(createAction(ActionType.Render, branch));

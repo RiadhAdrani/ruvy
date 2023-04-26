@@ -140,8 +140,8 @@ export const dispatchSetEffect = (key: string, params: SetEffectParams, current:
  * collect any pending effects or cleanups in a branch
  * @param branch target
  */
-export const collectEffects = (branch: Branch): Array<BranchAction> => {
-  const effects: Array<BranchAction> = [];
+export const collectEffects = (branch: Branch): Array<Omit<BranchAction, "requestTime">> => {
+  const effects: Array<Omit<BranchAction, "requestTime">> = [];
 
   forEachKey((_, hook) => {
     if (hook.type === HookType.Effect) {
@@ -150,7 +150,6 @@ export const collectEffects = (branch: Branch): Array<BranchAction> => {
       if (data.pendingCleanUp) {
         effects.push({
           callback: data.pendingCleanUp,
-          requestTime: Date.now(),
           type: ActionType.Cleanup,
         });
       }
@@ -158,7 +157,6 @@ export const collectEffects = (branch: Branch): Array<BranchAction> => {
       if (data.pendingEffect) {
         effects.push({
           callback: data.pendingEffect,
-          requestTime: Date.now(),
           type: ActionType.Effect,
         });
       }

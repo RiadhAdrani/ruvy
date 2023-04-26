@@ -1,12 +1,18 @@
 import { collectEffects, unmountEffects } from "../../hooks/index.js";
-import { ActionPriority, ActionType, Branch, BranchAction } from "../../types/index.js";
+import {
+  ActionPriority,
+  ActionType,
+  Branch,
+  BranchAction,
+  BranchStatus,
+} from "../../types/index.js";
 import { isHostBranch } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 
 export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
   const out: Array<BranchAction> = [];
 
-  out.push(...collectEffects(branch));
+  out.push(...collectEffects(branch).map((item) => createAction(item.type, branch, item.callback)));
 
   return out;
 };
@@ -16,6 +22,8 @@ export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
  * @param branch target
  */
 export const unmountBranch = (branch: Branch): void => {
+  branch.status = BranchStatus.Unmounting;
+
   // branch effect hooks
   unmountEffects(branch);
 
@@ -46,6 +54,10 @@ export const collectActions = (branch: Branch): Array<BranchAction> => {
   }
 
   actions.push(...branch.pendingActions);
+
+  branch.unmountedChildren.forEach((child) => {
+    actions.push(...collectActions(child));
+  });
 
   branch.children.forEach((child) => {
     actions.push(...collectActions(child));

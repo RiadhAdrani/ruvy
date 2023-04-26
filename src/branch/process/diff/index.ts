@@ -12,7 +12,7 @@ import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from "../../u
 import createAction from "../actions/index.js";
 import { unmountBranch } from "../common/index.js";
 import createNewBranch from "../new/index.js";
-import el from "./element.js";
+import element from "./element.js";
 import fragment from "./fragment.js";
 import fn from "./function.js";
 import text from "./text.js";
@@ -39,17 +39,13 @@ function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
  * @param newChildrenKeys new children keys
  */
 export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<BranchKey>): void => {
-  current.children.forEach((child) => {
-    const exists = newChildrenKeys.includes(child.key);
+  current.unmountedChildren = current.children.filter(
+    (child) => !newChildrenKeys.includes(child.key)
+  );
 
-    if (exists) {
-      return;
-    }
+  current.unmountedChildren.forEach(unmountBranch);
 
-    unmountBranch(child);
-
-    current.pendingActions.push(createAction(ActionType.RemoveBranch, child));
-  });
+  current.children = current.children.filter((child) => newChildrenKeys.includes(child.key));
 };
 
 /**
@@ -124,7 +120,7 @@ const diffBranches = (
 
     switch (tag) {
       case BranchTag.Element: {
-        children = el(current as Branch<string>, template as BranchTemplate<string>);
+        children = element(current as Branch<string>, template as BranchTemplate<string>);
         break;
       }
       case BranchTag.Text: {

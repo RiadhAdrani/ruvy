@@ -18,16 +18,28 @@ const Button = () => {
 const App = () => {
   const [text, setText] = setState("");
 
-  setEffect(() => {
-    console.log("hello");
-  });
+  setEffect(() => {}, Date.now());
+
+  const items = [
+    { key: "1", name: "hello" },
+    { key: "2", name: "world" },
+    { key: "3", name: "test" },
+  ].filter(
+    (item) =>
+      !text.trim() || item.name.toLocaleLowerCase().includes(text.trim().toLocaleLowerCase())
+  );
 
   return (
     <>
-      <Button />
-      <Button />
       <input value={text} class={[text]} onInput={(e) => setText(e.currentTarget.value)} />
-      {text === "" && <Button />}
+      <div>
+        {...items.map((item) => (
+          <div key={item.key} class={item.key}>
+            <span>{item.name}</span>
+            <Button />
+          </div>
+        ))}
+      </div>
     </>
   );
 };

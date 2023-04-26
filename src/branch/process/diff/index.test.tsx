@@ -6,7 +6,7 @@ import { createFragmentTemplate, createJsxElement } from "../../create/index.js"
 import { beforeEach, describe, expect, it } from "vitest";
 import root from "../new/root.js";
 import { arrangeChildren, diffNewChildren, removeChildrenExcess } from "./index.js";
-import { ActionType, Branch, BranchKey, BranchStatus } from "../../types/index.js";
+import { ActionType, Branch, BranchKey } from "../../types/index.js";
 import { collectActions, commit } from "../common/index.js";
 
 describe("diffBranches", () => {
@@ -35,11 +35,11 @@ describe("diffBranches", () => {
 
       removeChildrenExcess(current, newKeys);
 
-      const unmountedChildren = current.children.filter((child) => !newKeys.includes(child.key));
-      const mountedChildren = current.children.filter((child) => newKeys.includes(child.key));
+      const unmountedChildren = current.unmountedChildren.map((child) => child.key);
+      const mountedChildren = current.children.map((child) => child.key);
 
-      expect(unmountedChildren.every((c) => c.status === BranchStatus.Unmounting)).toBe(true);
-      expect(mountedChildren.every((c) => c.status === BranchStatus.Unmounting)).toBe(false);
+      expect(unmountedChildren).toStrictEqual([2]);
+      expect(mountedChildren).toStrictEqual([0, 1]);
     });
   });
 

@@ -35,19 +35,21 @@ export const BranchSymbol = Symbol.for("#-ruvy-branch");
 export enum ActionType {
   Render = "#-action-render-element",
   Reorder = "#-action-order-elements",
-  Cleanup = "#-action-clean-up-effects",
+  Cleanup = "#-action-clean-effect",
   Effect = "#-action-run-effect",
   Unmount = "#-action-unmount-element",
   UpdateProps = "#-action-update-props",
   UpdateText = "#-action-text-node",
-  Unmounted = "#-action-unmounted-effect",
-  RemoveBranch = "#action-remove-branch",
+  Unmounted = "#-action-unmounted",
+  RemoveBranch = "#-action-remove-branch",
 }
 
 export const ActionPriority: { [key in ActionType]: number } = (() => {
-  return [
-    ActionType.Render,
+  const items = {} as unknown as { [key in ActionType]: number };
+
+  [
     ActionType.Unmount,
+    ActionType.Render,
     ActionType.Unmounted,
     ActionType.RemoveBranch,
     ActionType.Reorder,
@@ -55,7 +57,9 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
     ActionType.UpdateText,
     ActionType.Cleanup,
     ActionType.Effect,
-  ].map((key, index) => ({ [key]: index })) as unknown as { [key in ActionType]: number };
+  ].forEach((key, index) => (items[key] = index));
+
+  return items;
 })();
 
 export type Effect = Callback<Callback | void>;
@@ -101,6 +105,7 @@ export interface BranchAction {
   type: ActionType;
   requestTime: number;
   callback: Callback;
+  debug?: unknown;
 }
 
 export interface Branch<Type = unknown> {
@@ -116,9 +121,7 @@ export interface Branch<Type = unknown> {
   instance?: Node;
   key: BranchKey;
   old?: Branch;
-  flags?: {
-    willBeReplaced?: boolean;
-  };
+  unmountedChildren: Array<Branch>;
 }
 
 export interface PropDiff<T = unknown> {
@@ -127,3 +130,5 @@ export interface PropDiff<T = unknown> {
   op: "set" | "update" | "remove";
   priority: number;
 }
+
+export type RuvyNode = BranchTemplate | string | boolean | null | undefined | number;

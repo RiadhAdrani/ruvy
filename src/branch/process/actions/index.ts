@@ -1,5 +1,5 @@
-import { Callback } from "@riadh-adrani/utils";
-import { ActionType, Branch, BranchAction, PropDiff } from "../../types/index.js";
+import { Callback, cast } from "@riadh-adrani/utils";
+import { ActionType, Branch, BranchAction, Effect, PropDiff } from "../../types/index.js";
 import createRenderAction from "./render.js";
 import createUnmountAction from "./unmount.js";
 import createElPropsUpdateAction from "./updateElProps.js";
@@ -41,6 +41,11 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
       callback = createReorderHostElement(branch);
       break;
     }
+    case ActionType.Cleanup:
+    case ActionType.Effect: {
+      callback = cast<Effect>(data);
+      break;
+    }
     default: {
       throw `Unknown action type (${type})`;
     }
@@ -56,6 +61,7 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     },
     requestTime: Date.now(),
     type,
+    debug: branch,
   };
 
   return action;

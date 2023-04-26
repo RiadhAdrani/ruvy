@@ -1,7 +1,7 @@
 import { Callback } from "@riadh-adrani/utils";
 import { Branch, BranchStatus } from "../../types/index.js";
 import { isHostBranch } from "../../utils/index.js";
-import { isElementInDocument, removeNode } from "@riadh-adrani/dom-utils";
+import { removeNode } from "@riadh-adrani/dom-utils";
 
 /**
  * create an unmount action callback
@@ -15,9 +15,7 @@ const createUnmountAction =
       throw `Cannot unmount a non-host branch.`;
     }
 
-    if (isElementInDocument(branch.instance)) {
-      removeNode(branch.instance as Element);
-    }
+    removeNode(branch.instance as Element);
 
     branch.status = BranchStatus.Unmounted;
   };

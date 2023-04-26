@@ -4,18 +4,10 @@ import { Context } from "../context/index.js";
 import { Router } from "../router/index.js";
 import { Scheduler } from "../scheduler/index.js";
 import { createEffectCollection, createStateCollection, Store } from "../store/index.js";
-import {
-  Callback,
-  IComponentTemplate,
-  StateArray,
-  PrimitiveComponentTemplate,
-  RouterConfig,
-  RawRoute,
-  FunctionComponent,
-} from "../types/index.js";
+import { Callback, StateArray, RouterConfig, RawRoute } from "../types/index.js";
 import { IMountConfig } from "../types/index.js";
 import { getClosestAnchorParent } from "./utils/index.js";
-import { Branch } from "../branch/types/index.js";
+import { Branch, RuvyNode } from "../branch/types/index.js";
 import root from "../branch/process/new/root.js";
 import { createFragmentTemplate, createJsxElement, createTemplate } from "../branch/index.js";
 import { collectActions, commit } from "../branch/process/common/index.js";
@@ -33,8 +25,7 @@ export class Core {
   batchContext = new Context<boolean>();
   scheduler = new Scheduler();
   store = new Store();
-  router: Router<Callback<IComponentTemplate | PrimitiveComponentTemplate>> =
-    undefined as unknown as Router<Callback<IComponentTemplate | PrimitiveComponentTemplate>>;
+  router: Router<RuvyNode> = undefined as unknown as Router<RuvyNode>;
   routerContext = new Context<number>();
 
   constructor() {
@@ -140,7 +131,7 @@ export const mountApp = ({ callback, hostElement }: IMountConfig) => {
 };
 
 export const createRouter = (
-  routes: Array<RawRoute<FunctionComponent>>,
+  routes: Array<RawRoute<RuvyNode>>,
   config: Omit<RouterConfig, "onStateChange">
 ) => {
   Core.singleton.router = new Router(routes, {
@@ -151,13 +142,13 @@ export const createRouter = (
   });
 };
 
-export const Outlet = (): IComponentTemplate | PrimitiveComponentTemplate => {
+export const Outlet = (): RuvyNode => {
   const router = Core.singleton.router;
 
   return router.useContext(() => {
     const obj = router.component;
 
-    return obj ? obj() : "";
+    return obj ?? "";
   });
 };
 

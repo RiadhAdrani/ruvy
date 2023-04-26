@@ -17,6 +17,7 @@ const root = (container: HTMLElement, child: unknown): Branch => {
     tag: BranchTag.Root,
     type: BranchTag.Root,
     instance: container,
+    unmountedChildren: [],
   };
 
   branch.children = [process(child, undefined, branch, 0)];

@@ -43,7 +43,7 @@ export const diffElProps = (
  * @param parent parent branch
  * @param key element key
  */
-const el = (current: Branch<string>, template: BranchTemplate<string>): Array<unknown> => {
+const element = (current: Branch<string>, template: BranchTemplate<string>): Array<unknown> => {
   const { props, children } = template;
 
   // update props
@@ -58,4 +58,4 @@ const el = (current: Branch<string>, template: BranchTemplate<string>): Array<un
   return children;
 };
 
-export default el;
+export default element;
