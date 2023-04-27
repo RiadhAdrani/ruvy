@@ -31,6 +31,18 @@ describe("createTemplate", () => {
       key: 1,
     });
   });
+
+  it("should faltten children array", () => {
+    const template = createTemplate("div", { key: 1 }, ["hello", ["world"]]);
+
+    expect(template).toStrictEqual<BranchTemplate>({
+      type: "div",
+      children: ["hello", "world"],
+      props: { key: 1, children: ["hello", "world"] },
+      symbol: BranchSymbol,
+      key: 1,
+    });
+  });
 });
 
 describe("createJsxElement", () => {

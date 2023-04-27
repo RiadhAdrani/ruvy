@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
-import { diffElProps } from "./element.js";
+import { diffElementProps } from "./element.js";
 
 describe("diff.element", () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe("diff.element", () => {
     const oldBranch = initBranch({ props: { class: "test" } });
     const newBranch = initBranch({ props: { class: "test" } });
 
-    const ops = diffElProps(oldBranch.props, newBranch.props);
+    const ops = diffElementProps(oldBranch.props, newBranch.props);
 
     expect(ops).toStrictEqual([]);
   });
@@ -20,7 +20,7 @@ describe("diff.element", () => {
     const oldBranch = initBranch({ props: { class: "test" } });
     const newBranch = initBranch();
 
-    const ops = diffElProps(oldBranch.props, newBranch.props);
+    const ops = diffElementProps(oldBranch.props, newBranch.props);
 
     expect(ops).toStrictEqual([{ op: "remove", priority: 1, prop: "class", value: "test" }]);
   });
@@ -29,7 +29,7 @@ describe("diff.element", () => {
     const oldBranch = initBranch({ props: { class: "test" } });
     const newBranch = initBranch({ props: { class: "test-2" } });
 
-    const ops = diffElProps(oldBranch.props, newBranch.props);
+    const ops = diffElementProps(oldBranch.props, newBranch.props);
 
     expect(ops).toStrictEqual([{ op: "update", priority: 1, prop: "class", value: "test-2" }]);
   });
@@ -38,7 +38,7 @@ describe("diff.element", () => {
     const oldBranch = initBranch();
     const newBranch = initBranch({ props: { class: "test" } });
 
-    const ops = diffElProps(oldBranch.props, newBranch.props);
+    const ops = diffElementProps(oldBranch.props, newBranch.props);
 
     expect(ops).toStrictEqual([{ op: "set", priority: 1, prop: "class", value: "test" }]);
   });

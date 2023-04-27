@@ -8,7 +8,7 @@ import createAction from "../actions/index.js";
  * @param oldProps old props
  * @param newProps new props
  */
-export const diffElProps = (
+export const diffElementProps = (
   oldProps: Record<string, unknown>,
   newProps: Record<string, unknown>
 ): Array<PropDiff> => {
@@ -47,7 +47,7 @@ const element = (current: Branch<string>, template: BranchTemplate<string>): Arr
   const { props, children } = template;
 
   // update props
-  const propsDiff = diffElProps(current.props, props);
+  const propsDiff = diffElementProps(current.props, props);
 
   // create an action to update props
   current.pendingActions.push(createAction(ActionType.UpdateProps, current, propsDiff));
