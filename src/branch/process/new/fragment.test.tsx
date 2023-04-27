@@ -25,6 +25,7 @@ describe("new.fragment", () => {
       tag: BranchTag.Fragment,
       type: createFragmentTemplate,
       parent,
+      unmountedChildren: [],
     });
   });
 });

@@ -23,6 +23,7 @@ describe("new.text", () => {
       type: BranchTag.Text,
       parent,
       text: "test",
+      unmountedChildren: [],
     });
 
     expect(div.pendingActions.length).toBe(1);

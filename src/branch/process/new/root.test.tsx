@@ -22,6 +22,7 @@ describe("new.root", () => {
           tag: BranchTag.Null,
           type: BranchTag.Null,
           parent: rt,
+          unmountedChildren: [],
         },
       ],
       hooks: {},
@@ -32,6 +33,7 @@ describe("new.root", () => {
       tag: BranchTag.Root,
       type: BranchTag.Root,
       instance: document.body,
+      unmountedChildren: [],
     });
   });
 });

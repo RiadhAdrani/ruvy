@@ -22,6 +22,7 @@ describe("new.empty", () => {
       tag: BranchTag.Null,
       type: BranchTag.Null,
       parent,
+      unmountedChildren: [],
     });
   });
 });

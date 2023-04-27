@@ -23,6 +23,7 @@ describe("new.element", () => {
       tag: BranchTag.Element,
       type: "div",
       parent,
+      unmountedChildren: [],
     });
 
     expect(div.pendingActions.length).toBe(1);
@@ -45,6 +46,7 @@ describe("new.element", () => {
       tag: BranchTag.Element,
       type: "div",
       parent,
+      unmountedChildren: [],
     });
   });
 });
