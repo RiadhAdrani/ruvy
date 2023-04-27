@@ -14,6 +14,7 @@ import {
   isHostBranch,
   getCorrectKey,
   getHostBranchIndexFromHostParent,
+  getClosestHostBranches,
 } from "./index.js";
 import { BranchTag, Namespace } from "../types/index.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
@@ -307,6 +308,81 @@ describe("utils", () => {
         found: true,
         index: 0,
       });
+    });
+  });
+
+  describe("getClosestHostBranches", () => {
+    it("should get host branch directly", () => {
+      const parent = root(document.body, <div></div>);
+
+      const branch = parent.children[0];
+
+      expect(getClosestHostBranches(branch)).toStrictEqual([branch]);
+    });
+
+    it("should get host branch directly nested", () => {
+      const parent = root(
+        document.body,
+        <>
+          <div key="div"></div>
+        </>
+      );
+
+      const branch = parent.children[0];
+
+      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual(["div"]);
+    });
+
+    it("should get host branch nested (1)", () => {
+      const parent = root(
+        document.body,
+        <>
+          <div key="div" />
+          <>
+            <div key="div1" />
+            <div key="div2" />
+          </>
+        </>
+      );
+
+      const branch = parent.children[0];
+
+      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual([
+        "div",
+        "div1",
+        "div2",
+      ]);
+    });
+
+    it("should get host branch nested (2)", () => {
+      const parent = root(
+        document.body,
+        <>
+          <div key="div" />
+          <>
+            <div key="div1" />
+            <div key="div2" />
+            <>
+              <div key="div3" />
+              <div key="div4">
+                <div />
+                <div />
+                <div />
+              </div>
+            </>
+          </>
+        </>
+      );
+
+      const branch = parent.children[0];
+
+      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual([
+        "div",
+        "div1",
+        "div2",
+        "div3",
+        "div4",
+      ]);
     });
   });
 });

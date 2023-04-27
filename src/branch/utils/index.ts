@@ -125,26 +125,6 @@ export const getBranchWithKey = <T = unknown>(
 };
 
 /**
- * get the first child host branch
- * @param branch
- */
-export const getChildHostBranch = (branch: Branch): Branch | undefined => {
-  if (isHostBranch(branch)) {
-    return branch;
-  }
-
-  for (const child of branch.children) {
-    const host = getChildHostBranch(child);
-
-    if (host) {
-      return host;
-    }
-  }
-
-  return undefined;
-};
-
-/**
  * get index in dom according to the closest host parent.
  * @param branch target
  */

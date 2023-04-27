@@ -1,13 +1,7 @@
 import { Callback } from "@riadh-adrani/utils";
 import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { createElement, createTextNode, injectNode } from "@riadh-adrani/dom-utils";
 import {
-  createElement,
-  createTextNode,
-  injectNode,
-  replaceNodeWith,
-} from "@riadh-adrani/dom-utils";
-import {
-  getChildHostBranch,
   getHostBranchIndexFromHostParent,
   getHtmlElementEventListeners,
   getHtmlElementProps,
@@ -47,16 +41,10 @@ const createRenderAction = (branch: Branch<string>): Callback => {
 
     let host = getParentHostBranch(branch);
 
-    const existingHostBranch = branch.old ? getChildHostBranch(branch.old) : undefined;
+    const { index } = getHostBranchIndexFromHostParent(branch);
 
-    if (existingHostBranch) {
-      replaceNodeWith(existingHostBranch.instance as Element, render as Element);
-    } else {
-      const { index } = getHostBranchIndexFromHostParent(branch);
-
-      // inject it directly.
-      injectNode(render as Element, host.instance as Element, index);
-    }
+    // inject it directly.
+    injectNode(render as Element, host.instance as Element, index);
 
     branch.status = BranchStatus.Mounted;
   };

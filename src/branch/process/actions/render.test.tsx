@@ -9,7 +9,6 @@ import createRenderAction from "./render.js";
 import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import text from "../new/text.js";
 import element from "../new/element.js";
-import { createElement, injectNode } from "@riadh-adrani/dom-utils";
 
 describe("createRenderAction", () => {
   beforeEach(() => {
@@ -67,55 +66,5 @@ describe("createRenderAction", () => {
     instance.click();
 
     expect(onClick).toHaveBeenCalledOnce();
-  });
-
-  it("should replace element instead of just creating a new one", () => {
-    const instance = createElement("input");
-    injectNode(instance, document.body);
-
-    expect(document.body.outerHTML).toBe("<body><input></body>");
-
-    const oldBranch = initBranch({
-      instance,
-      type: "div",
-      tag: BranchTag.Element,
-      status: BranchStatus.Mounted,
-    });
-
-    const branch = element((<div />) as any, root, 0);
-    branch.old = oldBranch;
-
-    createRenderAction(branch)();
-
-    expect(document.body.outerHTML).toBe("<body><div></div></body>");
-  });
-
-  it("should replace element nested deeply", () => {
-    const instance = createElement("input");
-    injectNode(instance, document.body);
-
-    expect(document.body.outerHTML).toBe("<body><input></body>");
-
-    const oldBranch = initBranch({
-      type: createFragmentTemplate,
-      tag: BranchTag.Fragment,
-      status: BranchStatus.Mounted,
-    });
-
-    oldBranch.children.push(
-      initBranch({
-        type: "input",
-        tag: BranchTag.Element,
-        status: BranchStatus.Mounted,
-        instance,
-      })
-    );
-
-    const branch = element((<div />) as any, root, 0);
-    branch.old = oldBranch;
-
-    createRenderAction(branch)();
-
-    expect(document.body.outerHTML).toBe("<body><div></div></body>");
   });
 });
