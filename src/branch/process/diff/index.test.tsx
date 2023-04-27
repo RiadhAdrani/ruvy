@@ -5,8 +5,8 @@
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import root from "../new/root.js";
-import { arrangeChildren, diffNewChildren, removeChildrenExcess } from "./index.js";
-import { ActionType, Branch, BranchKey } from "../../types/index.js";
+import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from "./index.js";
+import { ActionType, Branch, BranchKey, BranchStatus } from "../../types/index.js";
 import { collectActions, commit } from "../common/index.js";
 
 describe("diffBranches", () => {
@@ -87,6 +87,24 @@ describe("diffBranches", () => {
       arrangeChildren(branch, [<input key={2} />, <button key={1} />, <div key={0} />]);
 
       expect(branch.pendingActions.filter((a) => a.type === ActionType.Reorder).length).toBe(2);
+    });
+  });
+
+  describe("diffTypes", () => {
+    it("should move branch to the old", () => {
+      const template = (<button></button>) as any;
+
+      const branch = App.children[0];
+
+      diffTypes(template, branch, App, 0);
+
+      const updated = App.children[0];
+
+      expect(updated.old?.type).toBe("div");
+      expect(updated.old?.status).toBe(BranchStatus.Unmounting);
+
+      expect(updated.type).toBe("button");
+      expect(updated.status).toBe(BranchStatus.Mounting);
     });
   });
 });

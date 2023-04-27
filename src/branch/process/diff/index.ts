@@ -98,6 +98,36 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
 };
 
 /**
+ * perform diffing of different types: `unmount` current branch and `mount` the template instead.
+ * @param template new template
+ * @param current current branch
+ * @param parent parent
+ * @param index index of template in template parent
+ */
+export const diffTypes = (
+  template: unknown,
+  current: Branch,
+  parent: Branch,
+  index: number
+): void => {
+  // we move current to old,
+  const old = current;
+
+  // collect unmount effects,
+  unmountBranch(old);
+
+  // compute the new one and merge it
+  const newBranch = createNewBranch(template, parent, index);
+  newBranch.old = old;
+
+  // replace current with newly computed one.
+  // bruh : current = newBranch;
+
+  const i = current.parent!.children.findIndex((child) => child === old);
+  current.parent!.children[i] = newBranch;
+};
+
+/**
  * diff a branch an a template
  * @param template new template
  * @param current current branch
@@ -149,25 +179,7 @@ const diffBranches = (
 
     arrangeChildren(current, children);
   } else {
-    // we move current to old,
-    const old = current;
-
-    // collect unmount effects,
-    unmountBranch(old);
-
-    // compute the new one and merge it
-    const newBranch = createNewBranch(template, parent, index);
-    newBranch.old = old;
-
-    // replace current with newly computed one.
-    // bruh : current = newBranch;
-
-    const parentChildren = current.parent!.children;
-    const i = parentChildren.findIndex((child) => child === old);
-
-    parentChildren[i] = newBranch;
-
-    current.parent!.children[i] = newBranch;
+    diffTypes(template, current, parent, index);
   }
 
   return current;
