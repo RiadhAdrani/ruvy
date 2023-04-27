@@ -1,5 +1,7 @@
 import { mountApp } from "../index.js";
 import { setState, setEffect } from "../branch/index.js";
+import { RuvyNode } from "../branch/types/index.js";
+import { Arrayable } from "@riadh-adrani/utils";
 
 const Button = () => {
   const [count, setCount] = setState(0);
@@ -13,6 +15,10 @@ const Button = () => {
       {count}
     </button>
   );
+};
+
+const Container = ({ children }: { children?: Arrayable<RuvyNode> }) => {
+  return <main>{children}</main>;
 };
 
 const App = () => {
@@ -32,14 +38,14 @@ const App = () => {
   return (
     <>
       <input value={text} class={[text]} onInput={(e) => setText(e.currentTarget.value)} />
-      <div>
-        {...items.map((item) => (
+      <Container>
+        {items.map((item) => (
           <div key={item.key} class={item.key}>
             <span>{item.name}</span>
             <Button />
           </div>
         ))}
-      </div>
+      </Container>
     </>
   );
 };

@@ -110,7 +110,9 @@ const diffBranches = (
   parent: Branch,
   index: number
 ): Branch => {
+  // perform old branches cleanup
   current.old = undefined;
+  current.unmountedChildren = [];
 
   if (haveSameTagAndType(current, template)) {
     // we perform diffing

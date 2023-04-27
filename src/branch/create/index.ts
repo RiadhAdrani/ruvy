@@ -11,6 +11,8 @@ export const createTemplate = <T = unknown>(
   props: Record<string, unknown>,
   children: Array<unknown>
 ): BranchTemplate<T> => {
+  children = children.flat();
+
   return {
     type,
     props: { ...props, children },
