@@ -62,9 +62,19 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
   return items;
 })();
 
+export interface UseMemoData<T = unknown> {
+  deps: unknown;
+  value: T;
+}
+
+export interface UseMemoParams<T = unknown> {
+  callback: () => T;
+  deps?: unknown;
+}
+
 export type Effect = Callback<Callback | void>;
 
-export interface SetEffectData {
+export interface UseEffectData {
   deps: unknown;
   callback: Effect;
   cleanUp?: Effect;
@@ -72,7 +82,7 @@ export interface SetEffectData {
   pendingCleanUp?: Effect;
 }
 
-export type SetEffectParams = Pick<SetEffectData, "callback" | "deps">;
+export type UseEffectParams = Pick<UseEffectData, "callback" | "deps">;
 
 export type BranchProps = Record<string, unknown>;
 

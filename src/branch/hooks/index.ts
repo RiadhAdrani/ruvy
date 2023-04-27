@@ -7,8 +7,10 @@ import {
   BranchAction,
   HookData,
   HookType,
-  SetEffectData,
-  SetEffectParams,
+  UseEffectData,
+  UseEffectParams,
+  UseMemoData,
+  UseMemoParams,
 } from "../types/index.js";
 import { Core } from "../../core/Core.js";
 
@@ -35,12 +37,24 @@ export const useState = <T>(initValue: T): StateArray<T> => {
 };
 
 /**
- * schedule a callback effect to run once, or every time `deps` changes
+ * schedule a callback effect to run once, or every time `deps` changes.
  * @param callback effect
- * @param deps dependency
+ * @param deps dependencies
  */
 export const useEffect = (callback: EffectCallback, deps?: unknown) => {
-  dispatchHook<void, SetEffectParams>(HookType.Effect, { callback, deps: deps ?? undefined });
+  dispatchHook<void, UseEffectParams>(HookType.Effect, { callback, deps: deps ?? undefined });
+};
+
+/**
+ * perform memoization of a computation and update it when `deps` changes.
+ * @param callback computation
+ * @param deps dependencies
+ */
+export const useMemo = <T>(callback: () => T, deps?: unknown): T => {
+  return dispatchHook<T, UseMemoParams>(HookType.Memo, {
+    callback,
+    deps: deps ?? undefined,
+  });
 };
 
 export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T): R => {
@@ -62,7 +76,11 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
       break;
     }
     case HookType.Effect: {
-      output = dispatchUseEffect(key, data as SetEffectParams, branch);
+      output = dispatchUseEffect(key, data as UseEffectParams, branch);
+      break;
+    }
+    case HookType.Memo: {
+      output = dispatchUseMemo(key, data as UseMemoParams, branch);
       break;
     }
     default: {
@@ -79,12 +97,12 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
  * @param params effect params
  * @param current branch
  */
-export const dispatchUseEffect = (key: string, params: SetEffectParams, current: Branch) => {
+export const dispatchUseEffect = (key: string, params: UseEffectParams, current: Branch) => {
   const { callback, deps } = params;
 
   const createEffect = (cb: EffectCallback) => {
     return () => {
-      const hook = cast<HookData<SetEffectData>>(current.hooks[key]);
+      const hook = cast<HookData<UseEffectData>>(current.hooks[key]);
 
       const cleanup = cb();
 
@@ -109,18 +127,18 @@ export const dispatchUseEffect = (key: string, params: SetEffectParams, current:
     // set up hook
     const pendingEffect = createEffect(callback);
 
-    const data: SetEffectData = { callback, deps, pendingEffect };
+    const data: UseEffectData = { callback, deps, pendingEffect };
 
     current.hooks[key] = { data, initialData: data, key, type: HookType.Effect };
   } else {
     // we compare deps, if different we schedule a cleanup and a new effect call
 
-    const oldDeps = cast<HookData<SetEffectData>>(current.hooks[key]).data.deps;
+    const oldDeps = cast<HookData<UseEffectData>>(current.hooks[key]).data.deps;
 
     const shouldCallEffect = !areEqual(deps, oldDeps);
 
     if (shouldCallEffect) {
-      const hook = cast<HookData<SetEffectData>>(current.hooks[key]);
+      const hook = cast<HookData<UseEffectData>>(current.hooks[key]);
 
       hook.data.callback = callback;
       hook.data.deps = deps;
@@ -145,7 +163,7 @@ export const collectEffects = (branch: Branch): Array<Omit<BranchAction, "reques
 
   forEachKey((_, hook) => {
     if (hook.type === HookType.Effect) {
-      const { data } = cast<HookData<SetEffectData>>(hook);
+      const { data } = cast<HookData<UseEffectData>>(hook);
 
       if (data.pendingCleanUp) {
         effects.push({
@@ -169,7 +187,7 @@ export const collectEffects = (branch: Branch): Array<Omit<BranchAction, "reques
 export const unmountEffects = (branch: Branch) =>
   forEachKey((_, hook) => {
     if (hook.type === HookType.Effect) {
-      const { data } = cast<HookData<SetEffectData>>(hook);
+      const { data } = cast<HookData<UseEffectData>>(hook);
 
       data.pendingEffect = undefined;
 
@@ -223,4 +241,38 @@ export const useHooksContext = <R>(callback: Callback<R>, branch: Branch): R => 
   return ctx.use(callback, branch, () => {
     index = -1;
   });
+};
+
+export const dispatchUseMemo = <T = unknown>(
+  key: string,
+  { callback, deps }: UseMemoParams<T>,
+  current: Branch
+): T => {
+  if (!current.hooks[key]) {
+    const value = callback();
+
+    const memoized: HookData<UseMemoData> = {
+      data: { value, deps },
+      initialData: { value, deps },
+      key,
+      type: HookType.Memo,
+    };
+
+    current.hooks[key] = memoized;
+  } else {
+    const hook = cast<UseMemoData<T>>(current.hooks[key].data);
+
+    // check if deps changed
+    const didChange = !areEqual(deps, hook.deps);
+
+    // if changed we perform callback and update the value and deps
+    if (didChange) {
+      const value = callback();
+
+      hook.value = value;
+      hook.deps = deps;
+    }
+  }
+
+  return cast<UseMemoData<T>>(current.hooks[key].data).value;
 };
