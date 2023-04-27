@@ -8,6 +8,7 @@ import {
   Tag,
 } from "./component";
 import { Callback } from "./common";
+import { BranchTemplate } from "../branch/types/index.ts";
 
 declare global {
   function setState<T>(key: string, value: T): StateArray<T>;
@@ -464,6 +465,7 @@ declare global {
     step: string | number;
     value: string | number;
     width: string;
+    type: string;
   }
 
   interface LabelProps {
@@ -541,11 +543,7 @@ declare global {
   }
 
   namespace JSX {
-    interface Element {
-      type: string | Callback;
-      props: Record<string, unknown>;
-      children: Array<unknown>;
-    }
+    type Element<T = unknown> = BranchTemplate<T>;
 
     interface IntrinsicElements extends Record<string, unknown> {
       a: ComponentProps<HTMLAnchorElement, AProps>;

@@ -18,9 +18,9 @@ export enum BranchTag {
 }
 
 export enum HookType {
-  State = "#-setState",
-  Effect = "#-setEffect",
-  Memo = "#-setMemo",
+  State = "#-use-state",
+  Effect = "#-use-effect",
+  Memo = "#-use-Memo",
 }
 
 export enum BranchStatus {

@@ -6,7 +6,7 @@ import { createJsxElement, createFragmentTemplate } from "../../create/index.js"
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import root from "../new/root.js";
 import { actionsSorter, collectActions, commit, unmountBranch } from "./index.js";
-import { setState } from "../../hooks/index.js";
+import { useState } from "../../hooks/index.js";
 import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from "../../types/index.js";
 import { initBranch } from "../../utils/index.js";
 import createAction from "../actions/index.js";
@@ -110,7 +110,7 @@ describe("common", () => {
 
     it("should render tree into the dom (nested Functional component)", () => {
       const Button = ({ init = 0 }) => {
-        const [count] = setState(init);
+        const [count] = useState(init);
 
         return <button>{count}</button>;
       };
@@ -138,7 +138,7 @@ describe("common", () => {
 
     it("should render tree into the dom (fragment)", () => {
       const Button = ({ init = 0 }) => {
-        const [count] = setState(init);
+        const [count] = useState(init);
 
         return <button>{count}</button>;
       };

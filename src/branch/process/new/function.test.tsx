@@ -7,7 +7,7 @@ import createFn from "./function.js";
 import { createTemplate } from "../../create/index.js";
 import { Branch, BranchStatus, BranchTag, HookType } from "../../types/index.js";
 import { cast } from "@riadh-adrani/utils";
-import { setState } from "../../hooks/index.js";
+import { useState } from "../../hooks/index.js";
 
 describe("new.function", () => {
   it("should create a branch from a function", () => {
@@ -31,7 +31,7 @@ describe("new.function", () => {
 
   it("should create a branch with a hook", () => {
     const fn = () => {
-      setState("text");
+      useState("text");
 
       return undefined;
     };

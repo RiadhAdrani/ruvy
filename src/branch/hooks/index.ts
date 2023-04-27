@@ -30,7 +30,7 @@ export const createHookKey = (type: HookType, index: number): string => {
  * @param initValue initial value
  * @returns [`value`,`setter`,`getter`]
  */
-export const setState = <T>(initValue: T): StateArray<T> => {
+export const useState = <T>(initValue: T): StateArray<T> => {
   return dispatchHook<StateArray<T>>(HookType.State, initValue);
 };
 
@@ -39,7 +39,7 @@ export const setState = <T>(initValue: T): StateArray<T> => {
  * @param callback effect
  * @param deps dependency
  */
-export const setEffect = (callback: EffectCallback, deps?: unknown) => {
+export const useEffect = (callback: EffectCallback, deps?: unknown) => {
   dispatchHook<void, SetEffectParams>(HookType.Effect, { callback, deps: deps ?? undefined });
 };
 
@@ -58,11 +58,11 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
 
   switch (type) {
     case HookType.State: {
-      output = dispatchSetState(key, data, branch);
+      output = dispatchUseState(key, data, branch);
       break;
     }
     case HookType.Effect: {
-      output = dispatchSetEffect(key, data as SetEffectParams, branch);
+      output = dispatchUseEffect(key, data as SetEffectParams, branch);
       break;
     }
     default: {
@@ -79,7 +79,7 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
  * @param params effect params
  * @param current branch
  */
-export const dispatchSetEffect = (key: string, params: SetEffectParams, current: Branch) => {
+export const dispatchUseEffect = (key: string, params: SetEffectParams, current: Branch) => {
   const { callback, deps } = params;
 
   const createEffect = (cb: EffectCallback) => {
@@ -185,7 +185,7 @@ export const unmountEffects = (branch: Branch) =>
  * @param data data to be stored.
  * @param current current value.
  */
-export const dispatchSetState = <T = unknown>(
+export const dispatchUseState = <T = unknown>(
   key: string,
   data: T,
   current: Branch

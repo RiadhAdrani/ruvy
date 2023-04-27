@@ -1,5 +1,5 @@
 import { mountApp } from "../index.js";
-import { setState } from "../branch/index.js";
+import { useState } from "../branch/index.js";
 import { RuvyNode } from "../branch/types/index.js";
 import { Arrayable } from "@riadh-adrani/utils";
 
@@ -8,7 +8,7 @@ const Container = ({ children }: { children?: Arrayable<RuvyNode> }) => {
 };
 
 const App = () => {
-  const [value, setValue] = setState(false);
+  const [value, setValue] = useState(false);
 
   return (
     <>

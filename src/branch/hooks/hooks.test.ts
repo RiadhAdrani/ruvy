@@ -12,10 +12,10 @@ import {
 import {
   createHookKey,
   ctx,
-  dispatchSetEffect,
-  dispatchSetState,
+  dispatchUseEffect,
+  dispatchUseState,
   useHooksContext,
-  setEffect,
+  useEffect,
   collectEffects,
 } from "./index.js";
 import { BranchHooks } from "../types/index.js";
@@ -41,6 +41,7 @@ describe("useHooksContext", () => {
     status: BranchStatus.Mounting,
     tag: BranchTag.Element,
     type: "div",
+    unmountedChildren: [],
   };
 
   it("should execute a context", () => {
@@ -63,12 +64,13 @@ describe("dispatchSetState", () => {
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
+      unmountedChildren: [],
     };
   });
 
   it("should create a hook entry with value, setter and a getter", () => {
     const [val, set, get] = useHooksContext(() => {
-      return dispatchSetState("0", "test", branch);
+      return dispatchUseState("0", "test", branch);
     }, branch);
 
     expect(branch.hooks).toStrictEqual<BranchHooks>({
@@ -91,7 +93,7 @@ describe("dispatchSetState", () => {
     branch.hooks[0] = { data: "test", initialData: "test", key: "0", type: HookType.State };
 
     const [val, set, get] = useHooksContext(() => {
-      return dispatchSetState("0", "test-2", branch);
+      return dispatchUseState("0", "test-2", branch);
     }, branch);
 
     expect(branch.hooks).toStrictEqual<BranchHooks>({
@@ -124,6 +126,7 @@ describe("dispatchSetEffect", () => {
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
+      unmountedChildren: [],
     };
   });
 
@@ -133,7 +136,7 @@ describe("dispatchSetEffect", () => {
     const callback = vitest.fn();
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+      dispatchUseEffect(key, { callback, deps: undefined }, branch);
     }, branch);
 
     const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
@@ -149,7 +152,7 @@ describe("dispatchSetEffect", () => {
     const callback = vitest.fn(() => cleanup);
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+      dispatchUseEffect(key, { callback, deps: undefined }, branch);
     }, branch);
 
     const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
@@ -176,11 +179,11 @@ describe("dispatchSetEffect", () => {
     const callback2 = vitest.fn();
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+      dispatchUseEffect(key, { callback, deps: undefined }, branch);
     }, branch);
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback: callback2, deps: undefined }, branch);
+      dispatchUseEffect(key, { callback: callback2, deps: undefined }, branch);
     }, branch);
 
     const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
@@ -198,11 +201,11 @@ describe("dispatchSetEffect", () => {
     const callback2 = vitest.fn(() => cleanup2);
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback, deps: undefined }, branch);
+      dispatchUseEffect(key, { callback, deps: undefined }, branch);
     }, branch);
 
     useHooksContext(() => {
-      dispatchSetEffect(key, { callback: callback2, deps: 1 }, branch);
+      dispatchUseEffect(key, { callback: callback2, deps: 1 }, branch);
     }, branch);
 
     const hook = cast<HookData<SetEffectData>>(branch.hooks[key]);
@@ -241,6 +244,7 @@ describe("collectEffects", () => {
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
       type: "div",
+      unmountedChildren: [],
     };
   });
 
@@ -249,7 +253,7 @@ describe("collectEffects", () => {
     const callback = vitest.fn(() => cleanup);
 
     useHooksContext(() => {
-      setEffect(callback);
+      useEffect(callback);
     }, branch);
 
     const hook = branch.hooks[`${HookType.Effect}@0`] as HookData<SetEffectData>;
@@ -271,7 +275,7 @@ describe("collectEffects", () => {
     const callback = vitest.fn(() => cleanup);
 
     useHooksContext(() => {
-      setEffect(callback);
+      useEffect(callback);
     }, branch);
 
     const hook = branch.hooks[`${HookType.Effect}@0`] as HookData<SetEffectData>;
