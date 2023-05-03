@@ -15,6 +15,7 @@ import createNewBranch from "../new/index.js";
 import element from "./element.js";
 import fragment from "./fragment.js";
 import fn from "./function.js";
+import outlet from "./outlet.js";
 import text from "./text.js";
 
 /**
@@ -165,6 +166,10 @@ const diffBranches = (
       }
       case BranchTag.Function: {
         children = fn(current, template as BranchTemplateFunction);
+        break;
+      }
+      case BranchTag.Outlet: {
+        children = outlet(current);
         break;
       }
       default:

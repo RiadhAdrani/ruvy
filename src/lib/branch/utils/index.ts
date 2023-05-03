@@ -10,6 +10,7 @@ import {
 } from "../types/index.js";
 import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
 import { isValidTemplate } from "../check/index.js";
+import { Outlet } from "../../core/Core.js";
 
 export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {
@@ -186,4 +187,22 @@ export const assignRef = (branch: Branch, props: Record<string, unknown>): void 
   if (hasProperty(props, "ref")) {
     (props["ref"] as UseRefData<Node | undefined>).value = branch.instance;
   }
+};
+
+/**
+ * calculate the depth (+1) of an outlet branch
+ * @param branch target
+ */
+export const getOutletDepth = (branch: Branch): number => {
+  let depth = 0;
+
+  if (branch.type === Outlet) {
+    depth += 1;
+  }
+
+  if (branch.parent) {
+    depth += getOutletDepth(branch.parent);
+  }
+
+  return depth;
 };

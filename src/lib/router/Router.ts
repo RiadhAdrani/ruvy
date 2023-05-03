@@ -78,10 +78,36 @@ export default class Router<T = unknown> {
     return expectedRoute?.component;
   }
 
+  getComponentByDepth(depth: number): T | undefined {
+    const current = this.nearestRoute;
+
+    if (depth === undefined) {
+      return undefined;
+    }
+
+    if (!current) {
+      return undefined;
+    }
+
+    if (current.fragments.length === 0 && depth === 0) {
+      return findRouteFromList<T>("/", this.routes)?.component;
+    }
+
+    if (current.fragments.length <= depth) {
+      return undefined;
+    }
+
+    const expected = `/${current.fragments.slice(0, depth + 1).join("/")}`;
+
+    const expectedRoute = findRouteFromList<T>(expected, this.routes);
+
+    return expectedRoute?.component;
+  }
+
   useContext<R>(callback: Callback<R>) {
     const depth = this.context.data ?? -1;
 
-    return this.context.use(callback, depth + 1);
+    return this.context.use(callback, depth + 1, () => {});
   }
 
   constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterConfig) {

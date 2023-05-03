@@ -15,11 +15,13 @@ import {
   getCorrectKey,
   getHostBranchIndexFromHostParent,
   getClosestHostBranches,
+  getOutletDepth,
 } from "./index.js";
 import { BranchTag, Namespace } from "../types/index.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
 import { createTemplate } from "../create/index.js";
 import root from "../process/new/root.js";
+import { Outlet } from "../../core/Core.js";
 
 describe("utils", () => {
   describe("getNamespace", () => {
@@ -383,6 +385,46 @@ describe("utils", () => {
         "div3",
         "div4",
       ]);
+    });
+  });
+
+  describe("getOutletDepth", () => {
+    it("should return 1 when parent is undefined", () => {
+      const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet });
+
+      const depth = getOutletDepth(outlet);
+
+      expect(depth).toBe(1);
+    });
+
+    it("should return 0 : parent > outlet", () => {
+      const parent = initBranch();
+      const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent });
+
+      const depth = getOutletDepth(outlet);
+
+      expect(depth).toBe(1);
+    });
+
+    it("should return 2 : root > parent > outlet", () => {
+      const root = initBranch();
+      const parent = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent: root });
+      const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent });
+
+      const depth = getOutletDepth(outlet);
+
+      expect(depth).toBe(2);
+    });
+
+    it("should return 2 : root > outlet > wrapper > outlet", () => {
+      const root = initBranch();
+      const parent = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent: root });
+      const outletWrapper = initBranch({ parent });
+      const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent: outletWrapper });
+
+      const depth = getOutletDepth(outlet);
+
+      expect(depth).toBe(2);
     });
   });
 });

@@ -11,6 +11,7 @@ import fn from "../new/function.js";
 import element from "./element.js";
 import empty from "./empty.js";
 import fragment from "./fragment.js";
+import outlet from "./outlet.js";
 import text from "./text.js";
 
 /**
@@ -35,6 +36,9 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
     }
     case BranchTag.Text: {
       return text(`${template}`, parent, key);
+    }
+    case BranchTag.Outlet: {
+      return outlet(template as BranchTemplateFunction, parent, key);
     }
     case BranchTag.Null: {
       return empty(parent, key);

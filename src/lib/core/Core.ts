@@ -142,15 +142,7 @@ export const createRouter = (
   });
 };
 
-export const Outlet = (): any => {
-  const router = Core.singleton.router;
-
-  return router.useContext(() => {
-    const obj = router.component;
-
-    return (obj ?? "") as JSX.Element;
-  });
-};
+export const Outlet = (): any => null;
 
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
   return Core.singleton.store.setItem<T>("state", key, value);

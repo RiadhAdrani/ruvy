@@ -14,6 +14,7 @@ import {
 } from "@riadh-adrani/utils";
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 import { createFragmentTemplate } from "../create/index.js";
+import { Outlet } from "../../core/Core.js";
 
 /**
  * checks if the given is a valid component template
@@ -80,6 +81,10 @@ export const isNullishChild = (o: unknown): boolean => {
 export const getTag = (o: unknown): BranchTag => {
   if (isValidTemplate(o)) {
     const type = cast<BranchTemplate>(o).type;
+
+    if (type === Outlet) {
+      return BranchTag.Outlet;
+    }
 
     if (type === createFragmentTemplate) {
       return BranchTag.Fragment;

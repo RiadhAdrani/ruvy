@@ -82,6 +82,7 @@ describe("haveSameTagAndType", () => {
     status: BranchStatus.Mounted,
     tag: BranchTag.Function,
     type: fn,
+    unmountedChildren: [],
   };
 
   const fr: BranchTemplate = {
@@ -105,6 +106,7 @@ describe("haveSameTagAndType", () => {
     status: BranchStatus.Mounted,
     tag: BranchTag.Fragment,
     type: createFragmentTemplate,
+    unmountedChildren: [],
   };
 
   const el: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
@@ -118,6 +120,7 @@ describe("haveSameTagAndType", () => {
     status: BranchStatus.Mounted,
     tag: BranchTag.Element,
     type: "div",
+    unmountedChildren: [],
   };
 
   const text = "text";
@@ -131,6 +134,7 @@ describe("haveSameTagAndType", () => {
     status: BranchStatus.Mounted,
     tag: BranchTag.Text,
     type: BranchTag.Text,
+    unmountedChildren: [],
   };
 
   const nullBranch: Branch = {
@@ -142,6 +146,7 @@ describe("haveSameTagAndType", () => {
     status: BranchStatus.Mounted,
     tag: BranchTag.Null,
     type: BranchTag.Null,
+    unmountedChildren: [],
   };
 
   it.each([
