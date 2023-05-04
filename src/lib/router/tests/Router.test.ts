@@ -110,8 +110,20 @@ describe("Router class", () => {
     expect(component).toBe(undefined);
   });
 
+  it("should get root component when depth is negative", () => {
+    const component = router.getComponentByDepth(-1);
+
+    expect(component).toBe("home");
+  });
+
   it("should get current component", () => {
     const component = router.useContext(() => router.component);
+
+    expect(component).toBe("home");
+  });
+
+  it("should get current component", () => {
+    const component = router.getComponentByDepth(0);
 
     expect(component).toBe("home");
   });
@@ -120,6 +132,12 @@ describe("Router class", () => {
     router.push("/user");
 
     const component = router.useContext(() => router.useContext(() => router.component));
+
+    expect(component).toBe(undefined);
+  });
+
+  it("should return undefined when current depth is overflowing", () => {
+    const component = router.getComponentByDepth(1);
 
     expect(component).toBe(undefined);
   });
