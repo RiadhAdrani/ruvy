@@ -1,19 +1,35 @@
-import { mountApp } from "../index.js";
-import { useState } from "../branch/index.js";
-import { RuvyNode } from "../branch/types/index.js";
-import { Arrayable } from "@riadh-adrani/utils";
+import { Outlet, createRouter, mountApp } from "../index.js";
 
-const Container = ({ children }: { children?: Arrayable<RuvyNode> }) => {
-  return <main>{children}</main>;
-};
+createRouter(
+  [
+    {
+      component: <div>Home</div>,
+      path: "/",
+    },
+    {
+      component: <div>You</div>,
+      path: "/you",
+    },
+  ],
+  {}
+);
 
 const App = () => {
-  const [value, setValue] = useState(false);
+  const links = [
+    { to: "/", lable: "Home" },
+    { to: "/you", lable: "Youtube" },
+  ];
 
   return (
     <>
-      <input type="checkbox" onChange={(e) => setValue(e.currentTarget.checked)} />
-      <Container>{value ? <div>Hello</div> : <button>World</button>}</Container>
+      <nav>
+        {links.map((item) => (
+          <a class:pending-action={true} href={item.to} style={{ padding: ["10px", "5px"] }}>
+            {item.lable}
+          </a>
+        ))}
+      </nav>
+      <Outlet />
     </>
   );
 };

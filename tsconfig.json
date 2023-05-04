@@ -18,7 +18,7 @@
     "jsxFactory": "createJsxElement",
     "jsxFragmentFactory": "createJsxFragmentElement",
     "jsx": "react",
-    "types": ["./src/types/global"]
+    "types": ["./src/lib/types/global", "./src/docs/custom"]
   },
-  "include": ["src"]
+  "include": ["src", "./src/docs/custom.d.ts"]
 }

@@ -4,6 +4,8 @@ export {
   Outlet,
   navigate,
   setEffect,
-  setState,
+  useKey,
   getParams,
-} from "./core/index.js";
+} from "./lib/core/index.js";
+
+export * from "./lib/branch/hooks/index.js";
