@@ -1,10 +1,11 @@
-import { Callback, areEqual, cast, forEachKey } from "@riadh-adrani/utils";
+import { Callback, areEqual, cast, forEachKey, hasProperty } from "@riadh-adrani/utils";
 import Context from "../../context/Context.js";
 import { EffectCallback, StateArray } from "../../types/store.js";
 import {
   ActionType,
   Branch,
   BranchAction,
+  BranchStatus,
   HookData,
   HookType,
   UseEffectData,
@@ -77,7 +78,9 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
 
   const key = createHookKey(type, index);
 
-  // TODO : if branch is mounted, and key does not map to an existing hook, we should throw
+  if (branch.status === BranchStatus.Mounted && !hasProperty(branch.hooks, key)) {
+    throw `Unexpected State: Unable to find hook with key (${key})`;
+  }
 
   let output: unknown = undefined;
 
