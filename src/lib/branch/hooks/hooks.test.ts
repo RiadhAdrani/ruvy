@@ -9,6 +9,7 @@ import {
   HookType,
   UseEffectData,
   UseMemoData,
+  UseMemoParams,
   UseRefData,
 } from "../types/index.js";
 import {
@@ -21,6 +22,7 @@ import {
   collectEffects,
   dispatchUseMemo,
   dispatchUseRef,
+  dispatchHook,
 } from "./index.js";
 import { BranchHooks } from "../types/index.js";
 import { cast, omit } from "@riadh-adrani/utils";
@@ -387,5 +389,52 @@ describe("dispatchUseRef", () => {
     ref.hello = "test";
 
     expect(refValue.value === ref).toBe(true);
+  });
+});
+
+describe("dispatchHook", () => {
+  let branch: Branch;
+
+  beforeEach(() => {
+    branch = initBranch();
+  });
+
+  it("should throw when executed outside of the context", () => {
+    expect(() => dispatchHook(HookType.State, 0)).toThrow(
+      "cannot use hooks outside of a functional component context."
+    );
+  });
+
+  it("should throw when hook is not found in a mounted branch", () => {
+    branch.status = BranchStatus.Mounted;
+
+    const callback = () =>
+      useHooksContext(() => {
+        dispatchHook(HookType.State, 0);
+      }, branch);
+
+    expect(callback).toThrow(
+      `Unexpected State: Unable to find hook with key (${HookType.State}@0)`
+    );
+  });
+
+  it("should throw when hook type is invalid", () => {
+    branch.status = BranchStatus.Mounted;
+
+    const callback = () =>
+      useHooksContext(() => {
+        dispatchHook("Wrong" as HookType.State, 0);
+      }, branch);
+
+    expect(callback).toThrow();
+  });
+
+  it("should return the output", () => {
+    const count = useHooksContext(
+      () => dispatchHook<number, UseMemoParams>(HookType.Memo, { callback: () => 0 }),
+      branch
+    );
+
+    expect(count).toBe(0);
   });
 });
