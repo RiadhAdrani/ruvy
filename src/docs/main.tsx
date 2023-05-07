@@ -4,9 +4,7 @@ import Home from "./src/pages/Home.js";
 
 import "./index.scss";
 import "virtual:uno.css";
-import Reference from "./src/pages/Reference.js";
-import About from "./src/pages/About.js";
-import IntroductionMain from "./src/pages/Reference/Introduction/Introduction.main.js";
+import { referenceRoutes } from "./src/router/index.js";
 
 const hostElement = document.getElementById("app") as HTMLElement;
 
@@ -18,16 +16,8 @@ createRouter(
       path: "/",
       component: <Home />,
       title: "Ruvy",
-      routes: [
-        {
-          path: "reference",
-          component: <Reference />,
-          title: "Ruvy | Reference",
-          routes: [{ path: "introduction", component: <IntroductionMain /> }],
-        },
-        { path: "about", component: <About />, title: "Ruvy | About" },
-      ],
     },
+    ...referenceRoutes,
   ],
   { base: "/RiadhAdrani" }
 );

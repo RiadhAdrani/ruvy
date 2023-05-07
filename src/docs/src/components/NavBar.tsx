@@ -14,11 +14,11 @@ export default () => {
   ];
 
   return (
-    <Container classes="border-b-solid border-b border-[color:var(--dividerDark2)] h-60px">
+    <Container classes="border-b-solid border-b border-[color:var(--dividerDark2)] h-60px sticky inset-t-0px bg-[color:var(--black)]">
       <nav class="row items-center p-y-3">
         <div class="row flex-1 items-center">
           <a href="/" class="inline-flex gap-2 items-center font-normal">
-            <img src={logo} height={35} />
+            <img src={logo} height={30} />
             <p>Ruvy</p>
           </a>
         </div>

@@ -77,6 +77,8 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
 
   const key = createHookKey(type, index);
 
+  // TODO : if branch is mounted, and key does not map to an existing hook, we should throw
+
   let output: unknown = undefined;
 
   switch (type) {

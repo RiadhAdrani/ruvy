@@ -138,6 +138,8 @@ export default class Router<T = unknown> {
       return;
     }
 
+    // TODO : check if there is a redirect
+
     history.pushState({ path }, "", `${this.base}${path}`);
 
     this.onStateChange();
@@ -148,6 +150,8 @@ export default class Router<T = unknown> {
     if (!this.shouldTriggerUpdate(path)) {
       return;
     }
+
+    // TODO : check if there is a redirect
 
     history.replaceState({ path }, "", `${this.base}${path}`);
 

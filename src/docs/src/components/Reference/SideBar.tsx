@@ -2,7 +2,7 @@ export default () => {
   const sections = [
     {
       title: "Introduction",
-      to: "/introduction",
+      to: "/intro",
       items: [
         { title: "Overview", to: "/overview" },
         { title: "Get Started", to: "/get-started" },
