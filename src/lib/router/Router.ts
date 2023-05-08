@@ -119,6 +119,20 @@ export default class Router<T = unknown> {
     window.addEventListener("popstate", () => {
       this.onStateChange();
     });
+
+    const path = this.getCorrectPath(getRouteFromUrl(this.base));
+
+    this.replace(path);
+  }
+
+  getCorrectPath(to: string): string {
+    const maybe = findRouteFromList(to, this.routes);
+
+    if (!maybe) {
+      return to;
+    }
+
+    return maybe.redirectTo ?? to;
   }
 
   shouldTriggerUpdate(path: string): boolean {
@@ -133,12 +147,12 @@ export default class Router<T = unknown> {
     return path[0] === "/";
   }
 
-  push(path: string) {
-    if (!this.shouldTriggerUpdate(path)) {
+  push(to: string) {
+    if (!this.shouldTriggerUpdate(to)) {
       return;
     }
 
-    // TODO : check if there is a redirect
+    const path = this.getCorrectPath(to);
 
     history.pushState({ path }, "", `${this.base}${path}`);
 
@@ -146,12 +160,12 @@ export default class Router<T = unknown> {
     this.updateTitle();
   }
 
-  replace(path: string) {
-    if (!this.shouldTriggerUpdate(path)) {
+  replace(to: string) {
+    if (!this.shouldTriggerUpdate(to)) {
       return;
     }
 
-    // TODO : check if there is a redirect
+    const path = this.getCorrectPath(to);
 
     history.replaceState({ path }, "", `${this.base}${path}`);
 

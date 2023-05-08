@@ -8,8 +8,9 @@ const test: RawRoute = { path: "test", component: "test", routes: [testId] };
 const userIdAbout: RawRoute = { path: "about", component: "user-about" };
 const userId: RawRoute = { path: ":id", component: "user-id", routes: [userIdAbout] };
 const user: RawRoute = { path: "user", component: "user", routes: [userId] };
+const redirect: RawRoute = { path: "redirect", component: "empty", redirectTo: "/user" };
 
-const root: RawRoute = { path: "/", component: "home", routes: [test, user] };
+const root: RawRoute = { path: "/", component: "home", routes: [test, user, redirect] };
 
 describe("Router class", () => {
   let onChange: Callback;
@@ -193,5 +194,9 @@ describe("Router class", () => {
     ["http://localhost:5173/", false],
   ])("should determine if path (%s) is navigatable (%s)", (path, expected) => {
     expect(router.isNavigatable(path)).toBe(expected);
+  });
+
+  it("should get redirection path instead of original one", () => {
+    expect(router.getCorrectPath("/redirect")).toBe("/user");
   });
 });

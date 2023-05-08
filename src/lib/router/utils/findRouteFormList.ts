@@ -1,7 +1,7 @@
 import { Route } from "../../types/index.js";
 import fragmentize from "./fragmentize.js";
 
-export default <T>(path: string, record: Record<string, Route>): Route<T> | undefined => {
+export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | undefined => {
   const fragments = fragmentize(path);
 
   if (fragments.length === 0) {
