@@ -4,8 +4,8 @@ import { Context } from "../context/index.js";
 import { Router } from "../router/index.js";
 import { Scheduler } from "../scheduler/index.js";
 import { createEffectCollection, createStateCollection, Store } from "../store/index.js";
-import { Callback, StateArray, RouterConfig, RawRoute } from "../types/index.js";
-import { IMountConfig } from "../types/index.js";
+import { Callback, StateArray, RouterParams, RawRoute } from "../types/index.js";
+import { MountParams } from "../types/index.js";
 import { getClosestAnchorParent } from "./utils/index.js";
 import { Branch, RuvyNode } from "../branch/types/index.js";
 import root from "../branch/process/new/root.js";
@@ -115,7 +115,7 @@ setEvent(
   document
 );
 
-export const mountApp = ({ callback, hostElement }: IMountConfig) => {
+export const mountApp = ({ callback, hostElement }: MountParams) => {
   Core.singleton.fn = callback;
   Core.singleton.host = hostElement;
 
@@ -132,7 +132,7 @@ export const mountApp = ({ callback, hostElement }: IMountConfig) => {
 
 export const createRouter = (
   routes: Array<RawRoute<RuvyNode>>,
-  config: Omit<RouterConfig, "onStateChange">
+  config: Omit<RouterParams, "onStateChange">
 ) => {
   Core.singleton.router = new Router(routes, {
     ...config,

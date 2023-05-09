@@ -1,6 +1,6 @@
 import type { Callback } from "./common.js";
 
-export interface IMountConfig {
+export interface MountParams {
   hostElement: HTMLElement;
   callback: Callback<JSX.Element>;
 }

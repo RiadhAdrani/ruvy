@@ -1,6 +1,6 @@
 import { isBlank } from "@riadh-adrani/utils";
 import { Context } from "../context/index.js";
-import { Callback, RawRoute, Route, RouterConfig } from "../types/index.js";
+import { Callback, RawRoute, Route, RouterParams } from "../types/index.js";
 import {
   findRouteFromList,
   flatten,
@@ -110,7 +110,7 @@ export default class Router<T = unknown> {
     return this.context.use(callback, depth + 1, () => {});
   }
 
-  constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterConfig) {
+  constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterParams) {
     this.onStateChange = onStateChange;
     this.base = base ?? this.base;
     this.scrollToTop = scrollToTop ?? false;

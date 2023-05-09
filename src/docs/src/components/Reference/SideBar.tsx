@@ -32,9 +32,8 @@ export default () => {
       title: "Router",
       to: "/router",
       items: [
-        { title: "Overview", to: "/setup" },
-        { title: "Get Started", to: "/nesting" },
-        { title: "Tic Tac Toe", to: "/api" },
+        { title: "Setup", to: "/setup" },
+        { title: "Navigation", to: "/navigation" },
       ],
     },
   ];

@@ -16,7 +16,7 @@ export interface Route<T = unknown> extends CommonRoute<T> {
   isDynamic: boolean;
 }
 
-export interface RouterConfig {
+export interface RouterParams {
   onStateChange: Callback;
   base?: string;
   scrollToTop?: boolean;
