@@ -12,7 +12,7 @@ import useState from "./hooks/useState.md";
 import useRef from "./hooks/useRef.md";
 import useMemo from "./hooks/useMemo.md";
 
-import navigation from "./router/navigation.md";
+import api from "./router/api.md";
 import setup from "./router/setup.md";
 
 export default {
@@ -35,6 +35,6 @@ export default {
   },
   router: {
     setup,
-    navigation,
+    api,
   },
 };

@@ -111,9 +111,9 @@ const reference: Array<{
     componentOrUrl: MD.router.setup,
   },
   {
-    path: "/router/navigation",
-    title: "Navigation",
-    componentOrUrl: MD.router.navigation,
+    path: "/router/api",
+    title: "Router Api",
+    componentOrUrl: MD.router.api,
   },
 ];
 

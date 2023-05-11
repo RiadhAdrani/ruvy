@@ -160,6 +160,10 @@ export const navigate = (path: string) => {
   Core.singleton.router.push(path);
 };
 
+export const replace = (path: string) => {
+  Core.singleton.router.replace(path);
+};
+
 export const getParams = <T = Record<string, string>>() => {
   return Core.singleton.router.params as T;
 };

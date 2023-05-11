@@ -22,6 +22,7 @@ export default () => {
       title: "Hooks",
       to: "/hooks",
       items: [
+        { title: "Rules", to: "/rules" },
         { title: "useState", to: "/use-state" },
         { title: "useEffect", to: "/use-effect" },
         { title: "useMemo", to: "/use-memo" },
@@ -33,7 +34,7 @@ export default () => {
       to: "/router",
       items: [
         { title: "Setup", to: "/setup" },
-        { title: "Navigation", to: "/navigation" },
+        { title: "Api", to: "/api" },
       ],
     },
   ];

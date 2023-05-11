@@ -14,7 +14,7 @@ Client side routing allows the update of the URL from a link click without makin
 
 <br/>
 
-To setup the router, all you need is to call `createRouter` rendering the app using `mountApp`
+To setup the router, all you need is to call `createRouter` rendering the app before calling `mountApp`
 
 <br/>
 
@@ -98,7 +98,7 @@ createRouter([
 
 <br/>
 
-Like other `Routers` and `Frameworks`, you can add `:` to the beginning of the path to signal that it is a dynamic.
+Like other `Routers` and `Frameworks`, you can add `:` to the beginning of the path to signal that it is dynamic.
 
 <br/>
 

@@ -14,7 +14,7 @@ As of now, `Ruvy` is built with only `Single-Page Application (SPA)` in mind, it
 
 <br/>
 
-- [`Get Started`](/reference/introduction/get-started)
+- [`Get Started`](/reference/intro/get-started)
 - [`Components`](/reference/components)
 - [`Hooks`](/reference/hooks)
 - [`Router`](/reference/router)
