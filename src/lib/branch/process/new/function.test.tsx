@@ -8,6 +8,8 @@ import { createTemplate } from "../../create/index.js";
 import { Branch, BranchStatus, BranchTag, HookType } from "../../types/index.js";
 import { cast } from "@riadh-adrani/utils";
 import { useState } from "../../hooks/index.js";
+import { initBranch } from "../../utils/index.js";
+import fragment from "./fragment.js";
 
 describe("new.function", () => {
   it("should create a branch from a function", () => {
@@ -57,5 +59,18 @@ describe("new.function", () => {
       parent: cast<Branch>({}),
       unmountedChildren: [],
     });
+  });
+
+  it("should throw with duplicate children keys", () => {
+    const parent = initBranch();
+    const jsx = (
+      <>
+        <div key={1} />
+        <div key={1} />
+        <div />
+      </>
+    );
+
+    expect(() => fragment(jsx as any, parent, 0)).toThrow();
   });
 });

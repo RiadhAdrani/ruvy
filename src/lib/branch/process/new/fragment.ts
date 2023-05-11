@@ -3,6 +3,7 @@ import { useHooksContext } from "../../hooks/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";
 import { initBranch } from "../../utils/index.js";
+import { haveDuplicateKey } from "../../check/index.js";
 
 /**
  * create a new fragment branch from a template.
@@ -18,6 +19,10 @@ const fragment = (template: BranchTemplateFragment, parent: Branch, key: BranchK
   const fragmentChildren = useHooksContext(() => type(children), branch);
 
   branch.pendingActions.push(...collectPendingEffect(branch));
+
+  if (haveDuplicateKey(children)) {
+    throw `Duplicate key detected within Component (${branch.type})`;
+  }
 
   branch.children = fragmentChildren.map((ch, index) => process(ch, undefined, branch, index));
 

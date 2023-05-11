@@ -49,4 +49,17 @@ describe("new.element", () => {
       unmountedChildren: [],
     });
   });
+
+  it("should throw with duplicate children keys", () => {
+    const parent = initBranch();
+    const jsx = (
+      <div>
+        <div key={1} />
+        <div key={1} />
+        <div />
+      </div>
+    );
+
+    expect(() => element(jsx as any, parent, 0)).toThrow();
+  });
 });

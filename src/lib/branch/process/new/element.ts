@@ -3,6 +3,7 @@ import { initBranch } from "../../utils/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";
 import createAction from "../actions/index.js";
+import { haveDuplicateKey } from "../../check/index.js";
 
 /**
  * create a new branch element from a template.
@@ -22,6 +23,10 @@ const element = (
   const renderAction = createAction(ActionType.Render, branch);
 
   branch.pendingActions.push(renderAction, ...collectPendingEffect(branch));
+
+  if (haveDuplicateKey(children)) {
+    throw `Duplicate key detected within Component (${branch.type})`;
+  }
 
   branch.children = children.map((child, index) => process(child, undefined, branch, index));
 
