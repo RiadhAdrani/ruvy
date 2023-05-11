@@ -15,6 +15,7 @@ import {
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 import { createFragmentTemplate } from "../create/index.js";
 import { Outlet } from "../../core/Core.js";
+import { getCorrectKey } from "../utils/index.js";
 
 /**
  * checks if the given is a valid component template
@@ -125,4 +126,16 @@ export const haveSameTagAndType = (branch: Branch, template: unknown): boolean =
   }
 
   return false;
+};
+
+/**
+ * checks if there is a duplicate key in an array of children
+ * @param children array
+ */
+export const haveDuplicateKey = (children: Array<unknown>): boolean => {
+  const keys = children.map((child, index) => getCorrectKey(child, index));
+
+  const set = new Set(keys);
+
+  return keys.length !== set.size;
 };

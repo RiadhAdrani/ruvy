@@ -1,8 +1,18 @@
+/** @jsxFrag createFragmentTemplate */
+/** @jsx createJsxElement */
+
+// @ts-ignore
+import { createFragmentTemplate, createJsxElement } from "../create/index.js";
 import { describe, expect, it, vitest } from "vitest";
-import { getTag, haveSameTagAndType, isValidTemplate, isValidTextChild } from "./index.js";
+import {
+  getTag,
+  haveDuplicateKey,
+  haveSameTagAndType,
+  isValidTemplate,
+  isValidTextChild,
+} from "./index.js";
 import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 import { omit } from "@riadh-adrani/utils";
-import { createFragmentTemplate } from "../create/index.js";
 
 describe("isBranchTemplate", () => {
   const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
@@ -208,5 +218,25 @@ describe("haveSameTagAndType", () => {
     [nullBranch, null, true],
   ])("should compare branch and template : (%s) vs (%s) => (%s)", (branch, template, res) => {
     expect(haveSameTagAndType(branch, template)).toBe(res);
+  });
+});
+
+describe("haveDuplicateKey", () => {
+  it("should return false with index keys", () => {
+    const children = [<div />, <div />, <div />];
+
+    expect(haveDuplicateKey(children)).toBe(false);
+  });
+
+  it("should return true", () => {
+    const children = [<div key="1" />, <div key="1" />, <div />];
+
+    expect(haveDuplicateKey(children)).toBe(true);
+  });
+
+  it("should return false with string vs number", () => {
+    const children = [<div key={1} />, <div key="1" />, <div />];
+
+    expect(haveDuplicateKey(children)).toBe(false);
   });
 });
