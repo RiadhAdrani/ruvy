@@ -2,6 +2,10 @@
 
 <br/>
 
+Hooks are a feature in Ruvy that allow you to use state and other Ruvy features in function components. They provide a way to reuse stateful logic, making your code more modular and easier to read. With hooks, you can manage state, perform side effects, and even create your own custom hooks to share functionality across components. Overall, hooks make it easier and more efficient to build complex applications with Ruvy.
+
+<br/>
+
 Just like `React`, hooks have some specific rules that should not be broken:
 
 <br/>

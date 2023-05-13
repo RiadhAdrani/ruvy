@@ -96,7 +96,7 @@ h6 {
 }
 
 #app {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
 
   display: flex;
@@ -109,8 +109,15 @@ code {
   font-family: "Ubuntu Mono" !important;
 }
 
+code[class*="language-"],
+pre[class*="language-"] {
+  overflow-x: auto;
+  min-width: 0px;
+}
+
 .markdown-container {
   color: var(--grayLight3);
+  overflow-y: auto !important;
 
   h1,
   h2 {

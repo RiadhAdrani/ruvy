@@ -20,5 +20,5 @@ export default ({ content }: { content: string }) => {
     }
   }, content);
 
-  return <div class="markdown-container" ref={div} />;
+  return <div class="markdown-container overflow-x-hidden" ref={div} />;
 };

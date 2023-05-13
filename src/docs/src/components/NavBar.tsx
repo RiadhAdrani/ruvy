@@ -14,7 +14,7 @@ export default () => {
   ];
 
   return (
-    <Container classes="border-b-solid border-b border-[color:var(--dividerDark2)] h-60px sticky inset-t-0px bg-[color:var(--black)]">
+    <Container classes="border-b-solid border-b p-x-5! border-[color:var(--dividerDark2)] h-60px sticky inset-t-0px bg-[color:var(--black)]">
       <nav class="row items-center p-y-3">
         <div class="row flex-1 items-center">
           <a href="/" class="inline-flex gap-2 items-center font-normal">
@@ -28,7 +28,7 @@ export default () => {
             placeholder="Search"
           />
         </div>
-        <div class="row-center gap-4 flex-1">
+        <div class="row-center justify-end gap-4 flex-1">
           {pages.map((item) => (
             <a href={item.to}>{item.label}</a>
           ))}

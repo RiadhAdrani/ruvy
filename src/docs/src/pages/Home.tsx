@@ -1,4 +1,5 @@
 // @ts-ignore
+import { useState } from "../../../index.js";
 import logo from "../assets/logo.svg";
 import Container from "../components/Container.js";
 
@@ -18,7 +19,9 @@ export default () => {
         <h1 class="text-[4em] p-2 m-b-4 w-50% text-center border-b border-b-solid border-[color:var(--grayDark3)]">
           Ruvy
         </h1>
-        <h2 class="font-400">Another front-end framework</h2>
+        <h2 class="font-400" class:hello>
+          Another front-end framework
+        </h2>
         <p class="font-400">React-inspired framework to build web user interfaces</p>
         <div class="row gap-4 m-t-2">
           {buttons.map((item, index) => (

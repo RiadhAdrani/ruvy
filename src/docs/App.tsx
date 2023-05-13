@@ -6,7 +6,6 @@ export default () => {
     <>
       <NavBar />
       <Outlet />
-      <footer></footer>
     </>
   );
 };
