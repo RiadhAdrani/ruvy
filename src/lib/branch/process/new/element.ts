@@ -1,5 +1,5 @@
 import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from "../../types/index.js";
-import { initBranch } from "../../utils/index.js";
+import { initBranch, preprocessProps } from "../../utils/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";
 import createAction from "../actions/index.js";
@@ -18,7 +18,13 @@ const element = (
 ): Branch<string> => {
   const { props, type, children } = template;
 
-  const branch: Branch<string> = initBranch({ tag: BranchTag.Element, type, parent, key, props });
+  const branch: Branch<string> = initBranch({
+    tag: BranchTag.Element,
+    type,
+    parent,
+    key,
+    props: preprocessProps(props),
+  });
 
   const renderAction = createAction(ActionType.Render, branch);
 

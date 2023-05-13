@@ -1,6 +1,6 @@
 import { areEqual, forEachKey, hasProperty } from "@riadh-adrani/utils";
 import { ActionType, Branch, BranchTemplate, PropDiff } from "../../types/index.js";
-import { IgnoredProps, assignRef } from "../../utils/index.js";
+import { IgnoredProps, assignRef, preprocessProps } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 
 /**
@@ -44,6 +44,9 @@ export const diffElementProps = (
  * @param key element key
  */
 const element = (current: Branch<string>, template: BranchTemplate<string>): Array<unknown> => {
+  // preprocess props
+  template.props = preprocessProps(template.props);
+
   const { props, children } = template;
 
   // update props

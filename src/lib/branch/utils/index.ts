@@ -1,7 +1,16 @@
-import { cast, forEachKey, hasProperty, isFunction, merge } from "@riadh-adrani/utils";
+import {
+  Arrayable,
+  cast,
+  forEachKey,
+  hasProperty,
+  isArray,
+  isFunction,
+  merge,
+} from "@riadh-adrani/utils";
 import {
   Branch,
   BranchKey,
+  BranchProps,
   BranchStatus,
   BranchTag,
   BranchTemplate,
@@ -205,4 +214,48 @@ export const getOutletDepth = (branch: Branch): number => {
   }
 
   return depth;
+};
+
+/**
+ * append a new class to the existing one.
+ * @deprecated
+ * @param current class name or array of class names
+ * @param className new class name
+ */
+export const combineClasses = (current: Arrayable<string>, className: string): string => {
+  current = isArray(current) ? (current as Array<string>).join(" ") : current;
+
+  return `${current} ${className}`;
+};
+
+/**
+ * preprocess props
+ * @deprecated
+ * @param initial initial props
+ */
+export const preprocessProps = (initial: BranchProps): BranchProps => {
+  const props: BranchProps = {};
+
+  const prefix = "class:";
+
+  forEachKey((key, value) => {
+    // class:*
+    if (key.startsWith(prefix)) {
+      if (value === true) {
+        const newClassName = key.substring(prefix.length);
+
+        if (hasProperty(props, "class")) {
+          props.class = combineClasses(props.class as Arrayable<string>, newClassName);
+        } else if (hasProperty(initial, "class")) {
+          initial.class = combineClasses(initial.class as Arrayable<string>, newClassName);
+        } else {
+          props.class = newClassName;
+        }
+      }
+    } else {
+      props[key] = value;
+    }
+  }, initial);
+
+  return props;
 };
