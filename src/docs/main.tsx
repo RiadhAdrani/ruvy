@@ -19,7 +19,7 @@ createRouter(
     },
     ...referenceRoutes,
   ],
-  { base: "/RiadhAdrani" }
+  { base: "/ruvy", scrollToTop: true }
 );
 
 mountApp({ callback, hostElement });

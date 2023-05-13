@@ -3,6 +3,8 @@
 }
 
 :root {
+  color-scheme: dark;
+
   --white: #ffffff;
   --whiteSoft: #f9f9f9;
   --whiteMute: #f1f1f1;
@@ -72,6 +74,15 @@
   --pinkLighter: #f616f8;
   --pinkDark: #823c83;
   --pinkDarker: #602960;
+
+  --navBar: 60px;
+
+  --sideBar-top: 35px;
+  --sideBar: 260px;
+  --sideBar-res: calc(var(--navBar) + var(--sideBar-top));
+}
+
+@media screen and (prefers-color-scheme: dark) {
 }
 
 body {
