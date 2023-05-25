@@ -60,6 +60,15 @@ export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
 };
 
 /**
+ * perform memoization of a callback and update it when `deps` changes.
+ * @param callback function
+ * @param deps dependencies
+ */
+export const useCallback = <T>(callback: T, deps?: unknown): T => {
+  return useMemo(() => callback, deps);
+};
+
+/**
  * stores a reference to a variable
  * @param value variable
  */
