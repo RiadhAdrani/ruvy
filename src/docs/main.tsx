@@ -17,6 +17,8 @@ createRouter(
       component: <Home />,
       title: "Ruvy",
     },
+    { path: "/*", component: "Not Found" },
+    { path: "/**", component: "Not Found all" },
     ...referenceRoutes,
   ],
   { base: "/ruvy", scrollToTop: true }

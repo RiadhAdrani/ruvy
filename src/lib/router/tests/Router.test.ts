@@ -16,15 +16,17 @@ describe("Router class", () => {
   let onChange: Callback;
   let router: Router;
 
-  beforeEach(() => {
+  const setup = (routes = [root]) => {
     history.replaceState(undefined, "", "/");
 
     onChange = vitest.fn(() => 0);
 
-    router = new Router([root], {
+    router = new Router(routes, {
       onStateChange: onChange,
     });
-  });
+  };
+
+  beforeEach(() => setup());
 
   it("should push state correctly", () => {
     router.push("/hello");
@@ -198,5 +200,61 @@ describe("Router class", () => {
 
   it("should get redirection path instead of original one", () => {
     expect(router.getCorrectPath("/redirect")).toBe("/user");
+  });
+
+  describe("Route.getCatchRouteByDepth", () => {
+    it("should not return catch route if none is specified", () => {
+      const route = router.getCatchRouteByDepth(5);
+
+      expect(route).toBe(undefined);
+    });
+
+    it("should return the catch all route", () => {
+      setup([root, { component: "*", path: "/**" }]);
+
+      const route = router.getCatchRouteByDepth(5);
+
+      expect(route?.component).toBe("*");
+    });
+
+    it("should return the local catch route", () => {
+      setup([root, { component: "*", path: "/*" }]);
+
+      router.push("/non-existing");
+
+      const route = router.getCatchRouteByDepth(1);
+
+      expect(route?.component).toBe("*");
+    });
+
+    it("should return the local catch route (2+ depth)", () => {
+      setup([root, { component: "not-found", path: "/user/*" }]);
+
+      router.push("/user/not-found");
+
+      const route = router.getCatchRouteByDepth(2);
+
+      expect(route?.component).toBe("not-found");
+    });
+
+    it("should prioritize the dynamic route", () => {
+      setup([root, { component: "not-found", path: "/user/*" }]);
+
+      router.push("/user/not-found");
+
+      const component = router.getComponentByDepth(1);
+
+      expect(component).toBe("user-id");
+    });
+
+    it("should priozitize the local catch route", () => {
+      setup([root, { component: "*", path: "/*" }, { component: "**", path: "/**" }]);
+
+      router.push("/non-existing");
+
+      const route = router.getCatchRouteByDepth(1);
+
+      expect(route?.component).toBe("*");
+    });
   });
 });

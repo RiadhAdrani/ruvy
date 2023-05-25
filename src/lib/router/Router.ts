@@ -86,20 +86,51 @@ export default class Router<T = unknown> {
     }
 
     if (!current) {
-      return undefined;
+      return this.getCatchRouteByDepth(depth)?.component;
     }
 
     if (current.fragments.length === 0 && depth === 0) {
-      return findRouteFromList<T>("/", this.routes)?.component;
+      return this.getRouteOrCatch("/", 0);
     }
 
     if (current.fragments.length <= depth) {
-      return undefined;
+      return this.getCatchRouteByDepth(depth + 1)?.component;
     }
 
     const expected = `/${current.fragments.slice(0, depth + 1).join("/")}`;
 
-    const expectedRoute = findRouteFromList<T>(expected, this.routes);
+    return this.getRouteOrCatch(expected, depth);
+  }
+
+  getCatchRouteByDepth(depth: number): Route<T> | undefined {
+    const current = this.nearestRoute;
+
+    let catchRoute = "/*";
+
+    if (current) {
+      // we find the [/../*] route if existing
+
+      const catchBase = current.fragments.slice(0, depth - 1);
+
+      catchRoute = `/${catchBase.join("/")}/*`;
+    }
+
+    let expectedRoute = findRouteFromList<T>(catchRoute, this.routes);
+
+    if (!expectedRoute) {
+      // backup catch all route
+      expectedRoute = findRouteFromList<T>("/**", this.routes);
+    }
+
+    return expectedRoute;
+  }
+
+  getRouteOrCatch(path: string, depth: number): T | undefined {
+    let expectedRoute = findRouteFromList<T>(path, this.routes);
+
+    if (!expectedRoute) {
+      expectedRoute = this.getCatchRouteByDepth(depth);
+    }
 
     return expectedRoute?.component;
   }
