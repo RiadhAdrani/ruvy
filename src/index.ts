@@ -6,6 +6,6 @@ export {
   setEffect,
   useKey,
   getParams,
-} from "./lib/core/index.js";
+} from "./core/index.js";
 
-export * from "./lib/branch/hooks/index.js";
+export * from "./branch/hooks/index.js";
