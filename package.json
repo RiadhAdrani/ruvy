@@ -25,8 +25,9 @@
     "build": "rm -rf build && tsc -p tsconfig.build.json",
     "test": "vitest",
     "test:once": "vitest run",
-    "lint": "npx eslint . --ext .ts",
-    "lint-fix": "npx eslint . --fix --ext .ts",
+    "lint:check": "npx eslint . --ext .ts",
+    "format:check": "npx prettier --check ./",
+    "lint": "npx eslint . --fix --ext .ts",
     "format": "npx prettier --write --check ./"
   },
   "devDependencies": {

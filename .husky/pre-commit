@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn test:once
-yarn lint
-yarn format
+yarn lint:check
+yarn format:check
