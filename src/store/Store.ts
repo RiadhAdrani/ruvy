@@ -100,18 +100,18 @@ export default class Store {
 
   launchEffects() {
     forEachKey((name, value) => {
-      forEachKey((key) => {
+      forEachKey(key => {
         this.runEffect(name, key);
       }, value.items);
     }, this.effects);
   }
 
   resetUsage() {
-    Object.keys(this.items).forEach((name) => {
+    Object.keys(this.items).forEach(name => {
       this.items[name].used = [];
     });
 
-    Object.keys(this.effects).forEach((name) => {
+    Object.keys(this.effects).forEach(name => {
       this.effects[name].used = [];
     });
   }

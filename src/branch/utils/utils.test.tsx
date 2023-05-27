@@ -332,7 +332,7 @@ describe("utils", () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual(["div"]);
+      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual(["div"]);
     });
 
     it("should get host branch nested (1)", () => {
@@ -349,7 +349,7 @@ describe("utils", () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual([
+      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
         "div",
         "div1",
         "div2",
@@ -378,7 +378,7 @@ describe("utils", () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map((item) => item.key)).toStrictEqual([
+      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
         "div",
         "div1",
         "div2",

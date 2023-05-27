@@ -37,14 +37,14 @@ export default (manager: Store, { name, keepUnused }: Options): StoreEffectsColl
         manager.effects[name].items[key] = item;
       }
     },
-    clean: (item) => {
+    clean: item => {
       if (keepUnused) {
         return;
       }
 
       delete manager.effects[name].items[item.key];
     },
-    runner: (item) => {
+    runner: item => {
       item.cleanUp?.();
 
       if (!item.shouldRun) {

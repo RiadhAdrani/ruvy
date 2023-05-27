@@ -5,6 +5,7 @@ import {
   BranchAction,
   BranchStatus,
   BranchTag,
+  Effect,
   HookData,
   HookType,
   UseEffectData,
@@ -84,7 +85,7 @@ describe("dispatchSetState", () => {
       0: {
         data: "test",
         initialData: "test",
-        key: `0`,
+        key: "0",
         type: HookType.State,
       },
     });
@@ -107,7 +108,7 @@ describe("dispatchSetState", () => {
       0: {
         data: "test",
         initialData: "test",
-        key: `0`,
+        key: "0",
         type: HookType.State,
       },
     });
@@ -148,7 +149,7 @@ describe("dispatchSetEffect", () => {
 
     const hook = cast<HookData<UseEffectData>>(branch.hooks[key]);
 
-    expect(hook.key).toBe(`0`);
+    expect(hook.key).toBe("0");
     expect(hook.type).toBe(HookType.Effect);
   });
 
@@ -272,7 +273,7 @@ describe("collectEffects", () => {
 
     expect(actions.length).toBe(1);
     expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
-      callback: pendingEffect!,
+      callback: pendingEffect as Effect,
       type: ActionType.Effect,
     });
   });
@@ -298,7 +299,7 @@ describe("collectEffects", () => {
 
     expect(actions.length).toBe(1);
     expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
-      callback: hook.data.cleanUp!,
+      callback: hook.data.cleanUp as Effect,
       type: ActionType.Cleanup,
     });
   });

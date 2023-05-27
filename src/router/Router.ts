@@ -138,7 +138,7 @@ export default class Router<T = unknown> {
   useContext<R>(callback: Callback<R>) {
     const depth = this.context.data ?? -1;
 
-    return this.context.use(callback, depth + 1, () => {});
+    return this.context.use(callback, depth + 1);
   }
 
   constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterParams) {

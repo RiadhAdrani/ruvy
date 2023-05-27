@@ -52,10 +52,10 @@ export default (
 
       onChanged();
     },
-    get: (key) => {
+    get: key => {
       return manager.items[name].items[key].value;
     },
-    clean: (item) => {
+    clean: item => {
       if (keepUnused) {
         return;
       }

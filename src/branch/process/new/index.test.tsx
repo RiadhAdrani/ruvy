@@ -41,7 +41,7 @@ describe("new", () => {
     expect(branch.tag).toBe(BranchTag.Text);
   });
 
-  it.each([[undefined], [null], [true], [false]])("should create a null branch", (template) => {
+  it.each([[undefined], [null], [true], [false]])("should create a null branch", template => {
     const branch = createNewBranch(template, parent, 0);
 
     expect(branch.tag).toBe(BranchTag.Null);

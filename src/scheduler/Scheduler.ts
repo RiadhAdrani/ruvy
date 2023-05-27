@@ -5,7 +5,7 @@ export default class Scheduler {
   current: Task | undefined;
 
   enqueue(task: Task) {
-    const index = this.stack.findIndex(($task) => task.type === $task.type);
+    const index = this.stack.findIndex($task => task.type === $task.type);
 
     if (index !== -1) {
       this.stack = [...this.stack.slice(0, index), task, ...this.stack.slice(index + 1)];

@@ -11,7 +11,7 @@ const flatten = <T>(_items: Array<RawRoute>, parent?: string): Record<string, Ro
     throw "Unexpected Input: items should be an array.";
   }
 
-  items.forEach((item) => {
+  items.forEach(item => {
     if (isBlank(item.path)) {
       throw "Unexpected Input: path is not a valid string.";
     }
@@ -19,7 +19,7 @@ const flatten = <T>(_items: Array<RawRoute>, parent?: string): Record<string, Ro
     const root = `${parent ?? ""}${parent === "/" ? "" : "/"}`;
     const path = `${root}${item.path}`.replace("//", "/");
     const fragments = fragmentize(path);
-    const isDynamic = fragments.some((f) => f[0] === ":");
+    const isDynamic = fragments.some(f => f[0] === ":");
 
     const valid = { ...item };
     delete valid.routes;

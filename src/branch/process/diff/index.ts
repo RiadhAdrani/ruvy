@@ -41,12 +41,12 @@ function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
  */
 export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<BranchKey>): void => {
   current.unmountedChildren = current.children.filter(
-    (child) => !newChildrenKeys.includes(child.key)
+    child => !newChildrenKeys.includes(child.key)
   );
 
   current.unmountedChildren.forEach(unmountBranch);
 
-  current.children = current.children.filter((child) => newChildrenKeys.includes(child.key));
+  current.children = current.children.filter(child => newChildrenKeys.includes(child.key));
 };
 
 /**
@@ -55,7 +55,7 @@ export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<Bra
  * @param children children templates
  */
 export const diffNewChildren = (current: Branch, children: Array<unknown>) => {
-  const oldKeys = current.children.map((child) => child.key);
+  const oldKeys = current.children.map(child => child.key);
 
   children.forEach((child, index) => {
     const key = getCorrectKey(child, index);
@@ -63,7 +63,7 @@ export const diffNewChildren = (current: Branch, children: Array<unknown>) => {
     const exists = oldKeys.includes(key);
 
     if (exists) {
-      diffBranches(child, getBranchWithKey(current, key)!, current, index);
+      diffBranches(child, getBranchWithKey(current, key) as Branch, current, index);
     } else {
       current.children.push(createNewBranch(child, current, key));
     }
@@ -75,7 +75,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
 
   // rearrange current.children
   newChildrenKeys.forEach((key, newIndex) => {
-    const oldIndex = current.children.findIndex((child) => child.key === key);
+    const oldIndex = current.children.findIndex(child => child.key === key);
 
     if (oldIndex !== newIndex) {
       // we need to change the index locally
@@ -91,7 +91,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
       // we need to get Host element(s) and rearrange them
       const hosts = getClosestHostBranches(branch);
 
-      hosts.forEach((host) => {
+      hosts.forEach(host => {
         current.pendingActions.push(createAction(ActionType.Reorder, host));
       });
     }
@@ -124,8 +124,8 @@ export const diffTypes = (
   // replace current with newly computed one.
   // bruh : current = newBranch;
 
-  const i = current.parent!.children.findIndex((child) => child === old);
-  current.parent!.children[i] = newBranch;
+  const i = (current.parent as Branch).children.findIndex(child => child === old);
+  (current.parent as Branch).children[i] = newBranch;
 };
 
 /**

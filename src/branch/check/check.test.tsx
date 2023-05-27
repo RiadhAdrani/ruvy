@@ -1,7 +1,6 @@
 /** @jsxFrag createFragmentTemplate */
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../create/index.js";
 import { describe, expect, it, vitest } from "vitest";
 import {
@@ -13,6 +12,9 @@ import {
 } from "./index.js";
 import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
 import { omit } from "@riadh-adrani/utils";
+
+// or else eslint will cry
+createJsxElement;
 
 describe("isBranchTemplate", () => {
   const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };

@@ -21,7 +21,7 @@ const process = (
 
   return isUndefined(current)
     ? createNewBranch(template, parent, $key)
-    : diffBranches(template, current!, parent, index);
+    : diffBranches(template, current as Branch, parent, index);
 };
 
 export default process;

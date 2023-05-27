@@ -19,7 +19,7 @@ const createRenderAction = (branch: Branch<string>): Callback => {
   return () => {
     // check if branch tag is Text or Element
     if (!isHostBranch(branch)) {
-      throw `Cannot render a non-host branch.`;
+      throw "Cannot render a non-host branch.";
     }
 
     let render: Node;
@@ -40,7 +40,7 @@ const createRenderAction = (branch: Branch<string>): Callback => {
     branch.instance = render;
     branch.status = BranchStatus.Mounted;
 
-    let host = getParentHostBranch(branch);
+    const host = getParentHostBranch(branch);
 
     const { index } = getHostBranchIndexFromHostParent(branch);
 

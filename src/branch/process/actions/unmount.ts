@@ -12,7 +12,7 @@ const createUnmountAction =
   () => {
     // check if branch tag is Text or Element
     if (!isHostBranch(branch)) {
-      throw `Cannot unmount a non-host branch.`;
+      throw "Cannot unmount a non-host branch.";
     }
 
     removeNode(branch.instance as Element);

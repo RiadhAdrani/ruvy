@@ -12,7 +12,7 @@ import createAction from "../actions/index.js";
 export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
   const out: Array<BranchAction> = [];
 
-  out.push(...collectEffects(branch).map((item) => createAction(item.type, branch, item.callback)));
+  out.push(...collectEffects(branch).map(item => createAction(item.type, branch, item.callback)));
 
   return out;
 };
@@ -55,11 +55,11 @@ export const collectActions = (branch: Branch): Array<BranchAction> => {
 
   actions.push(...branch.pendingActions);
 
-  branch.unmountedChildren.forEach((child) => {
+  branch.unmountedChildren.forEach(child => {
     actions.push(...collectActions(child));
   });
 
-  branch.children.forEach((child) => {
+  branch.children.forEach(child => {
     actions.push(...collectActions(child));
   });
 
@@ -73,5 +73,5 @@ export const collectActions = (branch: Branch): Array<BranchAction> => {
 export const commit = (actions: Array<BranchAction>) => {
   const sorted = actions.sort(actionsSorter);
 
-  sorted.forEach((a) => a.callback());
+  sorted.forEach(a => a.callback());
 };

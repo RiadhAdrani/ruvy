@@ -23,7 +23,7 @@ const App = () => {
   return (
     <>
       <nav>
-        {links.map((item) => (
+        {links.map(item => (
           <a class:pending-action={true} href={item.to} style={{ padding: ["10px", "5px"] }}>
             {item.lable}
           </a>

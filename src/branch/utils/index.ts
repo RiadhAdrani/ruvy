@@ -38,7 +38,7 @@ export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
 };
 
 export const Namespaces = Object.keys(Namespace).map(
-  (key) => (Namespace as Record<string, string>)[key]
+  key => (Namespace as Record<string, string>)[key]
 ) as Array<Namespace>;
 
 /**
@@ -132,7 +132,7 @@ export const getBranchWithKey = <T = unknown>(
   parent: Branch,
   key: BranchKey
 ): Branch<T> | undefined => {
-  return cast<Array<Branch<T>>>(parent.children).find((child) => child.key === key);
+  return cast<Array<Branch<T>>>(parent.children).find(child => child.key === key);
 };
 
 /**
@@ -187,7 +187,7 @@ export const getClosestHostBranches = (branch: Branch): Array<Branch> => {
     return [branch];
   }
 
-  branch.children.forEach((child) => out.push(...getClosestHostBranches(child)));
+  branch.children.forEach(child => out.push(...getClosestHostBranches(child)));
 
   return out;
 };

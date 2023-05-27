@@ -6,6 +6,7 @@ src/**/*.test.js
 src/**/*.test.ts
 .eslintignore
 .eslintrc
+.eslintrc.json
 .gitignore
 jest.config.js
 vite.config.ts
@@ -13,3 +14,4 @@ vite.dev.config.ts
 tsconfig.json
 tsconfig.build.json
 package-lock.json
+.husky

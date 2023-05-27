@@ -52,23 +52,23 @@ describe("common", () => {
 
     it.each([[BranchTag.Element], [BranchTag.Text]])(
       "should add an Unmount action to pendingActions if (%s)",
-      (tag) => {
+      tag => {
         branch = initBranch({ tag });
 
         unmountBranch(branch);
 
-        expect(branch.pendingActions.some((a) => a.type === ActionType.Unmount)).toBe(true);
+        expect(branch.pendingActions.some(a => a.type === ActionType.Unmount)).toBe(true);
       }
     );
 
     it.each([[BranchTag.Fragment], [BranchTag.Function], [BranchTag.Null]])(
       "should not add an Unmount action to pendingActions if (%s)",
-      (tag) => {
+      tag => {
         branch = initBranch({ tag });
 
         unmountBranch(branch);
 
-        expect(branch.pendingActions.some((a) => a.type === ActionType.Unmount)).toBe(false);
+        expect(branch.pendingActions.some(a => a.type === ActionType.Unmount)).toBe(false);
       }
     );
 
@@ -80,7 +80,7 @@ describe("common", () => {
       unmountBranch(branch);
 
       const checkRecursively = (target: Branch) => {
-        expect(target.pendingActions.some((a) => a.type === ActionType.Unmount));
+        expect(target.pendingActions.some(a => a.type === ActionType.Unmount));
 
         target.children.forEach(checkRecursively);
       };
@@ -208,7 +208,7 @@ describe("common", () => {
     it("should collect all actions recursively", () => {
       const collection = collectActions(root);
 
-      expect(collection.map((c) => c.type)).toStrictEqual([
+      expect(collection.map(c => c.type)).toStrictEqual([
         ActionType.Effect,
         ActionType.Cleanup,
         ActionType.UpdateProps,
@@ -240,7 +240,7 @@ describe("common", () => {
 
       const sorted = actions.sort(actionsSorter);
 
-      expect(sorted.map((s) => s.type)).toStrictEqual([
+      expect(sorted.map(s => s.type)).toStrictEqual([
         ActionType.Unmount,
         ActionType.Render,
         ActionType.RemoveBranch,

@@ -13,16 +13,14 @@ export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | u
   } else {
     // we need to narrow down to the same length of fragments
     const withSameLength = Object.keys(record)
-      .filter((route) => record[route].fragments.length === fragments.length)
-      .map((route) => record[route]);
+      .filter(route => record[route].fragments.length === fragments.length)
+      .map(route => record[route]);
 
     if (withSameLength.length === 0) {
       return undefined;
     } else {
       // try to find exact match first
-      const exact = withSameLength.find(
-        (route) => route.fragments.join("/") === fragments.join("/")
-      );
+      const exact = withSameLength.find(route => route.fragments.join("/") === fragments.join("/"));
 
       if (exact) {
         return exact as Route<T>;
@@ -38,7 +36,7 @@ export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | u
             return 1;
           }
         })
-        .find((route) =>
+        .find(route =>
           route.fragments.every((fragment, index) => {
             return fragment === fragments[index] || fragment[0] === ":";
           })

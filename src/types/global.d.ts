@@ -1,13 +1,5 @@
 import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
-import type { StateArray } from "./store.js";
 import type * as CSS from "csstype";
-import {
-  FunctionComponent,
-  IComponentTemplate,
-  PrimitiveComponentTemplate,
-  Tag,
-} from "./component";
-import { Callback } from "./common";
 import { BranchTemplate } from "../branch/types/index.ts";
 
 declare global {
@@ -540,7 +532,7 @@ declare global {
   }
 
   namespace JSX {
-    type Element<T = unknown> = BranchTemplate<T>;
+    type Element = BranchTemplate;
 
     interface IntrinsicElements extends Record<string, unknown> {
       a: ComponentProps<HTMLAnchorElement, AProps>;

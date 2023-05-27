@@ -13,7 +13,7 @@ const createRemoveBranchAction = (branch: Branch): Callback => {
       throw "Unable to remove branch: Branch has no parent.";
     }
 
-    parent.children = parent.children.filter((child) => child.key !== branch.key);
+    parent.children = parent.children.filter(child => child.key !== branch.key);
   };
 };
 

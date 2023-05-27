@@ -35,8 +35,8 @@ describe("diffBranches", () => {
 
       removeChildrenExcess(current, newKeys);
 
-      const unmountedChildren = current.unmountedChildren.map((child) => child.key);
-      const mountedChildren = current.children.map((child) => child.key);
+      const unmountedChildren = current.unmountedChildren.map(child => child.key);
+      const mountedChildren = current.children.map(child => child.key);
 
       expect(unmountedChildren).toStrictEqual([2]);
       expect(mountedChildren).toStrictEqual([0, 1]);
@@ -78,7 +78,7 @@ describe("diffBranches", () => {
 
       arrangeChildren(branch, [<input key={2} />, <div key={0} />, <button key={1} />]);
 
-      expect(branch.pendingActions.filter((a) => a.type === ActionType.Reorder).length).toBe(1);
+      expect(branch.pendingActions.filter(a => a.type === ActionType.Reorder).length).toBe(1);
     });
 
     it("should rearrange children", () => {
@@ -86,7 +86,7 @@ describe("diffBranches", () => {
 
       arrangeChildren(branch, [<input key={2} />, <button key={1} />, <div key={0} />]);
 
-      expect(branch.pendingActions.filter((a) => a.type === ActionType.Reorder).length).toBe(2);
+      expect(branch.pendingActions.filter(a => a.type === ActionType.Reorder).length).toBe(2);
     });
   });
 

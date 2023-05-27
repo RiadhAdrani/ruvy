@@ -57,7 +57,7 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
       callback();
 
       // remove action from branch
-      branch.pendingActions = branch.pendingActions.filter((item) => item !== action);
+      branch.pendingActions = branch.pendingActions.filter(item => item !== action);
     },
     requestTime: Date.now(),
     type,

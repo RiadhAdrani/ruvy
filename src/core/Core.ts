@@ -7,7 +7,7 @@ import { createEffectCollection, createStateCollection, Store } from "../store/i
 import { Callback, StateArray, RouterParams, RawRoute } from "../types/index.js";
 import { MountParams } from "../types/index.js";
 import { getClosestAnchorParent } from "./utils/index.js";
-import { Branch, RuvyNode } from "../branch/types/index.js";
+import { Branch, BranchTemplate, RuvyNode } from "../branch/types/index.js";
 import root from "../branch/process/new/root.js";
 import { createFragmentTemplate, createJsxElement, createTemplate } from "../branch/index.js";
 import { collectActions, commit } from "../branch/process/common/index.js";
@@ -98,7 +98,7 @@ export class Core {
 
 setEvent(
   "onClick",
-  (e) => {
+  e => {
     const ev = e as unknown as DOMEvent<MouseEvent>;
 
     const anchorEl = getClosestAnchorParent(ev.target);
@@ -142,7 +142,7 @@ export const createRouter = (
   });
 };
 
-export const Outlet = (): any => null;
+export const Outlet = (): BranchTemplate => null as unknown as BranchTemplate;
 
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
   return Core.singleton.store.setItem<T>("state", key, value);

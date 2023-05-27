@@ -16,7 +16,7 @@ import {
  */
 const createElPropsUpdateAction = (branch: Branch<string>, diffs: Array<PropDiff>): Callback => {
   return () => {
-    diffs.forEach((diff) => {
+    diffs.forEach(diff => {
       const { op, prop, value } = diff;
 
       const instance = branch.instance as Element;
