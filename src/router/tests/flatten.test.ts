@@ -8,14 +8,14 @@ describe("flatten", () => {
   });
 
   it("should throw when a path is blank", () => {
-    expect(() => flatten([{ path: "" }])).toThrow();
+    expect(() => flatten([{ path: "", component: "" }])).toThrow();
   });
 
   it("should flatten an array of raw routes", () => {
     const routes: Array<RawRoute> = [
-      { path: "/", title: "Home" },
+      { path: "/", title: "Home", component: "" },
       { path: "test-2", title: "Test 2", component: "component" },
-      { path: "test", title: "Test", redirectTo: "/test-2" },
+      { path: "test", title: "Test", redirectTo: "/test-2", component: "" },
     ];
 
     expect(flatten(routes)).toStrictEqual({
@@ -24,6 +24,7 @@ describe("flatten", () => {
         fragments: [],
         title: "Home",
         isDynamic: false,
+        component: "",
       },
       "/test-2": {
         path: "/test-2",
@@ -38,6 +39,7 @@ describe("flatten", () => {
         title: "Test",
         redirectTo: "/test-2",
         isDynamic: false,
+        component: "",
       },
     });
   });
@@ -46,9 +48,13 @@ describe("flatten", () => {
     const routes: Array<RawRoute> = [
       {
         path: "/",
-        routes: [{ path: "main" }, { path: "user", routes: [{ path: ":id" }] }],
+        component: "",
+        routes: [
+          { path: "main", component: "" },
+          { path: "user", component: "", routes: [{ path: ":id", component: "" }] },
+        ],
       },
-      { path: "*" },
+      { path: "*", component: "" },
     ];
 
     expect(flatten(routes)).toStrictEqual({
@@ -56,26 +62,31 @@ describe("flatten", () => {
         path: "/",
         fragments: [],
         isDynamic: false,
+        component: "",
       },
       "/*": {
         path: "/*",
         fragments: ["*"],
         isDynamic: false,
+        component: "",
       },
       "/main": {
         path: "/main",
         fragments: ["main"],
         isDynamic: false,
+        component: "",
       },
       "/user": {
         path: "/user",
         fragments: ["user"],
         isDynamic: false,
+        component: "",
       },
       "/user/:id": {
         path: "/user/:id",
         fragments: ["user", ":id"],
         isDynamic: true,
+        component: "",
       },
     });
   });

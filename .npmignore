@@ -8,5 +8,8 @@ src/**/*.test.ts
 .eslintrc
 .gitignore
 jest.config.js
+vite.config.ts
+vite.dev.config.ts
 tsconfig.json
+tsconfig.build.json
 package-lock.json

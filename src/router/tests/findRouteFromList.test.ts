@@ -3,25 +3,33 @@ import { Route } from "../../types/index.js";
 import { findRouteFromList as find } from "../utils/index.js";
 
 describe("findRouteFromList", () => {
-  const root = { path: "/", fragments: [], isDynamic: false };
-  const feed = { path: "/feed", fragments: ["feed"], isDynamic: false };
-  const feedModal = { path: "/feed/modal", fragments: ["feed", "modal"], isDynamic: false };
-  const user = { path: "/user", fragments: ["user"], isDynamic: false };
+  const root = { path: "/", fragments: [], isDynamic: false, component: "" };
+  const feed = { path: "/feed", fragments: ["feed"], isDynamic: false, component: "" };
+  const feedModal = {
+    path: "/feed/modal",
+    fragments: ["feed", "modal"],
+    isDynamic: false,
+    component: "",
+  };
+  const user = { path: "/user", fragments: ["user"], isDynamic: false, component: "" };
   const userSettings = {
     path: "/user/settings",
     fragments: ["user", "settings"],
     isDynamic: false,
+    component: "",
   };
-  const userId = { path: "/user/:id", fragments: ["user", ":id"], isDynamic: false };
+  const userId = { path: "/user/:id", fragments: ["user", ":id"], isDynamic: false, component: "" };
   const userIdSection = {
     path: "/user/:id/section",
     fragments: ["user", ":id", "section"],
     isDynamic: true,
+    component: "",
   };
   const userIdSectionTitle = {
     path: "/user/:id/section/:title",
     fragments: ["user", ":id", "section", ":title"],
     isDynamic: true,
+    component: "",
   };
 
   const list: Record<string, Route> = {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vitest } from "vitest";
-import createEffectCollection from "../createEffectCollection";
-import createStateCollection from "../createStateCollection";
-import Store from "../Store";
+import createEffectCollection from "../createEffectCollection.js";
+import createStateCollection from "../createStateCollection.js";
+import Store from "../Store.js";
 
 describe("Store class", () => {
   let store: Store;

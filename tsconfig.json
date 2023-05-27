@@ -6,6 +6,7 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "node16",
     "rootDir": "./src",
+    "outDir": "build",
     "strict": true,
     "declaration": true,
     "resolveJsonModule": true,
