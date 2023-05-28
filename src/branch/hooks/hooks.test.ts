@@ -17,7 +17,6 @@ import {
   createHookKey,
   ctx,
   dispatchUseEffect,
-  dispatchUseState,
   useHooksContext,
   useEffect,
   collectEffects,
@@ -28,6 +27,7 @@ import {
 import { BranchHooks } from "../types/index.js";
 import { cast, omit } from "@riadh-adrani/utils";
 import { initBranch } from "../utils/index.js";
+import { dispatchUseState } from "./useState/useState.js";
 
 describe("createHookKey", () => {
   it.each([

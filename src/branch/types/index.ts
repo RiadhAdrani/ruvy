@@ -117,6 +117,8 @@ export interface HookData<T> {
   initialData: T;
 }
 
+export type HookDispatcher<D, R> = (key: string, data: D, current: Branch) => R;
+
 export interface BranchAction {
   type: ActionType;
   requestTime: number;

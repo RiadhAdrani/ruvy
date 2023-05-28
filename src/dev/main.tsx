@@ -1,4 +1,4 @@
-import { Outlet, createRouter, mountApp } from "../index.js";
+import { Outlet, createRouter, mountApp, useId } from "../index.js";
 
 createRouter(
   [
@@ -20,11 +20,18 @@ const App = () => {
     { to: "/you", lable: "Youtube" },
   ];
 
+  const id = useId();
+
   return (
     <>
       <nav>
         {links.map(item => (
-          <a class:pending-action={true} href={item.to} style={{ padding: ["10px", "5px"] }}>
+          <a
+            class:pending-action={false}
+            class={id}
+            href={item.to}
+            style={{ padding: ["10px", "5px"] }}
+          >
             {item.lable}
           </a>
         ))}
