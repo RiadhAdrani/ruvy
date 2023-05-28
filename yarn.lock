@@ -192,7 +192,12 @@
     "@riadh-adrani/utils" "^0.39.0"
     camelcase "^7.0.1"
 
-"@riadh-adrani/utils@0.39.0", "@riadh-adrani/utils@^0.39.0":
+"@riadh-adrani/utils@0.40.0":
+  version "0.40.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.40.0.tgz#e66562f95f54a732044dce8188b0f6399cff8c63"
+  integrity sha512-j4NJuvyn/s4Er/f2+vA36EA/pwxTkZVMlawnS11g6M25yqK0gTPjAke6TIvn9wME49c5yEySJY8jml7QiwuvmQ==
+
+"@riadh-adrani/utils@^0.39.0":
   version "0.39.0"
   resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.39.0.tgz#5467baf83d39ece79d836f22d45e9f5e550e583c"
   integrity sha512-zBdiqdq4ZIMjfsz1UAfMexh9poPdYfRSalEIw0E7fHOn9OStOai7ITasPJCZnupMH5GGPSyJIsKiDI7Bt/FpDw==

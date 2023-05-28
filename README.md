@@ -1,4 +1,4 @@
-# Ruvy Front-End Framework
+# Ruvy
 
 Ruvy is a lightweight front-end framework inspired by the principles of React, designed specifically for learning purposes. It incorporates familiar concepts such as JSX, function components, and hooks, providing a simplified and synchronous approach to building web applications.
 
