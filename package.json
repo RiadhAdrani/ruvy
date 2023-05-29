@@ -1,6 +1,6 @@
 {
   "name": "@riadh-adrani/ruvy",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "types": "./build/index.d.ts",
   "exports": "./build/index.js",
@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "vite --config vite.dev.config.ts",
     "build:copy-global": "cp src/types/global.d.ts build/types/global.d.ts",
-    "build": "rm -rf build && tsc --project tsconfig.build.json && yarn build:copy-global && ef-tspm",
+    "build": "rm -rf build && tsc --project tsconfig.build.json && yarn build:copy-global",
     "build:vite": "vite build",
     "test": "vitest",
     "test:once": "vitest run",
