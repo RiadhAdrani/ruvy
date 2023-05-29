@@ -1,6 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
 import type * as CSS from "csstype";
-import { BranchTemplate } from "../branch/types/index.ts";
+import { BranchTemplate } from "../branch/types/index.js";
 
 declare global {
   function createJsxElement(
@@ -13,10 +13,11 @@ declare global {
 
   type DOMEventTarget<T extends Element> = Event & T;
 
-  interface DOMEvent<E extends Event = Event, T extends Element = HTMLElement> extends Event, E {
-    target: DOMEventTarget<HTMLElement>;
-    currentTarget: DOMEventTarget<T>;
-  }
+  type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event &
+    E & {
+      target: DOMEventTarget<HTMLElement>;
+      currentTarget: DOMEventTarget<T>;
+    };
 
   type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
     event: DOMEvent<E, T>
