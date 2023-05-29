@@ -9,7 +9,8 @@ export { useState, useEffect, useMemo, useCallback, useId, useRef } from "./bran
 export { createRouter, Outlet, navigate, replace, getParams } from "./core/index.js";
 
 // types
-export type { Effect, RuvyNode, Namespace, BranchKey as Key } from "./branch/types.js";
-export type { MountParams } from "./core/types.js";
-export type { RawRoute, RouterParams } from "./router/types.js";
-export type { StateArray } from "./store/types.js";
+export type { Effect, RuvyNode, Namespace, BranchKey as Key } from "@branch/types.js";
+export type { MountParams } from "@core/types.js";
+export type { RawRoute, RouterParams } from "@router/types.js";
+export type { StateArray } from "@store/types.js";
+export type * from "./types/index.js";

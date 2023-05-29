@@ -1,6 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
-import type * as CSS from "csstype";
 import { BranchTemplate } from "../branch/types.js";
+import { DOMEventHandler, Selector } from "./index.ts";
 
 declare global {
   function createJsxElement(
@@ -10,18 +10,6 @@ declare global {
   ): JSX.Element;
 
   function createJsxFragmentElement(_: unknown, ...children: Array<unknown>): Array<unknown>;
-
-  type DOMEventTarget<T extends Element> = Event & T;
-
-  type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event &
-    E & {
-      target: DOMEventTarget<HTMLElement>;
-      currentTarget: DOMEventTarget<T>;
-    };
-
-  type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
-    event: DOMEvent<E, T>
-  ) => void;
 
   interface DOMEvents<E extends Element> {
     onAnimationEnd: DOMEventHandler<AnimationEvent, E>;
@@ -101,11 +89,6 @@ declare global {
     onTouchMove: DOMEventHandler<TouchEvent, E>;
     onTouchStart: DOMEventHandler<TouchEvent, E>;
   }
-
-  export type Selector = { [key in keyof CSS.Properties]: Arrayable<string | number> } & Record<
-    string,
-    unknown
-  >;
 
   interface Aria {
     autocomplete: string;
