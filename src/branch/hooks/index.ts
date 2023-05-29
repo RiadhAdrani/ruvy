@@ -1,6 +1,6 @@
 import { Callback, hasProperty } from "@riadh-adrani/utils";
 import Context from "../../context/Context.js";
-import { Branch, BranchStatus, HookType, UseEffectParams, UseMemoParams } from "../types/index.js";
+import { Branch, BranchStatus, HookType, UseEffectParams, UseMemoParams } from "../types.js";
 import { dispatchUseState, useState } from "./useState/useState.js";
 import {
   dispatchUseEffect,

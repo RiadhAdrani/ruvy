@@ -1,6 +1,6 @@
-import { isBlank } from "@riadh-adrani/utils";
+import { isBlank, Callback } from "@riadh-adrani/utils";
 import { Context } from "../context/index.js";
-import { Callback, RawRoute, Route, RouterParams } from "../types/index.js";
+import { RawRoute, Route, RouterParams } from "./types.js";
 import {
   findRouteFromList,
   flatten,

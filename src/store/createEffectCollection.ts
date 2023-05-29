@@ -1,5 +1,5 @@
 import { areEqual } from "@riadh-adrani/utils";
-import { StoreEffect, StoreEffectsCollection } from "../types/index.js";
+import { StoreEffect, StoreEffectsCollection } from "./types.js";
 import Store from "./Store.js";
 
 type Options = {

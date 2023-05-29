@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from "vitest";
 import { createTemplate, createJsxElement, createFragmentTemplate } from "./index.js";
-import { BranchSymbol, BranchTemplate } from "../types/index.js";
+import { BranchSymbol, BranchTemplate } from "../types.js";
 
 createJsxElement;
 

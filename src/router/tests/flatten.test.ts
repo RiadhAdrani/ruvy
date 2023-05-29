@@ -1,6 +1,6 @@
 import { flatten } from "../utils/index.js";
 import { describe, it, expect } from "vitest";
-import type { RawRoute } from "../../types/index.js";
+import type { RawRoute } from "../types.js";
 
 describe("flatten", () => {
   it("should throw when input is not an array", () => {

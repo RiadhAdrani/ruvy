@@ -1,4 +1,4 @@
-import type { Callback } from "./common.js";
+import type { Callback } from "@riadh-adrani/utils";
 
 export interface StoreItem<T = unknown> {
   key: string;

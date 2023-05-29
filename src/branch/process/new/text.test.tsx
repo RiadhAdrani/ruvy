@@ -1,12 +1,13 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
-import { ActionType, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionType, BranchStatus, BranchTag } from "../../types.js";
 import text from "./text.js";
 import { omit } from "@riadh-adrani/utils";
+
+createJsxElement;
 
 describe("new.text", () => {
   it("should create a text branch", () => {

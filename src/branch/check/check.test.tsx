@@ -10,7 +10,7 @@ import {
   isValidTemplate,
   isValidTextChild,
 } from "./index.js";
-import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types/index.js";
+import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types.js";
 import { omit } from "@riadh-adrani/utils";
 
 // or else eslint will cry

@@ -1,4 +1,4 @@
-import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types/index.js";
+import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types.js";
 import { useHooksContext } from "../../hooks/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";

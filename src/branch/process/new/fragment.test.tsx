@@ -1,12 +1,14 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
-import { Branch, BranchStatus, BranchTag, BranchTemplateFragment } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag, BranchTemplateFragment } from "../../types.js";
 import fragment from "./fragment.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("new.fragment", () => {
   it("should create a new empty branch", () => {

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vitest } from "vitest";
-import type { Task } from "../../types/index.js";
+import type { Task } from "../types.js";
 import Scheduler from "../Scheduler.js";
 
 describe("Scheduler class", () => {

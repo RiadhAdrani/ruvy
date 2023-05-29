@@ -1,15 +1,16 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 import { expect, describe, it, vitest } from "vitest";
 import createFn from "./function.js";
 import { createTemplate } from "../../create/index.js";
-import { Branch, BranchStatus, BranchTag, HookType } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag, BranchTemplateFragment, HookType } from "../../types.js";
 import { cast } from "@riadh-adrani/utils";
 import { useState } from "../../hooks/index.js";
 import { initBranch } from "../../utils/index.js";
 import fragment from "./fragment.js";
+
+createJsxElement;
 
 describe("new.function", () => {
   it("should create a branch from a function", () => {
@@ -71,6 +72,6 @@ describe("new.function", () => {
       </>
     );
 
-    expect(() => fragment(jsx as any, parent, 0)).toThrow();
+    expect(() => fragment(jsx as BranchTemplateFragment, parent, 0)).toThrow();
   });
 });

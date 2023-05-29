@@ -1,6 +1,6 @@
 import { areEqual } from "@riadh-adrani/utils";
-import { StateArray } from "../../../types/store.js";
-import { HookDispatcher, HookType } from "../../types/index.js";
+import { StateArray } from "../../../store/types.js";
+import { HookDispatcher, HookType } from "../../types.js";
 import { Core } from "../../../core/Core.js";
 import { dispatchHook } from "../index.js";
 

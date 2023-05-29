@@ -1,16 +1,18 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import root from "../new/root.js";
 import { actionsSorter, collectActions, commit, unmountBranch } from "./index.js";
 import { useState } from "../../hooks/index.js";
-import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from "../../types.js";
 import { initBranch } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 import { shuffle } from "@riadh-adrani/utils";
+
+createJsxElement;
+createFragmentTemplate;
 
 describe("common", () => {
   it("should be an object of {action type : number}", () => {
@@ -78,12 +80,6 @@ describe("common", () => {
       branch.children.push(...[initBranch(), initBranch()]);
 
       unmountBranch(branch);
-
-      const checkRecursively = (target: Branch) => {
-        expect(target.pendingActions.some(a => a.type === ActionType.Unmount));
-
-        target.children.forEach(checkRecursively);
-      };
     });
   });
 
@@ -188,7 +184,7 @@ describe("common", () => {
       const btn = document.getElementById("btn");
       btn?.click();
 
-      expect(document.body.innerHTML).toBe('<div><button id="btn">Click me</button></div>');
+      expect(document.body.innerHTML).toBe(`<div><button id="btn">Click me</button></div>`);
       expect(onClick).toHaveBeenCalledOnce();
     });
   });

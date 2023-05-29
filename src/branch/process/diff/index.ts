@@ -7,7 +7,7 @@ import {
   BranchTemplate,
   BranchTemplateFragment,
   BranchTemplateFunction,
-} from "../../types/index.js";
+} from "../../types.js";
 import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 import { unmountBranch } from "../common/index.js";

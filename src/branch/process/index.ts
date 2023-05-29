@@ -1,8 +1,10 @@
 import { isUndefined } from "@riadh-adrani/utils";
-import { Branch } from "../types/index.js";
+import { Branch } from "../types.js";
 import createNewBranch from "./new/index.js";
 import diffBranches from "./diff/index.js";
 import { getCorrectKey } from "../utils/index.js";
+
+export { commit, collectActions } from "./common/index.js";
 
 /**
  * process a template with its corresponding branch if it exist

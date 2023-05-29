@@ -1,4 +1,4 @@
-import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from "../../types/index.js";
+import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from "../../types.js";
 import createAction from "../actions/index.js";
 
 /**

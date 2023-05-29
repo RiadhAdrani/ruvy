@@ -1,6 +1,6 @@
 import { Callback, cast } from "@riadh-adrani/utils";
 import { setTextNodeData } from "@riadh-adrani/dom-utils";
-import { Branch } from "../../types/index.js";
+import { Branch } from "../../types.js";
 
 /**
  * create an action to update a text node data.

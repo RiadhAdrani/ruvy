@@ -1,4 +1,4 @@
-import { BranchSymbol, BranchTemplate } from "../types/index.js";
+import { BranchSymbol, BranchTemplate } from "../types.js";
 
 /**
  * creates a component template.

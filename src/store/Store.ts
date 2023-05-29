@@ -4,7 +4,7 @@ import {
   StateArray,
   StoreEffectsCollection,
   StoreItemsCollection,
-} from "../types/index.js";
+} from "./types.js";
 
 export default class Store {
   items: Record<string, StoreItemsCollection> = {};

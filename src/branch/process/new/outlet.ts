@@ -1,5 +1,5 @@
 import { Core } from "../../../core/Core.js";
-import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types/index.js";
+import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types.js";
 import { getOutletDepth, initBranch } from "../../utils/index.js";
 import process from "../index.js";
 

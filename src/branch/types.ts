@@ -1,6 +1,6 @@
 import { Callback } from "@riadh-adrani/utils";
-import { CallbackWithArgs } from "../../types/common.js";
-import { createFragmentTemplate } from "../create/index.js";
+import { CallbackWithArgs } from "../types/common.js";
+import { createFragmentTemplate } from "./create/index.js";
 
 export enum Namespace {
   HTML = "http://www.w3.org/1999/xhtml",

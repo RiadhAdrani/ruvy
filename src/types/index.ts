@@ -1,5 +1,3 @@
-export * from "./common.js";
-export * from "./store.js";
-export * from "./scheduler.js";
-export * from "./router.js";
-export * from "./core.js";
+export * from "../branch/types.js";
+
+export type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;

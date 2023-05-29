@@ -1,17 +1,23 @@
 import { isElement, setEvent } from "@riadh-adrani/dom-utils";
-import { isFunction } from "@riadh-adrani/utils";
-import { Context } from "../context/index.js";
-import { Router } from "../router/index.js";
-import { Scheduler } from "../scheduler/index.js";
-import { createEffectCollection, createStateCollection, Store } from "../store/index.js";
-import { Callback, StateArray, RouterParams, RawRoute } from "../types/index.js";
-import { MountParams } from "../types/index.js";
+import { isFunction, Callback } from "@riadh-adrani/utils";
+import { Context } from "@context/index.js";
+import { Router, RouterParams, RawRoute } from "@router/index.js";
+import { Scheduler } from "@scheduler/index.js";
+import { createEffectCollection, createStateCollection, Store, StateArray } from "@store/index.js";
+import { MountParams } from "./types.js";
 import { getClosestAnchorParent } from "./utils/index.js";
-import { Branch, BranchTemplate, RuvyNode } from "../branch/types/index.js";
-import root from "../branch/process/new/root.js";
-import { createFragmentTemplate, createJsxElement, createTemplate } from "../branch/index.js";
-import { collectActions, commit } from "../branch/process/common/index.js";
-import process from "../branch/process/index.js";
+import {
+  createFragmentTemplate,
+  createJsxElement,
+  createTemplate,
+  Branch,
+  BranchTemplate,
+  RuvyNode,
+  collectActions,
+  commit,
+  process,
+  createRoot,
+} from "@branch/index.js";
 
 export class Core {
   static singleton: Core = new Core();
@@ -61,7 +67,7 @@ export class Core {
     const template = createTemplate(this.fn, {}, []);
 
     if (!isUpdate) {
-      this.current = root(this.host, template);
+      this.current = createRoot(this.host, template);
     } else {
       process(template, this.current.children[0], this.current, 0);
     }

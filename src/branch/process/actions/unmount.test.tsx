@@ -1,15 +1,16 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 
 import { beforeEach, describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
 import createRenderAction from "./render.js";
-import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag } from "../../types.js";
 import text from "../new/text.js";
 import createUnmountAction from "./unmount.js";
 import { removeNode } from "@riadh-adrani/dom-utils";
+
+createJsxElement;
 
 describe("createUnmountAction", () => {
   beforeEach(() => {

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vitest } from "vitest";
-import { Callback, RawRoute, Route } from "../../types/index.js";
+import { RawRoute, Route } from "../types.js";
 import Router from "../Router.js";
+import type { Callback } from "@riadh-adrani/utils";
 
 const testId: RawRoute = { path: ":id", component: "test-id" };
 const test: RawRoute = { path: "test", component: "test", routes: [testId] };

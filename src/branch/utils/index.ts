@@ -16,7 +16,7 @@ import {
   BranchTemplate,
   Namespace,
   UseRefData,
-} from "../types/index.js";
+} from "../types.js";
 import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
 import { isValidTemplate } from "../check/index.js";
 import { Outlet } from "../../core/Core.js";

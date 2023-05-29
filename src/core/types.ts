@@ -1,4 +1,4 @@
-import type { Callback } from "./common.js";
+import { Callback } from "@riadh-adrani/utils";
 
 export interface MountParams {
   hostElement: HTMLElement;

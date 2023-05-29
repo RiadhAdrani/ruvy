@@ -1,5 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag } from "../../types.js";
 import { createElement, createTextNode, injectNode } from "@riadh-adrani/dom-utils";
 import {
   assignRef,

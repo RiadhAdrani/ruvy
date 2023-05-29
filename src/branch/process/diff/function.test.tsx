@@ -1,11 +1,13 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 import { describe, expect, it, vitest } from "vitest";
 import { initBranch } from "../../utils/index.js";
 import fn from "./function.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("diff.function", () => {
   it("should return function result", () => {
@@ -13,7 +15,7 @@ describe("diff.function", () => {
 
     const branch = initBranch({ type: Component });
 
-    const res = fn(branch, (<Component />) as any);
+    const res = fn(branch, <Component />);
 
     expect(res).toStrictEqual([<div />]);
   });
@@ -23,7 +25,7 @@ describe("diff.function", () => {
 
     const branch = initBranch({ type: Component });
 
-    fn(branch, (<Component />) as any);
+    fn(branch, <Component />);
 
     expect(Component).toHaveBeenCalledOnce();
   });

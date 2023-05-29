@@ -1,11 +1,5 @@
 import { collectEffects, unmountEffects } from "../../hooks/index.js";
-import {
-  ActionPriority,
-  ActionType,
-  Branch,
-  BranchAction,
-  BranchStatus,
-} from "../../types/index.js";
+import { ActionPriority, ActionType, Branch, BranchAction, BranchStatus } from "../../types.js";
 import { isHostBranch } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 

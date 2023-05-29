@@ -1,5 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
-import { Branch } from "../../types/index.js";
+import { Branch } from "../../types.js";
 import { getHostBranchIndexFromHostParent } from "../../utils/index.js";
 import { changeChildPosition } from "@riadh-adrani/dom-utils";
 

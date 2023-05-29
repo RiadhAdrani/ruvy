@@ -1,5 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, UseRefData } from "../../types/index.js";
+import { Branch, BranchStatus, UseRefData } from "../../types.js";
 import { isHostBranch } from "../../utils/index.js";
 import { removeNode } from "@riadh-adrani/dom-utils";
 

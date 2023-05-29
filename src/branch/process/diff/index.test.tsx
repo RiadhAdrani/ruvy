@@ -1,13 +1,15 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 import { beforeEach, describe, expect, it } from "vitest";
 import root from "../new/root.js";
 import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from "./index.js";
-import { ActionType, Branch, BranchKey, BranchStatus } from "../../types/index.js";
+import { ActionType, Branch, BranchKey, BranchStatus } from "../../types.js";
 import { collectActions, commit } from "../common/index.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("diffBranches", () => {
   let App: Branch;
@@ -92,7 +94,7 @@ describe("diffBranches", () => {
 
   describe("diffTypes", () => {
     it("should move branch to the old", () => {
-      const template = (<button></button>) as any;
+      const template = <button></button>;
 
       const branch = App.children[0];
 

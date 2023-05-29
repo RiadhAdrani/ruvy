@@ -1,5 +1,5 @@
 import { areEqual, cast, forEachKey } from "@riadh-adrani/utils";
-import { EffectCallback } from "../../../types/store.js";
+import { EffectCallback } from "../../../store/types.js";
 import {
   ActionType,
   Branch,
@@ -9,7 +9,7 @@ import {
   HookType,
   UseEffectData,
   UseEffectParams,
-} from "../../types/index.js";
+} from "../../types.js";
 import { dispatchHook } from "../index.js";
 
 /**

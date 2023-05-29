@@ -1,12 +1,14 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
 import createNewBranch from "./index.js";
-import { BranchTag } from "../../types/index.js";
+import { BranchTag } from "../../types.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("new", () => {
   const parent = initBranch();

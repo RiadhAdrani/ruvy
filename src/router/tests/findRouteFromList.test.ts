@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Route } from "../../types/index.js";
+import { Route } from "../types.js";
 import { findRouteFromList as find } from "../utils/index.js";
 
 describe("findRouteFromList", () => {

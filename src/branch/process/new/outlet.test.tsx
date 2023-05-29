@@ -1,12 +1,13 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { describe, expect, beforeEach, it } from "vitest";
 import { createJsxElement } from "../../create/index.js";
 import { Core, Outlet, createRouter } from "../../../core/Core.js";
 import { initBranch } from "../../utils/index.js";
 import outlet from "./outlet.js";
-import { BranchTag } from "../../types/index.js";
+import { BranchTag } from "../../types.js";
+
+createJsxElement;
 
 describe("new.outlet", () => {
   beforeEach(() => {
@@ -19,7 +20,7 @@ describe("new.outlet", () => {
     new Core();
 
     const parent = initBranch();
-    const branch = outlet((<Outlet />) as any, parent, 0);
+    const branch = outlet(<Outlet />, parent, 0);
 
     expect(branch.type).toStrictEqual(Outlet);
     expect(branch.tag).toStrictEqual(BranchTag.Outlet);
@@ -30,7 +31,7 @@ describe("new.outlet", () => {
 
   it("should return root element", () => {
     const parent = initBranch();
-    const branch = outlet((<Outlet />) as any, parent, 0);
+    const branch = outlet(<Outlet />, parent, 0);
 
     expect(branch.type).toStrictEqual(Outlet);
     expect(branch.tag).toStrictEqual(BranchTag.Outlet);

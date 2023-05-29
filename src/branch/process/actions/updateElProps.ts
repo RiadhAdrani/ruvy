@@ -1,5 +1,5 @@
 import { Callback, isFunction } from "@riadh-adrani/utils";
-import { Branch, PropDiff } from "../../types/index.js";
+import { Branch, PropDiff } from "../../types.js";
 import {
   DomAttribute,
   isOnEventName,

@@ -1,7 +1,6 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../create/index.js";
 
 import { describe, expect, it, vitest } from "vitest";
@@ -17,11 +16,14 @@ import {
   getClosestHostBranches,
   getOutletDepth,
 } from "./index.js";
-import { BranchTag, Namespace } from "../types/index.js";
+import { BranchTag, Namespace } from "../types.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
 import { createTemplate } from "../create/index.js";
 import root from "../process/new/root.js";
 import { Outlet } from "../../core/Core.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("utils", () => {
   describe("getNamespace", () => {
@@ -139,7 +141,7 @@ describe("utils", () => {
     const Button = () => <button>Hello</button>;
 
     const Container = ({ children }: { children?: Array<unknown> }) => {
-      return <>{...children!}</>;
+      return <>{children}</>;
     };
 
     it("should get index from direct parent", () => {

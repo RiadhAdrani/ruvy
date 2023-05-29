@@ -1,6 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
 import type * as CSS from "csstype";
-import { BranchTemplate } from "../branch/types/index.js";
+import { BranchTemplate } from "../branch/types.js";
 
 declare global {
   function createJsxElement(

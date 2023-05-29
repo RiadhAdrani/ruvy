@@ -1,5 +1,5 @@
 import { areEqual, forEachKey, hasProperty } from "@riadh-adrani/utils";
-import { ActionType, Branch, BranchTemplate, PropDiff } from "../../types/index.js";
+import { ActionType, Branch, BranchTemplate, PropDiff } from "../../types.js";
 import { IgnoredProps, assignRef, preprocessProps } from "../../utils/index.js";
 import createAction from "../actions/index.js";
 

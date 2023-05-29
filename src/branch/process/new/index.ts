@@ -6,7 +6,7 @@ import {
   BranchTag,
   BranchTemplate,
   BranchTemplateFunction,
-} from "../../types/index.js";
+} from "../../types.js";
 import fn from "../new/function.js";
 import element from "./element.js";
 import empty from "./empty.js";

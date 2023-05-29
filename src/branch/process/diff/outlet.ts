@@ -1,5 +1,5 @@
 import { Core } from "../../../core/Core.js";
-import { Branch } from "../../types/index.js";
+import { Branch } from "../../types.js";
 import { getOutletDepth } from "../../utils/index.js";
 
 const outlet = (current: Branch): Array<unknown> => {

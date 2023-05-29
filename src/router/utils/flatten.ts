@@ -1,5 +1,5 @@
 import { copy, isArray, isBlank } from "@riadh-adrani/utils";
-import { RawRoute, Route } from "../../types/index.js";
+import { RawRoute, Route } from "../types.js";
 import fragmentize from "./fragmentize.js";
 
 const flatten = <T>(_items: Array<RawRoute>, parent?: string): Record<string, Route<T>> => {

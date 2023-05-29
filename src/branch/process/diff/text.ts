@@ -1,5 +1,5 @@
 import { areEqual } from "@riadh-adrani/utils";
-import { ActionType, Branch } from "../../types/index.js";
+import { ActionType, Branch } from "../../types.js";
 import createAction from "../actions/index.js";
 
 /**

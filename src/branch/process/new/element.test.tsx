@@ -1,12 +1,13 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import element from "./element.js";
 import { initBranch } from "../../utils/index.js";
-import { ActionType, BranchStatus, BranchTag, BranchTemplate } from "../../types/index.js";
+import { ActionType, BranchStatus, BranchTag, BranchTemplate } from "../../types.js";
 import { omit } from "@riadh-adrani/utils";
+
+createJsxElement;
 
 describe("new.element", () => {
   it("should create a new element branch", () => {
@@ -60,6 +61,6 @@ describe("new.element", () => {
       </div>
     );
 
-    expect(() => element(jsx as any, parent, 0)).toThrow();
+    expect(() => element(jsx as BranchTemplate<string>, parent, 0)).toThrow();
   });
 });

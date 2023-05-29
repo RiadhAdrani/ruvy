@@ -1,5 +1,5 @@
 import { Callback, cast } from "@riadh-adrani/utils";
-import { ActionType, Branch, BranchAction, Effect, PropDiff } from "../../types/index.js";
+import { ActionType, Branch, BranchAction, Effect, PropDiff } from "../../types.js";
 import createRenderAction from "./render.js";
 import createUnmountAction from "./unmount.js";
 import createElPropsUpdateAction from "./updateElProps.js";

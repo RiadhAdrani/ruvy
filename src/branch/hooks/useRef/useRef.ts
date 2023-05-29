@@ -1,4 +1,4 @@
-import { HookData, HookDispatcher, HookType, UseRefData } from "../../types/index.js";
+import { HookData, HookDispatcher, HookType, UseRefData } from "../../types.js";
 import { dispatchHook } from "../index.js";
 
 /**

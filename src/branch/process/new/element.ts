@@ -1,4 +1,4 @@
-import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from "../../types/index.js";
+import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from "../../types.js";
 import { initBranch, preprocessProps } from "../../utils/index.js";
 import { collectPendingEffect } from "../common/index.js";
 import process from "../index.js";

@@ -1,14 +1,16 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { initBranch } from "../../utils/index.js";
 import createRenderAction from "./render.js";
-import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag } from "../../types.js";
 import text from "../new/text.js";
 import element from "../new/element.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("createRenderAction", () => {
   beforeEach(() => {
@@ -20,7 +22,7 @@ describe("createRenderAction", () => {
   it("should throw when branch is non-element", () => {
     const branch = initBranch() as Branch<string>;
 
-    expect(createRenderAction(branch)).toThrow(`Cannot render a non-host branch.`);
+    expect(createRenderAction(branch)).toThrow("Cannot render a non-host branch.");
   });
 
   it("should inject text in the root", () => {
@@ -35,7 +37,7 @@ describe("createRenderAction", () => {
   });
 
   it("should inject div in the root", () => {
-    const branch = element((<div />) as any, root, 0);
+    const branch = element(<div />, root, 0);
 
     createRenderAction(branch)();
 
@@ -46,17 +48,17 @@ describe("createRenderAction", () => {
   });
 
   it("should inject div with props", () => {
-    const branch = element((<div class="test" id="test" />) as any, root, 0);
+    const branch = element(<div class="test" id="test" />, root, 0);
 
     createRenderAction(branch)();
 
-    expect(document.body.outerHTML).toBe('<body><div class="test" id="test"></div></body>');
+    expect(document.body.outerHTML).toBe(`<body><div class="test" id="test"></div></body>`);
   });
 
   it("should inject div with events", () => {
     const onClick = vitest.fn();
 
-    const branch = element((<div onClick={onClick} />) as any, root, 0);
+    const branch = element(<div onClick={onClick} />, root, 0);
 
     createRenderAction(branch)();
 

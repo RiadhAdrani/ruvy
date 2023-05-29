@@ -1,10 +1,11 @@
 /** @jsx createJsxElement */
 
-// @ts-ignore
 import { createJsxElement } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
-import { Branch, BranchStatus, BranchTag } from "../../types/index.js";
+import { Branch, BranchStatus, BranchTag } from "../../types.js";
 import root from "./root.js";
+
+createJsxElement;
 
 describe("new.root", () => {
   it("should create a new empty branch", () => {

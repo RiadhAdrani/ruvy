@@ -1,12 +1,14 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-// @ts-ignore
 import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
 import { describe, expect, it } from "vitest";
 import { initBranch } from "../../utils/index.js";
-import { ActionType, BranchTag } from "../../types/index.js";
+import { ActionType, BranchTag } from "../../types.js";
 import text from "./text.js";
+
+createFragmentTemplate;
+createJsxElement;
 
 describe("diff.text", () => {
   it("should return empty array", () => {

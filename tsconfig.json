@@ -19,7 +19,16 @@
     "jsxFactory": "createJsxElement",
     "jsxFragmentFactory": "createJsxFragmentElement",
     "jsx": "react",
-    "types": ["./src/types/global"]
+    "types": ["./src/types/global"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@branch/*": ["./src/branch/*"],
+      "@router/*": ["./src/router/*"],
+      "@context/*": ["./src/context/*"],
+      "@scheduler/*": ["./src/scheduler/*"],
+      "@core/*": ["./src/core/*"],
+      "@store/*": ["./src/store/*"]
+    }
   },
   "include": ["src"]
 }

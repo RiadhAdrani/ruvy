@@ -12,7 +12,8 @@ import {
   UseMemoData,
   UseMemoParams,
   UseRefData,
-} from "../types/index.js";
+  BranchHooks,
+} from "../types.js";
 import {
   createHookKey,
   ctx,
@@ -24,7 +25,6 @@ import {
   dispatchUseRef,
   dispatchHook,
 } from "./index.js";
-import { BranchHooks } from "../types/index.js";
 import { cast, omit } from "@riadh-adrani/utils";
 import { initBranch } from "../utils/index.js";
 import { dispatchUseState } from "./useState/useState.js";
