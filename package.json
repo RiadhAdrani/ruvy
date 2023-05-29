@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "vite --config vite.dev.config.ts",
     "build:copy-global": "cp src/types/global.d.ts build/types/global.d.ts",
-    "build": "rm -rf build && tsc --project tsconfig.build.json && yarn build:copy-global",
+    "build": "rm -rf build && tsc --project tsconfig.build.json && yarn build:copy-global && ef-tspm",
     "build:vite": "vite build",
     "test": "vitest",
     "test:once": "vitest run",
@@ -42,6 +42,7 @@
     "husy": "^0.0.1-security",
     "jsdom": "^21.1.0",
     "prettier": "^2.8.8",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^4.9.3",
     "vite": "^4.1.0",
     "vitest": "^0.28.5"

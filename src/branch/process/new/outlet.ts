@@ -1,6 +1,6 @@
-import { Core } from "@core/Core.js";
-import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "@branch/types.js";
-import { getOutletDepth, initBranch } from "@branch/utils/index.js";
+import { Core } from "../../../core/index.js";
+import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types.js";
+import { getOutletDepth, initBranch } from "../../utils/index.js";
 import process from "../index.js";
 
 const outlet = (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {

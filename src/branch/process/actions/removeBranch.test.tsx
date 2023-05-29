@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import element from "../new/element.js";
 import root from "../new/root.js";
 import createRemoveBranchAction from "./removeBranch.js";
-import { BranchTemplate } from "@/branch/types.js";
+import { BranchTemplate } from "../../types.js";
 
 createJsxElement;
 

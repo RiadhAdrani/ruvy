@@ -13,7 +13,7 @@ describe("Core utils", () => {
 
       const target = document.getElementById("el") as HTMLElement;
 
-      expect(getClosestAnchorParent(target)?.outerHTML).toBe('<a id="el">anchor</a>');
+      expect(getClosestAnchorParent(target)?.outerHTML).toBe(`<a id="el">anchor</a>`);
     });
 
     it("should get parent as anchor parent", () => {

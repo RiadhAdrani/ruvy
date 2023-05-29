@@ -1,5 +1,5 @@
 import { Callback } from "@riadh-adrani/utils";
-import { CallbackWithArgs } from "@/types/index.js";
+import { CallbackWithArgs } from "../types/index.js";
 import { createFragmentTemplate } from "./create/index.js";
 
 export enum Namespace {

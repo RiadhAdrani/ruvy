@@ -1,9 +1,14 @@
 import { isElement, setEvent } from "@riadh-adrani/dom-utils";
 import { isFunction, Callback } from "@riadh-adrani/utils";
-import { Context } from "@context/index.js";
-import { Router, RouterParams, RawRoute } from "@router/index.js";
-import { Scheduler } from "@scheduler/index.js";
-import { createEffectCollection, createStateCollection, Store, StateArray } from "@store/index.js";
+import { Context } from "../context/index.js";
+import { Router, RouterParams, RawRoute } from "../router/index.js";
+import { Scheduler } from "../scheduler/index.js";
+import {
+  createEffectCollection,
+  createStateCollection,
+  Store,
+  StateArray,
+} from "../store/index.js";
 import { MountParams } from "./types.js";
 import { getClosestAnchorParent } from "./utils/index.js";
 import {
@@ -16,8 +21,8 @@ import {
   commit,
   process,
   createRoot,
-} from "@branch/index.js";
-import { DOMEvent } from "@/index.js";
+} from "../branch/index.js";
+import { DOMEvent } from "../types/index.js";
 
 export class Core {
   static singleton: Core = new Core();

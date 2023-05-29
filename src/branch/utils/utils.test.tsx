@@ -20,7 +20,7 @@ import { BranchTag, Namespace } from "../types.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
 import { createTemplate } from "../create/index.js";
 import root from "../process/new/root.js";
-import { Outlet } from "@branch/index.js";
+import { Outlet } from "../index.js";
 
 createFragmentTemplate;
 createJsxElement;

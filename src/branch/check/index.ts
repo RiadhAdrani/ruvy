@@ -15,7 +15,7 @@ import {
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types.js";
 import { createFragmentTemplate } from "../create/index.js";
 import { getCorrectKey } from "../utils/index.js";
-import { Outlet } from "@branch/index.js";
+import { Outlet } from "../index.js";
 
 /**
  * checks if the given is a valid component template
