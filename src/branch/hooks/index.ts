@@ -1,6 +1,13 @@
 import { Callback, hasProperty } from "@riadh-adrani/utils";
 import Context from "../../context/Context.js";
-import { Branch, BranchStatus, HookType, UseEffectParams, UseMemoParams } from "../types.js";
+import {
+  Branch,
+  BranchStatus,
+  ContextObject,
+  HookType,
+  UseEffectParams,
+  UseMemoParams,
+} from "../types.js";
 import { dispatchUseState, useState } from "./useState/useState.js";
 import {
   dispatchUseEffect,
@@ -11,8 +18,9 @@ import {
 import { dispatchUseMemo, useMemo, useCallback } from "./useMemo/useMemo.js";
 import { dispatchUseRef, useRef } from "./useRef/useRef.js";
 import { useId } from "./useId/useId.js";
+import { dispatchUseContext, useContext, createContext } from "./useContext/useContext.js";
 
-export { useState, useEffect, useMemo, useCallback, useRef, useId };
+export { useState, useEffect, useMemo, useCallback, useRef, useId, useContext, createContext };
 
 export {
   collectEffects,
@@ -68,6 +76,10 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
     }
     case HookType.Ref: {
       output = dispatchUseRef(key, data, branch);
+      break;
+    }
+    case HookType.Context: {
+      output = dispatchUseContext(key, data as ContextObject, branch);
       break;
     }
     default: {

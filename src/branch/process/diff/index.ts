@@ -12,6 +12,7 @@ import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from "../../u
 import createAction from "../actions/index.js";
 import { unmountBranch } from "../common/index.js";
 import createNewBranch from "../new/index.js";
+import context from "./context.js";
 import element from "./element.js";
 import fragment from "./fragment.js";
 import fn from "./function.js";
@@ -170,6 +171,10 @@ const diffBranches = (
       }
       case BranchTag.Outlet: {
         children = outlet(current);
+        break;
+      }
+      case BranchTag.Context: {
+        children = context(current, template as BranchTemplate);
         break;
       }
       default:

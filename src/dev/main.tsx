@@ -1,4 +1,12 @@
-import { Outlet, createRouter, mountApp, useId } from "../index.js";
+import {
+  Outlet,
+  createRouter,
+  mountApp,
+  useId,
+  useContext,
+  createContext,
+  useState,
+} from "../index.js";
 
 createRouter(
   [
@@ -13,6 +21,25 @@ createRouter(
   ],
   {}
 );
+
+const ThemeContext = createContext<{ theme: boolean; toggleTheme: () => void }>({
+  theme: false,
+  toggleTheme: () => undefined,
+});
+
+const ThemeProvider = ({ on = false, children }: { on: boolean; children?: Array<unknown> }) => {
+  const [theme, set] = useState(on);
+
+  const toggleTheme = () => set(!theme);
+
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+};
+
+const Button = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  return <button onClick={toggleTheme}>{theme ? "dark" : "light"}</button>;
+};
 
 const App = () => {
   const links = [
@@ -36,6 +63,12 @@ const App = () => {
           </a>
         ))}
       </nav>
+      <ThemeProvider on>
+        <Button />
+      </ThemeProvider>
+      <ThemeProvider on={false}>
+        <Button />
+      </ThemeProvider>
       <Outlet />
     </>
   );

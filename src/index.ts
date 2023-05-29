@@ -3,7 +3,16 @@ export { mountApp } from "./core/index.js";
 
 // hooks
 export { useKey } from "./core/index.js";
-export { useState, useEffect, useMemo, useCallback, useId, useRef } from "./branch/index.js";
+export {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useId,
+  useRef,
+  useContext,
+  createContext,
+} from "./branch/index.js";
 
 // router
 export { createRouter, navigate, replace, getParams } from "./core/index.js";

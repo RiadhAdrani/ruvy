@@ -83,6 +83,10 @@ export const getTag = (o: unknown): BranchTag => {
   if (isValidTemplate(o)) {
     const type = cast<BranchTemplate>(o).type;
 
+    if (type === BranchTag.Context) {
+      return BranchTag.Context;
+    }
+
     if (type === Outlet) {
       return BranchTag.Outlet;
     }

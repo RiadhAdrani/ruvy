@@ -16,6 +16,7 @@ export enum BranchTag {
   Text = "#-text-branch",
   Null = "#-null-branch",
   Outlet = "#-outlet-branch",
+  Context = "#-context-branch",
 }
 
 export enum HookType {
@@ -23,6 +24,7 @@ export enum HookType {
   Effect = "#-use-effect",
   Memo = "#-use-Memo",
   Ref = "#-use-ref",
+  Context = "#-use-context",
 }
 
 export enum BranchStatus {
@@ -150,3 +152,12 @@ export interface PropDiff<T = unknown> {
 }
 
 export type RuvyNode = BranchTemplate | string | boolean | null | undefined | number;
+
+export interface ContextObject<T = unknown> {
+  Provider: (props: ContextComponentProps<T>) => BranchTemplate<BranchTag.Context>;
+}
+
+export interface ContextComponentProps<T = unknown> {
+  value: T;
+  children?: Array<unknown>;
+}
