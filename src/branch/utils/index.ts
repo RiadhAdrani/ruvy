@@ -19,7 +19,7 @@ import {
 } from "../types.js";
 import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
 import { isValidTemplate } from "../check/index.js";
-import { Outlet } from "../../core/Core.js";
+import { Outlet } from "@branch/index.js";
 
 export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {

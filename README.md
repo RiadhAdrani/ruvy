@@ -1,4 +1,4 @@
-# Ruvy
+# Ruvy &middot; <a href="https://www.npmjs.com/package/@riadh-adrani/ruvy"><img src="https://img.shields.io/npm/v/@riadh-adrani/ruvy?color=blue"/></a>
 
 Ruvy is a lightweight front-end framework inspired by the principles of React, designed specifically for learning purposes. It incorporates familiar concepts such as JSX, function components, and hooks, providing a simplified and synchronous approach to building web applications.
 

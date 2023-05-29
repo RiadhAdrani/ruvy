@@ -1,5 +1,4 @@
-import type { Callback } from "../types/index.js";
-import { isDefined, isFunction } from "@riadh-adrani/utils";
+import { isDefined, isFunction, Callback } from "@riadh-adrani/utils";
 
 export default class Context<T> {
   data?: T;

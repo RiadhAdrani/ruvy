@@ -1,6 +1,8 @@
 import { Arrayable } from "@riadh-adrani/utils";
 import type * as CSS from "csstype";
 
+export type Any = any;
+
 export type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;
 
 export type DOMEventTarget<T extends Element> = Event & T;

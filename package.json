@@ -1,6 +1,6 @@
 {
   "name": "@riadh-adrani/ruvy",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "types": "./build/index.d.ts",
   "exports": "./build/index.js",
@@ -31,7 +31,8 @@
     "lint:check": "npx eslint . --ext .ts",
     "format:check": "npx prettier --check ./",
     "lint": "npx eslint . --fix --ext .ts",
-    "format": "npx prettier --write --check ./"
+    "format": "npx prettier --write --check ./",
+    "publish:manual": "yarn build && yarn publish"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

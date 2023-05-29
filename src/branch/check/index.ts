@@ -14,8 +14,8 @@ import {
 } from "@riadh-adrani/utils";
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types.js";
 import { createFragmentTemplate } from "../create/index.js";
-import { Outlet } from "@core/Core.js";
 import { getCorrectKey } from "../utils/index.js";
+import { Outlet } from "@branch/index.js";
 
 /**
  * checks if the given is a valid component template

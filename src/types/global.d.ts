@@ -1,6 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
 import { BranchTemplate } from "../branch/types.js";
-import { DOMEventHandler, Selector } from "./index.ts";
+import { Any, DOMEventHandler, Selector } from "./index.js";
 
 declare global {
   function createJsxElement(
@@ -516,7 +516,7 @@ declare global {
   }
 
   namespace JSX {
-    type Element = BranchTemplate;
+    type Element = BranchTemplate<Any>;
 
     interface IntrinsicElements extends Record<string, unknown> {
       a: ComponentProps<HTMLAnchorElement, AProps>;

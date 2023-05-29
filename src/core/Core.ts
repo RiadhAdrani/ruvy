@@ -11,13 +11,13 @@ import {
   createJsxElement,
   createTemplate,
   Branch,
-  BranchTemplate,
   RuvyNode,
   collectActions,
   commit,
   process,
   createRoot,
 } from "@branch/index.js";
+import { DOMEvent } from "@/index.js";
 
 export class Core {
   static singleton: Core = new Core();
@@ -147,8 +147,6 @@ export const createRouter = (
     },
   });
 };
-
-export const Outlet = (): BranchTemplate => null as unknown as BranchTemplate;
 
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
   return Core.singleton.store.setItem<T>("state", key, value);
