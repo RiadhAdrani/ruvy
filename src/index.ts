@@ -12,6 +12,7 @@ export {
   useRef,
   useContext,
   createContext,
+  useReactive,
 } from "./branch/index.js";
 
 // router

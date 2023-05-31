@@ -24,15 +24,29 @@ export const createContext = <T = unknown>(initial: T): ContextObject<T> => {
   };
 
   const Provider = <T = unknown>({ value, children }: ContextComponentProps<T>) =>
-    createTemplate<BranchTag.Context>(
-      BranchTag.Context,
-      { value, initial, object },
-      children ?? []
-    );
+    createContextComponent<T>({
+      value,
+      children,
+      initial: initial as unknown as T,
+      object: object as unknown as ContextObject<T>,
+    });
 
   object.Provider = Provider;
 
   return object;
+};
+
+export const createContextComponent = <T>({
+  value,
+  children,
+  object,
+  initial,
+}: ContextComponentProps<T> & { object: ContextObject<T>; initial: T }) => {
+  return createTemplate<BranchTag.Context>(
+    BranchTag.Context,
+    { value, initial, object },
+    children ?? []
+  );
 };
 
 /**
@@ -75,9 +89,9 @@ export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown>
 };
 
 /**
- * @deprecated
- * @param parent
- * @param object
+ * retrieve the closest parent with the given context object
+ * @param parent parent branch
+ * @param object context object
  * @returns
  */
 export const getClosestContextBranch = (

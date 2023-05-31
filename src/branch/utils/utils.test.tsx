@@ -15,6 +15,8 @@ import {
   getHostBranchIndexFromHostParent,
   getClosestHostBranches,
   getOutletDepth,
+  combineClasses,
+  preprocessProps,
 } from "./index.js";
 import { BranchTag, Namespace } from "../types.js";
 import { createElement, injectNode } from "@riadh-adrani/dom-utils";
@@ -427,6 +429,40 @@ describe("utils", () => {
       const depth = getOutletDepth(outlet);
 
       expect(depth).toBe(2);
+    });
+  });
+
+  describe("combineClasses", () => {
+    it("should join strings", () => {
+      expect(combineClasses("test-1", "test-2")).toBe("test-1 test-2");
+    });
+
+    it("should join array and string", () => {
+      expect(combineClasses(["test-1", "test-3"], "test-2")).toBe("test-1 test-3 test-2");
+    });
+  });
+
+  describe("preprocessProps", () => {
+    it("should transform and remove props with prefix [:class]", () => {
+      expect(preprocessProps({ "class:test": true })).toStrictEqual({ class: "test" });
+    });
+
+    it("should ignore props with [:class] prefix when their value is not true", () => {
+      expect(preprocessProps({ "class:test": false })).toStrictEqual({});
+      expect(preprocessProps({ "class:test": 1 })).toStrictEqual({});
+    });
+
+    it("should ignore prop [:class]", () => {
+      expect(preprocessProps({ "class:": false })).toStrictEqual({});
+      expect(preprocessProps({ "class:  ": false })).toStrictEqual({});
+    });
+
+    it("should combine classnames", () => {
+      expect(
+        preprocessProps({ "class:test": true, "class:done": true, class: "tester" })
+      ).toStrictEqual({
+        class: "tester test done",
+      });
     });
   });
 });

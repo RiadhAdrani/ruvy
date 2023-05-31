@@ -9,6 +9,7 @@ export {
   useId,
   useContext,
   createContext,
+  useReactive,
 } from "./hooks/index.js";
 
 export { createFragmentTemplate, createJsxElement, createTemplate } from "./create/index.js";

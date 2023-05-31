@@ -19,8 +19,19 @@ import { dispatchUseMemo, useMemo, useCallback } from "./useMemo/useMemo.js";
 import { dispatchUseRef, useRef } from "./useRef/useRef.js";
 import { useId } from "./useId/useId.js";
 import { dispatchUseContext, useContext, createContext } from "./useContext/useContext.js";
+import { dispatchUseReactive, useReactive } from "./useReactive/useReactive.js";
 
-export { useState, useEffect, useMemo, useCallback, useRef, useId, useContext, createContext };
+export {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+  useId,
+  useContext,
+  createContext,
+  useReactive,
+};
 
 export {
   collectEffects,
@@ -80,6 +91,10 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
     }
     case HookType.Context: {
       output = dispatchUseContext(key, data as ContextObject, branch);
+      break;
+    }
+    case HookType.Reactive: {
+      output = dispatchUseReactive(key, data as object, branch);
       break;
     }
     default: {

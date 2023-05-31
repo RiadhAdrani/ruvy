@@ -3,9 +3,9 @@ import {
   createRouter,
   mountApp,
   useId,
-  useContext,
   createContext,
   useState,
+  useReactive,
 } from "../index.js";
 
 createRouter(
@@ -35,10 +35,10 @@ const ThemeProvider = ({ on = false, children }: { on: boolean; children?: Array
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 };
 
-const Button = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+const Buttons = () => {
+  const text = useReactive({ value: "" });
 
-  return <button onClick={toggleTheme}>{theme ? "dark" : "light"}</button>;
+  return <input value={text.value} onInput={e => (text.value = e.currentTarget.value)} />;
 };
 
 const App = () => {
@@ -64,10 +64,10 @@ const App = () => {
         ))}
       </nav>
       <ThemeProvider on>
-        <Button />
+        <Buttons />
       </ThemeProvider>
       <ThemeProvider on={false}>
-        <Button />
+        <Buttons />
       </ThemeProvider>
       <Outlet />
     </>

@@ -2,25 +2,24 @@ import { areEqual } from "@riadh-adrani/utils";
 import { Branch, BranchTemplate } from "../../types.js";
 
 /**
- * @deprecated
+ * perform diffing of a context template and branch.
  * @param current
  * @param template
- * @returns
  */
 const context = (current: Branch, template: BranchTemplate): Array<unknown> => {
   const { props, children } = template;
 
-  const nObject = props.object;
-  const nValue = props.value;
+  const newObject = props.object;
+  const newValue = props.value;
 
-  if (!areEqual(nObject, current.props.object)) {
+  if (!areEqual(newObject, current.props.object)) {
     // TODO : transform into Action
-    current.props.object = nObject;
+    current.props.object = newObject;
   }
 
-  if (!areEqual(nValue, current.props.value)) {
+  if (!areEqual(newValue, current.props.value)) {
     // TODO : transform into Action
-    current.props.value = nValue;
+    current.props.value = newValue;
   }
 
   return children;

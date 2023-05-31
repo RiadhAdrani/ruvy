@@ -25,6 +25,7 @@ export enum HookType {
   Memo = "#-use-Memo",
   Ref = "#-use-ref",
   Context = "#-use-context",
+  Reactive = "#-use-reactive",
 }
 
 export enum BranchStatus {
