@@ -10,6 +10,7 @@ import {
 } from "../../types.js";
 import { Any } from "../../../types/index.js";
 import { dispatchHook } from "../index.js";
+import { findParentWith } from "../../utils/index.js";
 
 /**
  * create a `Context Object` with a `Provider`
@@ -78,7 +79,7 @@ export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown>
   }
 
   // get closest Context branch with object
-  const contextBranch = getClosestContextBranch(current.parent, data);
+  const contextBranch = getClosestContextBranch(current, data);
 
   // throw if not found
   if (!contextBranch) {
@@ -90,21 +91,16 @@ export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown>
 
 /**
  * retrieve the closest parent with the given context object
- * @param parent parent branch
+ * @param branch parent branch
  * @param object context object
  * @returns
  */
 export const getClosestContextBranch = (
-  parent: Branch | undefined,
+  branch: Branch,
   object: ContextObject
 ): Branch | undefined => {
-  if (!parent) {
-    return undefined;
-  }
-
-  if (parent.type === BranchTag.Context && areEqual(parent.props.object, object)) {
-    return parent;
-  }
-
-  return getClosestContextBranch(parent.parent, object);
+  return findParentWith(
+    branch,
+    it => it.type === BranchTag.Context && areEqual(it.props.object, object)
+  );
 };

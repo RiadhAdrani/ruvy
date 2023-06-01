@@ -4,11 +4,9 @@ import { createJsxElement } from "../../create/index.js";
 import { expect, describe, it, vitest } from "vitest";
 import createFn from "./function.js";
 import { createTemplate } from "../../create/index.js";
-import { Branch, BranchStatus, BranchTag, BranchTemplateFragment, HookType } from "../../types.js";
+import { Branch, BranchStatus, BranchTag, HookType } from "../../types.js";
 import { cast } from "@riadh-adrani/utils";
 import { useState } from "../../hooks/index.js";
-import { initBranch } from "../../utils/index.js";
-import fragment from "./fragment.js";
 
 createJsxElement;
 
@@ -60,18 +58,5 @@ describe("new.function", () => {
       parent: cast<Branch>({}),
       unmountedChildren: [],
     });
-  });
-
-  it("should throw with duplicate children keys", () => {
-    const parent = initBranch();
-    const jsx = (
-      <>
-        <div key={1} />
-        <div key={1} />
-        <div />
-      </>
-    );
-
-    expect(() => fragment(jsx as BranchTemplateFragment, parent, 0)).toThrow();
   });
 });

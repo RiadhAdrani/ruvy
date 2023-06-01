@@ -1,4 +1,4 @@
-import { haveDuplicateKey, haveSameTagAndType } from "../../check/index.js";
+import { haveSameTagAndType } from "../../check/index.js";
 import {
   ActionType,
   Branch,
@@ -179,10 +179,6 @@ const diffBranches = (
       }
       default:
         break;
-    }
-
-    if (haveDuplicateKey(children)) {
-      throw `Duplicate key detected within Component (${current.type})`;
     }
 
     const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));

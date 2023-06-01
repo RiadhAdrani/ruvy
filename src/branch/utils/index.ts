@@ -228,6 +228,8 @@ export const combineClasses = (current: Arrayable<string>, className: string): s
   return `${current} ${className}`;
 };
 
+const CLASS_PREFIX = "class:";
+
 /**
  * preprocess props
  * @param initial initial props
@@ -235,13 +237,14 @@ export const combineClasses = (current: Arrayable<string>, className: string): s
 export const preprocessProps = (initial: BranchProps): BranchProps => {
   const props: BranchProps = {};
 
-  const prefix = "class:";
-
   forEachKey((key, value) => {
-    // class:*
-    if (key.startsWith(prefix)) {
+    /**
+     * append attributes with prefix `class:` and a value of true
+     * to the existing class attribute or create one.
+     */
+    if (key.startsWith(CLASS_PREFIX)) {
       if (value === true) {
-        const newClassName = key.substring(prefix.length);
+        const newClassName = key.substring(CLASS_PREFIX.length);
 
         // check if it is not empty
         if (!isBlank(newClassName)) {
@@ -260,4 +263,37 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
   }, initial);
 
   return props;
+};
+
+/**
+ * @deprecated @untested
+ * recursively find the closest parent with the checker function
+ * @param branch current branch
+ * @param checker callback returning a boolean
+ */
+export const findParentWith = (
+  branch: Branch,
+  checker: (branch: Branch) => boolean
+): Branch | undefined => {
+  if (!branch.parent) {
+    return undefined;
+  }
+
+  if (checker(branch.parent)) {
+    return branch.parent;
+  }
+
+  return findParentWith(branch.parent, checker);
+};
+
+/**
+ * @deprecated @untested
+ * @param branch
+ */
+export const postprocessProps = (branch: Branch): void => {
+  // if branch type is svg, we change the namespace to SVG
+  // if not, we search for the closest svg namespaced parent
+  if (branch.type === "svg" || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
+    branch.props.ns = Namespace.SVG;
+  }
 };

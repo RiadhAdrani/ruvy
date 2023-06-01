@@ -21,9 +21,19 @@ const process = (
 ): Branch => {
   const $key = getCorrectKey(template, index);
 
-  return isUndefined(current)
+  const out = isUndefined(current)
     ? createNewBranch(template, parent, $key)
     : diffBranches(template, current as Branch, parent, index);
+
+  // check if output children have duplicate keys
+  const keys = out.children.map(item => item.key);
+  const unique = new Set(keys);
+
+  if (unique.size !== keys.length) {
+    console.error(`Duplicate key detected`);
+  }
+
+  return out;
 };
 
 export default process;
