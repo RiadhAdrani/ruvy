@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.2.0 - 2023-06-02
 ### Added
-
 - JSX syntax for writing expressive and reusable UI components.
 - Function components for a modular and composable code structure.
 - Hooks for managing state, performing side effects, and custom logic reuse: `useState`, `useEffect`, `useMemo`, `useCallback`, `useId` and `useRef`.
