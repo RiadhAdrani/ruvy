@@ -192,6 +192,15 @@
     "@riadh-adrani/utils" "^0.39.0"
     camelcase "^7.0.1"
 
+"@riadh-adrani/ruvy@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/ruvy/-/ruvy-0.2.0.tgz#1a63d592d614422406b2a66cdeff702de749146f"
+  integrity sha512-9JIqexUg035fhLh4UxblsaYqVafKLUEmS2E4KSq5bPig8MW77QR77tQSorLAvJsyonKrzXc6xX98XLIali8ixw==
+  dependencies:
+    "@riadh-adrani/dom-utils" "1.1.0"
+    "@riadh-adrani/utils" "0.40.0"
+    csstype "^3.1.1"
+
 "@riadh-adrani/utils@0.40.0":
   version "0.40.0"
   resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.40.0.tgz#e66562f95f54a732044dce8188b0f6399cff8c63"

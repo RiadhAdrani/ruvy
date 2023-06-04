@@ -26,6 +26,7 @@ export enum HookType {
   Ref = "#-use-ref",
   Context = "#-use-context",
   Reactive = "#-use-reactive",
+  Promise = "#-use-promise",
 }
 
 export enum BranchStatus {
@@ -92,6 +93,18 @@ export interface UseEffectData {
 }
 
 export type UseEffectParams = Pick<UseEffectData, "callback" | "deps">;
+
+export type UsePromiseState = "pending" | "refreshing" | "resolved" | "rejected";
+
+export type UsePromiseParams<T = unknown> = Callback<Promise<T>>;
+
+export type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
+
+export type UsePromiseData<T = unknown> = {
+  callback: Callback<Promise<T>>;
+  state: UsePromiseState;
+  value: T | undefined;
+};
 
 export type BranchProps = Record<string, unknown>;
 

@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { createReactiveObject, useReactive } from "./useReactive.js";
 import { ReactiveArray } from "@riadh-adrani/utils";
 import { initBranch } from "../../utils/index.js";
-import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 import { HookType, process } from "../../index.js";
+import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
 
 createFragmentTemplate;
 createJsxElement;

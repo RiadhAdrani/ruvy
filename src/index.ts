@@ -13,6 +13,7 @@ export {
   useContext,
   createContext,
   useReactive,
+  usePromise,
 } from "./branch/index.js";
 
 // router
