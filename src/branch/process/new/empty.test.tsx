@@ -1,15 +1,15 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from "../../create/index.js";
-import { describe, expect, it } from "vitest";
-import { initBranch } from "../../utils/index.js";
-import { Branch, BranchStatus, BranchTag } from "../../types.js";
-import empty from "./empty.js";
+import { createJsxElement } from '../../create/index.js';
+import { describe, expect, it } from 'vitest';
+import { initBranch } from '../../utils/index.js';
+import { Branch, BranchStatus, BranchTag } from '../../types.js';
+import empty from './empty.js';
 
 createJsxElement;
 
-describe("new.empty", () => {
-  it("should create a new empty branch", () => {
+describe('new.empty', () => {
+  it('should create a new empty branch', () => {
     const parent = initBranch();
     const div = empty(parent, 0);
 

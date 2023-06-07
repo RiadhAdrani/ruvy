@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, vitest } from "vitest";
+import { describe, expect, it, beforeEach, vitest } from 'vitest';
 import {
   ActionType,
   Branch,
@@ -13,7 +13,7 @@ import {
   UseMemoParams,
   UseRefData,
   BranchHooks,
-} from "../types.js";
+} from '../types.js';
 import {
   createHookKey,
   ctx,
@@ -24,22 +24,22 @@ import {
   dispatchUseMemo,
   dispatchUseRef,
   dispatchHook,
-} from "./index.js";
-import { cast, omit } from "@riadh-adrani/utils";
-import { initBranch } from "../utils/index.js";
-import { dispatchUseState } from "./useState/useState.js";
+} from './index.js';
+import { cast, omit } from '@riadh-adrani/utils';
+import { initBranch } from '../utils/index.js';
+import { dispatchUseState } from './useState/useState.js';
 
-describe("createHookKey", () => {
+describe('createHookKey', () => {
   it.each([
     [HookType.Effect, 2, `${HookType.Effect}@2`],
     [HookType.Memo, 0, `${HookType.Memo}@0`],
     [HookType.State, 1, `${HookType.State}@1`],
-  ])("should create hook key : (%s) + (%s) => (%s)", (type, index, res) => {
+  ])('should create hook key : (%s) + (%s) => (%s)', (type, index, res) => {
     expect(createHookKey(type, index)).toBe(res);
   });
 });
 
-describe("useHooksContext", () => {
+describe('useHooksContext', () => {
   const branch: Branch = {
     children: [],
     hooks: {},
@@ -48,18 +48,18 @@ describe("useHooksContext", () => {
     props: {},
     status: BranchStatus.Mounting,
     tag: BranchTag.Element,
-    type: "div",
+    type: 'div',
     unmountedChildren: [],
   };
 
-  it("should execute a context", () => {
+  it('should execute a context', () => {
     useHooksContext(() => {
       expect(ctx.get()).toStrictEqual(branch);
     }, branch);
   });
 });
 
-describe("dispatchSetState", () => {
+describe('dispatchSetState', () => {
   let branch: Branch;
 
   beforeEach(() => {
@@ -71,57 +71,57 @@ describe("dispatchSetState", () => {
       props: {},
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
-      type: "div",
+      type: 'div',
       unmountedChildren: [],
     };
   });
 
-  it("should create a hook entry with value, setter and a getter", () => {
+  it('should create a hook entry with value, setter and a getter', () => {
     const [val, set, get] = useHooksContext(() => {
-      return dispatchUseState("0", "test", branch);
+      return dispatchUseState('0', 'test', branch);
     }, branch);
 
     expect(branch.hooks).toStrictEqual<BranchHooks>({
       0: {
-        data: "test",
-        initialData: "test",
-        key: "0",
+        data: 'test',
+        initialData: 'test',
+        key: '0',
         type: HookType.State,
       },
     });
 
-    expect(get()).toBe("test");
-    expect(val).toBe("test");
+    expect(get()).toBe('test');
+    expect(val).toBe('test');
 
-    set("test-2");
-    expect(get()).toBe("test-2");
+    set('test-2');
+    expect(get()).toBe('test-2');
   });
 
-  it("should retrieve current state if non existing", () => {
-    branch.hooks[0] = { data: "test", initialData: "test", key: "0", type: HookType.State };
+  it('should retrieve current state if non existing', () => {
+    branch.hooks[0] = { data: 'test', initialData: 'test', key: '0', type: HookType.State };
 
     const [val, set, get] = useHooksContext(() => {
-      return dispatchUseState("0", "test-2", branch);
+      return dispatchUseState('0', 'test-2', branch);
     }, branch);
 
     expect(branch.hooks).toStrictEqual<BranchHooks>({
       0: {
-        data: "test",
-        initialData: "test",
-        key: "0",
+        data: 'test',
+        initialData: 'test',
+        key: '0',
         type: HookType.State,
       },
     });
 
-    expect(get()).toBe("test");
-    expect(val).toBe("test");
+    expect(get()).toBe('test');
+    expect(val).toBe('test');
 
-    set("test-2");
-    expect(get()).toBe("test-2");
+    set('test-2');
+    expect(get()).toBe('test-2');
   });
 });
 
-describe("dispatchSetEffect", () => {
+describe('dispatchSetEffect', () => {
   let branch: Branch;
 
   beforeEach(() => {
@@ -133,13 +133,13 @@ describe("dispatchSetEffect", () => {
       props: {},
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
-      type: "div",
+      type: 'div',
       unmountedChildren: [],
     };
   });
 
-  it("should create a hook entry", () => {
-    const key = "0";
+  it('should create a hook entry', () => {
+    const key = '0';
 
     const callback = vitest.fn();
 
@@ -149,12 +149,12 @@ describe("dispatchSetEffect", () => {
 
     const hook = cast<HookData<UseEffectData>>(branch.hooks[key]);
 
-    expect(hook.key).toBe("0");
+    expect(hook.key).toBe('0');
     expect(hook.type).toBe(HookType.Effect);
   });
 
-  it("should run effect/cleanup via pending", () => {
-    const key = "0";
+  it('should run effect/cleanup via pending', () => {
+    const key = '0';
 
     const cleanup = vitest.fn();
     const callback = vitest.fn(() => cleanup);
@@ -179,8 +179,8 @@ describe("dispatchSetEffect", () => {
     expect(hook.data.cleanUp).toBe(undefined);
   });
 
-  it("should not override data when reexecuted", () => {
-    const key = "0";
+  it('should not override data when reexecuted', () => {
+    const key = '0';
 
     const cleanup = vitest.fn();
     const callback = vitest.fn(() => cleanup);
@@ -199,8 +199,8 @@ describe("dispatchSetEffect", () => {
     expect(hook.data.callback).toStrictEqual(callback);
   });
 
-  it("should override data when deps changes", () => {
-    const key = "0";
+  it('should override data when deps changes', () => {
+    const key = '0';
 
     const cleanup = vitest.fn();
     const callback = vitest.fn(() => cleanup);
@@ -239,7 +239,7 @@ describe("dispatchSetEffect", () => {
   });
 });
 
-describe("collectEffects", () => {
+describe('collectEffects', () => {
   let branch: Branch;
 
   beforeEach(() => {
@@ -251,12 +251,12 @@ describe("collectEffects", () => {
       props: {},
       status: BranchStatus.Mounting,
       tag: BranchTag.Element,
-      type: "div",
+      type: 'div',
       unmountedChildren: [],
     };
   });
 
-  it("should collect pending effects", () => {
+  it('should collect pending effects', () => {
     const cleanup = vitest.fn();
     const callback = vitest.fn(() => cleanup);
 
@@ -272,13 +272,13 @@ describe("collectEffects", () => {
     const actions = collectEffects(branch);
 
     expect(actions.length).toBe(1);
-    expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
+    expect(omit(actions[0], 'requestTime')).toStrictEqual<Omit<BranchAction, 'requestTime'>>({
       callback: pendingEffect as Effect,
       type: ActionType.Effect,
     });
   });
 
-  it("should collect pending cleanup", () => {
+  it('should collect pending cleanup', () => {
     const cleanup = vitest.fn();
     const callback = vitest.fn(() => cleanup);
 
@@ -298,115 +298,115 @@ describe("collectEffects", () => {
     const actions = collectEffects(branch);
 
     expect(actions.length).toBe(1);
-    expect(omit(actions[0], "requestTime")).toStrictEqual<Omit<BranchAction, "requestTime">>({
+    expect(omit(actions[0], 'requestTime')).toStrictEqual<Omit<BranchAction, 'requestTime'>>({
       callback: hook.data.cleanUp as Effect,
       type: ActionType.Cleanup,
     });
   });
 });
 
-describe("dispatchUseMemo", () => {
+describe('dispatchUseMemo', () => {
   let branch: Branch;
 
   beforeEach(() => {
     branch = initBranch();
   });
 
-  it("should add memo hook", () => {
-    const callback = vitest.fn(() => "hello");
-    const value = dispatchUseMemo("0", { callback }, branch);
+  it('should add memo hook', () => {
+    const callback = vitest.fn(() => 'hello');
+    const value = dispatchUseMemo('0', { callback }, branch);
 
     expect(callback).toHaveBeenCalledOnce();
 
-    expect(value).toBe("hello");
+    expect(value).toBe('hello');
 
-    expect(branch.hooks["0"]).toStrictEqual<HookData<UseMemoData<string>>>({
-      data: { deps: undefined, value: "hello" },
-      initialData: { deps: undefined, value: "hello" },
-      key: "0",
+    expect(branch.hooks['0']).toStrictEqual<HookData<UseMemoData<string>>>({
+      data: { deps: undefined, value: 'hello' },
+      initialData: { deps: undefined, value: 'hello' },
+      key: '0',
       type: HookType.Memo,
     });
   });
 
-  it("should return memoized value", () => {
-    const callback = vitest.fn(() => "hello");
+  it('should return memoized value', () => {
+    const callback = vitest.fn(() => 'hello');
 
-    dispatchUseMemo("0", { callback }, branch);
+    dispatchUseMemo('0', { callback }, branch);
 
-    const value = dispatchUseMemo("0", { callback: () => "test" }, branch);
+    const value = dispatchUseMemo('0', { callback: () => 'test' }, branch);
 
-    expect(value).toBe("hello");
+    expect(value).toBe('hello');
   });
 
-  it("should reexecut computation when deps changes and update hook data", () => {
-    const callback = vitest.fn(() => "hello");
+  it('should reexecut computation when deps changes and update hook data', () => {
+    const callback = vitest.fn(() => 'hello');
 
-    const callback2 = vitest.fn(() => "test");
+    const callback2 = vitest.fn(() => 'test');
 
-    dispatchUseMemo("0", { callback }, branch);
+    dispatchUseMemo('0', { callback }, branch);
 
-    const value = dispatchUseMemo("0", { callback: callback2, deps: true }, branch);
+    const value = dispatchUseMemo('0', { callback: callback2, deps: true }, branch);
     const hook = branch.hooks[0] as HookData<UseMemoData<string>>;
 
-    expect(value).toBe("test");
+    expect(value).toBe('test');
     expect(callback2).toHaveBeenCalledTimes(1);
     expect(hook.data.deps).toBe(true);
-    expect(hook.data.value).toBe("test");
+    expect(hook.data.value).toBe('test');
   });
 });
 
-describe("dispatchUseRef", () => {
+describe('dispatchUseRef', () => {
   let branch: Branch;
 
   beforeEach(() => {
     branch = initBranch();
   });
 
-  it("should add memo hook", () => {
-    const value = dispatchUseRef("0", "hello", branch);
+  it('should add memo hook', () => {
+    const value = dispatchUseRef('0', 'hello', branch);
 
-    expect(value).toStrictEqual({ value: "hello" });
+    expect(value).toStrictEqual({ value: 'hello' });
 
-    expect(branch.hooks["0"]).toStrictEqual<HookData<UseRefData<string>>>({
-      data: { value: "hello" },
-      initialData: { value: "hello" },
-      key: "0",
+    expect(branch.hooks['0']).toStrictEqual<HookData<UseRefData<string>>>({
+      data: { value: 'hello' },
+      initialData: { value: 'hello' },
+      key: '0',
       type: HookType.Ref,
     });
   });
 
-  it("should store reference and not value", () => {
-    const ref = { hello: "world" };
+  it('should store reference and not value', () => {
+    const ref = { hello: 'world' };
 
-    const refValue = dispatchUseRef("0", ref, branch);
+    const refValue = dispatchUseRef('0', ref, branch);
 
-    expect(branch.hooks["0"]).toStrictEqual<HookData<UseRefData>>({
+    expect(branch.hooks['0']).toStrictEqual<HookData<UseRefData>>({
       data: { value: ref },
       initialData: { value: ref },
-      key: "0",
+      key: '0',
       type: HookType.Ref,
     });
 
-    ref.hello = "test";
+    ref.hello = 'test';
 
     expect(refValue.value === ref).toBe(true);
   });
 });
 
-describe("dispatchHook", () => {
+describe('dispatchHook', () => {
   let branch: Branch;
 
   beforeEach(() => {
     branch = initBranch();
   });
 
-  it("should throw when executed outside of the context", () => {
+  it('should throw when executed outside of the context', () => {
     expect(() => dispatchHook(HookType.State, 0)).toThrow(
-      "cannot use hooks outside of a functional component context."
+      'cannot use hooks outside of a functional component context.'
     );
   });
 
-  it("should throw when hook is not found in a mounted branch", () => {
+  it('should throw when hook is not found in a mounted branch', () => {
     branch.status = BranchStatus.Mounted;
 
     const callback = () =>
@@ -419,18 +419,18 @@ describe("dispatchHook", () => {
     );
   });
 
-  it("should throw when hook type is invalid", () => {
+  it('should throw when hook type is invalid', () => {
     branch.status = BranchStatus.Mounted;
 
     const callback = () =>
       useHooksContext(() => {
-        dispatchHook("Wrong" as HookType.State, 0);
+        dispatchHook('Wrong' as HookType.State, 0);
       }, branch);
 
     expect(callback).toThrow();
   });
 
-  it("should return the output", () => {
+  it('should return the output', () => {
     const count = useHooksContext(
       () => dispatchHook<number, UseMemoParams>(HookType.Memo, { callback: () => 0 }),
       branch

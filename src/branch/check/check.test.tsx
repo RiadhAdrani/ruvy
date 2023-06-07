@@ -1,30 +1,30 @@
 /** @jsxFrag createFragmentTemplate */
 /** @jsx createJsxElement */
 
-import { createFragmentTemplate, createJsxElement } from "../create/index.js";
-import { describe, expect, it, vitest } from "vitest";
+import { createFragmentTemplate, createJsxElement } from '../create/index.js';
+import { describe, expect, it, vitest } from 'vitest';
 import {
   getTag,
   haveDuplicateKey,
   haveSameTagAndType,
   isValidTemplate,
   isValidTextChild,
-} from "./index.js";
-import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from "../types.js";
-import { omit } from "@riadh-adrani/utils";
+} from './index.js';
+import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from '../types.js';
+import { omit } from '@riadh-adrani/utils';
 
 // or else eslint will cry
 createJsxElement;
 
-describe("isBranchTemplate", () => {
-  const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
-  const templateNoChildren = omit(template, "children");
-  const templateNoProps = omit(template, "props");
-  const templateNoSymbol = omit(template, "symbol");
-  const templateNoType = omit(template, "type");
+describe('isBranchTemplate', () => {
+  const template: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: 'div' };
+  const templateNoChildren = omit(template, 'children');
+  const templateNoProps = omit(template, 'props');
+  const templateNoSymbol = omit(template, 'symbol');
+  const templateNoType = omit(template, 'type');
 
   it.each([
-    ["test", false],
+    ['test', false],
     [1, false],
     [true, false],
     [{}, false],
@@ -33,27 +33,27 @@ describe("isBranchTemplate", () => {
     [templateNoSymbol, false],
     [templateNoType, false],
     [template, true],
-  ])("should determine if object is branch template", (obj, res) => {
+  ])('should determine if object is branch template', (obj, res) => {
     expect(isValidTemplate(obj)).toBe(res);
   });
 });
 
-describe("isBranchTemplateTextChild", () => {
+describe('isBranchTemplateTextChild', () => {
   it.each([
-    ["test", true],
+    ['test', true],
     [1, true],
     [{}, true],
     [false, false],
     [true, false],
     [null, false],
     [undefined, false],
-    [{ children: [], props: {}, symbol: BranchSymbol, type: "div" }, false],
-  ])("should determine if object (%s) is branch template", (obj, res) => {
+    [{ children: [], props: {}, symbol: BranchSymbol, type: 'div' }, false],
+  ])('should determine if object (%s) is branch template', (obj, res) => {
     expect(isValidTextChild(obj)).toBe(res);
   });
 });
 
-describe("getTag", () => {
+describe('getTag', () => {
   const fc: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: vitest.fn() };
   const fr: BranchTemplate = {
     children: [],
@@ -61,10 +61,10 @@ describe("getTag", () => {
     symbol: BranchSymbol,
     type: createFragmentTemplate,
   };
-  const div: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
+  const div: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: 'div' };
 
   it.each([
-    ["hello", BranchTag.Text],
+    ['hello', BranchTag.Text],
     [1, BranchTag.Text],
     [{}, BranchTag.Text],
     [true, BranchTag.Null],
@@ -74,12 +74,12 @@ describe("getTag", () => {
     [fc, BranchTag.Function],
     [fr, BranchTag.Fragment],
     [div, BranchTag.Element],
-  ])("should return correct branch type (%s) => (%s)", (obj, expected) => {
+  ])('should return correct branch type (%s) => (%s)', (obj, expected) => {
     expect(getTag(obj)).toBe(expected);
   });
 });
 
-describe("haveSameTagAndType", () => {
+describe('haveSameTagAndType', () => {
   const fn = vitest.fn();
   const fn2 = vitest.fn();
 
@@ -121,8 +121,8 @@ describe("haveSameTagAndType", () => {
     unmountedChildren: [],
   };
 
-  const el: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "div" };
-  const el2: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: "button" };
+  const el: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: 'div' };
+  const el2: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: 'button' };
   const elBranch: Branch = {
     children: [],
     hooks: {},
@@ -131,12 +131,12 @@ describe("haveSameTagAndType", () => {
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Element,
-    type: "div",
+    type: 'div',
     unmountedChildren: [],
   };
 
-  const text = "text";
-  const text2 = "text-2";
+  const text = 'text';
+  const text2 = 'text-2';
   const textBranch: Branch = {
     children: [],
     hooks: {},
@@ -179,7 +179,7 @@ describe("haveSameTagAndType", () => {
     [frBranch, fr2, true],
     [frBranch, el, false],
     [frBranch, text, false],
-    [frBranch, "text", false],
+    [frBranch, 'text', false],
     [frBranch, 1, false],
     [frBranch, null, false],
 
@@ -191,7 +191,7 @@ describe("haveSameTagAndType", () => {
     [elBranch, el, true],
     [elBranch, el2, false],
     [elBranch, text, false],
-    [elBranch, "text", false],
+    [elBranch, 'text', false],
     [elBranch, 1, false],
     [elBranch, null, false],
 
@@ -218,25 +218,25 @@ describe("haveSameTagAndType", () => {
     [nullBranch, text2, false],
     [nullBranch, 1, false],
     [nullBranch, null, true],
-  ])("should compare branch and template : (%s) vs (%s) => (%s)", (branch, template, res) => {
+  ])('should compare branch and template : (%s) vs (%s) => (%s)', (branch, template, res) => {
     expect(haveSameTagAndType(branch, template)).toBe(res);
   });
 });
 
-describe("haveDuplicateKey", () => {
-  it("should return false with index keys", () => {
+describe('haveDuplicateKey', () => {
+  it('should return false with index keys', () => {
     const children = [<div />, <div />, <div />];
 
     expect(haveDuplicateKey(children)).toBe(false);
   });
 
-  it("should return true", () => {
+  it('should return true', () => {
     const children = [<div key="1" />, <div key="1" />, <div />];
 
     expect(haveDuplicateKey(children)).toBe(true);
   });
 
-  it("should return false with string vs number", () => {
+  it('should return false with string vs number', () => {
     const children = [<div key={1} />, <div key="1" />, <div />];
 
     expect(haveDuplicateKey(children)).toBe(false);

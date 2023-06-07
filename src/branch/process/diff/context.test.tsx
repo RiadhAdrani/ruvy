@@ -1,19 +1,19 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from "../../create/index.js";
-import { describe, expect, it } from "vitest";
-import { initBranch } from "../../utils/index.js";
-import { createContext, createContextComponent } from "../../hooks/useContext/useContext.js";
-import process from "../index.js";
-import context from "./context.js";
+import { createJsxElement } from '../../create/index.js';
+import { describe, expect, it } from 'vitest';
+import { initBranch } from '../../utils/index.js';
+import { createContext, createContextComponent } from '../../hooks/useContext/useContext.js';
+import process from '../index.js';
+import context from './context.js';
 
 createJsxElement;
 
-describe("diff.context", () => {
+describe('diff.context', () => {
   const TestContext = createContext<{ value?: number }>({});
-  const OtherContext = createContext("other");
+  const OtherContext = createContext('other');
 
-  it("should update context value if changed", () => {
+  it('should update context value if changed', () => {
     const parent = initBranch();
     const jsx = <TestContext.Provider value={{}} />;
     const out = process(jsx, undefined, parent, 0);
@@ -33,7 +33,7 @@ describe("diff.context", () => {
     expect(ctx.props.value).toStrictEqual({ value: 5 });
   });
 
-  it("should update context object if changed", () => {
+  it('should update context object if changed', () => {
     const parent = initBranch();
     const jsx = <TestContext.Provider value={{}} />;
     const out = process(jsx, undefined, parent, 0);
@@ -43,14 +43,14 @@ describe("diff.context", () => {
     context(
       ctx,
       createContextComponent<string>({
-        initial: "other",
+        initial: 'other',
         object: OtherContext,
-        value: "other",
+        value: 'other',
         children: [],
       })
     );
 
-    expect(ctx.props.value).toStrictEqual("other");
+    expect(ctx.props.value).toStrictEqual('other');
     expect(ctx.props.object).toStrictEqual(OtherContext);
   });
 });

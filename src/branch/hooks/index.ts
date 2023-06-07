@@ -1,5 +1,5 @@
-import { Callback, hasProperty } from "@riadh-adrani/utils";
-import Context from "../../context/Context.js";
+import { Callback, hasProperty } from '@riadh-adrani/utils';
+import Context from '../../context/Context.js';
 import {
   Branch,
   BranchStatus,
@@ -7,20 +7,20 @@ import {
   HookType,
   UseEffectParams,
   UseMemoParams,
-} from "../types.js";
-import { dispatchUseState, useState } from "./useState/useState.js";
+} from '../types.js';
+import { dispatchUseState, useState } from './useState/useState.js';
 import {
   dispatchUseEffect,
   useEffect,
   collectEffects,
   unmountEffects,
-} from "./useEffect/useEffect.js";
-import { dispatchUseMemo, useMemo, useCallback } from "./useMemo/useMemo.js";
-import { dispatchUseRef, useRef } from "./useRef/useRef.js";
-import { useId } from "./useId/useId.js";
-import { dispatchUseContext, useContext, createContext } from "./useContext/useContext.js";
-import { dispatchUseReactive, useReactive } from "./useReactive/useReactive.js";
-import { dispatchUsePromise, usePromise } from "./usePromise/usePromise.js";
+} from './useEffect/useEffect.js';
+import { dispatchUseMemo, useMemo, useCallback } from './useMemo/useMemo.js';
+import { dispatchUseRef, useRef } from './useRef/useRef.js';
+import { useId } from './useId/useId.js';
+import { dispatchUseContext, useContext, createContext } from './useContext/useContext.js';
+import { dispatchUseReactive, useReactive } from './useReactive/useReactive.js';
+import { dispatchUsePromise, usePromise } from './usePromise/usePromise.js';
 
 export {
   useState,
@@ -61,7 +61,7 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
   const branch = ctx.get();
 
   if (branch === undefined) {
-    throw "cannot use hooks outside of a functional component context.";
+    throw 'cannot use hooks outside of a functional component context.';
   }
 
   index = index + 1;

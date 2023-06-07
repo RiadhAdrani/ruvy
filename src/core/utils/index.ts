@@ -1,1 +1,1 @@
-export { default as getClosestAnchorParent } from "./getClosestAnchorParent.js";
+export { default as getClosestAnchorParent } from './getClosestAnchorParent.js';

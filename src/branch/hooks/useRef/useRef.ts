@@ -1,5 +1,5 @@
-import { HookData, HookDispatcher, HookType, UseRefData } from "../../types.js";
-import { dispatchHook } from "../index.js";
+import { HookData, HookDispatcher, HookType, UseRefData } from '../../types.js';
+import { dispatchHook } from '../index.js';
 
 /**
  * stores a reference to a variable

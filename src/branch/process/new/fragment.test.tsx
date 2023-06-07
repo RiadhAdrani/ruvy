@@ -1,17 +1,17 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
-import { describe, expect, it } from "vitest";
-import { initBranch } from "../../utils/index.js";
-import { Branch, BranchStatus, BranchTag, BranchTemplateFragment } from "../../types.js";
-import fragment from "./fragment.js";
+import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
+import { describe, expect, it } from 'vitest';
+import { initBranch } from '../../utils/index.js';
+import { Branch, BranchStatus, BranchTag, BranchTemplateFragment } from '../../types.js';
+import fragment from './fragment.js';
 
 createFragmentTemplate;
 createJsxElement;
 
-describe("new.fragment", () => {
-  it("should create a new empty branch", () => {
+describe('new.fragment', () => {
+  it('should create a new empty branch', () => {
     const parent = initBranch();
     const jsx = (<></>) as BranchTemplateFragment;
 

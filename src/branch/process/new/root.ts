@@ -1,5 +1,5 @@
-import { Branch, BranchStatus, BranchTag } from "../../types.js";
-import process from "../index.js";
+import { Branch, BranchStatus, BranchTag } from '../../types.js';
+import process from '../index.js';
 
 /**
  * create the root branch.

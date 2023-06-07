@@ -1,5 +1,5 @@
-import { areEqual } from "@riadh-adrani/utils";
-import { Branch, BranchTemplate } from "../../types.js";
+import { areEqual } from '@riadh-adrani/utils';
+import { Branch, BranchTemplate } from '../../types.js';
 
 /**
  * perform diffing of a context template and branch.

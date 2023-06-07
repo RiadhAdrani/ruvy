@@ -1,9 +1,6 @@
-import { RawRoute } from "@riadh-adrani/ruvy";
+import { RawRoute, RuvyNode } from '../index.js';
 
-interface DocRoute extends RawRoute {
-  componentOrFile: string | JSX.Element;
-}
-
-const routes: Array<RawRoute> = [];
-
-export default routes;
+export const routes: Array<RawRoute<RuvyNode>> = [
+  { component: 'yes', path: '/' },
+  { path: '/user', component: 'user' },
+];

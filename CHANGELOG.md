@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- add `usePromise`, a hook that allows the user to fetch data while tracking the request state and return value.
+
 ## 0.2.0 - 2023-06-02
 
 ### Added

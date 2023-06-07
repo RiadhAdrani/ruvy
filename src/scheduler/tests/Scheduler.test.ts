@@ -1,27 +1,27 @@
-import { beforeEach, describe, expect, it, vitest } from "vitest";
-import type { Task } from "../types.js";
-import Scheduler from "../Scheduler.js";
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import type { Task } from '../types.js';
+import Scheduler from '../Scheduler.js';
 
-describe("Scheduler class", () => {
+describe('Scheduler class', () => {
   let scheduler: Scheduler;
 
   beforeEach(() => {
     scheduler = new Scheduler();
   });
 
-  it("should create a new scheduler with empty stack and task", () => {
+  it('should create a new scheduler with empty stack and task', () => {
     expect(scheduler.current).toBe(undefined);
     expect(scheduler.stack).toStrictEqual([]);
   });
 
-  it("should pop and start a new task", () => {
+  it('should pop and start a new task', () => {
     const callback = vitest.fn(() => 0);
 
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     scheduler.stack.push(task);
@@ -33,21 +33,21 @@ describe("Scheduler class", () => {
     expect(scheduler.current).toBe(undefined);
   });
 
-  it("should not start a new task when one is being executed", () => {
+  it('should not start a new task when one is being executed', () => {
     const callback = vitest.fn(() => 0);
 
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     const task2: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     scheduler.stack.push(task2);
@@ -58,21 +58,21 @@ describe("Scheduler class", () => {
     expect(callback).toHaveBeenCalledTimes(0);
   });
 
-  it("should run all tasks", () => {
+  it('should run all tasks', () => {
     const callback = vitest.fn(() => 0);
 
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     const task2: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     scheduler.stack.push(task, task2);
@@ -83,14 +83,14 @@ describe("Scheduler class", () => {
     expect(scheduler.current).toBe(undefined);
   });
 
-  it("should enqueue a new task", () => {
+  it('should enqueue a new task', () => {
     const callback = vitest.fn(() => 0);
 
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     scheduler.enqueue(task);
@@ -98,7 +98,7 @@ describe("Scheduler class", () => {
     expect(scheduler.stack).toStrictEqual([task]);
   });
 
-  it("should replace task with same type", () => {
+  it('should replace task with same type', () => {
     const callback = vitest.fn(() => 0);
 
     const callback2 = vitest.fn(() => 0);
@@ -106,15 +106,15 @@ describe("Scheduler class", () => {
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "test",
-      type: "test",
+      id: 'test',
+      type: 'test',
     };
 
     const task2: Task = {
       callback: callback2,
       date: Date.now(),
-      id: "test2",
-      type: "test",
+      id: 'test2',
+      type: 'test',
     };
 
     scheduler.enqueue(task);
@@ -123,7 +123,7 @@ describe("Scheduler class", () => {
     expect(scheduler.stack).toStrictEqual([task2]);
   });
 
-  it("should replace task with same type at exact position", () => {
+  it('should replace task with same type at exact position', () => {
     const callback = vitest.fn(() => 0);
 
     const callback2 = vitest.fn(() => 0);
@@ -131,29 +131,29 @@ describe("Scheduler class", () => {
     const task: Task = {
       callback,
       date: Date.now(),
-      id: "1",
-      type: "test",
+      id: '1',
+      type: 'test',
     };
 
     const task2: Task = {
       callback: callback2,
       date: Date.now(),
-      id: "2",
-      type: "test2",
+      id: '2',
+      type: 'test2',
     };
 
     const task3: Task = {
       callback: callback2,
       date: Date.now(),
-      id: "3",
-      type: "test3",
+      id: '3',
+      type: 'test3',
     };
 
     const task4: Task = {
       callback: callback2,
       date: Date.now(),
-      id: "4",
-      type: "test",
+      id: '4',
+      type: 'test',
     };
 
     scheduler.enqueue(task2);

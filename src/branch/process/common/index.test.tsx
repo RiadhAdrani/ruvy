@@ -1,21 +1,21 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
-import { beforeEach, describe, expect, it, vitest } from "vitest";
-import root from "../new/root.js";
-import { actionsSorter, collectActions, commit, unmountBranch } from "./index.js";
-import { useState } from "../../hooks/index.js";
-import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from "../../types.js";
-import { initBranch } from "../../utils/index.js";
-import createAction from "../actions/index.js";
-import { shuffle } from "@riadh-adrani/utils";
+import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import root from '../new/root.js';
+import { actionsSorter, collectActions, commit, unmountBranch } from './index.js';
+import { useState } from '../../hooks/index.js';
+import { ActionPriority, ActionType, Branch, BranchStatus, BranchTag } from '../../types.js';
+import { initBranch } from '../../utils/index.js';
+import createAction from '../actions/index.js';
+import { shuffle } from '@riadh-adrani/utils';
 
 createJsxElement;
 createFragmentTemplate;
 
-describe("common", () => {
-  it("should be an object of {action type : number}", () => {
+describe('common', () => {
+  it('should be an object of {action type : number}', () => {
     expect(ActionPriority).toStrictEqual({
       [ActionType.Unmount]: 0,
       [ActionType.Render]: 1,
@@ -30,7 +30,7 @@ describe("common", () => {
   });
 
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
   });
 
   const expectPendingActionsToBeEmpty = (branch: Branch) => {
@@ -39,21 +39,21 @@ describe("common", () => {
     branch.children.forEach(expectPendingActionsToBeEmpty);
   };
 
-  describe("unmountBranch", () => {
+  describe('unmountBranch', () => {
     let branch: Branch;
 
     beforeEach(() => {
       branch = initBranch();
     });
 
-    it("should change status to unmounting", () => {
+    it('should change status to unmounting', () => {
       unmountBranch(branch);
 
       expect(branch.status).toBe(BranchStatus.Unmounting);
     });
 
     it.each([[BranchTag.Element], [BranchTag.Text]])(
-      "should add an Unmount action to pendingActions if (%s)",
+      'should add an Unmount action to pendingActions if (%s)',
       tag => {
         branch = initBranch({ tag });
 
@@ -64,7 +64,7 @@ describe("common", () => {
     );
 
     it.each([[BranchTag.Fragment], [BranchTag.Function], [BranchTag.Null]])(
-      "should not add an Unmount action to pendingActions if (%s)",
+      'should not add an Unmount action to pendingActions if (%s)',
       tag => {
         branch = initBranch({ tag });
 
@@ -74,7 +74,7 @@ describe("common", () => {
       }
     );
 
-    it("should unmount children recursively", () => {
+    it('should unmount children recursively', () => {
       branch = initBranch();
 
       branch.children.push(...[initBranch(), initBranch()]);
@@ -83,8 +83,8 @@ describe("common", () => {
     });
   });
 
-  describe("commit", () => {
-    it("should render tree into the dom", () => {
+  describe('commit', () => {
+    it('should render tree into the dom', () => {
       const App = () => {
         return (
           <div>
@@ -101,10 +101,10 @@ describe("common", () => {
 
       expectPendingActionsToBeEmpty(branch);
 
-      expect(document.body.innerHTML).toBe("<div><button>Click me</button></div>");
+      expect(document.body.innerHTML).toBe('<div><button>Click me</button></div>');
     });
 
-    it("should render tree into the dom (nested Functional component)", () => {
+    it('should render tree into the dom (nested Functional component)', () => {
       const Button = ({ init = 0 }) => {
         const [count] = useState(init);
 
@@ -128,11 +128,11 @@ describe("common", () => {
       commit(actions);
 
       expect(document.body.innerHTML).toBe(
-        "<div><button>0</button><button>1</button><button>2</button></div>"
+        '<div><button>0</button><button>1</button><button>2</button></div>'
       );
     });
 
-    it("should render tree into the dom (fragment)", () => {
+    it('should render tree into the dom (fragment)', () => {
       const Button = ({ init = 0 }) => {
         const [count] = useState(init);
 
@@ -158,17 +158,17 @@ describe("common", () => {
       commit(actions);
 
       expect(document.body.innerHTML).toBe(
-        "<div><button>0</button><button>1</button><button>2</button></div>"
+        '<div><button>0</button><button>1</button><button>2</button></div>'
       );
     });
 
-    it("should render tree into the dom with props and events", () => {
+    it('should render tree into the dom with props and events', () => {
       const onClick = vitest.fn();
 
       const App = () => {
         return (
           <div>
-            <button {...{ onClick }} id={"btn"}>
+            <button {...{ onClick }} id={'btn'}>
               Click me
             </button>
           </div>
@@ -181,7 +181,7 @@ describe("common", () => {
 
       commit(actions);
 
-      const btn = document.getElementById("btn");
+      const btn = document.getElementById('btn');
       btn?.click();
 
       expect(document.body.innerHTML).toBe(`<div><button id="btn">Click me</button></div>`);
@@ -189,7 +189,7 @@ describe("common", () => {
     });
   });
 
-  describe("collectActions", () => {
+  describe('collectActions', () => {
     const root = initBranch();
     const parent = initBranch();
     const child = initBranch();
@@ -201,7 +201,7 @@ describe("common", () => {
     parent.pendingActions.push(createAction(ActionType.Cleanup, parent));
     child.pendingActions.push(createAction(ActionType.UpdateProps, child));
 
-    it("should collect all actions recursively", () => {
+    it('should collect all actions recursively', () => {
       const collection = collectActions(root);
 
       expect(collection.map(c => c.type)).toStrictEqual([
@@ -212,7 +212,7 @@ describe("common", () => {
     });
   });
 
-  describe("ActionSorter", () => {
+  describe('ActionSorter', () => {
     const root = initBranch();
     const parent = initBranch();
     const child = initBranch();
@@ -231,7 +231,7 @@ describe("common", () => {
     child.pendingActions.push(createAction(ActionType.UpdateText, child));
     child.pendingActions.push(createAction(ActionType.Reorder, child));
 
-    it("should order action correclty", () => {
+    it('should order action correclty', () => {
       const actions = shuffle(collectActions(root));
 
       const sorted = actions.sort(actionsSorter);

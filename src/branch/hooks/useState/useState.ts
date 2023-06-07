@@ -1,8 +1,8 @@
-import { areEqual } from "@riadh-adrani/utils";
-import { StateArray } from "../../../store/types.js";
-import { HookDispatcher, HookType } from "../../types.js";
-import { Core } from "../../../core/Core.js";
-import { dispatchHook } from "../index.js";
+import { areEqual } from '@riadh-adrani/utils';
+import { StateArray } from '../../../store/types.js';
+import { HookDispatcher, HookType } from '../../types.js';
+import { Core } from '../../../core/Core.js';
+import { dispatchHook } from '../index.js';
 
 /**
  * create a scoped state.

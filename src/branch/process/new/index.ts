@@ -1,19 +1,19 @@
-import { getTag } from "../../check/index.js";
-import { createFragmentTemplate } from "../../create/index.js";
+import { getTag } from '../../check/index.js';
+import { createFragmentTemplate } from '../../create/index.js';
 import {
   Branch,
   BranchKey,
   BranchTag,
   BranchTemplate,
   BranchTemplateFunction,
-} from "../../types.js";
-import fn from "../new/function.js";
-import context from "./context.js";
-import element from "./element.js";
-import empty from "./empty.js";
-import fragment from "./fragment.js";
-import outlet from "./outlet.js";
-import text from "./text.js";
+} from '../../types.js';
+import fn from '../new/function.js';
+import context from './context.js';
+import element from './element.js';
+import empty from './empty.js';
+import fragment from './fragment.js';
+import outlet from './outlet.js';
+import text from './text.js';
 
 /**
  * create a brand new branch from a given template
@@ -48,7 +48,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return empty(parent, key);
     }
     default: {
-      throw "Invalid template tag: this error should not happen !!!";
+      throw 'Invalid template tag: this error should not happen !!!';
     }
   }
 };

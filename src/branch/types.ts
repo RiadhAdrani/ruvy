@@ -1,53 +1,53 @@
-import { Callback } from "@riadh-adrani/utils";
-import { CallbackWithArgs } from "../types/index.js";
-import { createFragmentTemplate } from "./create/index.js";
+import { Callback } from '@riadh-adrani/utils';
+import { CallbackWithArgs } from '../types/index.js';
+import { createFragmentTemplate } from './create/index.js';
 
 export enum Namespace {
-  HTML = "http://www.w3.org/1999/xhtml",
-  SVG = "http://www.w3.org/2000/svg",
-  MATH = "http://www.w3.org/1998/Math/MathML",
+  HTML = 'http://www.w3.org/1999/xhtml',
+  SVG = 'http://www.w3.org/2000/svg',
+  MATH = 'http://www.w3.org/1998/Math/MathML',
 }
 
 export enum BranchTag {
-  Function = "#-function-branch",
-  Element = "#-element-branch",
-  Root = "#-root-branch",
-  Fragment = "#-fragment-branch",
-  Text = "#-text-branch",
-  Null = "#-null-branch",
-  Outlet = "#-outlet-branch",
-  Context = "#-context-branch",
+  Function = '#-function-branch',
+  Element = '#-element-branch',
+  Root = '#-root-branch',
+  Fragment = '#-fragment-branch',
+  Text = '#-text-branch',
+  Null = '#-null-branch',
+  Outlet = '#-outlet-branch',
+  Context = '#-context-branch',
 }
 
 export enum HookType {
-  State = "#-use-state",
-  Effect = "#-use-effect",
-  Memo = "#-use-Memo",
-  Ref = "#-use-ref",
-  Context = "#-use-context",
-  Reactive = "#-use-reactive",
-  Promise = "#-use-promise",
+  State = '#-use-state',
+  Effect = '#-use-effect',
+  Memo = '#-use-Memo',
+  Ref = '#-use-ref',
+  Context = '#-use-context',
+  Reactive = '#-use-reactive',
+  Promise = '#-use-promise',
 }
 
 export enum BranchStatus {
-  Mounted = "#-mounted",
-  Mounting = "#-pending",
-  Unmounting = "#-un-mounting",
-  Unmounted = "#-un-mounted",
+  Mounted = '#-mounted',
+  Mounting = '#-pending',
+  Unmounting = '#-un-mounting',
+  Unmounted = '#-un-mounted',
 }
 
-export const BranchSymbol = Symbol.for("#-ruvy-branch");
+export const BranchSymbol = Symbol.for('#-ruvy-branch');
 
 export enum ActionType {
-  Render = "#-action-render-element",
-  Reorder = "#-action-order-elements",
-  Cleanup = "#-action-clean-effect",
-  Effect = "#-action-run-effect",
-  Unmount = "#-action-unmount-element",
-  UpdateProps = "#-action-update-props",
-  UpdateText = "#-action-text-node",
-  Unmounted = "#-action-unmounted",
-  RemoveBranch = "#-action-remove-branch",
+  Render = '#-action-render-element',
+  Reorder = '#-action-order-elements',
+  Cleanup = '#-action-clean-effect',
+  Effect = '#-action-run-effect',
+  Unmount = '#-action-unmount-element',
+  UpdateProps = '#-action-update-props',
+  UpdateText = '#-action-text-node',
+  Unmounted = '#-action-unmounted',
+  RemoveBranch = '#-action-remove-branch',
 }
 
 export const ActionPriority: { [key in ActionType]: number } = (() => {
@@ -92,9 +92,9 @@ export interface UseEffectData {
   pendingCleanUp?: Effect;
 }
 
-export type UseEffectParams = Pick<UseEffectData, "callback" | "deps">;
+export type UseEffectParams = Pick<UseEffectData, 'callback' | 'deps'>;
 
-export type UsePromiseState = "pending" | "refreshing" | "resolved" | "rejected";
+export type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
 
 export type UsePromiseParams<T = unknown> = Callback<Promise<T>>;
 
@@ -161,7 +161,7 @@ export interface Branch<Type = unknown> {
 export interface PropDiff<T = unknown> {
   prop: string;
   value: T;
-  op: "set" | "update" | "remove";
+  op: 'set' | 'update' | 'remove';
   priority: number;
 }
 

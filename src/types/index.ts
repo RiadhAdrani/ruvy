@@ -1,7 +1,10 @@
-import { Arrayable } from "@riadh-adrani/utils";
-import type * as CSS from "csstype";
+import { Arrayable } from '@riadh-adrani/utils';
+import type * as CSS from 'csstype';
+import { RuvyNode } from '../index.js';
 
 export type Any = any;
+
+export type PropsWithChildren<T extends object> = { children?: Array<RuvyNode> } & T;
 
 export type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;
 

@@ -1,9 +1,9 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createFragmentTemplate, createJsxElement } from "../create/index.js";
+import { createFragmentTemplate, createJsxElement } from '../create/index.js';
 
-import { describe, expect, it, vitest } from "vitest";
+import { describe, expect, it, vitest } from 'vitest';
 import {
   getHtmlElementEventListeners,
   getHtmlElementProps,
@@ -17,42 +17,42 @@ import {
   getOutletDepth,
   combineClasses,
   preprocessProps,
-} from "./index.js";
-import { BranchTag, Namespace } from "../types.js";
-import { createElement, injectNode } from "@riadh-adrani/dom-utils";
-import { createTemplate } from "../create/index.js";
-import root from "../process/new/root.js";
-import { Outlet } from "../index.js";
+} from './index.js';
+import { BranchTag, Namespace } from '../types.js';
+import { createElement, injectNode } from '@riadh-adrani/dom-utils';
+import { createTemplate } from '../create/index.js';
+import root from '../process/new/root.js';
+import { Outlet } from '../index.js';
 
 createFragmentTemplate;
 createJsxElement;
 
-describe("utils", () => {
-  describe("getNamespace", () => {
-    it("shoult get namespace from props", () => {
+describe('utils', () => {
+  describe('getNamespace', () => {
+    it('shoult get namespace from props', () => {
       const branch = initBranch({ props: { ns: Namespace.MATH } });
 
       expect(getNamespace(branch)).toBe(Namespace.MATH);
     });
 
-    it("shoult get default namespace", () => {
+    it('shoult get default namespace', () => {
       const branch = initBranch({ props: {} });
 
       expect(getNamespace(branch)).toBe(Namespace.HTML);
     });
   });
 
-  describe("getHtmlElementProps", () => {
-    it("should collect html attributes", () => {
-      const branch = initBranch({ props: { class: "test", id: "test" } });
+  describe('getHtmlElementProps', () => {
+    it('should collect html attributes', () => {
+      const branch = initBranch({ props: { class: 'test', id: 'test' } });
 
       const attributes = getHtmlElementProps(branch);
 
-      expect(attributes).toStrictEqual({ class: "test", id: "test" });
+      expect(attributes).toStrictEqual({ class: 'test', id: 'test' });
     });
 
-    it("should skip ns, children, key and events", () => {
-      const branch = initBranch({ props: { ns: "test", children: [], key: 0, onClick: () => 0 } });
+    it('should skip ns, children, key and events', () => {
+      const branch = initBranch({ props: { ns: 'test', children: [], key: 0, onClick: () => 0 } });
 
       const attributes = getHtmlElementProps(branch);
 
@@ -60,8 +60,8 @@ describe("utils", () => {
     });
   });
 
-  describe("getHtmlElementEventListeners", () => {
-    it("should collect html events", () => {
+  describe('getHtmlElementEventListeners', () => {
+    it('should collect html events', () => {
       const onClick = vitest.fn();
       const onInput = vitest.fn();
 
@@ -72,8 +72,8 @@ describe("utils", () => {
       expect(attributes).toStrictEqual({ onClick, onInput });
     });
 
-    it("should ignore non-functions", () => {
-      const onClick = "test";
+    it('should ignore non-functions', () => {
+      const onClick = 'test';
 
       const branch = initBranch({ props: { onClick } });
 
@@ -83,7 +83,7 @@ describe("utils", () => {
     });
   });
 
-  describe("isHostBranch", () => {
+  describe('isHostBranch', () => {
     it.each([
       [BranchTag.Element, true],
       [BranchTag.Fragment, false],
@@ -91,62 +91,62 @@ describe("utils", () => {
       [BranchTag.Null, false],
       [BranchTag.Root, true],
       [BranchTag.Text, true],
-    ])("should determine if (%s) is host => (%s)", (tag, res) => {
+    ])('should determine if (%s) is host => (%s)', (tag, res) => {
       expect(isHostBranch(initBranch({ tag }))).toBe(res);
     });
   });
 
-  describe("getElementHost", () => {
+  describe('getElementHost', () => {
     const root = initBranch({ tag: BranchTag.Root, type: BranchTag.Root, instance: document.body });
 
-    it("should throw when host is not found", () => {
+    it('should throw when host is not found', () => {
       expect(() => getParentHostBranch(initBranch())).toThrow(
-        "Unable to locate the hosting branch."
+        'Unable to locate the hosting branch.'
       );
     });
 
-    it("should get root as host element", () => {
-      const branch = initBranch({ type: "div", parent: root });
+    it('should get root as host element', () => {
+      const branch = initBranch({ type: 'div', parent: root });
 
       expect(getParentHostBranch(branch).instance).toStrictEqual(document.body);
     });
 
-    it("should get the closest host element", () => {
-      const parentInstance = createElement("div");
+    it('should get the closest host element', () => {
+      const parentInstance = createElement('div');
 
       injectNode(parentInstance, document.body);
 
       const parent = initBranch({
-        type: "div",
+        type: 'div',
         parent: root,
         instance: parentInstance,
         tag: BranchTag.Element,
       });
-      const branch = initBranch({ type: "div", parent });
+      const branch = initBranch({ type: 'div', parent });
 
       expect(getParentHostBranch(branch).instance).toStrictEqual(parentInstance);
     });
   });
 
-  describe("getCorrectKey", () => {
+  describe('getCorrectKey', () => {
     it.each([
-      [createTemplate("div", { key: 1 }, []), 3, 1],
-      [createTemplate("div", {}, []), 1, 1],
-      ["hello", 0, 0],
+      [createTemplate('div', { key: 1 }, []), 3, 1],
+      [createTemplate('div', {}, []), 1, 1],
+      ['hello', 0, 0],
       [null, 0, 0],
-    ])("should get correct key", (template, index, expected) => {
+    ])('should get correct key', (template, index, expected) => {
       expect(getCorrectKey(template, index)).toBe(expected);
     });
   });
 
-  describe("getHostBranchIndexFromHostParent", () => {
+  describe('getHostBranchIndexFromHostParent', () => {
     const Button = () => <button>Hello</button>;
 
     const Container = ({ children }: { children?: Array<unknown> }) => {
       return <>{children}</>;
     };
 
-    it("should get index from direct parent", () => {
+    it('should get index from direct parent', () => {
       const parent = root(document.body, <div />);
 
       const branch = parent.children[0];
@@ -157,7 +157,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index when nested (+1)", () => {
+    it('should get index when nested (+1)', () => {
       const parent = root(
         document.body,
         <Container>
@@ -167,7 +167,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[0];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -175,7 +175,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index when nested (+1) and post branches", () => {
+    it('should get index when nested (+1) and post branches', () => {
       const parent = root(
         document.body,
         <Container>
@@ -186,7 +186,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[0];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -194,7 +194,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index when nested (+1) and offset", () => {
+    it('should get index when nested (+1) and offset', () => {
       const parent = root(
         document.body,
         <Container>
@@ -205,7 +205,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[1];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -213,7 +213,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index when nested (+1) and nested offset", () => {
+    it('should get index when nested (+1) and nested offset', () => {
       const parent = root(
         document.body,
         <Container>
@@ -230,14 +230,14 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[2];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
         index: 5,
       });
     });
-    it("should get index when nested (+1) and nested offset", () => {
+    it('should get index when nested (+1) and nested offset', () => {
       const parent = root(
         document.body,
         <Container>
@@ -254,7 +254,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[2];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -262,7 +262,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index when nested (+2) and nested offset", () => {
+    it('should get index when nested (+2) and nested offset', () => {
       const parent = root(
         document.body,
         <Container>
@@ -281,7 +281,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[2].children[0];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -289,7 +289,7 @@ describe("utils", () => {
       });
     });
 
-    it("should get index from correct parent host", () => {
+    it('should get index from correct parent host', () => {
       const parent = root(
         document.body,
         <Container>
@@ -308,7 +308,7 @@ describe("utils", () => {
 
       const branch = parent.children[0].children[0].children[2].children[0];
 
-      expect(branch.type).toBe("button");
+      expect(branch.type).toBe('button');
 
       expect(getHostBranchIndexFromHostParent(branch, undefined)).toStrictEqual({
         found: true,
@@ -317,8 +317,8 @@ describe("utils", () => {
     });
   });
 
-  describe("getClosestHostBranches", () => {
-    it("should get host branch directly", () => {
+  describe('getClosestHostBranches', () => {
+    it('should get host branch directly', () => {
       const parent = root(document.body, <div></div>);
 
       const branch = parent.children[0];
@@ -326,7 +326,7 @@ describe("utils", () => {
       expect(getClosestHostBranches(branch)).toStrictEqual([branch]);
     });
 
-    it("should get host branch directly nested", () => {
+    it('should get host branch directly nested', () => {
       const parent = root(
         document.body,
         <>
@@ -336,10 +336,10 @@ describe("utils", () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual(["div"]);
+      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual(['div']);
     });
 
-    it("should get host branch nested (1)", () => {
+    it('should get host branch nested (1)', () => {
       const parent = root(
         document.body,
         <>
@@ -354,13 +354,13 @@ describe("utils", () => {
       const branch = parent.children[0];
 
       expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
-        "div",
-        "div1",
-        "div2",
+        'div',
+        'div1',
+        'div2',
       ]);
     });
 
-    it("should get host branch nested (2)", () => {
+    it('should get host branch nested (2)', () => {
       const parent = root(
         document.body,
         <>
@@ -383,17 +383,17 @@ describe("utils", () => {
       const branch = parent.children[0];
 
       expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
-        "div",
-        "div1",
-        "div2",
-        "div3",
-        "div4",
+        'div',
+        'div1',
+        'div2',
+        'div3',
+        'div4',
       ]);
     });
   });
 
-  describe("getOutletDepth", () => {
-    it("should return 1 when parent is undefined", () => {
+  describe('getOutletDepth', () => {
+    it('should return 1 when parent is undefined', () => {
       const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet });
 
       const depth = getOutletDepth(outlet);
@@ -401,7 +401,7 @@ describe("utils", () => {
       expect(depth).toBe(1);
     });
 
-    it("should return 0 : parent > outlet", () => {
+    it('should return 0 : parent > outlet', () => {
       const parent = initBranch();
       const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent });
 
@@ -410,7 +410,7 @@ describe("utils", () => {
       expect(depth).toBe(1);
     });
 
-    it("should return 2 : root > parent > outlet", () => {
+    it('should return 2 : root > parent > outlet', () => {
       const root = initBranch();
       const parent = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent: root });
       const outlet = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent });
@@ -420,7 +420,7 @@ describe("utils", () => {
       expect(depth).toBe(2);
     });
 
-    it("should return 2 : root > outlet > wrapper > outlet", () => {
+    it('should return 2 : root > outlet > wrapper > outlet', () => {
       const root = initBranch();
       const parent = initBranch({ type: Outlet, tag: BranchTag.Outlet, parent: root });
       const outletWrapper = initBranch({ parent });
@@ -432,36 +432,36 @@ describe("utils", () => {
     });
   });
 
-  describe("combineClasses", () => {
-    it("should join strings", () => {
-      expect(combineClasses("test-1", "test-2")).toBe("test-1 test-2");
+  describe('combineClasses', () => {
+    it('should join strings', () => {
+      expect(combineClasses('test-1', 'test-2')).toBe('test-1 test-2');
     });
 
-    it("should join array and string", () => {
-      expect(combineClasses(["test-1", "test-3"], "test-2")).toBe("test-1 test-3 test-2");
+    it('should join array and string', () => {
+      expect(combineClasses(['test-1', 'test-3'], 'test-2')).toBe('test-1 test-3 test-2');
     });
   });
 
-  describe("preprocessProps", () => {
-    it("should transform and remove props with prefix [:class]", () => {
-      expect(preprocessProps({ "class:test": true })).toStrictEqual({ class: "test" });
+  describe('preprocessProps', () => {
+    it('should transform and remove props with prefix [:class]', () => {
+      expect(preprocessProps({ 'class:test': true })).toStrictEqual({ class: 'test' });
     });
 
-    it("should ignore props with [:class] prefix when their value is not true", () => {
-      expect(preprocessProps({ "class:test": false })).toStrictEqual({});
-      expect(preprocessProps({ "class:test": 1 })).toStrictEqual({});
+    it('should ignore props with [:class] prefix when their value is not true', () => {
+      expect(preprocessProps({ 'class:test': false })).toStrictEqual({});
+      expect(preprocessProps({ 'class:test': 1 })).toStrictEqual({});
     });
 
-    it("should ignore prop [:class]", () => {
-      expect(preprocessProps({ "class:": false })).toStrictEqual({});
-      expect(preprocessProps({ "class:  ": false })).toStrictEqual({});
+    it('should ignore prop [:class]', () => {
+      expect(preprocessProps({ 'class:': false })).toStrictEqual({});
+      expect(preprocessProps({ 'class:  ': false })).toStrictEqual({});
     });
 
-    it("should combine classnames", () => {
+    it('should combine classnames', () => {
       expect(
-        preprocessProps({ "class:test": true, "class:done": true, class: "tester" })
+        preprocessProps({ 'class:test': true, 'class:done': true, class: 'tester' })
       ).toStrictEqual({
-        class: "tester test done",
+        class: 'tester test done',
       });
     });
   });

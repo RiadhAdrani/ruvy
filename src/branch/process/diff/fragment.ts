@@ -1,4 +1,4 @@
-import { BranchTemplateFragment } from "../../types.js";
+import { BranchTemplateFragment } from '../../types.js';
 
 /**
  * diff fragment branches

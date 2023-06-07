@@ -1,92 +1,92 @@
-import { flatten } from "../utils/index.js";
-import { describe, it, expect } from "vitest";
-import type { RawRoute } from "../types.js";
+import { flatten } from '../utils/index.js';
+import { describe, it, expect } from 'vitest';
+import type { RawRoute } from '../types.js';
 
-describe("flatten", () => {
-  it("should throw when input is not an array", () => {
+describe('flatten', () => {
+  it('should throw when input is not an array', () => {
     expect(() => flatten(0 as unknown as Array<RawRoute>)).toThrow();
   });
 
-  it("should throw when a path is blank", () => {
-    expect(() => flatten([{ path: "", component: "" }])).toThrow();
+  it('should throw when a path is blank', () => {
+    expect(() => flatten([{ path: '', component: '' }])).toThrow();
   });
 
-  it("should flatten an array of raw routes", () => {
+  it('should flatten an array of raw routes', () => {
     const routes: Array<RawRoute> = [
-      { path: "/", title: "Home", component: "" },
-      { path: "test-2", title: "Test 2", component: "component" },
-      { path: "test", title: "Test", redirectTo: "/test-2", component: "" },
+      { path: '/', title: 'Home', component: '' },
+      { path: 'test-2', title: 'Test 2', component: 'component' },
+      { path: 'test', title: 'Test', redirectTo: '/test-2', component: '' },
     ];
 
     expect(flatten(routes)).toStrictEqual({
-      "/": {
-        path: "/",
+      '/': {
+        path: '/',
         fragments: [],
-        title: "Home",
+        title: 'Home',
         isDynamic: false,
-        component: "",
+        component: '',
       },
-      "/test-2": {
-        path: "/test-2",
-        fragments: ["test-2"],
-        title: "Test 2",
+      '/test-2': {
+        path: '/test-2',
+        fragments: ['test-2'],
+        title: 'Test 2',
         isDynamic: false,
-        component: "component",
+        component: 'component',
       },
-      "/test": {
-        path: "/test",
-        fragments: ["test"],
-        title: "Test",
-        redirectTo: "/test-2",
+      '/test': {
+        path: '/test',
+        fragments: ['test'],
+        title: 'Test',
+        redirectTo: '/test-2',
         isDynamic: false,
-        component: "",
+        component: '',
       },
     });
   });
 
-  it("should flatten routes recursively", () => {
+  it('should flatten routes recursively', () => {
     const routes: Array<RawRoute> = [
       {
-        path: "/",
-        component: "",
+        path: '/',
+        component: '',
         routes: [
-          { path: "main", component: "" },
-          { path: "user", component: "", routes: [{ path: ":id", component: "" }] },
+          { path: 'main', component: '' },
+          { path: 'user', component: '', routes: [{ path: ':id', component: '' }] },
         ],
       },
-      { path: "*", component: "" },
+      { path: '*', component: '' },
     ];
 
     expect(flatten(routes)).toStrictEqual({
-      "/": {
-        path: "/",
+      '/': {
+        path: '/',
         fragments: [],
         isDynamic: false,
-        component: "",
+        component: '',
       },
-      "/*": {
-        path: "/*",
-        fragments: ["*"],
+      '/*': {
+        path: '/*',
+        fragments: ['*'],
         isDynamic: false,
-        component: "",
+        component: '',
       },
-      "/main": {
-        path: "/main",
-        fragments: ["main"],
+      '/main': {
+        path: '/main',
+        fragments: ['main'],
         isDynamic: false,
-        component: "",
+        component: '',
       },
-      "/user": {
-        path: "/user",
-        fragments: ["user"],
+      '/user': {
+        path: '/user',
+        fragments: ['user'],
         isDynamic: false,
-        component: "",
+        component: '',
       },
-      "/user/:id": {
-        path: "/user/:id",
-        fragments: ["user", ":id"],
+      '/user/:id': {
+        path: '/user/:id',
+        fragments: ['user', ':id'],
         isDynamic: true,
-        component: "",
+        component: '',
       },
     });
   });

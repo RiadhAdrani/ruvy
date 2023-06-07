@@ -13,7 +13,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "semi": ["error", "always"]
   }
 }

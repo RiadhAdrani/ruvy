@@ -1,5 +1,5 @@
-import { Branch, BranchKey, BranchStatus, BranchTag } from "../../types.js";
-import { initBranch } from "../../utils/index.js";
+import { Branch, BranchKey, BranchStatus, BranchTag } from '../../types.js';
+import { initBranch } from '../../utils/index.js';
 
 /**
  * create a nullish branch.

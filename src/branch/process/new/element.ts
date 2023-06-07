@@ -1,8 +1,8 @@
-import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from "../../types.js";
-import { initBranch, postprocessProps, preprocessProps } from "../../utils/index.js";
-import { collectPendingEffect } from "../common/index.js";
-import process from "../index.js";
-import createAction from "../actions/index.js";
+import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from '../../types.js';
+import { initBranch, postprocessProps, preprocessProps } from '../../utils/index.js';
+import { collectPendingEffect } from '../common/index.js';
+import process from '../index.js';
+import createAction from '../actions/index.js';
 
 /**
  * create a new branch element from a template.

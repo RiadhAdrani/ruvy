@@ -1,23 +1,23 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
+import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
 
-import { beforeEach, describe, expect, it } from "vitest";
-import root from "../new/root.js";
-import element from "../new/element.js";
-import { collectActions, commit } from "../common/index.js";
-import createReorderHostElement from "./reorderElement.js";
+import { beforeEach, describe, expect, it } from 'vitest';
+import root from '../new/root.js';
+import element from '../new/element.js';
+import { collectActions, commit } from '../common/index.js';
+import createReorderHostElement from './reorderElement.js';
 
 createFragmentTemplate;
 createJsxElement;
 
-describe("createReorderHostElement", () => {
+describe('createReorderHostElement', () => {
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
   });
 
-  it("should reorder branch instance", () => {
+  it('should reorder branch instance', () => {
     const parent = root(document.body, null);
 
     const div = (
@@ -31,7 +31,7 @@ describe("createReorderHostElement", () => {
     const branch = element(div, parent, 0);
     commit(collectActions(branch));
 
-    expect(document.body.innerHTML).toBe("<div><input><input><button></button></div>");
+    expect(document.body.innerHTML).toBe('<div><input><input><button></button></div>');
 
     const child1 = branch.children[0];
     const child2 = branch.children[1];
@@ -40,10 +40,10 @@ describe("createReorderHostElement", () => {
     branch.children = [child3, child1, child2];
 
     createReorderHostElement(child3)();
-    expect(document.body.innerHTML).toBe("<div><button></button><input><input></div>");
+    expect(document.body.innerHTML).toBe('<div><button></button><input><input></div>');
   });
 
-  it("should reorder branch instance even when nested", () => {
+  it('should reorder branch instance even when nested', () => {
     const parent = root(document.body, null);
 
     const div = (
@@ -59,7 +59,7 @@ describe("createReorderHostElement", () => {
     const branch = element(div, parent, 0);
     commit(collectActions(branch));
 
-    expect(document.body.innerHTML).toBe("<div><input><input><button></button></div>");
+    expect(document.body.innerHTML).toBe('<div><input><input><button></button></div>');
 
     const child1 = branch.children[0];
     const child2 = branch.children[1];
@@ -68,6 +68,6 @@ describe("createReorderHostElement", () => {
     branch.children = [child3, child1, child2];
 
     createReorderHostElement(child3.children[0])();
-    expect(document.body.innerHTML).toBe("<div><button></button><input><input></div>");
+    expect(document.body.innerHTML).toBe('<div><button></button><input><input></div>');
   });
 });

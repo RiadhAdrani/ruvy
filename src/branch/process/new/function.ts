@@ -1,9 +1,9 @@
-import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from "../../types.js";
-import { useHooksContext } from "../../hooks/index.js";
-import { collectPendingEffect } from "../common/index.js";
-import process from "../index.js";
-import { getTag } from "../../check/index.js";
-import { initBranch } from "../../utils/index.js";
+import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from '../../types.js';
+import { useHooksContext } from '../../hooks/index.js';
+import { collectPendingEffect } from '../common/index.js';
+import process from '../index.js';
+import { getTag } from '../../check/index.js';
+import { initBranch } from '../../utils/index.js';
 
 /**
  * create a function branch from a template.

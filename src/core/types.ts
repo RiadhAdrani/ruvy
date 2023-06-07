@@ -1,4 +1,4 @@
-import { Callback } from "@riadh-adrani/utils";
+import { Callback } from '@riadh-adrani/utils';
 
 export interface MountParams {
   hostElement: HTMLElement;

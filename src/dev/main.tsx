@@ -1,14 +1,14 @@
-import { createRouter, mountApp } from "../index.js";
+import { createRouter, mountApp } from '../index.js';
 
 createRouter(
   [
     {
       component: <div>Home</div>,
-      path: "/",
+      path: '/',
     },
     {
       component: <div>You</div>,
-      path: "/you",
+      path: '/you',
     },
   ],
   {}
@@ -64,5 +64,5 @@ const App = () => {
 
 mountApp({
   callback: App,
-  hostElement: document.getElementById("app") as HTMLElement,
+  hostElement: document.getElementById('app') as HTMLElement,
 });

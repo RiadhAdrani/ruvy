@@ -1,7 +1,7 @@
-import { collectEffects, unmountEffects } from "../../hooks/index.js";
-import { ActionPriority, ActionType, Branch, BranchAction, BranchStatus } from "../../types.js";
-import { isHostBranch } from "../../utils/index.js";
-import createAction from "../actions/index.js";
+import { collectEffects, unmountEffects } from '../../hooks/index.js';
+import { ActionPriority, ActionType, Branch, BranchAction, BranchStatus } from '../../types.js';
+import { isHostBranch } from '../../utils/index.js';
+import createAction from '../actions/index.js';
 
 export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
   const out: Array<BranchAction> = [];

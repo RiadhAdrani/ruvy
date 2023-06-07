@@ -1,7 +1,7 @@
-import { areEqual, forEachKey, hasProperty } from "@riadh-adrani/utils";
-import { ActionType, Branch, BranchTemplate, PropDiff } from "../../types.js";
-import { IgnoredProps, assignRef, preprocessProps } from "../../utils/index.js";
-import createAction from "../actions/index.js";
+import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
+import { ActionType, Branch, BranchTemplate, PropDiff } from '../../types.js';
+import { IgnoredProps, assignRef, preprocessProps } from '../../utils/index.js';
+import createAction from '../actions/index.js';
 
 /**
  * creates a diffing array for two element props
@@ -25,12 +25,12 @@ export const diffElementProps = (
     if (hasProperty(newProps, key)) {
       // if it is not in old we add it
       if (!hasProperty(oldProps, key)) {
-        out.push({ op: "set", priority: 1, prop: key, value });
+        out.push({ op: 'set', priority: 1, prop: key, value });
       } else if (!areEqual(oldProps[key], newProps[key])) {
-        out.push({ op: "update", priority: 1, prop: key, value });
+        out.push({ op: 'update', priority: 1, prop: key, value });
       }
     } else {
-      out.push({ op: "remove", priority: 1, prop: key, value });
+      out.push({ op: 'remove', priority: 1, prop: key, value });
     }
   }, combined);
 

@@ -1,5 +1,5 @@
-import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from "../../types.js";
-import createAction from "../actions/index.js";
+import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from '../../types.js';
+import createAction from '../actions/index.js';
 
 /**
  * create new text branch from data.

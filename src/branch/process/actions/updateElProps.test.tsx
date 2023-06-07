@@ -1,22 +1,22 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from "../../create/index.js";
-import { beforeEach, describe, expect, it, vitest } from "vitest";
-import element from "../new/element.js";
-import root from "../new/root.js";
-import createRenderAction from "./render.js";
-import { diffElementProps } from "../diff/element.js";
-import createElPropsUpdateAction from "./updateElProps.js";
-import { cast } from "@riadh-adrani/utils";
+import { createJsxElement } from '../../create/index.js';
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import element from '../new/element.js';
+import root from '../new/root.js';
+import createRenderAction from './render.js';
+import { diffElementProps } from '../diff/element.js';
+import createElPropsUpdateAction from './updateElProps.js';
+import { cast } from '@riadh-adrani/utils';
 
 createJsxElement;
 
-describe("updateElProps", () => {
+describe('updateElProps', () => {
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
   });
 
-  it("should update attribute", () => {
+  it('should update attribute', () => {
     const parent = root(document.body, null);
 
     const div = element(<div class="test" />, parent, 0);
@@ -31,13 +31,13 @@ describe("updateElProps", () => {
     expect(document.body.innerHTML).toBe(`<div class="test-2"></div>`);
   });
 
-  it("should add attribute", () => {
+  it('should add attribute', () => {
     const parent = root(document.body, null);
 
     const div = element(<div />, parent, 0);
     createRenderAction(div)();
 
-    expect(document.body.innerHTML).toBe("<div></div>");
+    expect(document.body.innerHTML).toBe('<div></div>');
 
     const div2 = element(<div class="test" />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
@@ -46,7 +46,7 @@ describe("updateElProps", () => {
     expect(document.body.innerHTML).toBe(`<div class="test"></div>`);
   });
 
-  it("should remove an attribute", () => {
+  it('should remove an attribute', () => {
     const parent = root(document.body, null);
 
     const div = element(<div class="test" />, parent, 0);
@@ -58,10 +58,10 @@ describe("updateElProps", () => {
     const diffs = diffElementProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
-    expect(document.body.innerHTML).toBe("<div></div>");
+    expect(document.body.innerHTML).toBe('<div></div>');
   });
 
-  it("should add event", () => {
+  it('should add event', () => {
     const parent = root(document.body, null);
 
     const onClick = vitest.fn();
@@ -79,7 +79,7 @@ describe("updateElProps", () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
-  it("should update event", () => {
+  it('should update event', () => {
     const parent = root(document.body, null);
 
     const onClick = vitest.fn();
@@ -99,7 +99,7 @@ describe("updateElProps", () => {
     expect(onClick2).toHaveBeenCalledOnce();
   });
 
-  it("should remove event", () => {
+  it('should remove event', () => {
     const parent = root(document.body, null);
 
     const onClick = vitest.fn();

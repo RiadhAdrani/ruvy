@@ -7,7 +7,7 @@ import {
   isBlank,
   isFunction,
   merge,
-} from "@riadh-adrani/utils";
+} from '@riadh-adrani/utils';
 import {
   Branch,
   BranchKey,
@@ -17,10 +17,10 @@ import {
   BranchTemplate,
   Namespace,
   UseRefData,
-} from "../types.js";
-import { DomAttribute, DomEventHandler, isOnEventName } from "@riadh-adrani/dom-utils";
-import { isValidTemplate } from "../check/index.js";
-import { Outlet } from "../index.js";
+} from '../types.js';
+import { DomAttribute, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
+import { isValidTemplate } from '../check/index.js';
+import { Outlet } from '../index.js';
 
 export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {
@@ -55,7 +55,7 @@ export const getNamespace = (branch: Branch): Namespace => {
 /**
  * Ignored props, which should not be rendered into the DOM.
  */
-export const IgnoredProps = ["ns", "children", "key", "ref"];
+export const IgnoredProps = ['ns', 'children', 'key', 'ref'];
 
 /**
  * create an object of html attributes from the branch props.
@@ -111,7 +111,7 @@ export const getParentHostBranch = (branch: Branch): Branch => {
 
     return getParentHostBranch(branch.parent);
   } else {
-    throw "Unable to locate the hosting branch.";
+    throw 'Unable to locate the hosting branch.';
   }
 };
 
@@ -194,8 +194,8 @@ export const getClosestHostBranches = (branch: Branch): Array<Branch> => {
 };
 
 export const assignRef = (branch: Branch, props: Record<string, unknown>): void => {
-  if (hasProperty(props, "ref")) {
-    (props["ref"] as UseRefData<Node | undefined>).value = branch.instance;
+  if (hasProperty(props, 'ref')) {
+    (props['ref'] as UseRefData<Node | undefined>).value = branch.instance;
   }
 };
 
@@ -223,12 +223,12 @@ export const getOutletDepth = (branch: Branch): number => {
  * @param className new class name
  */
 export const combineClasses = (current: Arrayable<string>, className: string): string => {
-  current = isArray(current) ? (current as Array<string>).join(" ") : current;
+  current = isArray(current) ? (current as Array<string>).join(' ') : current;
 
   return `${current} ${className}`;
 };
 
-const CLASS_PREFIX = "class:";
+const CLASS_PREFIX = 'class:';
 
 /**
  * preprocess props
@@ -248,9 +248,9 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
 
         // check if it is not empty
         if (!isBlank(newClassName)) {
-          if (hasProperty(props, "class")) {
+          if (hasProperty(props, 'class')) {
             props.class = combineClasses(props.class as Arrayable<string>, newClassName);
-          } else if (hasProperty(initial, "class")) {
+          } else if (hasProperty(initial, 'class')) {
             initial.class = combineClasses(initial.class as Arrayable<string>, newClassName);
           } else {
             props.class = newClassName;
@@ -293,7 +293,7 @@ export const findParentWith = (
 export const postprocessProps = (branch: Branch): void => {
   // if branch type is svg, we change the namespace to SVG
   // if not, we search for the closest svg namespaced parent
-  if (branch.type === "svg" || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
+  if (branch.type === 'svg' || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
     branch.props.ns = Namespace.SVG;
   }
 };

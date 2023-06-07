@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { createId, getStore, removeId } from "./useId.js";
+import { describe, expect, it } from 'vitest';
+import { createId, getStore, removeId } from './useId.js';
 
-describe("useId", () => {
-  it("should generate id with given length", () => {
+describe('useId', () => {
+  it('should generate id with given length', () => {
     const id = createId(5);
 
     expect(id.length).toBe(5);
@@ -10,7 +10,7 @@ describe("useId", () => {
     removeId(id);
   });
 
-  it("should remove id", () => {
+  it('should remove id', () => {
     const id = createId(5);
 
     expect(id.length).toBe(5);
@@ -20,7 +20,7 @@ describe("useId", () => {
     expect(getStore()).toStrictEqual({});
   });
 
-  it("should generate different id", () => {
+  it('should generate different id', () => {
     const id1 = createId(5);
     const id2 = createId(5);
 

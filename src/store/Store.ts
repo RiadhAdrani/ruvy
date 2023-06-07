@@ -1,10 +1,10 @@
-import { copy, forEachKey, hasProperty } from "@riadh-adrani/utils";
+import { copy, forEachKey, hasProperty } from '@riadh-adrani/utils';
 import {
   EffectCallback,
   StateArray,
   StoreEffectsCollection,
   StoreItemsCollection,
-} from "./types.js";
+} from './types.js';
 
 export default class Store {
   items: Record<string, StoreItemsCollection> = {};

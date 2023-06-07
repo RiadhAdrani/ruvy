@@ -1,8 +1,8 @@
-import { Branch, BranchKey, BranchTag, BranchTemplateFragment } from "../../types.js";
-import { useHooksContext } from "../../hooks/index.js";
-import { collectPendingEffect } from "../common/index.js";
-import process from "../index.js";
-import { initBranch } from "../../utils/index.js";
+import { Branch, BranchKey, BranchTag, BranchTemplateFragment } from '../../types.js';
+import { useHooksContext } from '../../hooks/index.js';
+import { collectPendingEffect } from '../common/index.js';
+import process from '../index.js';
+import { initBranch } from '../../utils/index.js';
 
 /**
  * create a new fragment branch from a template.

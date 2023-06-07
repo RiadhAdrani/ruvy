@@ -1,7 +1,7 @@
-import { Callback } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, UseRefData } from "../../types.js";
-import { isHostBranch } from "../../utils/index.js";
-import { removeNode } from "@riadh-adrani/dom-utils";
+import { Callback } from '@riadh-adrani/utils';
+import { Branch, BranchStatus, UseRefData } from '../../types.js';
+import { isHostBranch } from '../../utils/index.js';
+import { removeNode } from '@riadh-adrani/dom-utils';
 
 /**
  * create an unmount action callback
@@ -12,7 +12,7 @@ const createUnmountAction =
   () => {
     // check if branch tag is Text or Element
     if (!isHostBranch(branch)) {
-      throw "Cannot unmount a non-host branch.";
+      throw 'Cannot unmount a non-host branch.';
     }
 
     removeNode(branch.instance as Element);

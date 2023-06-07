@@ -1,23 +1,23 @@
 /** @jsx createJsxElement */
 
-import { describe, expect, beforeEach, it } from "vitest";
-import { createJsxElement } from "../../create/index.js";
-import { Core, createRouter } from "../../../core/index.js";
-import { Outlet } from "../../index.js";
-import { initBranch } from "../../utils/index.js";
-import outlet from "./outlet.js";
-import { BranchTag } from "../../types.js";
+import { describe, expect, beforeEach, it } from 'vitest';
+import { createJsxElement } from '../../create/index.js';
+import { Core, createRouter } from '../../../core/index.js';
+import { Outlet } from '../../index.js';
+import { initBranch } from '../../utils/index.js';
+import outlet from './outlet.js';
+import { BranchTag } from '../../types.js';
 
 createJsxElement;
 
-describe("new.outlet", () => {
+describe('new.outlet', () => {
   beforeEach(() => {
     new Core();
 
-    createRouter([{ path: "/", component: "root element" }], {});
+    createRouter([{ path: '/', component: 'root element' }], {});
   });
 
-  it("should return nothing", () => {
+  it('should return nothing', () => {
     new Core();
 
     const parent = initBranch();
@@ -30,7 +30,7 @@ describe("new.outlet", () => {
     expect(branch.children[0].tag).toBe(BranchTag.Null);
   });
 
-  it("should return root element", () => {
+  it('should return root element', () => {
     const parent = initBranch();
     const branch = outlet(<Outlet />, parent, 0);
 
@@ -39,6 +39,6 @@ describe("new.outlet", () => {
 
     expect(branch.children.length).toBe(1);
     expect(branch.children[0].tag).toBe(BranchTag.Text);
-    expect(branch.children[0].text).toBe("root element");
+    expect(branch.children[0].text).toBe('root element');
   });
 });

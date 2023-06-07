@@ -1,16 +1,16 @@
-import { isElement, setEvent } from "@riadh-adrani/dom-utils";
-import { isFunction, Callback } from "@riadh-adrani/utils";
-import { Context } from "../context/index.js";
-import { Router, RouterParams, RawRoute } from "../router/index.js";
-import { Scheduler } from "../scheduler/index.js";
+import { isElement, setEvent } from '@riadh-adrani/dom-utils';
+import { isFunction, Callback } from '@riadh-adrani/utils';
+import { Context } from '../context/index.js';
+import { Router, RouterParams, RawRoute } from '../router/index.js';
+import { Scheduler } from '../scheduler/index.js';
 import {
   createEffectCollection,
   createStateCollection,
   Store,
   StateArray,
-} from "../store/index.js";
-import { MountParams } from "./types.js";
-import { getClosestAnchorParent } from "./utils/index.js";
+} from '../store/index.js';
+import { MountParams } from './types.js';
+import { getClosestAnchorParent } from './utils/index.js';
 import {
   createFragmentTemplate,
   createJsxElement,
@@ -21,8 +21,8 @@ import {
   commit,
   process,
   createRoot,
-} from "../branch/index.js";
-import { DOMEvent } from "../types/index.js";
+} from '../branch/index.js';
+import { DOMEvent } from '../types/index.js';
 
 export class Core {
   static singleton: Core = new Core();
@@ -42,7 +42,7 @@ export class Core {
   constructor() {
     this.store.createItemsStore(() =>
       createStateCollection(this.store, {
-        name: "state",
+        name: 'state',
         checkEqual: true,
         forceSet: false,
         keepUnused: false,
@@ -52,7 +52,7 @@ export class Core {
 
     this.store.createEffectsStore(() =>
       createEffectCollection(this.store, {
-        name: "effect",
+        name: 'effect',
         keepUnused: false,
       })
     );
@@ -62,11 +62,11 @@ export class Core {
 
   executeRoutine(isUpdate = true) {
     if (!isFunction(this.fn)) {
-      throw "Unexpected Type: app callback is not a function.";
+      throw 'Unexpected Type: app callback is not a function.';
     }
 
     if (!isElement(this.host)) {
-      throw "Unexpected Type: host element is not a Dom element.";
+      throw 'Unexpected Type: host element is not a Dom element.';
     }
 
     const template = createTemplate(this.fn, {}, []);
@@ -99,7 +99,7 @@ export class Core {
     this.scheduler.schedule({
       date: Date.now(),
       id: `${Date.now()}`,
-      type: "update",
+      type: 'update',
       callback: () => {
         this.executeRoutine();
       },
@@ -108,14 +108,14 @@ export class Core {
 }
 
 setEvent(
-  "onClick",
+  'onClick',
   e => {
     const ev = e as unknown as DOMEvent<MouseEvent>;
 
     const anchorEl = getClosestAnchorParent(ev.target);
 
     if (anchorEl) {
-      const path: string | null = anchorEl.getAttribute("href");
+      const path: string | null = anchorEl.getAttribute('href');
 
       if (path && Core.singleton.router.isNavigatable(path)) {
         navigate(path);
@@ -133,7 +133,7 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
   Core.singleton.scheduler.schedule({
     date: Date.now(),
     id: Date.now().toString(),
-    type: "render",
+    type: 'render',
     callback: () => {
       Core.singleton.executeRoutine(false);
       Core.singleton.router?.updateTitle();
@@ -143,7 +143,7 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
 
 export const createRouter = (
   routes: Array<RawRoute<RuvyNode>>,
-  config: Omit<RouterParams, "onStateChange">
+  config: Omit<RouterParams, 'onStateChange'>
 ) => {
   Core.singleton.router = new Router(routes, {
     ...config,
@@ -154,7 +154,7 @@ export const createRouter = (
 };
 
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
-  return Core.singleton.store.setItem<T>("state", key, value);
+  return Core.singleton.store.setItem<T>('state', key, value);
 };
 
 export const setEffect = (
@@ -162,7 +162,7 @@ export const setEffect = (
   key: string,
   dependencies: unknown = undefined
 ): void => {
-  Core.singleton.store.setEffect("effect", key, callback, dependencies);
+  Core.singleton.store.setEffect('effect', key, callback, dependencies);
 };
 
 export const navigate = (path: string) => {
@@ -173,8 +173,23 @@ export const replace = (path: string) => {
   Core.singleton.router.replace(path);
 };
 
+interface QueryParams {
+  [key: string]: string | undefined;
+}
+
 export const getParams = <T = Record<string, string>>() => {
   return Core.singleton.router.params as T;
+};
+
+export const getSearchQuery = <T extends QueryParams>(): T => {
+  const queryParams: T = {} as T;
+  const searchParams = new URLSearchParams(window.location.search);
+
+  searchParams.forEach((value, key) => {
+    (queryParams as Record<string, string>)[key] = value;
+  });
+
+  return queryParams;
 };
 
 const win = window as unknown as Record<string, unknown>;

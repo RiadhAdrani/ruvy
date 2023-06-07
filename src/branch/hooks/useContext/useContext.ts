@@ -1,5 +1,5 @@
-import { areEqual } from "@riadh-adrani/utils";
-import { createTemplate } from "../../create/index.js";
+import { areEqual } from '@riadh-adrani/utils';
+import { createTemplate } from '../../create/index.js';
 import {
   Branch,
   BranchTag,
@@ -7,10 +7,10 @@ import {
   ContextObject,
   HookDispatcher,
   HookType,
-} from "../../types.js";
-import { Any } from "../../../types/index.js";
-import { dispatchHook } from "../index.js";
-import { findParentWith } from "../../utils/index.js";
+} from '../../types.js';
+import { Any } from '../../../types/index.js';
+import { dispatchHook } from '../index.js';
+import { findParentWith } from '../../utils/index.js';
 
 /**
  * create a `Context Object` with a `Provider`
@@ -83,7 +83,7 @@ export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown>
 
   // throw if not found
   if (!contextBranch) {
-    throw "Unexpected State: useContext used outside of Context";
+    throw 'Unexpected State: useContext used outside of Context';
   }
 
   return contextBranch.props.value;

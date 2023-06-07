@@ -1,8 +1,8 @@
-import { Callback, ReactiveArray, cast, forEachKey, isArray, isObject } from "@riadh-adrani/utils";
-import { HookDispatcher, HookType } from "../../types.js";
-import { Core } from "../../../core/index.js";
-import { Any } from "../../../types/index.js";
-import { dispatchHook } from "../index.js";
+import { Callback, ReactiveArray, cast, forEachKey, isArray, isObject } from '@riadh-adrani/utils';
+import { HookDispatcher, HookType } from '../../types.js';
+import { Core } from '../../../core/index.js';
+import { Any } from '../../../types/index.js';
+import { dispatchHook } from '../index.js';
 
 export const useReactive = <T extends object>(value: T): T => {
   return dispatchHook<T>(HookType.Reactive, value);

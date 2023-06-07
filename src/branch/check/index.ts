@@ -11,11 +11,11 @@ import {
   isObject,
   isString,
   isUndefined,
-} from "@riadh-adrani/utils";
-import { Branch, BranchSymbol, BranchTag, BranchTemplate } from "../types.js";
-import { createFragmentTemplate } from "../create/index.js";
-import { getCorrectKey } from "../utils/index.js";
-import { Outlet } from "../index.js";
+} from '@riadh-adrani/utils';
+import { Branch, BranchSymbol, BranchTag, BranchTemplate } from '../types.js';
+import { createFragmentTemplate } from '../create/index.js';
+import { getCorrectKey } from '../utils/index.js';
+import { Outlet } from '../index.js';
 
 /**
  * checks if the given is a valid component template
@@ -29,7 +29,7 @@ export const isValidTemplate = (o: unknown): boolean => {
   const temp = cast<Record<string, unknown>>(o);
 
   if (
-    !hasProperty(temp, "type") ||
+    !hasProperty(temp, 'type') ||
     !isDefined(temp.type) ||
     (!isFunction(temp.type) && isBlank(temp.type as string))
   ) {

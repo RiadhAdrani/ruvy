@@ -1,12 +1,12 @@
-import { useEffect, useState } from "../index.js";
+import { useEffect, useState } from '../index.js';
 
 const store: Record<string, string> = {};
 
 export const getStore = () => store;
 
 const generateUniqueId = (length: number): string => {
-  const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
-  let id = "";
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
+  let id = '';
 
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);

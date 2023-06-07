@@ -1,21 +1,21 @@
-import { describe, expect, it } from "vitest";
-import { createContext, useContext } from "./useContext.js";
-import { BranchSymbol, BranchTag, BranchTemplate } from "../../types.js";
-import { process } from "../../index.js";
-import { initBranch } from "../../utils/index.js";
-import { createJsxElement, createFragmentTemplate } from "../../create/index.js";
+import { describe, expect, it } from 'vitest';
+import { createContext, useContext } from './useContext.js';
+import { BranchSymbol, BranchTag, BranchTemplate } from '../../types.js';
+import { process } from '../../index.js';
+import { initBranch } from '../../utils/index.js';
+import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
 
 createFragmentTemplate;
 createJsxElement;
 
-describe("useContext", () => {
+describe('useContext', () => {
   const TestContext = createContext<{ hello?: string }>({});
 
-  it("should create a context object", () => {
+  it('should create a context object', () => {
     expect(TestContext.Provider).toBeDefined();
   });
 
-  it("should create a context provider component with value, children", () => {
+  it('should create a context provider component with value, children', () => {
     expect(<TestContext.Provider value={{}} />).toStrictEqual<BranchTemplate>({
       children: [],
       props: { value: {}, children: [] },
@@ -25,7 +25,7 @@ describe("useContext", () => {
     });
   });
 
-  it("should create a context component with value, children and object", () => {
+  it('should create a context component with value, children and object', () => {
     const parent = initBranch({});
 
     const branch = process(<TestContext.Provider value={{}} />, undefined, parent, 0);
@@ -42,7 +42,7 @@ describe("useContext", () => {
     });
   });
 
-  it("should dispatch context", () => {
+  it('should dispatch context', () => {
     const parent = initBranch({});
 
     let obj: object | undefined = undefined;
@@ -65,7 +65,7 @@ describe("useContext", () => {
     expect(obj).toStrictEqual({});
   });
 
-  it("should throw when context is not found", () => {
+  it('should throw when context is not found', () => {
     const parent = initBranch({});
 
     const Child = () => {
@@ -76,10 +76,10 @@ describe("useContext", () => {
 
     const callback = () => process(<Child />, undefined, parent, 0);
 
-    expect(callback).toThrow("Unexpected State: useContext used outside of Context");
+    expect(callback).toThrow('Unexpected State: useContext used outside of Context');
   });
 
-  it("should get nearest context", () => {
+  it('should get nearest context', () => {
     const parent = initBranch({});
 
     let obj: object | undefined = undefined;
@@ -92,7 +92,7 @@ describe("useContext", () => {
 
     process(
       <TestContext.Provider value={{}}>
-        <TestContext.Provider value={{ hello: "world" }}>
+        <TestContext.Provider value={{ hello: 'world' }}>
           <Child />
         </TestContext.Provider>
       </TestContext.Provider>,
@@ -101,6 +101,6 @@ describe("useContext", () => {
       0
     );
 
-    expect(obj).toStrictEqual({ hello: "world" });
+    expect(obj).toStrictEqual({ hello: 'world' });
   });
 });

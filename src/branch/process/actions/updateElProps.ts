@@ -1,5 +1,5 @@
-import { Callback, isFunction } from "@riadh-adrani/utils";
-import { Branch, PropDiff } from "../../types.js";
+import { Callback, isFunction } from '@riadh-adrani/utils';
+import { Branch, PropDiff } from '../../types.js';
 import {
   DomAttribute,
   isOnEventName,
@@ -7,7 +7,7 @@ import {
   removeEvent,
   setAttribute,
   setEvent,
-} from "@riadh-adrani/dom-utils";
+} from '@riadh-adrani/dom-utils';
 
 /**
  * create an action that will update an branch's instance props
@@ -25,7 +25,7 @@ const createElPropsUpdateAction = (branch: Branch<string>, diffs: Array<PropDiff
       if (isOnEventName(prop) && isFunction(value)) {
         const callback = value as Callback;
 
-        if (op === "remove") {
+        if (op === 'remove') {
           removeEvent(prop, instance);
         } else {
           setEvent(prop, callback, instance);
@@ -35,7 +35,7 @@ const createElPropsUpdateAction = (branch: Branch<string>, diffs: Array<PropDiff
       }
 
       // attribute
-      if (op === "remove") {
+      if (op === 'remove') {
         removeAttribute(prop, instance);
       } else {
         setAttribute(prop, value as DomAttribute, instance);

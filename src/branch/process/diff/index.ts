@@ -1,4 +1,4 @@
-import { haveSameTagAndType } from "../../check/index.js";
+import { haveSameTagAndType } from '../../check/index.js';
 import {
   ActionType,
   Branch,
@@ -7,17 +7,17 @@ import {
   BranchTemplate,
   BranchTemplateFragment,
   BranchTemplateFunction,
-} from "../../types.js";
-import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from "../../utils/index.js";
-import createAction from "../actions/index.js";
-import { unmountBranch } from "../common/index.js";
-import createNewBranch from "../new/index.js";
-import context from "./context.js";
-import element from "./element.js";
-import fragment from "./fragment.js";
-import fn from "./function.js";
-import outlet from "./outlet.js";
-import text from "./text.js";
+} from '../../types.js';
+import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from '../../utils/index.js';
+import createAction from '../actions/index.js';
+import { unmountBranch } from '../common/index.js';
+import createNewBranch from '../new/index.js';
+import context from './context.js';
+import element from './element.js';
+import fragment from './fragment.js';
+import fn from './function.js';
+import outlet from './outlet.js';
+import text from './text.js';
 
 /**
  * Move to UTILS

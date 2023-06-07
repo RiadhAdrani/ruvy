@@ -1,6 +1,6 @@
-import { areEqual, copy, Callback } from "@riadh-adrani/utils";
-import { StoreItem, StoreItemsCollection } from "./types.js";
-import Store from "./Store.js";
+import { areEqual, copy, Callback } from '@riadh-adrani/utils';
+import { StoreItem, StoreItemsCollection } from './types.js';
+import Store from './Store.js';
 
 type Options = {
   name: string;

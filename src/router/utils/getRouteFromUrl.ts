@@ -1,6 +1,6 @@
-import { isBlank } from "@riadh-adrani/utils";
+import { isBlank } from '@riadh-adrani/utils';
 
-export default (base = ""): string => {
+export default (base = ''): string => {
   if (!isBlank(base)) {
     return location.pathname.substring(`/${base}`.length);
   } else {

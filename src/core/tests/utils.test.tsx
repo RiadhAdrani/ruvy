@@ -1,22 +1,22 @@
-import { describe, beforeEach, it, expect } from "vitest";
-import { mountApp } from "../Core.js";
-import { getClosestAnchorParent } from "../utils/index.js";
+import { describe, beforeEach, it, expect } from 'vitest';
+import { mountApp } from '../Core.js';
+import { getClosestAnchorParent } from '../utils/index.js';
 
-describe("Core utils", () => {
+describe('Core utils', () => {
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
   });
 
-  describe("getClosestAnchorParent", () => {
-    it("should get the current element as anchor parent", () => {
+  describe('getClosestAnchorParent', () => {
+    it('should get the current element as anchor parent', () => {
       mountApp({ callback: () => <a id="el">anchor</a>, hostElement: document.body });
 
-      const target = document.getElementById("el") as HTMLElement;
+      const target = document.getElementById('el') as HTMLElement;
 
       expect(getClosestAnchorParent(target)?.outerHTML).toBe(`<a id="el">anchor</a>`);
     });
 
-    it("should get parent as anchor parent", () => {
+    it('should get parent as anchor parent', () => {
       mountApp({
         callback: () => (
           <a id="anchor">
@@ -26,12 +26,12 @@ describe("Core utils", () => {
         hostElement: document.body,
       });
 
-      const target = document.getElementById("el") as HTMLElement;
+      const target = document.getElementById('el') as HTMLElement;
 
-      expect(getClosestAnchorParent(target)?.id).toBe("anchor");
+      expect(getClosestAnchorParent(target)?.id).toBe('anchor');
     });
 
-    it("should get great parent as anchor parent", () => {
+    it('should get great parent as anchor parent', () => {
       mountApp({
         callback: () => (
           <a id="anchor">
@@ -43,12 +43,12 @@ describe("Core utils", () => {
         hostElement: document.body,
       });
 
-      const target = document.getElementById("el") as HTMLElement;
+      const target = document.getElementById('el') as HTMLElement;
 
-      expect(getClosestAnchorParent(target)?.id).toBe("anchor");
+      expect(getClosestAnchorParent(target)?.id).toBe('anchor');
     });
 
-    it("should return undefined when no anchor is found", () => {
+    it('should return undefined when no anchor is found', () => {
       mountApp({
         callback: () => (
           <div id="anchor">
@@ -60,7 +60,7 @@ describe("Core utils", () => {
         hostElement: document.body,
       });
 
-      const target = document.getElementById("el") as HTMLElement;
+      const target = document.getElementById('el') as HTMLElement;
 
       expect(getClosestAnchorParent(target)).toBe(undefined);
     });

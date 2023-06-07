@@ -1,6 +1,6 @@
-import type { Arrayable, StringWithAutoComplete } from "@riadh-adrani/utils";
-import { BranchTemplate } from "../branch/types.js";
-import { Any, DOMEventHandler, Selector } from "./index.js";
+import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
+import { BranchTemplate } from '../branch/types.js';
+import { Any, DOMEventHandler, Selector } from './index.js';
 
 declare global {
   function createJsxElement(
@@ -151,21 +151,21 @@ declare global {
     lang: string;
     accesskey: string;
     autocapitalize: StringWithAutoComplete<
-      "off" | "none" | "on" | "sentences" | "words" | "characters"
+      'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
     >;
-    contentEditable: StringWithAutoComplete<"true" | "false">;
+    contentEditable: StringWithAutoComplete<'true' | 'false'>;
     contextmenu: string;
     compact: string;
-    dir: StringWithAutoComplete<"ltr" | "rtl" | "auto">;
-    draggable: StringWithAutoComplete<"true" | "false">;
+    dir: StringWithAutoComplete<'ltr' | 'rtl' | 'auto'>;
+    draggable: StringWithAutoComplete<'true' | 'false'>;
     hidden: boolean;
     playsinline: string;
     role: string;
     slot: string;
-    spellcheck: StringWithAutoComplete<"true" | "false">;
+    spellcheck: StringWithAutoComplete<'true' | 'false'>;
     tabindex: string;
     title: string;
-    translate: StringWithAutoComplete<"yes" | "no">;
+    translate: StringWithAutoComplete<'yes' | 'no'>;
     ref: unknown;
   }
 
@@ -203,7 +203,7 @@ declare global {
   interface PreProps {
     cols: number;
     width: string;
-    wrap: "hard" | "soft" | "off";
+    wrap: 'hard' | 'soft' | 'off';
   }
 
   interface UlProps {

@@ -1,4 +1,4 @@
-import { isDefined, isFunction, Callback } from "@riadh-adrani/utils";
+import { isDefined, isFunction, Callback } from '@riadh-adrani/utils';
 
 export default class Context<T> {
   data?: T;
@@ -10,7 +10,7 @@ export default class Context<T> {
 
   start(data: T): void {
     if (!isDefined(data)) {
-      throw "Unexpected Data: context data cannot be undefined.";
+      throw 'Unexpected Data: context data cannot be undefined.';
     }
 
     if (this.data != undefined) {
@@ -32,7 +32,7 @@ export default class Context<T> {
 
   use<R = void>(callback: Callback<R>, data: T, onEnd?: Callback): R {
     if (!isFunction(callback)) {
-      throw "Unexpected Input : callback is not a function.";
+      throw 'Unexpected Input : callback is not a function.';
     }
 
     this.start(data);

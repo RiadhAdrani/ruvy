@@ -1,5 +1,5 @@
-import { areEqual, cast, forEachKey } from "@riadh-adrani/utils";
-import { EffectCallback } from "../../../store/types.js";
+import { areEqual, cast, forEachKey } from '@riadh-adrani/utils';
+import { EffectCallback } from '../../../store/types.js';
 import {
   ActionType,
   Branch,
@@ -9,8 +9,8 @@ import {
   HookType,
   UseEffectData,
   UseEffectParams,
-} from "../../types.js";
-import { dispatchHook } from "../index.js";
+} from '../../types.js';
+import { dispatchHook } from '../index.js';
 
 /**
  * schedule a callback effect to run once, or every time `deps` changes.
@@ -88,8 +88,8 @@ export const dispatchUseEffect: HookDispatcher<UseEffectParams, void> = (key, da
  * collect any pending effects or cleanups in a branch
  * @param branch target
  */
-export const collectEffects = (branch: Branch): Array<Omit<BranchAction, "requestTime">> => {
-  const effects: Array<Omit<BranchAction, "requestTime">> = [];
+export const collectEffects = (branch: Branch): Array<Omit<BranchAction, 'requestTime'>> => {
+  const effects: Array<Omit<BranchAction, 'requestTime'>> = [];
 
   forEachKey((_, hook) => {
     if (hook.type === HookType.Effect) {

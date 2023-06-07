@@ -1,4 +1,4 @@
-import fragmentize from "./fragmentize.js";
+import fragmentize from './fragmentize.js';
 
 export default <T extends Record<string, unknown>>(path: string, template: string): T => {
   const params: Record<string, string> = {};
@@ -7,7 +7,7 @@ export default <T extends Record<string, unknown>>(path: string, template: strin
   const pathFragments = fragmentize(path);
 
   templateFragments.forEach((fragment, index) => {
-    if (fragment[0] === ":") {
+    if (fragment[0] === ':') {
       params[fragment.substring(1)] = decodeURI(pathFragments[index]);
     }
   });

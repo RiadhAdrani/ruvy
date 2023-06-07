@@ -1,21 +1,21 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createFragmentTemplate, createJsxElement } from "../../create/index.js";
-import { beforeEach, describe, expect, it } from "vitest";
-import root from "../new/root.js";
-import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from "./index.js";
-import { ActionType, Branch, BranchKey, BranchStatus } from "../../types.js";
-import { collectActions, commit } from "../common/index.js";
+import { createFragmentTemplate, createJsxElement } from '../../create/index.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import root from '../new/root.js';
+import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from './index.js';
+import { ActionType, Branch, BranchKey, BranchStatus } from '../../types.js';
+import { collectActions, commit } from '../common/index.js';
 
 createFragmentTemplate;
 createJsxElement;
 
-describe("diffBranches", () => {
+describe('diffBranches', () => {
   let App: Branch;
 
   beforeEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
 
     App = root(
       document.body,
@@ -29,8 +29,8 @@ describe("diffBranches", () => {
     commit(collectActions(App));
   });
 
-  describe("removeChildrenExcess", () => {
-    it("should unmount children excess", () => {
+  describe('removeChildrenExcess', () => {
+    it('should unmount children excess', () => {
       const current = App.children[0];
 
       const newKeys: Array<BranchKey> = [0, 1];
@@ -45,8 +45,8 @@ describe("diffBranches", () => {
     });
   });
 
-  describe("diffNewChildren", () => {
-    it("should push new children at the end if not existing", () => {
+  describe('diffNewChildren', () => {
+    it('should push new children at the end if not existing', () => {
       const branch = App.children[0];
 
       expect(branch.children.length).toBe(3);
@@ -59,23 +59,23 @@ describe("diffBranches", () => {
       ]);
 
       expect(branch.children.length).toBe(4);
-      expect(branch.children[3].type).toBe("main");
+      expect(branch.children[3].type).toBe('main');
     });
 
-    it("should not push new children or reorder if order changes", () => {
+    it('should not push new children or reorder if order changes', () => {
       const branch = App.children[0];
 
       diffNewChildren(branch, [<input key={2} />, <div key={0} />, <button key={1} />]);
 
       expect(branch.children.length).toBe(3);
-      expect(branch.children[0].type).toBe("div");
-      expect(branch.children[1].type).toBe("button");
-      expect(branch.children[2].type).toBe("input");
+      expect(branch.children[0].type).toBe('div');
+      expect(branch.children[1].type).toBe('button');
+      expect(branch.children[2].type).toBe('input');
     });
   });
 
-  describe("arrangeChildren", () => {
-    it("should rearrange children", () => {
+  describe('arrangeChildren', () => {
+    it('should rearrange children', () => {
       const branch = App.children[0];
 
       arrangeChildren(branch, [<input key={2} />, <div key={0} />, <button key={1} />]);
@@ -83,7 +83,7 @@ describe("diffBranches", () => {
       expect(branch.pendingActions.filter(a => a.type === ActionType.Reorder).length).toBe(1);
     });
 
-    it("should rearrange children", () => {
+    it('should rearrange children', () => {
       const branch = App.children[0];
 
       arrangeChildren(branch, [<input key={2} />, <button key={1} />, <div key={0} />]);
@@ -92,8 +92,8 @@ describe("diffBranches", () => {
     });
   });
 
-  describe("diffTypes", () => {
-    it("should move branch to the old", () => {
+  describe('diffTypes', () => {
+    it('should move branch to the old', () => {
       const template = <button></button>;
 
       const branch = App.children[0];
@@ -102,10 +102,10 @@ describe("diffBranches", () => {
 
       const updated = App.children[0];
 
-      expect(updated.old?.type).toBe("div");
+      expect(updated.old?.type).toBe('div');
       expect(updated.old?.status).toBe(BranchStatus.Unmounting);
 
-      expect(updated.type).toBe("button");
+      expect(updated.type).toBe('button');
       expect(updated.status).toBe(BranchStatus.Mounting);
     });
   });

@@ -1,6 +1,6 @@
-import { Callback } from "@riadh-adrani/utils";
-import { Branch, BranchStatus, BranchTag } from "../../types.js";
-import { createElement, createTextNode, injectNode } from "@riadh-adrani/dom-utils";
+import { Callback } from '@riadh-adrani/utils';
+import { Branch, BranchStatus, BranchTag } from '../../types.js';
+import { createElement, createTextNode, injectNode } from '@riadh-adrani/dom-utils';
 import {
   assignRef,
   getHostBranchIndexFromHostParent,
@@ -9,7 +9,7 @@ import {
   getNamespace,
   getParentHostBranch,
   isHostBranch,
-} from "../../utils/index.js";
+} from '../../utils/index.js';
 
 /**
  * creates a rendering action for an element-ish branch
@@ -19,7 +19,7 @@ const createRenderAction = (branch: Branch<string>): Callback => {
   return () => {
     // check if branch tag is Text or Element
     if (!isHostBranch(branch)) {
-      throw "Cannot render a non-host branch.";
+      throw 'Cannot render a non-host branch.';
     }
 
     let render: Node;

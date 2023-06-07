@@ -1,4 +1,4 @@
-import { Task } from "./types.js";
+import { Task } from './types.js';
 
 export default class Scheduler {
   stack: Array<Task> = [];

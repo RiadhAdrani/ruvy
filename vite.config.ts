@@ -1,6 +1,6 @@
 export default {
   plugins: [],
   test: {
-    environment: "jsdom",
+    environment: 'jsdom',
   },
 };

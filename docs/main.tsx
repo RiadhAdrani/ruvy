@@ -1,24 +1,9 @@
-import { runAfter } from "@riadh-adrani/utils";
-import { mountApp, usePromise } from "../src/index.js";
+import { createRouter, mountApp } from '../src/index.js';
+import App from './App.js';
+import { routes } from './router/routes.js';
+import './style/index.scss';
+import 'virtual:uno.css';
 
-const App = () => {
-  const [state, count, refresh] = usePromise<number>(async () => {
-    const v = await runAfter(1000, () => 300);
+createRouter(routes, {});
 
-    return v as number;
-  });
-
-  return (
-    <button onclick={refresh}>
-      {state === "pending"
-        ? "Pending"
-        : state === "refreshing"
-        ? "Refreshing"
-        : state === "rejected"
-        ? "Click to refresh"
-        : count}
-    </button>
-  );
-};
-
-mountApp({ callback: App, hostElement: document.body });
+mountApp({ callback: App, hostElement: document.querySelector('#app') as HTMLElement });

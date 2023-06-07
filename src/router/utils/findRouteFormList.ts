@@ -1,11 +1,11 @@
-import { Route } from "../types.js";
-import fragmentize from "./fragmentize.js";
+import { Route } from '../types.js';
+import fragmentize from './fragmentize.js';
 
 export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | undefined => {
   const fragments = fragmentize(path);
 
   if (fragments.length === 0) {
-    if (path === "/") {
+    if (path === '/') {
       return record[path] as Route<T>;
     } else {
       return undefined;
@@ -20,7 +20,7 @@ export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | u
       return undefined;
     } else {
       // try to find exact match first
-      const exact = withSameLength.find(route => route.fragments.join("/") === fragments.join("/"));
+      const exact = withSameLength.find(route => route.fragments.join('/') === fragments.join('/'));
 
       if (exact) {
         return exact as Route<T>;
@@ -38,7 +38,7 @@ export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | u
         })
         .find(route =>
           route.fragments.every((fragment, index) => {
-            return fragment === fragments[index] || fragment[0] === ":";
+            return fragment === fragments[index] || fragment[0] === ':';
           })
         );
 

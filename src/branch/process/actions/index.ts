@@ -1,11 +1,11 @@
-import { Callback, cast } from "@riadh-adrani/utils";
-import { ActionType, Branch, BranchAction, Effect, PropDiff } from "../../types.js";
-import createRenderAction from "./render.js";
-import createUnmountAction from "./unmount.js";
-import createElPropsUpdateAction from "./updateElProps.js";
-import createTextUpdateAction from "./updateText.js";
-import createRemoveBranchAction from "./removeBranch.js";
-import createReorderHostElement from "./reorderElement.js";
+import { Callback, cast } from '@riadh-adrani/utils';
+import { ActionType, Branch, BranchAction, Effect, PropDiff } from '../../types.js';
+import createRenderAction from './render.js';
+import createUnmountAction from './unmount.js';
+import createElPropsUpdateAction from './updateElProps.js';
+import createTextUpdateAction from './updateText.js';
+import createRemoveBranchAction from './removeBranch.js';
+import createReorderHostElement from './reorderElement.js';
 
 /**
  * create an branch action

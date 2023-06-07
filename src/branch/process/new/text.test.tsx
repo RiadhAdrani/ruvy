@@ -1,20 +1,20 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from "../../create/index.js";
-import { describe, expect, it } from "vitest";
-import { initBranch } from "../../utils/index.js";
-import { ActionType, BranchStatus, BranchTag } from "../../types.js";
-import text from "./text.js";
-import { omit } from "@riadh-adrani/utils";
+import { createJsxElement } from '../../create/index.js';
+import { describe, expect, it } from 'vitest';
+import { initBranch } from '../../utils/index.js';
+import { ActionType, BranchStatus, BranchTag } from '../../types.js';
+import text from './text.js';
+import { omit } from '@riadh-adrani/utils';
 
 createJsxElement;
 
-describe("new.text", () => {
-  it("should create a text branch", () => {
+describe('new.text', () => {
+  it('should create a text branch', () => {
     const parent = initBranch();
-    const div = text("test", parent, 0);
+    const div = text('test', parent, 0);
 
-    expect(omit(div, "pendingActions")).toStrictEqual({
+    expect(omit(div, 'pendingActions')).toStrictEqual({
       children: [],
       hooks: {},
       key: 0,
@@ -23,7 +23,7 @@ describe("new.text", () => {
       tag: BranchTag.Text,
       type: BranchTag.Text,
       parent,
-      text: "test",
+      text: 'test',
       unmountedChildren: [],
     });
 

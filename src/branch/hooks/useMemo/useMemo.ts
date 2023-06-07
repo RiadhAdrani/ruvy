@@ -1,6 +1,6 @@
-import { areEqual, cast } from "@riadh-adrani/utils";
-import { HookData, HookDispatcher, HookType, UseMemoData, UseMemoParams } from "../../types.js";
-import { dispatchHook } from "../index.js";
+import { areEqual, cast } from '@riadh-adrani/utils';
+import { HookData, HookDispatcher, HookType, UseMemoData, UseMemoParams } from '../../types.js';
+import { dispatchHook } from '../index.js';
 
 /**
  * perform memoization of a computation and update it when `deps` changes.

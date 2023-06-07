@@ -1,6 +1,6 @@
-import { initBranch } from "../../utils/index.js";
-import { Branch, BranchKey, BranchTag, BranchTemplate } from "../../types.js";
-import process from "../index.js";
+import { initBranch } from '../../utils/index.js';
+import { Branch, BranchKey, BranchTag, BranchTemplate } from '../../types.js';
+import process from '../index.js';
 
 /**
  * create a new context branch

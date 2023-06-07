@@ -1,4 +1,4 @@
-import { Callback } from "@riadh-adrani/utils";
+import { Callback } from '@riadh-adrani/utils';
 import {
   HookData,
   HookDispatcher,
@@ -6,9 +6,9 @@ import {
   UsePromiseData,
   UsePromiseParams,
   UsePromiseReturn,
-} from "../../types.js";
-import { dispatchHook } from "../index.js";
-import { Core } from "../../../core/Core.js";
+} from '../../types.js';
+import { dispatchHook } from '../index.js';
+import { Core } from '../../../core/Core.js';
 
 /**
  * Hook which wraps an asynchronous function or a function that returns a Promise and returns
@@ -20,7 +20,7 @@ export const usePromise = <T>(callback: Callback<Promise<T>>): UsePromiseReturn<
 };
 
 export const runFetch = async <T>(hook: HookData<UsePromiseData<T>>) => {
-  if (!["pending", "refreshing"].includes(hook.data.state)) {
+  if (!['pending', 'refreshing'].includes(hook.data.state)) {
     return;
   }
 
@@ -28,9 +28,9 @@ export const runFetch = async <T>(hook: HookData<UsePromiseData<T>>) => {
     const res = await hook.data.callback();
 
     hook.data.value = res;
-    hook.data.state = "resolved";
+    hook.data.state = 'resolved';
   } catch {
-    hook.data.state = "rejected";
+    hook.data.state = 'rejected';
   }
 
   // notify core
@@ -44,7 +44,7 @@ export const dispatchUsePromise: HookDispatcher<
   if (!current.hooks[key]) {
     const data: UsePromiseData = {
       callback,
-      state: "pending",
+      state: 'pending',
       value: undefined,
     };
 
@@ -65,7 +65,7 @@ export const dispatchUsePromise: HookDispatcher<
 
   // create refresh callback
   const refresh: Callback = () => {
-    data.state = "refreshing";
+    data.state = 'refreshing';
 
     Core.singleton.onStateUpdate();
 

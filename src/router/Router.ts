@@ -1,17 +1,17 @@
-import { isBlank, Callback } from "@riadh-adrani/utils";
-import { Context } from "../context/index.js";
-import { RawRoute, Route, RouterParams } from "./types.js";
+import { isBlank, Callback } from '@riadh-adrani/utils';
+import { Context } from '../context/index.js';
+import { RawRoute, Route, RouterParams } from './types.js';
 import {
   findRouteFromList,
   flatten,
   fragmentize,
   getParams,
   getRouteFromUrl,
-} from "./utils/index.js";
+} from './utils/index.js';
 
 export default class Router<T = unknown> {
   routes: Record<string, Route<T>> = {};
-  base = "";
+  base = '';
   scrollToTop = false;
   onStateChange: Callback;
 
@@ -31,11 +31,11 @@ export default class Router<T = unknown> {
     let route: Route<T> | undefined;
 
     if (fragments.length === 0) {
-      route = findRouteFromList<T>("/", this.routes);
+      route = findRouteFromList<T>('/', this.routes);
     }
 
     for (let i = 0; i < fragments.length; i++) {
-      const maybePath = `/${fragments.slice(0, i + 1).join("/")}`;
+      const maybePath = `/${fragments.slice(0, i + 1).join('/')}`;
 
       const maybeRoute = findRouteFromList<T>(maybePath, this.routes);
 
@@ -48,7 +48,7 @@ export default class Router<T = unknown> {
   }
 
   get params(): Record<string, string> {
-    return getParams(this.path, this.nearestRoute?.path ?? "");
+    return getParams(this.path, this.nearestRoute?.path ?? '');
   }
 
   get component(): T | undefined {
@@ -64,14 +64,14 @@ export default class Router<T = unknown> {
     }
 
     if (current.fragments.length === 0 && depth === 0) {
-      return findRouteFromList<T>("/", this.routes)?.component;
+      return findRouteFromList<T>('/', this.routes)?.component;
     }
 
     if (current.fragments.length <= depth) {
       return undefined;
     }
 
-    const expected = `/${current.fragments.slice(0, depth + 1).join("/")}`;
+    const expected = `/${current.fragments.slice(0, depth + 1).join('/')}`;
 
     const expectedRoute = findRouteFromList<T>(expected, this.routes);
 
@@ -90,14 +90,14 @@ export default class Router<T = unknown> {
     }
 
     if (current.fragments.length === 0 && depth === 0) {
-      return this.getRouteOrCatch("/", 0);
+      return this.getRouteOrCatch('/', 0);
     }
 
     if (current.fragments.length <= depth) {
       return this.getCatchRouteByDepth(depth + 1)?.component;
     }
 
-    const expected = `/${current.fragments.slice(0, depth + 1).join("/")}`;
+    const expected = `/${current.fragments.slice(0, depth + 1).join('/')}`;
 
     return this.getRouteOrCatch(expected, depth);
   }
@@ -105,21 +105,21 @@ export default class Router<T = unknown> {
   getCatchRouteByDepth(depth: number): Route<T> | undefined {
     const current = this.nearestRoute;
 
-    let catchRoute = "/*";
+    let catchRoute = '/*';
 
     if (current) {
       // we find the [/../*] route if existing
 
       const catchBase = current.fragments.slice(0, depth - 1);
 
-      catchRoute = `/${catchBase.join("/")}/*`;
+      catchRoute = `/${catchBase.join('/')}/*`;
     }
 
     let expectedRoute = findRouteFromList<T>(catchRoute, this.routes);
 
     if (!expectedRoute) {
       // backup catch all route
-      expectedRoute = findRouteFromList<T>("/**", this.routes);
+      expectedRoute = findRouteFromList<T>('/**', this.routes);
     }
 
     return expectedRoute;
@@ -147,7 +147,7 @@ export default class Router<T = unknown> {
     this.scrollToTop = scrollToTop ?? false;
     this.routes = flatten(routes);
 
-    window.addEventListener("popstate", () => {
+    window.addEventListener('popstate', () => {
       this.onStateChange();
     });
 
@@ -175,7 +175,7 @@ export default class Router<T = unknown> {
   }
 
   isNavigatable(path: string): boolean {
-    return path[0] === "/";
+    return path[0] === '/';
   }
 
   push(to: string) {
@@ -185,7 +185,7 @@ export default class Router<T = unknown> {
 
     const path = this.getCorrectPath(to);
 
-    history.pushState({ path }, "", `${this.base}${path}`);
+    history.pushState({ path }, '', `${this.base}${path}`);
 
     this.onStateChange();
     this.updateTitle();
@@ -198,7 +198,7 @@ export default class Router<T = unknown> {
 
     const path = this.getCorrectPath(to);
 
-    history.replaceState({ path }, "", `${this.base}${path}`);
+    history.replaceState({ path }, '', `${this.base}${path}`);
 
     this.onStateChange();
     this.updateTitle();
