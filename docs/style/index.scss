@@ -83,9 +83,134 @@ body {
   margin: 0px;
 }
 
+p {
+  margin: 0px;
+}
+
 #app {
   color: var(--text);
   height: 100vh;
   width: 100vw;
   background-color: var(--primary);
+  font-family: 'Inter';
+}
+
+// toggle
+.switch {
+  --width: 60px;
+  --height: 34px;
+
+  position: relative;
+  display: inline-block;
+  width: var(--width);
+  height: var(--height);
+
+  &-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  &-input:checked + .switch-slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  &-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--secondary);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: var(--text-lowest);
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    &:hover {
+      background-color: var(--secondary-hover);
+    }
+  }
+}
+
+code {
+  font-family: 'Fira code' !important;
+}
+
+code[class*='language-'],
+pre[class*='language-'] {
+  overflow-x: auto;
+  min-width: 0px;
+}
+
+.markdown-container {
+  color: var(--grayLight3);
+  overflow-y: auto !important;
+
+  h1,
+  h2 {
+    color: red;
+  }
+
+  p {
+    line-height: 1.75rem;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0 20px;
+  }
+
+  li {
+    padding: 5px 0px;
+    line-height: 1.75rem;
+  }
+
+  a {
+    color: blue;
+  }
+
+  :is(code):not(pre code) {
+    color: var(--text-medium);
+    // font-size: 0.9em;
+    background-color: var(--accent-hover);
+    padding: 3px 5px;
+    border-radius: 0.25em;
+  }
+
+  :not(pre) > code[class*='language-'],
+  pre[class*='language-'] {
+    background-color: var(--primary);
+    border: 1px solid var(--border-low);
+    border-radius: 0.25em;
+  }
+
+  a :is(code):not(pre code) {
+    color: inherit;
+  }
+
+  blockquote {
+    padding: 5px 20px;
+    background-color: var(--secondary);
+    border: 1px solid var(--dividerLight1);
+    margin-right: 0px;
+    border-radius: 0.25em;
+
+    strong {
+      font-style: normal;
+    }
+  }
 }
