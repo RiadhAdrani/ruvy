@@ -39,7 +39,7 @@ export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
 
-      Core.singleton.onStateUpdate();
+      Core.notifyStateUpdated();
     }
   };
 

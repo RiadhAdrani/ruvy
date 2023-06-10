@@ -1,6 +1,8 @@
 import { areEqual, cast } from '@riadh-adrani/utils';
 import { HookData, HookDispatcher, HookType, UseMemoData, UseMemoParams } from '../../types.js';
 import { dispatchHook } from '../index.js';
+import { Core } from '../../../core/Core.js';
+import { CallbackWithArgs } from 'src/index.js';
 
 /**
  * perform memoization of a computation and update it when `deps` changes.
@@ -20,7 +22,12 @@ export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
  * @param deps dependencies
  */
 export const useCallback = <T>(callback: T, deps?: unknown): T => {
-  return useMemo(() => callback, deps);
+  return useMemo(() => {
+    const fn = (e: unknown) =>
+      Core.batch(() => (callback as CallbackWithArgs<[unknown], unknown>)(e));
+
+    return fn as T;
+  }, deps);
 };
 
 /**

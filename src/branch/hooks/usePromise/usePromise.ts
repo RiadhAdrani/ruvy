@@ -34,7 +34,7 @@ export const runFetch = async <T>(hook: HookData<UsePromiseData<T>>) => {
   }
 
   // notify core
-  Core.singleton.onStateUpdate();
+  Core.notifyStateUpdated();
 };
 
 export const dispatchUsePromise: HookDispatcher<
@@ -67,7 +67,7 @@ export const dispatchUsePromise: HookDispatcher<
   const refresh: Callback = () => {
     data.state = 'refreshing';
 
-    Core.singleton.onStateUpdate();
+    Core.notifyStateUpdated();
 
     runFetch(hook);
   };

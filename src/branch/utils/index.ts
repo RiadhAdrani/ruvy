@@ -18,9 +18,11 @@ import {
   Namespace,
   UseRefData,
 } from '../types.js';
-import { DomAttribute, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
+import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
 import { isValidTemplate } from '../check/index.js';
 import { Outlet } from '../index.js';
+import { CallbackWithArgs } from 'src/index.js';
+import { Core } from '../../core/Core.js';
 
 export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
   const initial: Branch = {
@@ -230,6 +232,16 @@ export const combineClasses = (current: Arrayable<string>, className: string): s
 
 const CLASS_PREFIX = 'class:';
 
+export const batchedEvent = (
+  callback: CallbackWithArgs<[DomEvent], void>
+): CallbackWithArgs<[DomEvent], void> => {
+  if (!isFunction(callback)) {
+    return callback;
+  }
+
+  return (ev: DomEvent) => Core.batch(() => callback(ev));
+};
+
 /**
  * preprocess props
  * @param initial initial props
@@ -257,6 +269,8 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
           }
         }
       }
+    } else if (isOnEventName(key)) {
+      props[key] = batchedEvent(value as CallbackWithArgs);
     } else {
       props[key] = value;
     }
