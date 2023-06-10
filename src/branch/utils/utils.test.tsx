@@ -18,6 +18,7 @@ import {
   combineClasses,
   preprocessProps,
   findParentWith,
+  postprocessProps,
 } from './index.js';
 import { BranchTag, Namespace } from '../types.js';
 import { createElement, injectNode } from '@riadh-adrani/dom-utils';
@@ -487,6 +488,26 @@ describe('utils', () => {
       const branch = initBranch({ parent: pBranch });
 
       expect(findParentWith(branch, it => (it.type as string) === 'div')).toStrictEqual(gpBranch);
+    });
+  });
+
+  describe('portprocessProps', () => {
+    it('should assign svg namespace to branch of type "svg"', () => {
+      const branch = initBranch({ type: 'svg' });
+
+      postprocessProps(branch);
+
+      expect(branch.props.ns).toBe(Namespace.SVG);
+    });
+
+    it('should assign svg namespace to children of "<svg/>"', () => {
+      const parent = initBranch({ type: 'svg' });
+      postprocessProps(parent);
+
+      const child = initBranch({ type: 'a', parent });
+      postprocessProps(child);
+
+      expect(child.props.ns).toBe(Namespace.SVG);
     });
   });
 });

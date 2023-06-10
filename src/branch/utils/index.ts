@@ -266,7 +266,6 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
 };
 
 /**
- * @deprecated
  * recursively find the closest parent with the checker function
  * @param branch current branch
  * @param checker callback returning a boolean
@@ -287,10 +286,14 @@ export const findParentWith = (
 };
 
 /**
- * @deprecated @untested
- * @param branch
+ * perform post processing for a given branch.
+ *
+ * - auto assign `Namespace.SVG` namespace to `svg` element and its children automatically.
+ *
+ * @param branch target.
  */
 export const postprocessProps = (branch: Branch): void => {
+  // ? SVG
   // if branch type is svg, we change the namespace to SVG
   // if not, we search for the closest svg namespaced parent
   if (branch.type === 'svg' || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
