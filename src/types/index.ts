@@ -2,6 +2,7 @@ import { Arrayable } from '@riadh-adrani/utils';
 import type * as CSS from 'csstype';
 import { RuvyNode } from '../index.js';
 
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any;
 
 export type PropsWithChildren<T extends object> = { children?: Array<RuvyNode> } & T;

@@ -42,9 +42,9 @@ export const createReactiveObject = <T extends object>(object: T, onValueChanged
 };
 
 export const dispatchUseReactive: HookDispatcher<object, Any> = (key, data, current) => {
-  const object = createReactiveObject(data, () => Core.singleton.onStateUpdate());
-
   if (!current.hooks[key]) {
+    const object = createReactiveObject(data, () => Core.singleton.onStateUpdate());
+
     current.hooks[key] = {
       data: object,
       initialData: object,
