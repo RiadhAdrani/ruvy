@@ -266,7 +266,7 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
 };
 
 /**
- * @deprecated @untested
+ * @deprecated
  * recursively find the closest parent with the checker function
  * @param branch current branch
  * @param checker callback returning a boolean
