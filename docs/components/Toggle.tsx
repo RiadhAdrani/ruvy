@@ -9,7 +9,7 @@ interface UToggleProps extends ComponentProps<HTMLSpanElement, InputProps> {
 
 export default (props: PropsWithChildren<Partial<UToggleProps>>) => {
   return (
-    <label {...props} class="switch rounded scale-60 u-border">
+    <label {...props} class="switch rounded scale-55 u-border">
       <input checked={props.checked} type="checkbox" class:switch-input />
       <span class="switch-slider rounded before:rounded"></span>
     </label>

@@ -1,25 +1,19 @@
-import Markdown from './components/Markdown.js';
 import NavBar from './components/NavBar.js';
 import { UIProvider } from './context/UI.js';
-import { Outlet, usePromise } from './index.js';
-import md from './md/test.md';
+import { Outlet } from './index.js';
 
 export default () => {
-  const [, content] = usePromise(async () => {
-    const res = await fetch(md);
-
-    if (res.status === 200) {
-      return await res.text();
-    }
-
-    throw 'Unable to load doc';
-  });
-
   return (
     <UIProvider>
       <NavBar />
-      <Markdown content={content ?? ''} />
-      <Outlet />
+      <div
+        class="w-100% overflow-x-hidden row-center p-x-5 m-t-[var(--nav-bar-height)]"
+        style={{ minHeight: 'calc(100vh - var(--nav-bar-height))' }}
+      >
+        <div class="col max-w-1200px flex-1 self-stretch overflow-x-hidden p-y-10">
+          <Outlet />
+        </div>
+      </div>
     </UIProvider>
   );
 };

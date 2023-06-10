@@ -23,6 +23,7 @@ import {
   createRoot,
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
+import getRouteFromUrl from '../router/utils/getRouteFromUrl.js';
 
 export class Core {
   static singleton: Core = new Core();
@@ -190,6 +191,10 @@ export const getSearchQuery = <T extends QueryParams>(): T => {
   });
 
   return queryParams;
+};
+
+export const getRoute = (): string => {
+  return getRouteFromUrl(Core.singleton.router.base);
 };
 
 const win = window as unknown as Record<string, unknown>;

@@ -1,14 +1,14 @@
 import { join } from '../utils/utils.js';
-import { PropsWithChildren, useId, useMemo } from '../index.js';
+import { PropsWithChildren, useMemo, joinClasses } from '../index.js';
 
 interface UButtonProps extends ComponentProps<HTMLButtonElement, ButtonProps> {
   type: 'text' | 'fill' | 'outline';
 }
 
 const Button = (props: PropsWithChildren<Partial<UButtonProps>>) => {
-  const { children, type } = props;
+  const { children, type, class: className } = props;
 
-  const className = useMemo<string>(() => {
+  const classes = useMemo<string>(() => {
     if (type === 'fill') {
       return join([
         'border border-solid border-[color:var(--border-low)] hover:border-[color:var(--border-strong)]',
@@ -31,10 +31,11 @@ const Button = (props: PropsWithChildren<Partial<UButtonProps>>) => {
     ]);
   }, type);
 
-  const id = useId();
-
   return (
-    <button {...props} id={id} class={['p-x-4 p-y-2 cursor-pointer rounded', className]}>
+    <button
+      {...props}
+      class={joinClasses('p-x-4 p-y-2 cursor-pointer rounded', classes, className)}
+    >
       {children}
     </button>
   );
