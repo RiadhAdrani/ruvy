@@ -17,7 +17,14 @@ export {
 } from './branch/index.js';
 
 // router
-export { createRouter, navigate, replace, getParams } from './core/index.js';
+export {
+  createRouter,
+  navigate,
+  replace,
+  getParams,
+  getRoute,
+  getSearchQuery,
+} from './core/index.js';
 export { Outlet } from './branch/index.js';
 
 // types
@@ -26,3 +33,6 @@ export type { MountParams } from './core/types.js';
 export type { RawRoute, RouterParams } from './router/types.js';
 export type { StateArray } from './store/types.js';
 export * from './types/index.js';
+
+// utils
+export * from './utils/utils.js';
