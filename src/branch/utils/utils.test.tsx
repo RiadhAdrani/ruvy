@@ -17,6 +17,7 @@ import {
   getOutletDepth,
   combineClasses,
   preprocessProps,
+  findParentWith,
 } from './index.js';
 import { BranchTag, Namespace } from '../types.js';
 import { createElement, injectNode } from '@riadh-adrani/dom-utils';
@@ -463,6 +464,29 @@ describe('utils', () => {
       ).toStrictEqual({
         class: 'tester test done',
       });
+    });
+  });
+
+  describe('findParentWith', () => {
+    it('should return undefined when parent is does not exist', () => {
+      const branch = initBranch();
+
+      expect(findParentWith(branch, it => (it.type as string) === 'div')).toBe(undefined);
+    });
+
+    it('should return the parent : 1st level', () => {
+      const pBranch = initBranch({ type: 'div' });
+      const branch = initBranch({ parent: pBranch });
+
+      expect(findParentWith(branch, it => (it.type as string) === 'div')).toStrictEqual(pBranch);
+    });
+
+    it('should execute recursively', () => {
+      const gpBranch = initBranch({ type: 'div' });
+      const pBranch = initBranch({ parent: gpBranch });
+      const branch = initBranch({ parent: pBranch });
+
+      expect(findParentWith(branch, it => (it.type as string) === 'div')).toStrictEqual(gpBranch);
     });
   });
 });
