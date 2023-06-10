@@ -47,7 +47,7 @@ export class Core {
         checkEqual: true,
         forceSet: false,
         keepUnused: false,
-        onChanged: () => this.onStateUpdate(),
+        onChanged: () => this.notifyStateUpdated(),
       })
     );
 
@@ -87,13 +87,7 @@ export class Core {
   }
 
   onStateUpdate() {
-    if (!this.fn) {
-      return;
-    }
-
-    this.shouldUpdate = true;
-
-    if (this.batchContext.data === true) {
+    if (!this.fn || !this.shouldUpdate || this.batchContext.data) {
       return;
     }
 
@@ -105,6 +99,30 @@ export class Core {
         this.executeRoutine();
       },
     });
+  }
+
+  notifyStateUpdated() {
+    this.shouldUpdate = true;
+
+    if (!this.batchContext.get()) {
+      this.onStateUpdate();
+    }
+  }
+
+  static notifyStateUpdated() {
+    Core.singleton.notifyStateUpdated();
+  }
+
+  batch<T = void>(callback: Callback<T>): T {
+    if (this.batchContext.get() === true) {
+      return callback();
+    }
+
+    return this.batchContext.use(callback, true, () => this.onStateUpdate());
+  }
+
+  static batch<T>(callback: Callback<T>) {
+    return Core.singleton.batch(callback);
   }
 }
 
@@ -148,9 +166,7 @@ export const createRouter = (
 ) => {
   Core.singleton.router = new Router(routes, {
     ...config,
-    onStateChange: () => {
-      Core.singleton.onStateUpdate();
-    },
+    onStateChange: () => Core.batch(() => Core.notifyStateUpdated()),
   });
 };
 

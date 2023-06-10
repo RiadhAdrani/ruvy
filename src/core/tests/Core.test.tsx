@@ -90,11 +90,13 @@ describe('Core', () => {
     beforeEach(() => {
       core.fn = () => <div></div>;
       core.host = document.body;
+      core.shouldUpdate = true;
       core.executeRoutine(false);
     });
 
     it('should schedule a execution routine', () => {
       core.executeRoutine = vitest.fn(core.executeRoutine);
+      core.notifyStateUpdated();
       core.onStateUpdate();
 
       expect(core.executeRoutine).toHaveBeenCalledTimes(1);
@@ -107,8 +109,19 @@ describe('Core', () => {
         core.onStateUpdate();
       }, true);
 
-      expect(core.shouldUpdate).toBe(true);
       expect(core.executeRoutine).toHaveBeenCalledTimes(0);
+    });
+
+    it('should execute routine once', () => {
+      core.executeRoutine = vitest.fn(core.executeRoutine);
+
+      core.batch(() => {
+        core.notifyStateUpdated();
+        core.notifyStateUpdated();
+        core.notifyStateUpdated();
+      });
+
+      expect(core.executeRoutine).toHaveBeenCalledTimes(1);
     });
   });
 
