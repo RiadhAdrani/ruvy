@@ -1,5 +1,5 @@
-import { Arrayable, isArray } from '@riadh-adrani/utils';
-import { PropsWithChildren, useMemo } from '../index.js';
+import { Arrayable } from '@riadh-adrani/utils';
+import { PropsWithChildren, joinClasses, useMemo } from '../index.js';
 
 export interface LinkProps extends ComponentProps<HTMLAnchorElement, AProps> {
   isActive: boolean;
@@ -17,15 +17,7 @@ export default (props: Partial<PropsWithChildren<LinkProps>>) => {
       initial += ' color-[var(--text-low)] hover:color-[var(--text-strong)]';
     }
 
-    if (!className) {
-      return initial;
-    }
-
-    if (isArray(className)) {
-      return [initial, ...className];
-    }
-
-    return `${initial} ${className}`;
+    return joinClasses(initial, className);
   }, [className, isActive]);
 
   return (

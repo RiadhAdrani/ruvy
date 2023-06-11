@@ -8,4 +8,5 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.md'],
   plugins: [UnoCSS({ configFile: path.resolve(__dirname, './docs/uno.config.ts') })],
+  base: '/ruvy/',
 });

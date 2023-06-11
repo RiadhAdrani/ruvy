@@ -1,10 +1,11 @@
 import { Theme } from '../types/index.js';
 import { UIContext } from '../context/UI.js';
-import { useContext, getRoute } from '../index.js';
+import { useContext } from '../index.js';
 import Toggle from './Toggle.js';
 import Link from './Link.js';
 import Button from './Button.js';
 import Footer from './Footer.js';
+import { isActive } from '../utils/utils.js';
 
 export default () => {
   const { computedTheme, toggleTheme, isNavOpen, toggleNav } = useContext(UIContext);
@@ -17,10 +18,6 @@ export default () => {
   ];
 
   const externalItems = [{ title: 'GitHub', href: 'https://github.com/RiadhAdrani/ruvy' }];
-
-  const isActive = (path: string): boolean => {
-    return `/${getRoute()}` === path;
-  };
 
   return (
     <>
@@ -35,7 +32,7 @@ export default () => {
           'fixed top-0px z-[var(--nav-bar-z)]',
         ]}
       >
-        <div class="row justify-between items-center max-w-1200px flex-1">
+        <div class="row justify-between items-center max-w-1200px flex-1 z-2">
           <div class="row items-center gap-8">
             <a href="/" class="p-x-1">
               <h2>Ruvy</h2>
@@ -79,6 +76,7 @@ export default () => {
           'overflow-y-auto',
           'duration-[var(--t-long)]',
           'p-5',
+          'z-1',
         ]}
         style={{ height: 'calc(100vh - var(--nav-bar-height))' }}
       >

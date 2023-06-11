@@ -7,10 +7,10 @@ export default () => {
     <UIProvider>
       <NavBar />
       <div
-        class="w-100% overflow-x-hidden row-center p-x-5 m-t-[var(--nav-bar-height)]"
+        class="w-100% overflow-x-hidden row-center p-x-6 m-t-[var(--nav-bar-height)]"
         style={{ minHeight: 'calc(100vh - var(--nav-bar-height))' }}
       >
-        <div class="col max-w-1200px flex-1 self-stretch overflow-x-hidden p-y-10">
+        <div class="col max-w-1200px flex-1 self-stretch overflow-x-hidden p-y-12 md:p-y-10">
           <Outlet />
         </div>
       </div>

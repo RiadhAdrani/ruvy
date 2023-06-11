@@ -23,6 +23,8 @@
   ],
   "scripts": {
     "dev": "vite --config vite.dev.config.ts",
+    "build:docs": "vite --config vite.dev.config.ts build",
+    "serve:docs": "vite --config vite.dev.config.ts serve",
     "build:copy-global": "cp src/types/global.d.ts build/types/global.d.ts",
     "build": "rm -rf build && tsc --project tsconfig.build.json && yarn build:copy-global",
     "build:vite": "vite build",
