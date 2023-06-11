@@ -44,7 +44,8 @@
   --nav-bar-height: 65px;
   --nav-bar-z: 1000;
 
-  --side-bar-width: 285px;
+  --side-bar-width: 250px;
+  --side-bar-height: 40px;
   --side-bar-z: 900;
 }
 
@@ -68,6 +69,7 @@
   --text-low: var(--light-5);
   --text-lowest: var(--light-7);
 
+  --border-lowest: var(--dark-1);
   --border-low: var(--dark-2);
   --border: var(--dark-3);
   --border-strong: var(--dark-4);
@@ -101,6 +103,7 @@
   --text-low: var(--dark-5);
   --text-lowest: var(--dark-7);
 
+  --border-lowest: var(--light-1);
   --border-low: var(--light-2);
   --border: var(--light-3);
   --border-strong: var(--light-4);
@@ -117,12 +120,13 @@
 * {
   transition-duration: var(--t-medium);
   transition-property: background, border-color, opacity, color, box-shadow, top, bottom, left,
-    right;
+    margin, right;
   box-sizing: border-box;
 }
 
 body {
   margin: 0px;
+  overflow-y: scroll;
 }
 
 a {
@@ -206,8 +210,9 @@ code {
   --code-builtin: var(--text);
   --code-number: var(--text);
   --code-interpolation: var(--code-keyword);
+  --code-class-name: var(--text);
 
-  color: var(--text);
+  color: var(--text-low);
   overflow-y: auto !important;
 
   code[class*='language-'],
@@ -215,6 +220,10 @@ code {
     overflow-x: auto;
     min-width: 0px;
     color: var(--text);
+  }
+
+  pre[class*='language-'] {
+    margin-bottom: 3em;
   }
 
   & .token.selector,
@@ -259,12 +268,17 @@ code {
     &.token.interpolation {
       color: var(--code-interpolation);
     }
+
+    &.token.class-name {
+      color: var(--code-function);
+    }
   }
 
   & h1,
-  & h2 {
+  & h2,
+  & h3 {
     color: var(--text);
-    margin-bottom: 0.9em;
+    margin-bottom: 0.45em;
   }
 
   & h1 {
@@ -292,7 +306,7 @@ code {
   & :is(code):not(pre code) {
     color: var(--text-medium);
     // font-size: 0.9em;
-    background-color: var(--accent-hover);
+    background-color: var(--secondary);
     padding: 3px 5px;
     border-radius: 0.25em;
   }
@@ -318,6 +332,13 @@ code {
     strong {
       font-style: normal;
     }
+  }
+
+  & hr {
+    border: none;
+    border-top: 1px solid var(--border-low);
+    color: var(--border-low);
+    margin: 30px 0px;
   }
 }
 

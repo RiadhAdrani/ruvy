@@ -209,6 +209,9 @@ export const getSearchQuery = <T extends QueryParams>(): T => {
   return queryParams;
 };
 
+/**
+ * retrieves the current route without the base.
+ */
 export const getRoute = (): string => {
   return getRouteFromUrl(Core.singleton.router.base);
 };
