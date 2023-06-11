@@ -22,7 +22,7 @@ export const UIContext = createContext<IUIConext>({
 });
 
 export const UIProvider = ({ children }: { children?: unknown }) => {
-  const [theme, setTheme] = useLocalStorage('theme', Theme.Device);
+  const [theme, setTheme] = useLocalStorage('@riadh-adrani-ruvy-docs-theme', Theme.Device);
   const [isNavOpen, setNavOpen] = useState(false);
 
   const [add, remove] = useScroll();
