@@ -21,7 +21,7 @@ export type DOMEventHandler<E extends Event = Event, T extends Element = HTMLEle
   event: DOMEvent<E, T>
 ) => void;
 
-export type Selector = { [key in keyof CSS.Properties]: Arrayable<string | number> } & Record<
+export type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties[key]> } & Record<
   string,
   unknown
 >;

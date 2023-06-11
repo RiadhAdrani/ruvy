@@ -143,6 +143,335 @@ declare global {
 
   type AriaProps = { [key in `aria-${keyof Aria}`]: string | number | boolean };
 
+  interface SVGProps {
+    'accent-height': string;
+    accumulate: StringWithAutoComplete<'none' | 'sum'>;
+    additive: StringWithAutoComplete<'replace' | 'sum'>;
+    'alignment-baseline': StringWithAutoComplete<
+      | 'auto'
+      | 'baseline'
+      | 'before-edge'
+      | 'text-before-edge'
+      | 'middle'
+      | 'central'
+      | 'after-edge'
+      | 'text-after-edge'
+      | 'ideographic'
+      | 'alphabetic'
+      | 'hanging'
+      | 'mathematical'
+      | 'top'
+      | 'center'
+      | 'bottom'
+    >;
+    alphabetic: number;
+    amplitude: string;
+    'arabic-form': string;
+    ascent: string;
+    attributeName: string;
+    attributeType: string;
+    azimuth: string;
+
+    baseFrequency: string;
+    'baseline-shift': string;
+    baseProfile: string;
+    bbox: string;
+    begin: string;
+    bias: string;
+    by: string;
+
+    calcMode: string;
+    'cap-height': string;
+    clip: string;
+    clipPathUnits: string;
+    'clip-path': string;
+    'clip-rule': string;
+    'color-interpolation': string;
+    'color-interpolation-filters': string;
+    'color-profile': string;
+    'color-rendering': string;
+    contentScriptType: string;
+    contentStyleType: string;
+    crossorigin: string;
+    cursor: string;
+    cx: number | string;
+    cy: number | string;
+    color: string;
+
+    d: number | string;
+    decelerate: string;
+    descent: string;
+    diffuseConstant: string;
+    direction: string;
+    display: string;
+    divisor: string;
+    'dominant-baseline': string;
+    dur: string;
+    dx: number | string;
+    dy: number | string;
+
+    edgeMode: string;
+    elevation: string;
+    'enable-background': string;
+    end: string;
+    exponent: string;
+
+    fill: string;
+    'fill-opacity': string;
+    'fill-rule': string;
+    filter: string;
+    filterRes: string;
+    filterUnits: string;
+    'flood-color': string;
+    'font-family': string;
+    'font-size': string;
+    'font-size-adjust': string;
+    'font-stretch': string;
+    'font-style': string;
+    'font-weight': string;
+    format: string;
+    from: string;
+    fr: string;
+    fx: string;
+    fy: string;
+
+    g1: string;
+    g2: string;
+    'glyph-name': string;
+    'glyph-orientation-horizontal': string;
+    'glyph-orientation-vertical': string;
+    glyphRef: string;
+    gradientTransform: string;
+    gradientUnits: string;
+
+    hanging: string;
+    height: string;
+    href: string;
+    hreflang: string;
+    'horiz-adv-x': string;
+    'horiz-origin-x': string;
+
+    ideographic: string;
+    'image-rendering': string;
+    in: string;
+    in2: string;
+    intercept: string;
+
+    k: string;
+    k1: string;
+    k2: string;
+    k3: string;
+    k4: string;
+    kernelMatrix: string;
+    kernelUnitLength: string;
+    kerning: string;
+    keyPoints: string;
+    keySplines: string;
+    keyTimes: string;
+
+    lang: string;
+    lengthAdjust: string;
+    'letter-spacing': string;
+    'lighting-color': string;
+    limitingConeAngle: string;
+    local: string;
+
+    'marker-end': string;
+    'marker-mid': string;
+    'marker-start': string;
+    markerHeight: string;
+    markerUnits: string;
+    markerWidth: string;
+    mask: string;
+    maskContentUnits: string;
+    maskUnits: string;
+    mathematical: string;
+    max: string;
+    media: string;
+    method: string;
+    min: string;
+    mode: string;
+
+    name: string;
+    numOctaves: string;
+
+    offset: string;
+    opacity: string;
+    operator: string;
+    order: string;
+    orient: string;
+    orientation: string;
+    origin: string;
+    overflow: string;
+    'overline-position': string;
+    'overline-thickness': string;
+
+    'panose-1': string;
+    'paint-order': string;
+    path: string;
+    pathLength: string;
+    patternContentUnits: string;
+    patternTransform: string;
+    patternUnits: string;
+    ping: string;
+    'pointer-events': string;
+    points: string;
+    pointsAtX: string;
+    pointsAtY: string;
+    pointsAtZ: string;
+    preserveAlpha: string;
+    preserveAspectRatio: string;
+    primitiveUnits: string;
+
+    r: string;
+    radius: string;
+    referrerPolicy: string;
+    refX: string;
+    refY: string;
+    rel: string;
+    'rendering-intent': string;
+    repeatCount: string;
+    repeatDur: string;
+    requiredExtensions: string;
+    requiredFeatures: string;
+    restart: string;
+    result: string;
+    rotate: string;
+    rx: string;
+    ry: string;
+
+    scale: string;
+    seed: string;
+    'shape-rendering': string;
+    slope: string;
+    spacing: string;
+    specularConstant: string;
+    specularExponent: string;
+    speed: string;
+    spreadMethod: string;
+    startOffset: string;
+    stdDeviation: string;
+    stemh: string;
+    stemv: string;
+    stitchTiles: string;
+    'stop-color': string;
+    'stop-opacity': string;
+    'strikethrough-position': string;
+    'strikethrough-thickness': string;
+    string: string;
+    stroke: string;
+    'stroke-dasharray': string;
+    'stroke-dashoffset': string;
+    'stroke-linecap': string;
+    'stroke-linejoin': string;
+    'stroke-miterlimit': string;
+    'stroke-opacity': string;
+    'stroke-width': string;
+    surfaceScale: string;
+    systemLanguage: string;
+
+    tabindex: string;
+    tableValues: string;
+    target: string;
+    targetX: string;
+    targetY: string;
+    'text-anchor': string;
+    'text-decoration': string;
+    'text-rendering': string;
+    textLength: string;
+    to: string;
+    transform: string;
+    'transform-origin': string;
+    type: string;
+
+    u1: string;
+    u2: string;
+    'underline-position': string;
+    'underline-thickness': string;
+    unicode: string;
+    'unicode-bidi': string;
+    'unicode-range': string;
+    'units-per-em': string;
+
+    'v-alphabetic': string;
+    'v-hanging': string;
+    'v-ideographic': string;
+    'v-mathematical': string;
+    values: string;
+    'vector-effect': string;
+    version: string;
+    'vert-adv-y': string;
+    'vert-origin-x': string;
+    'vert-origin-y': string;
+    viewBox: string;
+    viewTarget: string;
+    visibility: string;
+
+    width: string;
+    widths: string;
+    'word-spacing': string;
+    'writing-mode': string;
+
+    x: string;
+    'x-height': string;
+    x1: string;
+    x2: string;
+    xChannelSelector: string;
+    'xlink:actuate': string;
+    'xlink:arcrole': string;
+    'xlink:href': string;
+    'xlink:role': string;
+    'xlink:show': string;
+    'xlink:title': string;
+    'xlink:type': string;
+    'xml:base': string;
+    'xml:lang': string;
+    'xml:space': string;
+
+    y: string;
+    y1: string;
+    y2: string;
+    yChannelSelector: string;
+
+    z: string;
+    zoomAndPan: string;
+  }
+
+  type SVGCommonProps = Pick<
+    SVGProps,
+    | 'lang'
+    | 'tabindex'
+    | 'requiredExtensions'
+    | 'systemLanguage'
+    | 'clip-path'
+    | 'clip-rule'
+    | 'color'
+    | 'color-interpolation'
+    | 'color-rendering'
+    | 'cursor'
+    | 'display'
+    | 'fill'
+    | 'fill-opacity'
+    | 'fill-rule'
+    | 'filter'
+    | 'mask'
+    | 'opacity'
+    | 'pointer-events'
+    | 'shape-rendering'
+    | 'stroke'
+    | 'stroke-dasharray'
+    | 'stroke-dashoffset'
+    | 'stroke-linecap'
+    | 'stroke-linejoin'
+    | 'stroke-miterlimit'
+    | 'stroke-opacity'
+    | 'stroke-width'
+    | 'transform'
+    | 'vector-effect'
+    | 'visibility'
+    | 'xlink:title'
+  >;
+
   interface CommonProps extends AriaProps {
     class: Arrayable<string>;
     id: string;
@@ -175,6 +504,19 @@ declare global {
   > &
     Partial<CommonProps> &
     Partial<DOMEvents<E>> &
+    Partial<T>;
+
+  type SVGCommonPropsWith<K extends keyof SVGProps> = SVGCommonProps & {
+    [P in K]: SVGProps[P];
+  };
+
+  type SVGComponentProps<E extends Element = SVGElement, T extends object = object> = Record<
+    string | number,
+    unknown
+  > &
+    Partial<CommonProps> &
+    Partial<DOMEvents<E>> &
+    Partial<SVGCommonProps> &
     Partial<T>;
 
   interface BlockQuoteProps {
@@ -211,7 +553,7 @@ declare global {
     type: string;
   }
 
-  interface AProps {
+  interface AProps extends SVGCommonPropsWith<'xlink:href'> {
     download: string;
     href: string;
     hreflang: string;
@@ -515,6 +857,31 @@ declare global {
     name: string;
   }
 
+  type AnimateProps = Pick<
+    SVGProps,
+    | 'begin'
+    | 'dur'
+    | 'end'
+    | 'min'
+    | 'max'
+    | 'restart'
+    | 'repeatCount'
+    | 'repeatDur'
+    | 'fill'
+    | 'calcMode'
+    | 'values'
+    | 'keyTimes'
+    | 'keySplines'
+    | 'from'
+    | 'to'
+    | 'by'
+    | 'attributeName'
+    | 'additive'
+    | 'accumulate'
+  >;
+
+  type AnimateMotionProps = Pick<SVGProps, 'keyPoints' | 'path' | 'rotate'>;
+
   namespace JSX {
     type Element = BranchTemplate<Any>;
 
@@ -637,6 +1004,70 @@ declare global {
       video: ComponentProps<HTMLVideoElement>;
       wbr: ComponentProps;
       webview: ComponentProps;
+
+      //SVG
+      animate: SVGComponentProps<SVGAnimateElement, AnimateProps>;
+      animateMotion: SVGComponentProps<SVGAnimateMotionElement, AnimateMotionProps>;
+
+      // TODO create proper typing
+      circle: SVGComponentProps;
+      clipPath: SVGComponentProps;
+      defs: SVGComponentProps;
+      desc: SVGComponentProps;
+      ellipse: SVGComponentProps;
+      feBlend: SVGComponentProps;
+      feColorMatrix: SVGComponentProps;
+      feComponentTransfer: SVGComponentProps;
+      feComposite: SVGComponentProps;
+      feConvolveMatrix: SVGComponentProps;
+      feDiffuseLighting: SVGComponentProps;
+      feDisplacementMap: SVGComponentProps;
+      feDistantLight: SVGComponentProps;
+      feDropShadow: SVGComponentProps;
+      feFlood: SVGComponentProps;
+      feFuncA: SVGComponentProps;
+      feFuncB: SVGComponentProps;
+      feFuncG: SVGComponentProps;
+      feFuncR: SVGComponentProps;
+      feGaussianBlur: SVGComponentProps;
+      feImage: SVGComponentProps;
+      feMerge: SVGComponentProps;
+      feMergeNode: SVGComponentProps;
+      feMorphology: SVGComponentProps;
+      feOffset: SVGComponentProps;
+      fePointLight: SVGComponentProps;
+      feSpecularLighting: SVGComponentProps;
+      feSpotLight: SVGComponentProps;
+      feTile: SVGComponentProps;
+      feTurbulence: SVGComponentProps;
+      filter: SVGComponentProps;
+      foreignObject: SVGComponentProps;
+      g: SVGComponentProps;
+      hatch: SVGComponentProps;
+      hatchpath: SVGComponentProps;
+      image: SVGComponentProps;
+      line: SVGComponentProps;
+      lineGradient: SVGComponentProps;
+      marker: SVGComponentProps;
+      mask: SVGComponentProps;
+      metadata: SVGComponentProps;
+      mpath: SVGComponentProps;
+      path: SVGComponentProps;
+      pattern: SVGComponentProps;
+      polygon: SVGComponentProps;
+      polyline: SVGComponentProps;
+      radialGradient: SVGComponentProps;
+      rect: SVGComponentProps;
+      set: SVGComponentProps;
+      stop: SVGComponentProps;
+      svg: SVGComponentProps;
+      switch: SVGComponentProps;
+      symbol: SVGComponentProps;
+      text: SVGComponentProps;
+      textPath: SVGComponentProps;
+      tspan: SVGComponentProps;
+      use: SVGComponentProps;
+      view: SVGComponentProps;
     }
   }
 }
