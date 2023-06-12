@@ -108,7 +108,6 @@ interface RawRoute<T = unknown> extends CommonRoute<T> {
 
 ```ts
 interface RouterParams {
-  onStateChange: Callback;
   base?: string;
   scrollToTop?: boolean;
 }

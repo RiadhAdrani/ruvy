@@ -1,6 +1,6 @@
 import { isBlank, Callback } from '@riadh-adrani/utils';
 import { Context } from '../context/index.js';
-import { RawRoute, Route, RouterParams } from './types.js';
+import { RawRoute, Route, RouterConstructorParams } from './types.js';
 import {
   findRouteFromList,
   flatten,
@@ -14,6 +14,8 @@ export default class Router<T = unknown> {
   base = '';
   scrollToTop = false;
   onStateChange: Callback;
+  titleSuffix = '';
+  titlePrefix = '';
 
   context = new Context<number>();
 
@@ -144,11 +146,16 @@ export default class Router<T = unknown> {
     return this.context.use(callback, depth + 1);
   }
 
-  constructor(routes: Array<RawRoute>, { onStateChange, base, scrollToTop }: RouterParams) {
+  constructor(
+    routes: Array<RawRoute>,
+    { onStateChange, base, scrollToTop, titlePrefix, titleSuffix }: RouterConstructorParams
+  ) {
     this.onStateChange = onStateChange;
     this.base = base ?? this.base;
     this.scrollToTop = scrollToTop ?? false;
     this.routes = flatten(routes);
+    this.titlePrefix = titlePrefix ?? '';
+    this.titleSuffix = titleSuffix ?? '';
 
     window.addEventListener('popstate', () => {
       this.onStateChange();
@@ -214,7 +221,7 @@ export default class Router<T = unknown> {
 
   updateTitle() {
     if (this.nearestRoute?.title) {
-      document.title = this.nearestRoute?.title;
+      document.title = `${this.titlePrefix}${this.nearestRoute?.title}${this.titleSuffix}`;
     }
   }
 }

@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - `getRoute`, a function that returns the current url without the `base`.
 - added `SVG` elements with shallow typing.
 - creation of the docs website.
+- add `titleSuffix` and `titlePrefix` as optional params in `RouterParams`.
 
 ## 0.2.0 - 2023-06-02
 

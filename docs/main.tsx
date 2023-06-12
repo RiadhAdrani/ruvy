@@ -4,6 +4,6 @@ import { routes } from './router/routes.js';
 import './style/index.scss';
 import 'virtual:uno.css';
 
-createRouter(routes, { base: '/ruvy' });
+createRouter(routes, { base: '/ruvy', titleSuffix: ' | Ruvy', scrollToTop: true });
 
 mountApp({ callback: App, hostElement: document.querySelector('#app') as HTMLElement });
