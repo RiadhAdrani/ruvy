@@ -49,6 +49,8 @@ Like React Router or any other routing system, you only need to add `:` before t
 - The `routes` parameter accept a mix of nested and flat routes.
 - When using nested routes, add a slash `/` only for the first level of routes.
 - Dynamic routes will be matched the last.
+- Use an anchor element `<a/>` as the equivalent of `<Link/>` with `href` being the `to` attribute, e.g: `<a href="/">Home</a>`.
+- Using `e.preventDefault()` on a sibling or parents of the anchor tag will cause the navigation effect to fail, because it relies on the event being propagated to the `window` object. you can use [`navigate`](/docs/api/navigate) or [`replace`](/docs/api/replace) instead.
 
 <hr/>
 
