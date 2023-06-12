@@ -11,7 +11,7 @@ export const isDarkMode = (): boolean => {
 export const join = (array: Array<string>): string => `@apply ${array.join(' ')}`;
 
 export const isActive = (path: string): boolean => {
-  const current = `/${getRoute()}`;
+  const current = getRoute();
 
   return current.substring(0, path.length) === path;
 };

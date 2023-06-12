@@ -51,6 +51,9 @@ export default class Router<T = unknown> {
     return getParams(this.path, this.nearestRoute?.path ?? '');
   }
 
+  /**
+   * @deprecated
+   */
   get component(): T | undefined {
     const depth = this.context.data;
     const current = this.nearestRoute;
@@ -150,6 +153,11 @@ export default class Router<T = unknown> {
     window.addEventListener('popstate', () => {
       this.onStateChange();
     });
+
+    // check if base is not blank and valid
+    if (!isBlank(base ?? '') && !base?.startsWith('/')) {
+      throw `[Ruvy] invalid base (${base})`;
+    }
 
     const path = this.getCorrectPath(getRouteFromUrl(this.base));
 

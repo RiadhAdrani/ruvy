@@ -29,6 +29,12 @@ describe('Router class', () => {
 
   beforeEach(() => setup());
 
+  it('should throw when base is invalid', () => {
+    expect(() => new Router([], { onStateChange: () => 0, base: 'bad-base' })).toThrow(
+      '[Ruvy] invalid base (bad-base)'
+    );
+  });
+
   it('should push state correctly', () => {
     router.push('/hello');
 
@@ -54,7 +60,7 @@ describe('Router class', () => {
   });
 
   it('should get current path with base', () => {
-    router.base = 'tester';
+    router.base = '/tester';
     router.push('/test');
 
     expect(router.path).toBe('/test');

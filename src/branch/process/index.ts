@@ -30,7 +30,7 @@ const process = (
   const unique = new Set(keys);
 
   if (unique.size !== keys.length) {
-    console.error(`Duplicate key detected`);
+    throw '[Ruvy] unexpected duplicate key';
   }
 
   return out;

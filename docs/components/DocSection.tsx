@@ -6,7 +6,7 @@ export default ({ url, path }: PropsWithChildren<{ url: string; path: string }>)
   const content = useMarkdown(url);
 
   const showMain = useMemo(() => {
-    return `/${getRoute()}` === path;
+    return getRoute() === path;
   }, getRoute());
 
   return showMain ? <Markdown content={content} /> : <Outlet />;

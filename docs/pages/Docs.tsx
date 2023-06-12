@@ -9,7 +9,7 @@ export default () => {
   const content = useMarkdown(docMD);
 
   const showMain = useMemo(() => {
-    return `/${getRoute()}` === '/docs';
+    return getRoute() === '/docs';
   }, getRoute());
 
   return (

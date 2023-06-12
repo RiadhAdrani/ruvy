@@ -10,7 +10,6 @@ All notable changes to this project will be documented in this file.
 - `joinClasses`, a utility function that filter and returns a valid className as a string.
 - `getSearchQuery`, a function that returns the search params of the current route as a typed object.
 - `getRoute`, a function that returns the current url without the `base`.
-
 - added `SVG` elements with shallow typing.
 - creation of the docs website.
 

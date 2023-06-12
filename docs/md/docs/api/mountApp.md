@@ -2,15 +2,13 @@
 
 `mountApp` let's you mount your application and render it inside a browser DOM node.
 
-<br/>
+<hr/>
 
-### Type
+### Type & Parameters
 
 ```ts
 function mountApp(params: MountParams): void;
 ```
-
-### Parameters
 
 The only parameter is the `params` object, which contains multiple options :
 
