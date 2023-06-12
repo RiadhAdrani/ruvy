@@ -17,6 +17,8 @@ import getParams from './docs/api/getParams.md';
 import getRoute from './docs/api/getRoute.md';
 import getSearchQuery from './docs/api/getSearchQuery.md';
 import mountApp from './docs/api/mountApp.md';
+import navigate from './docs/api/navigate.md';
+import replace from './docs/api/replace.md';
 
 export type DocItem = RawRoute<RuvyNode>;
 
@@ -36,6 +38,8 @@ export const ApiSections: Array<DocItem> = [
   { path: 'getParams', component: getParams, title: 'getParams' },
   { path: 'getSearchQuery', component: getSearchQuery, title: 'getSearchQuery' },
   { path: 'getRoute', component: getRoute, title: 'getRoute' },
+  { path: 'replace', component: replace, title: 'replace' },
+  { path: 'navigate', component: navigate, title: 'navigate' },
 ];
 
 export const DocsSections: Array<DocItem> = [

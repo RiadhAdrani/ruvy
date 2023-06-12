@@ -25,7 +25,7 @@ acceps two arguments:
 
 ### Route entry
 
-A route entry is of type [`RawRoute`](/docs/types#rawroutes) composed of the following keys:
+A route entry is of type [`RawRoute`](/docs/types#rawroute) composed of the following keys:
 
 <br/>
 

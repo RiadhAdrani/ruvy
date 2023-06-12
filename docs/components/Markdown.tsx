@@ -6,6 +6,7 @@ import { mangle } from 'marked-mangle';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
+import { isBlank } from '@riadh-adrani/utils';
 
 marked.use(gfmHeadingId());
 marked.use(mangle());
@@ -26,6 +27,14 @@ export default ({ content }: MarkdownProps) => {
       ref.value.innerHTML = sanitizer.sanitize(parsed);
 
       Prism.highlightAll();
+
+      const hash = location.hash;
+
+      if (isBlank(hash)) return;
+
+      const view = ref.value.querySelector(hash);
+
+      view?.scrollIntoView();
     }
   }, content);
 

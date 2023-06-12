@@ -10,7 +10,7 @@
 function mountApp(params: MountParams): void;
 ```
 
-The only parameter is the `params` object, which contains multiple options :
+The only parameter is the `params` object of type [`MountParams`](/docs/types#mountparams), which contains multiple options :
 
 <br/>
 
