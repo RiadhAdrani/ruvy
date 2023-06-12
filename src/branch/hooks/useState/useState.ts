@@ -35,6 +35,8 @@ export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
 
   const value = current.hooks[key].data;
 
+  // TODO : allow a setter function callback
+  // TODO : add it to docs
   const setter = (value: unknown) => {
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
