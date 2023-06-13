@@ -112,3 +112,11 @@ interface RouterParams {
   scrollToTop?: boolean;
 }
 ```
+
+### `ContextObject`
+
+```ts
+export interface ContextObject<T = unknown> {
+  Provider: (props: ContextComponentProps<T>) => BranchTemplate<BranchTag.Context>;
+}
+```
