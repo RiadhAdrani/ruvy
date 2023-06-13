@@ -203,7 +203,6 @@ export default class Router<T = unknown> {
     history.pushState({ path }, '', `${this.base}${path}`);
 
     this.onStateChange();
-    this.updateTitle();
   }
 
   replace(to: string) {
@@ -216,12 +215,22 @@ export default class Router<T = unknown> {
     history.replaceState({ path }, '', `${this.base}${path}`);
 
     this.onStateChange();
-    this.updateTitle();
   }
 
   updateTitle() {
     if (this.nearestRoute?.title) {
       document.title = `${this.titlePrefix}${this.nearestRoute?.title}${this.titleSuffix}`;
     }
+  }
+
+  updateScroll() {
+    if (this.scrollToTop) {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  onPostStateChange() {
+    this.updateTitle();
+    this.updateScroll();
   }
 }

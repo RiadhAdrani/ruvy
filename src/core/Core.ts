@@ -163,7 +163,11 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
 export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterParams) => {
   Core.singleton.router = new Router(routes, {
     ...config,
-    onStateChange: () => Core.batch(() => Core.notifyStateUpdated()),
+    onStateChange: () =>
+      Core.batch(() => {
+        Core.notifyStateUpdated();
+        Core.singleton.router.onPostStateChange();
+      }),
   });
 };
 
