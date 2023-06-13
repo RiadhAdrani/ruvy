@@ -38,5 +38,5 @@ export default ({ content }: MarkdownProps) => {
     }
   }, content);
 
-  return <div class="markdown-container w-100%" ref={ref} />;
+  return <div class="markdown-container w-100%" ref={ref}></div>;
 };

@@ -35,8 +35,6 @@ The only parameter is the `initialState`, which as its name suggests, initialize
 ```ts
 import { useState } from '@riadh-adrani/ruvy';
 
-const host = document.body;
-
 function MyComponent() {
   const [count, setCount] = useState(42);
 
