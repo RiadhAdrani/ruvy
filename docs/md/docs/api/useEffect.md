@@ -20,7 +20,6 @@ accepts two parameters:
 
 ### Notes ⚠️
 
-- `useEffect` will run only once if no `deps` are provided.
 - Avoid updating state unconditionally inside `useEffect` as that might cause an infinite-loop of rerenders.
 - The cleanup functions will run each time the `deps` provided changes, and when the component is unmounted.
 - Unlike `React`, deps could be any object, an array is not mandatory.
