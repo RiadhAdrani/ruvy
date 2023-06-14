@@ -19,6 +19,8 @@ import getSearchQuery from './docs/api/getSearchQuery.md';
 import mountApp from './docs/api/mountApp.md';
 import navigate from './docs/api/navigate.md';
 import replace from './docs/api/replace.md';
+import outlet from './docs/api/outlet.md';
+import portal from './docs/api/portal.md';
 
 export type DocItem = RawRoute<RuvyNode>;
 
@@ -40,6 +42,8 @@ export const ApiSections: Array<DocItem> = [
   { path: 'getRoute', component: getRoute, title: 'getRoute' },
   { path: 'replace', component: replace, title: 'replace' },
   { path: 'navigate', component: navigate, title: 'navigate' },
+  { path: 'outlet', component: outlet, title: '<Outlet/>' },
+  { path: 'portal', component: portal, title: '<Portal/>' },
 ];
 
 export const DocsSections: Array<DocItem> = [

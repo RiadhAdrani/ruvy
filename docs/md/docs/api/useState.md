@@ -7,7 +7,7 @@
 ### Type & Parameters
 
 ```ts
-function useState<T>(initialState): StateArray<T>;
+function useState<T>(initialState: T): StateArray<T>;
 ```
 
 The only parameter is the `initialState`, which as its name suggests, initialize the state value.
