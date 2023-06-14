@@ -6,6 +6,8 @@ import createElPropsUpdateAction from './updateElProps.js';
 import createTextUpdateAction from './updateText.js';
 import createRemoveBranchAction from './removeBranch.js';
 import createReorderHostElement from './reorderElement.js';
+import createMovePortalChildren from './movePortalChildren.js';
+import { PortalBranchType } from '../new/portal.js';
 
 /**
  * create an branch action
@@ -39,6 +41,10 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     }
     case ActionType.Reorder: {
       callback = createReorderHostElement(branch);
+      break;
+    }
+    case ActionType.UpdatePortalChildren: {
+      callback = createMovePortalChildren(branch as Branch<PortalBranchType>);
       break;
     }
     case ActionType.Cleanup:

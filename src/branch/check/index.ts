@@ -15,7 +15,7 @@ import {
 import { Branch, BranchSymbol, BranchTag, BranchTemplate } from '../types.js';
 import { createFragmentTemplate } from '../create/index.js';
 import { getCorrectKey } from '../utils/index.js';
-import { Outlet } from '../index.js';
+import { Outlet, Portal } from '../index.js';
 
 /**
  * checks if the given is a valid component template
@@ -82,6 +82,10 @@ export const isNullishChild = (o: unknown): boolean => {
 export const getTag = (o: unknown): BranchTag => {
   if (isValidTemplate(o)) {
     const type = cast<BranchTemplate>(o).type;
+
+    if (type === Portal) {
+      return BranchTag.Portal;
+    }
 
     if (type === BranchTag.Context) {
       return BranchTag.Context;

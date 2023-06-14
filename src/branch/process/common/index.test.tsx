@@ -22,10 +22,11 @@ describe('common', () => {
       [ActionType.Unmounted]: 2,
       [ActionType.RemoveBranch]: 3,
       [ActionType.Reorder]: 4,
-      [ActionType.UpdateProps]: 5,
-      [ActionType.UpdateText]: 6,
-      [ActionType.Cleanup]: 7,
-      [ActionType.Effect]: 8,
+      [ActionType.UpdatePortalChildren]: 5,
+      [ActionType.UpdateProps]: 6,
+      [ActionType.UpdateText]: 7,
+      [ActionType.Cleanup]: 8,
+      [ActionType.Effect]: 9,
     });
   });
 

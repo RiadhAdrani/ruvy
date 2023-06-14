@@ -24,7 +24,7 @@ import { Outlet } from '../index.js';
 import { CallbackWithArgs } from 'src/index.js';
 import { Core } from '../../core/Core.js';
 
-export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
+export const initBranch = <T = unknown>(data?: Partial<Branch<T>>): Branch<T> => {
   const initial: Branch = {
     children: [],
     hooks: {},
@@ -37,7 +37,7 @@ export const initBranch = <T = unknown>(data?: Partial<Branch>): Branch<T> => {
     unmountedChildren: [],
   };
 
-  return merge(initial, data ?? {});
+  return merge(initial, (data ?? {}) as Branch<T>) as Branch<T>;
 };
 
 export const Namespaces = Object.keys(Namespace).map(
@@ -98,7 +98,7 @@ export const getHtmlElementEventListeners = (branch: Branch): Record<string, Dom
  * @param branch branch
  */
 export const isHostBranch = (branch: Branch): boolean => {
-  return [BranchTag.Element, BranchTag.Root, BranchTag.Text].includes(branch.tag);
+  return [BranchTag.Element, BranchTag.Root, BranchTag.Text, BranchTag.Portal].includes(branch.tag);
 };
 
 /**
@@ -183,14 +183,14 @@ export const getHostBranchIndexFromHostParent = (
  * retrieve closest host branches of a branch.
  * @param branch starting branch
  */
-export const getClosestHostBranches = (branch: Branch): Array<Branch> => {
+export const getClosestChildrenHostBranches = (branch: Branch): Array<Branch> => {
   const out: Array<Branch> = [];
 
   if (isHostBranch(branch)) {
     return [branch];
   }
 
-  branch.children.forEach(child => out.push(...getClosestHostBranches(child)));
+  branch.children.forEach(child => out.push(...getClosestChildrenHostBranches(child)));
 
   return out;
 };

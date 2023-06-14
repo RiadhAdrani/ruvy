@@ -12,6 +12,7 @@ import {
 } from './index.js';
 import { Branch, BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from '../types.js';
 import { omit } from '@riadh-adrani/utils';
+import { Portal } from '../index.js';
 
 // or else eslint will cry
 createJsxElement;
@@ -63,6 +64,8 @@ describe('getTag', () => {
   };
   const div: BranchTemplate = { children: [], props: {}, symbol: BranchSymbol, type: 'div' };
 
+  const portal = <Portal container={document.body} />;
+
   it.each([
     ['hello', BranchTag.Text],
     [1, BranchTag.Text],
@@ -74,6 +77,7 @@ describe('getTag', () => {
     [fc, BranchTag.Function],
     [fr, BranchTag.Fragment],
     [div, BranchTag.Element],
+    [portal, BranchTag.Portal],
   ])('should return correct branch type (%s) => (%s)', (obj, expected) => {
     expect(getTag(obj)).toBe(expected);
   });

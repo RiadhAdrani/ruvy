@@ -17,6 +17,7 @@ export enum BranchTag {
   Null = '#-null-branch',
   Outlet = '#-outlet-branch',
   Context = '#-context-branch',
+  Portal = '#-portal-branch',
 }
 
 export enum HookType {
@@ -48,6 +49,7 @@ export enum ActionType {
   UpdateText = '#-action-text-node',
   Unmounted = '#-action-unmounted',
   RemoveBranch = '#-action-remove-branch',
+  UpdatePortalChildren = '#-action-update-portal-children',
 }
 
 export const ActionPriority: { [key in ActionType]: number } = (() => {
@@ -59,6 +61,7 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
     ActionType.Unmounted,
     ActionType.RemoveBranch,
     ActionType.Reorder,
+    ActionType.UpdatePortalChildren,
     ActionType.UpdateProps,
     ActionType.UpdateText,
     ActionType.Cleanup,

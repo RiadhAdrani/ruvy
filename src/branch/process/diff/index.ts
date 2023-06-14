@@ -8,15 +8,21 @@ import {
   BranchTemplateFragment,
   BranchTemplateFunction,
 } from '../../types.js';
-import { getClosestHostBranches, getCorrectKey, getBranchWithKey } from '../../utils/index.js';
+import {
+  getClosestChildrenHostBranches,
+  getCorrectKey,
+  getBranchWithKey,
+} from '../../utils/index.js';
 import createAction from '../actions/index.js';
 import { unmountBranch } from '../common/index.js';
 import createNewBranch from '../new/index.js';
+import { PortalBranchType } from '../new/portal.js';
 import context from './context.js';
 import element from './element.js';
 import fragment from './fragment.js';
 import fn from './function.js';
 import outlet from './outlet.js';
+import portal from './portal.js';
 import text from './text.js';
 
 /**
@@ -90,7 +96,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
       current.children = moveElement(current.children, oldIndex, newIndex);
 
       // we need to get Host element(s) and rearrange them
-      const hosts = getClosestHostBranches(branch);
+      const hosts = getClosestChildrenHostBranches(branch);
 
       hosts.forEach(host => {
         current.pendingActions.push(createAction(ActionType.Reorder, host));
@@ -175,6 +181,10 @@ const diffBranches = (
       }
       case BranchTag.Context: {
         children = context(current, template as BranchTemplate);
+        break;
+      }
+      case BranchTag.Portal: {
+        children = portal(current, template as BranchTemplate<PortalBranchType>);
         break;
       }
       default:

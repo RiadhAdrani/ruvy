@@ -13,7 +13,7 @@ import {
   isHostBranch,
   getCorrectKey,
   getHostBranchIndexFromHostParent,
-  getClosestHostBranches,
+  getClosestChildrenHostBranches,
   getOutletDepth,
   combineClasses,
   preprocessProps,
@@ -93,6 +93,8 @@ describe('utils', () => {
       [BranchTag.Null, false],
       [BranchTag.Root, true],
       [BranchTag.Text, true],
+      [BranchTag.Context, false],
+      [BranchTag.Portal, true],
     ])('should determine if (%s) is host => (%s)', (tag, res) => {
       expect(isHostBranch(initBranch({ tag }))).toBe(res);
     });
@@ -325,7 +327,7 @@ describe('utils', () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch)).toStrictEqual([branch]);
+      expect(getClosestChildrenHostBranches(branch)).toStrictEqual([branch]);
     });
 
     it('should get host branch directly nested', () => {
@@ -338,7 +340,7 @@ describe('utils', () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual(['div']);
+      expect(getClosestChildrenHostBranches(branch).map(item => item.key)).toStrictEqual(['div']);
     });
 
     it('should get host branch nested (1)', () => {
@@ -355,7 +357,7 @@ describe('utils', () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
+      expect(getClosestChildrenHostBranches(branch).map(item => item.key)).toStrictEqual([
         'div',
         'div1',
         'div2',
@@ -384,7 +386,7 @@ describe('utils', () => {
 
       const branch = parent.children[0];
 
-      expect(getClosestHostBranches(branch).map(item => item.key)).toStrictEqual([
+      expect(getClosestChildrenHostBranches(branch).map(item => item.key)).toStrictEqual([
         'div',
         'div1',
         'div2',

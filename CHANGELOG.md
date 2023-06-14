@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
 - added `SVG` elements with shallow typing.
 - creation of the docs website.
 - add `titleSuffix` and `titlePrefix` as optional params in `RouterParams`.
+- add `<Portal/>` component, allowing to teleport elements in another DOM container.
+
+### Fixed
+
+- `scrollToTop` not having any effect, when a new page is loaded.
 
 ## 0.2.0 - 2023-06-02
 

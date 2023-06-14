@@ -16,6 +16,8 @@ export {
   usePromise,
 } from './branch/index.js';
 
+export { Portal } from './branch/index.js';
+
 // router
 export {
   createRouter,
