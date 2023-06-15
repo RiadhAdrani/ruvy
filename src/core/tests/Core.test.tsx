@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vitest } from 'vitest';
-import { Core, createRouter, getSearchQuery, setEffect } from '../Core.js';
+import { Core, createRouter, getSearchParams, setEffect } from '../Core.js';
 
 describe('Core', () => {
   let core: Core;
@@ -129,25 +129,25 @@ describe('Core', () => {
     beforeEach(() => createRouter([], {}));
 
     it('should return an empty object', () => {
-      expect(getSearchQuery()).toStrictEqual({});
+      expect(getSearchParams()).toStrictEqual({});
     });
 
     it('should return an object', () => {
       Core.singleton.router.push('/user?q=test');
 
-      expect(getSearchQuery()).toStrictEqual({ q: 'test' });
+      expect(getSearchParams()).toStrictEqual({ q: 'test' });
     });
 
     it('should return an object with multiple keys', () => {
       Core.singleton.router.push('/user?q=test&n=3');
 
-      expect(getSearchQuery()).toStrictEqual({ q: 'test', n: '3' });
+      expect(getSearchParams()).toStrictEqual({ q: 'test', n: '3' });
     });
 
     it('should return an undefined key', () => {
       Core.singleton.router.push('/user?q=test&n=');
 
-      expect(getSearchQuery()).toStrictEqual({ q: 'test', n: '' });
+      expect(getSearchParams()).toStrictEqual({ q: 'test', n: '' });
     });
   });
 });

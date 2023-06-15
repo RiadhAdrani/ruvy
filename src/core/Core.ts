@@ -199,7 +199,7 @@ export const getParams = (): Record<string, string> => {
   return Core.singleton.router.params;
 };
 
-export const getSearchQuery = <T extends QueryParams>(): T => {
+export const getSearchParams = <T extends QueryParams>(): T => {
   const queryParams: T = {} as T;
   const searchParams = new URLSearchParams(window.location.search);
 
