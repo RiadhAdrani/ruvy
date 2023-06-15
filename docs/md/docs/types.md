@@ -132,3 +132,13 @@ type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
 ```ts
 type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
 ```
+
+### `PortalProps`
+
+```ts
+interface PortalProps {
+  container: Element;
+  key?: BranchKey;
+  children?: Array<unknown>;
+}
+```
