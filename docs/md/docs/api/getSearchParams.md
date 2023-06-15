@@ -28,7 +28,7 @@ returns an object of key/value pairs of the search params from the current URL m
 
 ### Example
 
-#### extract query from search params
+#### Extract query from search params
 
 ```ts
 import { getSearchParams } from '@riadh-adrani/ruvy';

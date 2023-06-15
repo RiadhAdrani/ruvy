@@ -28,7 +28,7 @@ returns an object of key/value pairs of the dynamic params from the current URL 
 
 ### Example
 
-#### extract user ID from the current path.
+#### Extract user ID from the current path.
 
 ```ts
 import { getParams } from '@riadh-adrani/ruvy';
