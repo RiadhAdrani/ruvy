@@ -10,7 +10,9 @@
 function usePromise<T>(callback: () => Promise<T>): UsePromiseReturn<T>;
 ```
 
-accepts an `asynchronous callback` as the only parameter.
+Accepts an `asynchronous callback` as the only parameter.
+
+<br/>
 
 ### Returns
 

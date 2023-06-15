@@ -195,8 +195,8 @@ interface QueryParams {
   [key: string]: string | undefined;
 }
 
-export const getParams = <T = Record<string, string>>() => {
-  return Core.singleton.router.params as T;
+export const getParams = (): Record<string, string> => {
+  return Core.singleton.router.params;
 };
 
 export const getSearchQuery = <T extends QueryParams>(): T => {
