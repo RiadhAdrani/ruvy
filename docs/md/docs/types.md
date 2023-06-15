@@ -116,7 +116,19 @@ interface RouterParams {
 ### `ContextObject`
 
 ```ts
-export interface ContextObject<T = unknown> {
+interface ContextObject<T = unknown> {
   Provider: (props: ContextComponentProps<T>) => BranchTemplate<BranchTag.Context>;
 }
+```
+
+### `UsePromiseReturn`
+
+```ts
+type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
+```
+
+### `UsePromiseState`
+
+```ts
+type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
 ```
