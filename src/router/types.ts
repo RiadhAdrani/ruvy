@@ -8,7 +8,7 @@ export interface CommonRoute<T = unknown> {
 }
 
 export interface RawRoute<T = unknown> extends CommonRoute<T> {
-  routes?: Array<RawRoute>;
+  routes?: Array<RawRoute<T>>;
 }
 
 export interface Route<T = unknown> extends CommonRoute<T> {

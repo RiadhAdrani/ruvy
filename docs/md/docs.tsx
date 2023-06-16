@@ -22,6 +22,10 @@ import replace from './docs/api/replace.md';
 import outlet from './docs/api/outlet.md';
 import portal from './docs/api/portal.md';
 
+import more from './docs/more.md';
+import classAttribute from './docs/more/class-attribute.md';
+import joinClasses from './docs/more/joinClasses.md';
+
 export type DocItem = RawRoute<RuvyNode>;
 
 export const ApiSections: Array<DocItem> = [
@@ -46,12 +50,23 @@ export const ApiSections: Array<DocItem> = [
   { path: 'portal', component: portal, title: '<Portal/>' },
 ];
 
+export const MoreSections: Array<DocItem> = [
+  { path: 'class-attribute', component: classAttribute, title: 'Class attribute' },
+  { path: 'joinClasses', component: joinClasses, title: 'joinClasses' },
+];
+
 export const DocsSections: Array<DocItem> = [
   {
     path: '/api',
     component: api,
     title: 'API',
     routes: ApiSections,
+  },
+  {
+    path: '/more',
+    component: more,
+    title: 'More',
+    routes: MoreSections,
   },
   {
     path: '/types',

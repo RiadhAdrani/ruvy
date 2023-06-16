@@ -1,4 +1,4 @@
-import { Arrayable, isArray, isDefined } from '@riadh-adrani/utils';
+import { Arrayable, isArray, isFalsy } from '@riadh-adrani/utils';
 
 /**
  * filters the list of provided classes (removes `null` and `undefined`)
@@ -6,7 +6,7 @@ import { Arrayable, isArray, isDefined } from '@riadh-adrani/utils';
  * @param classes array of : `Array<string>` | `string` | `null` | `undefined`
  */
 export const joinClasses = (...classes: Array<Arrayable<string> | undefined | null>): string => {
-  const filtered = classes.filter(it => isDefined(it));
+  const filtered = classes.filter(it => !isFalsy(it));
 
   return filtered.map(it => (isArray(it) ? (it as Array<string>).join(' ') : it)).join(' ');
 };
