@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@riadh-adrani/dom-utils": "1.1.0",
-    "@riadh-adrani/utils": "0.40.0",
+    "@riadh-adrani/utils": "0.42.1",
     "csstype": "^3.1.1"
   }
 }
