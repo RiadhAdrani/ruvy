@@ -85,5 +85,21 @@ describe('useReactive', () => {
         type: HookType.Reactive,
       });
     });
+
+    it('should throw when initial value is not of type object', () => {
+      const branch = initBranch();
+
+      const value = 0 as unknown as object;
+
+      const Child = () => {
+        useReactive(value);
+
+        return <div></div>;
+      };
+
+      expect(() => process(<Child />, undefined, branch, 0)).toThrow(
+        '[Ruvy] useReactive accepts only object values'
+      );
+    });
   });
 });

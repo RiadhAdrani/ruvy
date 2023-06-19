@@ -14,6 +14,10 @@ The only parameter is the `initialStateObject`, which as its name suggests, init
 
 <br/>
 
+> ⚠️ Throws when **`initialStateObject`** is not an object.
+
+<br/>
+
 ### Returns
 
 `useReactive` returns a `reactive` version of the provided object.
