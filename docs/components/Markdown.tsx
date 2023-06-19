@@ -24,7 +24,7 @@ export default ({ content }: MarkdownProps) => {
     if (ref.value) {
       const parsed = marked.parse(content);
 
-      ref.value.innerHTML = sanitizer.sanitize(parsed);
+      ref.value.innerHTML = sanitizer.sanitize(parsed, { ADD_ATTR: ['target'] });
 
       Prism.highlightAll();
 

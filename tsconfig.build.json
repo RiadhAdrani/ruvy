@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "./src/dev", "./docs"]
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "./src/dev", "./docs"],
+  "compilerOptions": {
+    "types": []
+  }
 }

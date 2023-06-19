@@ -28,12 +28,15 @@ export default () => {
             function components, and hooks, providing a simplified and synchronous approach to
             building web applications.
           </p>
-          <div class="row self-center gap-5 m-b-5">
+          <div class="row self-center gap-4 m-b-5">
             <a href="/learn">
               <Button type="fill">Get Started</Button>
             </a>
             <a href="/docs">
-              <Button type="text">Browse Docs</Button>
+              <Button type="fill">Browse Docs</Button>
+            </a>
+            <a href="https://stackblitz.com/edit/ruvy?file=src%2Fmain.tsx" target="_blank">
+              <Button type="fill">Try on StackBlitz</Button>
             </a>
           </div>
           <div class="cursor-pointer home-create-bash rounded self-center">

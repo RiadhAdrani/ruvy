@@ -1,9 +1,13 @@
-import UnderConstruction from '../components/UnderConstruction.js';
+import Markdown from '../components/Markdown.js';
+import about from '../md/about/about.md';
+import useMarkdown from '../hooks/useMarkdown.js';
 
 export default () => {
+  const content = useMarkdown(about);
+
   return (
     <>
-      <UnderConstruction />
+      <Markdown content={content} />
     </>
   );
 };
