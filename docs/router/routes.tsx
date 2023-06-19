@@ -7,16 +7,11 @@ import Learn from '../pages/Learn.js';
 import NotFound from '../components/NotFound.js';
 import { DocsSections } from '../md/docs.js';
 import DocSection from '../components/DocSection.js';
+import { LearnSections } from '../md/learn.js';
 
-export const routes: Array<RawRoute<RuvyNode>> = [
-  { path: '/', title: 'Ruvy', component: <Home /> },
-  { path: '/docs', title: 'Docs', component: <Docs /> },
-  { path: '/learn', title: 'Learn', component: <Learn /> },
-  { path: '/about', title: 'About', component: <About /> },
-  { path: '/examples', title: 'Examples', component: <Examples /> },
-  { path: '**', component: <NotFound /> },
-  ...DocsSections.map<RawRoute<RuvyNode>>(it => {
-    const path = `/docs${it.path}`;
+export const createFromMD = (base: string, items: Array<RawRoute<RuvyNode>>) => {
+  return items.map<RawRoute<RuvyNode>>(it => {
+    const path = `${base}${it.path}`;
 
     return {
       ...it,
@@ -32,5 +27,16 @@ export const routes: Array<RawRoute<RuvyNode>> = [
         };
       }),
     };
-  }),
+  });
+};
+
+export const routes: Array<RawRoute<RuvyNode>> = [
+  { path: '/', title: 'Ruvy', component: <Home /> },
+  { path: '/docs', title: 'Docs', component: <Docs /> },
+  { path: '/learn', title: 'Learn', component: <Learn /> },
+  { path: '/about', title: 'About', component: <About /> },
+  { path: '/examples', title: 'Examples', component: <Examples /> },
+  { path: '**', component: <NotFound /> },
+  ...createFromMD('/docs', DocsSections),
+  ...createFromMD('/learn', LearnSections),
 ];

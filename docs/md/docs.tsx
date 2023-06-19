@@ -1,4 +1,3 @@
-import { RawRoute, RuvyNode } from '../index.js';
 import api from './docs/api.md';
 import types from './docs/types.md';
 
@@ -25,8 +24,7 @@ import portal from './docs/api/portal.md';
 import more from './docs/more.md';
 import classAttribute from './docs/more/class-attribute.md';
 import joinClasses from './docs/more/joinClasses.md';
-
-export type DocItem = RawRoute<RuvyNode>;
+import { DocItem } from '../types/index.js';
 
 export const ApiSections: Array<DocItem> = [
   { path: 'mountApp', component: mountApp, title: 'mountApp' },

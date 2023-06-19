@@ -1,6 +1,6 @@
 import { isActive } from '../utils/utils.js';
 import { PropsWithChildren, useCallback, useState } from '../index.js';
-import { DocItem } from '../md/docs.js';
+import { DocItem } from '../types/index.js';
 import Link from './Link.js';
 import useScroll from '../hooks/useScroll.js';
 
