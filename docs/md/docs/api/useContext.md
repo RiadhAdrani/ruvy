@@ -1,6 +1,6 @@
 # useContext
 
-`useContext` is a hook that lets subscribe to context from your component, which removes the need of .
+`useContext` is a hook that lets subscribe to context from your component, which removes the need of props drilling.
 
 <br/>
 

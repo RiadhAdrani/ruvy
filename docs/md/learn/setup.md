@@ -1,6 +1,6 @@
 # Setup a new Project
 
-Unlike `React`, `Ruvy` is a framework, so it is recommended to build your whole app using it, we offer some
+Unlike `React`, `Ruvy` is a framework, so it is recommended to build your whole app using it, we suggest a few methods to create your project:
 
 ---
 

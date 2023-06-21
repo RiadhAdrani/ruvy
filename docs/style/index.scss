@@ -316,6 +316,7 @@ code {
     background-color: var(--primary);
     border: 1px solid var(--border-low);
     border-radius: 0.25em;
+    font-size: 0.9em;
   }
 
   & a :is(code):not(pre code) {

@@ -14,7 +14,7 @@ export default () => {
     { title: 'Learn', href: '/learn' },
     { title: 'Docs', href: '/docs' },
     { title: 'Examples', href: '/examples' },
-    { title: 'About', href: '/about' },
+    { title: 'Acknowledgment', href: '/acknowledgment' },
   ];
 
   const externalItems = [{ title: 'GitHub', href: 'https://github.com/RiadhAdrani/ruvy' }];

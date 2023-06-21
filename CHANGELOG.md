@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- `useContext`, same as `react.js`.
+- `useReactive`, similar to `vue.js`'s `reactive`.
 - `usePromise`, a hook that allows the user to fetch data while tracking the request state and return value.
 - `joinClasses`, a utility function that filter and returns a valid className as a string.
 - `getSearchQuery`, a function that returns the search params of the current route as a typed object.
