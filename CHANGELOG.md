@@ -4,8 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.3.0 - 2023-06-22
 ### Added
-
 - `useContext`, same as `react.js`.
 - `useReactive`, similar to `vue.js`'s `reactive`.
 - `usePromise`, a hook that allows the user to fetch data while tracking the request state and return value.
@@ -18,13 +18,10 @@ All notable changes to this project will be documented in this file.
 - add `<Portal/>` component, allowing to teleport elements in another DOM container.
 
 ### Fixed
-
 - `scrollToTop` not having any effect, when a new page is loaded.
 
 ## 0.2.0 - 2023-06-02
-
 ### Added
-
 - JSX syntax for writing expressive and reusable UI components.
 - Function components for a modular and composable code structure.
 - Hooks for managing state, performing side effects, and custom logic reuse: `useState`, `useEffect`, `useMemo`, `useCallback`, `useId` and `useRef`.
