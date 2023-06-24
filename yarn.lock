@@ -382,10 +382,10 @@
     "@riadh-adrani/utils" "^0.39.0"
     camelcase "^7.0.1"
 
-"@riadh-adrani/utils@0.42.1":
-  version "0.42.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.42.1.tgz#2c3c14d9042d9e3cf9fbe69e8e5e4944cc755029"
-  integrity sha512-aL3LnssKd/f2LyUaZkCFq4ZbwKLSMKWV2NhVsLysxcpCQYdSX04HoSOcT8M3gQTXSMLnnJMJTlTOwuDNGl1YIw==
+"@riadh-adrani/utils@0.42.2":
+  version "0.42.2"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.42.2.tgz#80466d3ec4a919a45fe6500ac997ad8e8d8d94b3"
+  integrity sha512-3VUMfi+Utp/l0f/4dxmyxhOf/Wmzt4c0MvXgYkz7AurrPG5iq6rifdeSzb/SZDuHCOtjsRUCt+MHz+yEswYgoA==
 
 "@riadh-adrani/utils@^0.39.0":
   version "0.39.0"
