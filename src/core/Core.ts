@@ -145,6 +145,22 @@ setEvent(
   document
 );
 
+// ? make `createJsxElement` and `createFragmentTemplate` globally available
+const win = window as unknown as Record<string, unknown>;
+win.createJsxElement = createJsxElement;
+win.createJsxFragmentElement = createFragmentTemplate;
+
+const throwIfNoRouter = <T = void>(callback: () => T): T => {
+  if (!Core.singleton.router) {
+    throw '[Ruvy] You are trying to run a method which necessitate the creation of a Router using "createRouter" !';
+  }
+
+  return callback();
+};
+
+/**
+ * create and mount a ruvy app using the provided parameters.
+ */
 export const mountApp = ({ callback, hostElement }: MountParams) => {
   Core.singleton.fn = callback;
   Core.singleton.host = hostElement;
@@ -160,7 +176,15 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
   });
 };
 
-export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterParams) => {
+/**
+ * creates a router for the ruvy application.
+ *
+ * ⚠️ Should be called before ``mountApp``
+ *
+ * @param routes
+ * @param config
+ */
+export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterParams = {}) => {
   Core.singleton.router = new Router(routes, {
     ...config,
     onStateChange: () =>
@@ -171,10 +195,22 @@ export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterPa
   });
 };
 
+/**
+ * creates a new global stateful variable with the given key.
+ * @param key globally unique key.
+ * @param value initial value
+ */
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
   return Core.singleton.store.setItem<T>('state', key, value);
 };
 
+/**
+ * creates a new global effect with the given key
+ * @param callback effect
+ * @param key globally unique key.
+ * @param dependencies dependencies
+ * @deprecated
+ */
 export const setEffect = (
   callback: Callback,
   key: string,
@@ -183,22 +219,38 @@ export const setEffect = (
   Core.singleton.store.setEffect('effect', key, callback, dependencies);
 };
 
+/**
+ * lets you navigate programmatically between routes.
+ * @param path desintation path
+ */
 export const navigate = (path: string) => {
-  Core.singleton.router.push(path);
+  throwIfNoRouter(() => Core.singleton.router.push(path));
 };
 
+/**
+ * lets you replace the current route programmatically.
+ * @param path desintation path
+ */
 export const replace = (path: string) => {
-  Core.singleton.router.replace(path);
+  throwIfNoRouter(() => Core.singleton.router.replace(path));
 };
 
 interface QueryParams {
   [key: string]: string | undefined;
 }
 
+/**
+ * returns an object of key/value pairs of the dynamic params
+ * from the current URL that were matched by the current route.
+ * Child routes inherit all params from their parent routes.
+ */
 export const getParams = (): Record<string, string> => {
-  return Core.singleton.router.params;
+  return throwIfNoRouter(() => Core.singleton.router.params);
 };
 
+/**
+ * returns an object of key/value pairs of the dynamic search params (if they exists) from the current URL.
+ */
 export const getSearchParams = <T extends QueryParams>(): T => {
   const queryParams: T = {} as T;
   const searchParams = new URLSearchParams(window.location.search);
@@ -211,13 +263,17 @@ export const getSearchParams = <T extends QueryParams>(): T => {
 };
 
 /**
+ * @deprecated use `getPathname` instead.
+ *
  * retrieves the current route without the base.
  */
 export const getRoute = (): string => {
-  return getRouteFromUrl(Core.singleton.router.base);
+  return throwIfNoRouter(() => getRouteFromUrl(Core.singleton.router.base));
 };
 
-const win = window as unknown as Record<string, unknown>;
-
-win.createJsxElement = createJsxElement;
-win.createJsxFragmentElement = createFragmentTemplate;
+/**
+ * retrieves the current route without the base.
+ */
+export const getPathname = (): string => {
+  return throwIfNoRouter(() => getRouteFromUrl(Core.singleton.router.base));
+};

@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Altered
 
 - `useReactive` uses `@riadh-adrani/utils/createReactive` to create reactive object instances.
+- `mountRouter` config is now optional.
 
 ### Deprecated
 

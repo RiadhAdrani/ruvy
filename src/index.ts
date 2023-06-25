@@ -25,6 +25,7 @@ export {
   replace,
   getParams,
   getRoute,
+  getPathname,
   getSearchParams,
 } from './core/index.js';
 export { Outlet } from './branch/index.js';
