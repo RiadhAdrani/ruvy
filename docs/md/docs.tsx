@@ -14,6 +14,7 @@ import createContext from './docs/api/createContext.md';
 import createRouter from './docs/api/createRouter.md';
 import getParams from './docs/api/getParams.md';
 import getRoute from './docs/api/getRoute.md';
+import getPathname from './docs/api/getPathname.md';
 import getSearchParams from './docs/api/getSearchParams.md';
 import mountApp from './docs/api/mountApp.md';
 import navigate from './docs/api/navigate.md';
@@ -24,6 +25,8 @@ import portal from './docs/api/portal.md';
 import more from './docs/more.md';
 import classAttribute from './docs/more/class-attribute.md';
 import joinClasses from './docs/more/joinClasses.md';
+import ifDirective from './docs/more/if-directive.md';
+
 import { DocItem } from '../types/index.js';
 
 export const ApiSections: Array<DocItem> = [
@@ -42,6 +45,7 @@ export const ApiSections: Array<DocItem> = [
   { path: 'getParams', component: getParams, title: 'getParams' },
   { path: 'getSearchParams', component: getSearchParams, title: 'getSearchParams' },
   { path: 'getRoute', component: getRoute, title: 'getRoute' },
+  { path: 'getPathname', component: getPathname, title: 'getPathname' },
   { path: 'replace', component: replace, title: 'replace' },
   { path: 'navigate', component: navigate, title: 'navigate' },
   { path: 'outlet', component: outlet, title: '<Outlet/>' },
@@ -51,6 +55,7 @@ export const ApiSections: Array<DocItem> = [
 export const MoreSections: Array<DocItem> = [
   { path: 'class-attribute', component: classAttribute, title: 'Class attribute' },
   { path: 'joinClasses', component: joinClasses, title: 'joinClasses' },
+  { path: 'if-directive', component: ifDirective, title: 'if directive' },
 ];
 
 export const DocsSections: Array<DocItem> = [

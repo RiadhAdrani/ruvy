@@ -10,3 +10,4 @@ Here is the list of differences and additional features :
 
 - [`class attribute`](/docs/more/class-attribute)
 - [`joinClasses()`](/docs/more/joinClasses)
+- [`if directive`](/docs/more/if-directive)

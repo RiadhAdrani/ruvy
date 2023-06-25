@@ -1,17 +1,13 @@
-### `@deprecated` for naming purposes, use [getPathname](/docs/api/getPathname) instead
+# getPathname
 
-<hr/>
-
-# getRoute
-
-`getRoute` is a function that returns the current URL's pathname.
+`getPathname` is a function that returns the current URL's pathname.
 
 <hr/>
 
 ### Type & Parameters
 
 ```ts
-function getRoute(): string;
+function getPathname(): string;
 ```
 
 This function has no parameters.
@@ -29,11 +25,11 @@ returns the current `pathname` without the `base`.
 #### Get current route
 
 ```ts
-import { getRoute } from '@riadh-adrani/ruvy';
+import { getPathname } from '@riadh-adrani/ruvy';
 
 function Component() {
   // url = /search
-  const route = getRoute();
+  const route = getPathname();
 
   console.log(route); // displays "/search"
   // ...
@@ -43,12 +39,12 @@ function Component() {
 #### Get current route without the base
 
 ```ts
-import { getRoute } from '@riadh-adrani/ruvy';
+import { getPathname } from '@riadh-adrani/ruvy';
 
 function Component() {
   // base = /ruvy
   // url = /ruvy/search
-  const route = getRoute();
+  const route = getPathname();
 
   console.log(route); // displays "/search"
   // ...

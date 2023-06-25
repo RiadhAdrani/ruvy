@@ -44,4 +44,5 @@ Here is the full list of the `API` methods :
 
 - [`getParams`](/docs/api/getParams)
 - [`getSearchQuery`](/docs/api/getSearchQuery)
-- [`getRoute`](/docs/api/getRoute)
+- [`getRoute (deprecated)`](/docs/api/getRoute)
+- [`getPathname`](/docs/api/getPathname)

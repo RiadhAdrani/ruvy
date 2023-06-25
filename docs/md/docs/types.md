@@ -142,3 +142,19 @@ interface PortalProps {
   children?: Array<unknown>;
 }
 ```
+
+### `UtilityProps`
+
+```ts
+interface UtilityProps {
+  children: Array<RuvyNode>;
+  key: BranchKey;
+  if: boolean;
+}
+```
+
+### `PropsWithUtility`
+
+```ts
+type PropsWithUtility<T extends object> = Partial<UtilityProps> & T;
+```
