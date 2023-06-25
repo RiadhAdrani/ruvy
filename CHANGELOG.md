@@ -10,13 +10,10 @@ All notable changes to this project will be documented in this file.
 - `PropWithUtility` that allow the developer to initialize a prop type with optional `children`, `key` and `if` properties.
 - `getPathname` returns the current url without the `base`.
 
-### Altered
+### Changed
 
 - `useReactive` uses `@riadh-adrani/utils/createReactive` to create reactive object instances.
 - `mountRouter` config is now optional.
-
-### Deprecated
-
 - deperecated `getRoute` in favor of `getPathname`.
 
 ## 0.3.0 - 2023-06-22
