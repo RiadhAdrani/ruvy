@@ -1,6 +1,7 @@
 import { Arrayable } from '@riadh-adrani/utils';
 import type * as CSS from 'csstype';
 import { RuvyNode } from '../index.js';
+import { BranchKey } from 'src/branch/types.js';
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any;
@@ -25,3 +26,11 @@ export type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties
   string,
   unknown
 >;
+
+export interface UtilityProps {
+  children: Array<RuvyNode>;
+  key: BranchKey;
+  if: boolean;
+}
+
+export type PropsWithUtility<T extends object> = Partial<UtilityProps> & T;

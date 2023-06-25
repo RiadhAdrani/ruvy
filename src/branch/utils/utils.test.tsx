@@ -19,8 +19,11 @@ import {
   preprocessProps,
   findParentWith,
   postprocessProps,
+  hasIfDirective,
+  shouldTemplateWithIfDirectiveBeComputed,
+  preprocessTemplate,
 } from './index.js';
-import { BranchTag, Namespace } from '../types.js';
+import { BranchTag, BranchTemplate, Namespace } from '../types.js';
 import { createElement, injectNode } from '@riadh-adrani/dom-utils';
 import { createTemplate } from '../create/index.js';
 import root from '../process/new/root.js';
@@ -510,6 +513,54 @@ describe('utils', () => {
       postprocessProps(child);
 
       expect(child.props.ns).toBe(Namespace.SVG);
+    });
+  });
+
+  describe('hasIfDirective', () => {
+    it.each([0, null, 'str', true, {}])('should return false for invalid templates', o => {
+      expect(hasIfDirective(o)).toBe(false);
+    });
+
+    it('should return false for template with no if prop', () => {
+      expect(hasIfDirective(createTemplate('div', {}, []))).toBe(false);
+    });
+
+    it('should return true for template with if prop', () => {
+      expect(hasIfDirective(createTemplate('div', { if: true }, []))).toBe(true);
+      expect(hasIfDirective(createTemplate('div', { if: false }, []))).toBe(true);
+    });
+  });
+
+  describe('shouldTemplateWithIfDirectiveBeComputed', () => {
+    it.each([0, null, 'str', true, {}, createTemplate('div', {}, [])])(
+      'should throw when template does not have an if prop',
+      o => {
+        expect(() => shouldTemplateWithIfDirectiveBeComputed(o as BranchTemplate)).toThrow(
+          '[Ruvy] the provided template does not contain an if directive'
+        );
+      }
+    );
+
+    it('should return the correct value of if prop', () => {
+      expect(
+        shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: false }, []))
+      ).toBe(false);
+      expect(shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: true }, []))).toBe(
+        true
+      );
+      expect(shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: '' }, []))).toBe(
+        true
+      );
+    });
+  });
+
+  describe('preprocessTemplate', () => {
+    it('should nullify templates with a false if prop', () => {
+      expect(preprocessTemplate(createTemplate('div', { if: false }, []))).toStrictEqual(null);
+    });
+
+    it('should not nullify templates with a truthy if prop', () => {
+      expect(preprocessTemplate(createTemplate('div', { if: true }, []))).not.toStrictEqual(null);
     });
   });
 });

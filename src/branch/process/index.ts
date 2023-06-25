@@ -2,7 +2,7 @@ import { isUndefined } from '@riadh-adrani/utils';
 import { Branch } from '../types.js';
 import createNewBranch from './new/index.js';
 import diffBranches from './diff/index.js';
-import { getCorrectKey } from '../utils/index.js';
+import { getCorrectKey, preprocessTemplate } from '../utils/index.js';
 
 export { commit, collectActions } from './common/index.js';
 export { Portal } from './new/portal.js';
@@ -22,9 +22,11 @@ const process = (
 ): Branch => {
   const $key = getCorrectKey(template, index);
 
+  const processedTemplate = preprocessTemplate(template);
+
   const out = isUndefined(current)
-    ? createNewBranch(template, parent, $key)
-    : diffBranches(template, current as Branch, parent, index);
+    ? createNewBranch(processedTemplate, parent, $key)
+    : diffBranches(processedTemplate, current as Branch, parent, index);
 
   // check if output children have duplicate keys
   const keys = out.children.map(item => item.key);

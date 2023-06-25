@@ -12,9 +12,11 @@ import {
   getClosestChildrenHostBranches,
   getCorrectKey,
   getBranchWithKey,
+  preprocessTemplate,
 } from '../../utils/index.js';
 import createAction from '../actions/index.js';
 import { unmountBranch } from '../common/index.js';
+import process from '../index.js';
 import createNewBranch from '../new/index.js';
 import { PortalBranchType } from '../new/portal.js';
 import context from './context.js';
@@ -26,11 +28,11 @@ import portal from './portal.js';
 import text from './text.js';
 
 /**
- * Move to UTILS
- * @param array
- * @param fromIndex
- * @param toIndex
- * @returns
+ * TODO: move to utils
+ * change the index of an element in an array from `fromIndex` to `toIndex`
+ * @param array target array
+ * @param fromIndex element index
+ * @param toIndex new element index
  */
 function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number) {
   const arrayCopy = [...array];
@@ -90,7 +92,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
       const branch = current.children[oldIndex];
 
       if (!branch) {
-        throw `Branch with key (${key}) not found to be rearranged.`;
+        throw `[Ruvy] Branch with key (${key}) not found to be rearranged.`;
       }
 
       current.children = moveElement(current.children, oldIndex, newIndex);
@@ -125,7 +127,7 @@ export const diffTypes = (
   unmountBranch(old);
 
   // compute the new one and merge it
-  const newBranch = createNewBranch(template, parent, index);
+  const newBranch = process(template, undefined, parent, index);
   newBranch.old = old;
 
   // replace current with newly computed one.
@@ -190,6 +192,8 @@ const diffBranches = (
       default:
         break;
     }
+
+    children = children.map(it => preprocessTemplate(it));
 
     const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
 

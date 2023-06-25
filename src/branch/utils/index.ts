@@ -21,9 +21,33 @@ import {
 import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
 import { isValidTemplate } from '../check/index.js';
 import { Outlet } from '../index.js';
-import { CallbackWithArgs } from 'src/index.js';
+import { Any, CallbackWithArgs } from 'src/index.js';
 import { Core } from '../../core/Core.js';
 
+/**
+ * checks if the given object is a template that contains the `if` directive
+ * @param o object
+ */
+export const hasIfDirective = (o: unknown): boolean => {
+  return isValidTemplate(o) && hasProperty((o as Any).props, 'if');
+};
+
+/**
+ * checks if a template with if directive should be computed.
+ * @param template template object
+ */
+export const shouldTemplateWithIfDirectiveBeComputed = (template: BranchTemplate): boolean => {
+  if (!hasIfDirective(template)) {
+    throw `[Ruvy] the provided template does not contain an if directive`;
+  }
+
+  return template.props.if !== false;
+};
+
+/**
+ * initialize a branch with the provided data.
+ * @param data optional branch data
+ */
 export const initBranch = <T = unknown>(data?: Partial<Branch<T>>): Branch<T> => {
   const initial: Branch = {
     children: [],
@@ -40,6 +64,9 @@ export const initBranch = <T = unknown>(data?: Partial<Branch<T>>): Branch<T> =>
   return merge(initial, (data ?? {}) as Branch<T>) as Branch<T>;
 };
 
+/**
+ * Webs Namespaces
+ */
 export const Namespaces = Object.keys(Namespace).map(
   key => (Namespace as Record<string, string>)[key]
 ) as Array<Namespace>;
@@ -57,7 +84,7 @@ export const getNamespace = (branch: Branch): Namespace => {
 /**
  * Ignored props, which should not be rendered into the DOM.
  */
-export const IgnoredProps = ['ns', 'children', 'key', 'ref'];
+export const IgnoredProps = ['ns', 'children', 'key', 'ref', 'if'];
 
 /**
  * create an object of html attributes from the branch props.
@@ -113,7 +140,7 @@ export const getParentHostBranch = (branch: Branch): Branch => {
 
     return getParentHostBranch(branch.parent);
   } else {
-    throw 'Unable to locate the hosting branch.';
+    throw '[Ruvy] Unable to locate the hosting branch.';
   }
 };
 
@@ -313,4 +340,23 @@ export const postprocessProps = (branch: Branch): void => {
   if (branch.type === 'svg' || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
     branch.props.ns = Namespace.SVG;
   }
+};
+
+/**
+ * perform template preprocessing
+ *
+ * - nullify the template if it has an `if` prop set to `false`.
+ *
+ * @param template template object
+ */
+export const preprocessTemplate = (template: unknown): unknown => {
+  // ? checks if the given template has an if directive and it should not be computed
+  if (
+    hasIfDirective(template) &&
+    !shouldTemplateWithIfDirectiveBeComputed(template as BranchTemplate)
+  ) {
+    return null;
+  }
+
+  return template;
 };

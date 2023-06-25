@@ -476,13 +476,14 @@ declare global {
     class: Arrayable<string>;
     id: string;
     style: Selector | string;
+    if: boolean;
     value: string | number;
     lang: string;
     accesskey: string;
     autocapitalize: StringWithAutoComplete<
       'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
     >;
-    contentEditable: StringWithAutoComplete<'true' | 'false'>;
+    contenteditable: StringWithAutoComplete<'true' | 'false'>;
     contextmenu: string;
     compact: string;
     dir: StringWithAutoComplete<'ltr' | 'rtl' | 'auto'>;

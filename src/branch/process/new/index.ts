@@ -52,7 +52,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return portal(template as BranchTemplate<PortalBranchType>, parent, key);
     }
     default: {
-      throw 'Invalid template tag: this error should not happen !!!';
+      throw '[Ruvy] Invalid template tag: this error should not happen !!!';
     }
   }
 };
