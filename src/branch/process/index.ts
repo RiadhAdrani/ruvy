@@ -2,7 +2,7 @@ import { isUndefined } from '@riadh-adrani/utils';
 import { Branch } from '../types.js';
 import createNewBranch from './new/index.js';
 import diffBranches from './diff/index.js';
-import { getCorrectKey, preprocessTemplate } from '../utils/index.js';
+import { getCorrectKey, preprocessChildren } from '../utils/index.js';
 
 export { commit, collectActions } from './common/index.js';
 export { Portal } from './new/portal.js';
@@ -22,11 +22,9 @@ const process = (
 ): Branch => {
   const $key = getCorrectKey(template, index);
 
-  const processedTemplate = preprocessTemplate(template);
-
   const out = isUndefined(current)
-    ? createNewBranch(processedTemplate, parent, $key)
-    : diffBranches(processedTemplate, current as Branch, parent, index);
+    ? createNewBranch(template, parent, $key)
+    : diffBranches(template, current as Branch, parent, index);
 
   // check if output children have duplicate keys
   const keys = out.children.map(item => item.key);
@@ -37,6 +35,21 @@ const process = (
   }
 
   return out;
+};
+
+/**
+ * process children for a new branch
+ * @param children
+ * @param parent
+ * @returns
+ */
+export const createNewBranchChildren = (
+  children: Array<unknown>,
+  parent: Branch
+): Array<Branch> => {
+  return preprocessChildren(children).map((child, index) =>
+    process(child, undefined, parent, index)
+  );
 };
 
 export default process;

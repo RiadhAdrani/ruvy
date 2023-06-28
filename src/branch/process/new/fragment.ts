@@ -1,7 +1,7 @@
 import { Branch, BranchKey, BranchTag, BranchTemplateFragment } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
 import { collectPendingEffect } from '../common/index.js';
-import process from '../index.js';
+import { createNewBranchChildren } from '../index.js';
 import { initBranch } from '../../utils/index.js';
 
 /**
@@ -19,7 +19,7 @@ const fragment = (template: BranchTemplateFragment, parent: Branch, key: BranchK
 
   branch.pendingActions.push(...collectPendingEffect(branch));
 
-  branch.children = fragmentChildren.map((ch, index) => process(ch, undefined, branch, index));
+  branch.children = createNewBranchChildren(fragmentChildren, branch);
 
   return branch;
 };

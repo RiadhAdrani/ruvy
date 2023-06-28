@@ -1,6 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
-import { BranchTemplate } from '../branch/types.js';
-import { Any, DOMEventHandler, Selector } from './index.js';
+import { BranchKey, BranchTemplate } from '../branch/types.js';
+import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
 
 declare global {
   function createJsxElement(
@@ -437,46 +437,48 @@ declare global {
     zoomAndPan: string;
   }
 
-  type SVGCommonProps = Pick<
-    SVGProps,
-    | 'lang'
-    | 'tabindex'
-    | 'requiredExtensions'
-    | 'systemLanguage'
-    | 'clip-path'
-    | 'clip-rule'
-    | 'color'
-    | 'color-interpolation'
-    | 'color-rendering'
-    | 'cursor'
-    | 'display'
-    | 'fill'
-    | 'fill-opacity'
-    | 'fill-rule'
-    | 'filter'
-    | 'mask'
-    | 'opacity'
-    | 'pointer-events'
-    | 'shape-rendering'
-    | 'stroke'
-    | 'stroke-dasharray'
-    | 'stroke-dashoffset'
-    | 'stroke-linecap'
-    | 'stroke-linejoin'
-    | 'stroke-miterlimit'
-    | 'stroke-opacity'
-    | 'stroke-width'
-    | 'transform'
-    | 'vector-effect'
-    | 'visibility'
-    | 'xlink:title'
-  >;
+  type SVGCommonProps = BaseProps &
+    Pick<
+      SVGProps,
+      | 'lang'
+      | 'tabindex'
+      | 'requiredExtensions'
+      | 'systemLanguage'
+      | 'clip-path'
+      | 'clip-rule'
+      | 'color'
+      | 'color-interpolation'
+      | 'color-rendering'
+      | 'cursor'
+      | 'display'
+      | 'fill'
+      | 'fill-opacity'
+      | 'fill-rule'
+      | 'filter'
+      | 'mask'
+      | 'opacity'
+      | 'pointer-events'
+      | 'shape-rendering'
+      | 'stroke'
+      | 'stroke-dasharray'
+      | 'stroke-dashoffset'
+      | 'stroke-linecap'
+      | 'stroke-linejoin'
+      | 'stroke-miterlimit'
+      | 'stroke-opacity'
+      | 'stroke-width'
+      | 'transform'
+      | 'vector-effect'
+      | 'visibility'
+      | 'xlink:title'
+    >;
 
-  interface CommonProps extends AriaProps {
+  type BaseProps = Partial<UtilityProps>;
+
+  interface CommonHTMLProps extends AriaProps, BaseProps {
     class: Arrayable<string>;
     id: string;
     style: Selector | string;
-    if: boolean;
     value: string | number;
     lang: string;
     accesskey: string;
@@ -503,7 +505,7 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<CommonProps> &
+    Partial<CommonHTMLProps> &
     Partial<DOMEvents<E>> &
     Partial<T>;
 
@@ -515,7 +517,7 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<CommonProps> &
+    Partial<CommonHTMLProps> &
     Partial<DOMEvents<E>> &
     Partial<SVGCommonProps> &
     Partial<T>;

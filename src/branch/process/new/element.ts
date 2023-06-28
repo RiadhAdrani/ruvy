@@ -1,7 +1,7 @@
 import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from '../../types.js';
 import { initBranch, postprocessProps, preprocessProps } from '../../utils/index.js';
 import { collectPendingEffect } from '../common/index.js';
-import process from '../index.js';
+import { createNewBranchChildren } from '../index.js';
 import createAction from '../actions/index.js';
 
 /**
@@ -31,7 +31,7 @@ const element = (
 
   branch.pendingActions.push(renderAction, ...collectPendingEffect(branch));
 
-  branch.children = children.map((child, index) => process(child, undefined, branch, index));
+  branch.children = createNewBranchChildren(children, branch);
 
   return branch;
 };

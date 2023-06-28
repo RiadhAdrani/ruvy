@@ -5,7 +5,7 @@ import { expect, describe, it, vitest } from 'vitest';
 import createFn from './function.js';
 import { createTemplate } from '../../create/index.js';
 import { Branch, BranchStatus, BranchTag, HookType } from '../../types.js';
-import { cast } from '@riadh-adrani/utils';
+import { cast, omit } from '@riadh-adrani/utils';
 import { useState } from '../../hooks/index.js';
 
 createJsxElement;
@@ -16,8 +16,7 @@ describe('new.function', () => {
 
     const branch = createFn(createTemplate(fn, { text: 1 }, []), {} as unknown as Branch, 0);
 
-    expect(branch).toStrictEqual<Branch>({
-      children: [],
+    expect(omit(branch, 'children')).toStrictEqual({
       hooks: {},
       key: 0,
       pendingActions: [],
@@ -39,8 +38,7 @@ describe('new.function', () => {
 
     const branch = createFn(createTemplate(fn, {}, []), {} as unknown as Branch, 0);
 
-    expect(branch).toStrictEqual<Branch>({
-      children: [],
+    expect(omit(branch, 'children')).toStrictEqual({
       hooks: {
         [`${HookType.State}@0`]: {
           data: 'text',

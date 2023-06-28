@@ -12,7 +12,7 @@ import {
   getClosestChildrenHostBranches,
   getCorrectKey,
   getBranchWithKey,
-  preprocessTemplate,
+  preprocessChildren,
 } from '../../utils/index.js';
 import createAction from '../actions/index.js';
 import { unmountBranch } from '../common/index.js';
@@ -193,7 +193,7 @@ const diffBranches = (
         break;
     }
 
-    children = children.map(it => preprocessTemplate(it));
+    children = preprocessChildren(children);
 
     const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
 

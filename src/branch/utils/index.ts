@@ -84,7 +84,7 @@ export const getNamespace = (branch: Branch): Namespace => {
 /**
  * Ignored props, which should not be rendered into the DOM.
  */
-export const IgnoredProps = ['ns', 'children', 'key', 'ref', 'if'];
+export const IgnoredProps = ['ns', 'children', 'key', 'ref', 'if', 'else', 'else-if'];
 
 /**
  * create an object of html attributes from the branch props.
@@ -348,6 +348,7 @@ export const postprocessProps = (branch: Branch): void => {
  * - nullify the template if it has an `if` prop set to `false`.
  *
  * @param template template object
+ * @deprecated
  */
 export const preprocessTemplate = (template: unknown): unknown => {
   // ? checks if the given template has an if directive and it should not be computed
@@ -359,4 +360,102 @@ export const preprocessTemplate = (template: unknown): unknown => {
   }
 
   return template;
+};
+
+/**
+ * retrieve prop from a template ,if it is in fact a template, otherwise return `undefined`.
+ * @param template template
+ * @param prop property key
+ */
+export const getPropertyFromTemplate = <T = unknown>(
+  template: unknown,
+  prop: string
+): T | undefined => {
+  if (!isValidTemplate(template)) {
+    return undefined;
+  }
+
+  return cast<BranchTemplate>(template).props[prop] as T;
+};
+
+/**
+ * checks if a template has a given property. returns undefined is not found.
+ * @param template template
+ * @param prop property key
+ */
+export const templateHasProperty = (template: unknown, prop: string): boolean => {
+  if (!isValidTemplate(template)) {
+    return false;
+  }
+
+  return hasProperty(cast<BranchTemplate>(template).props, prop);
+};
+
+/**
+ * preprocess children.
+ *
+ * - process `if`, `else-if` and `else` directive.
+ *
+ * @param children array of chilren
+ */
+export const preprocessChildren = (children: Array<unknown>): Array<unknown> => {
+  let conditions: Array<{ type: 'if' | 'else-if' | 'else'; value: boolean }> = [];
+
+  const last = () => conditions[conditions.length - 1];
+
+  return children.map(child => {
+    // ? check for `if` directive
+    if (templateHasProperty(child, 'if')) {
+      // reset conditions array, because if should be the first in a conditional block
+      conditions = [];
+
+      const value = getPropertyFromTemplate<boolean>(child, 'if') !== false;
+
+      conditions.push({ type: 'if', value });
+
+      return value ? child : null;
+    }
+
+    // ? check for `else-if` directive
+    if (templateHasProperty(child, 'else-if')) {
+      // check if conditions array is empty
+      if (conditions.length === 0) {
+        throw '[Ruvy] cannot use "else-if" directive without a previous "if" or "else-if" directive.';
+      }
+
+      // if the last one is "else" we throw
+      // this case should not happen because we will reset the array after "else" directive
+      const previous = last();
+      if (previous.type === 'else') {
+        throw '[Ruvy] cannot use "else-if" directive after an "else" directive.';
+      }
+
+      const value = getPropertyFromTemplate<boolean>(child, 'else-if') !== false;
+      const fullfilled = conditions.some(it => it.value === true);
+
+      conditions.push({ type: 'else-if', value: !fullfilled && value });
+
+      return fullfilled || !value ? null : child;
+    }
+
+    // ? check for `else` directive
+    if (templateHasProperty(child, 'else')) {
+      // check if conditions array is empty
+      if (conditions.length === 0) {
+        throw '[Ruvy] cannot use "else" directive without a previous "if" or "else-if" directive.';
+      }
+
+      const fullfilled = conditions.some(it => it.value === true);
+      conditions = [];
+
+      return fullfilled ? null : child;
+    }
+
+    // if no conditions, we reset the array
+    // needed when we just only place an `if` statement without an `else` or `else-if`
+    conditions = [];
+
+    // if none of the above
+    return child;
+  });
 };

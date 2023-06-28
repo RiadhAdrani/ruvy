@@ -115,7 +115,7 @@ return <img class="avatar" src={user.imageUrl} />;
 
 ## Conditional rendering
 
-Like `React`, there is no special syntax for writing conditions. Instead, you’ll use the same techniques as you use when writing regular JavaScript code. For example, you can use an if statement to conditionally include JSX:
+Like `React`, you can use the same techniques as you use when writing regular JavaScript code. For example, you can use an if statement to conditionally include JSX:
 
 <br/>
 
@@ -145,6 +145,20 @@ When you don’t need the else branch, you can also use a shorter `logical &&` s
 
 ```ts
 <div>{isLoggedIn && <AdminPanel />}</div>
+```
+
+### conditional directives
+
+We saved the best for last, we offer [`if`](/docs/more/if-directive), [`else-if`](/docs/more/if-directive#elseif) and [`else`](/docs/more/if-directive#else) directives that works like `Vue.js`.
+
+<br/>
+
+```ts
+<>
+  <div if={false} />
+  <div else-if={false} />
+  <div else /> // 👈 will render
+</>
 ```
 
 <hr/>

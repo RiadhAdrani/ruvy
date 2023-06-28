@@ -1,4 +1,4 @@
-import { process } from '../../../branch/index.js';
+import { createNewBranchChildren } from '../../../branch/index.js';
 import { Branch, BranchKey, BranchTag, BranchTemplate } from '../../../branch/types.js';
 import { initBranch } from '../../../branch/utils/index.js';
 
@@ -35,9 +35,7 @@ const portal = (
     instance: container,
   });
 
-  branch.children = (children ?? []).map((child, index) =>
-    process(child, undefined, branch, index)
-  );
+  branch.children = createNewBranchChildren(children ?? [], branch);
 
   return branch;
 };

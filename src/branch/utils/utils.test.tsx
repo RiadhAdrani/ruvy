@@ -22,6 +22,9 @@ import {
   hasIfDirective,
   shouldTemplateWithIfDirectiveBeComputed,
   preprocessTemplate,
+  getPropertyFromTemplate,
+  templateHasProperty,
+  preprocessChildren,
 } from './index.js';
 import { BranchTag, BranchTemplate, Namespace } from '../types.js';
 import { createElement, injectNode } from '@riadh-adrani/dom-utils';
@@ -561,6 +564,106 @@ describe('utils', () => {
 
     it('should not nullify templates with a truthy if prop', () => {
       expect(preprocessTemplate(createTemplate('div', { if: true }, []))).not.toStrictEqual(null);
+    });
+  });
+
+  describe('getPropertyFromTemplate', () => {
+    it('should return undefined when a non-template is provided', () => {
+      expect(getPropertyFromTemplate(0, 'class')).toBe(undefined);
+    });
+
+    it('should return undefined when property is not found', () => {
+      expect(getPropertyFromTemplate(<div />, 'class')).toBe(undefined);
+    });
+
+    it('should return the value of the property', () => {
+      expect(getPropertyFromTemplate(<div class="test" />, 'class')).toBe('test');
+    });
+  });
+
+  describe('templateHasProperty', () => {
+    it('should return false when a non-template is provided', () => {
+      expect(templateHasProperty(0, 'class')).toBe(false);
+    });
+
+    it('should return false when property is not found', () => {
+      expect(templateHasProperty(<div />, 'class')).toBe(false);
+    });
+
+    it('should return the value of the property', () => {
+      expect(templateHasProperty(<div class="test" />, 'class')).toBe(true);
+    });
+  });
+
+  describe('preprocessChildren', () => {
+    it('should return template when if is not false', () => {
+      expect(preprocessChildren([<div if />])).toStrictEqual([<div if />]);
+    });
+
+    it('should return null when if is false', () => {
+      expect(preprocessChildren([<div if={false} />])).toStrictEqual([null]);
+    });
+
+    it('should throw when no "if" or "else-if" are used before "else-if"', () => {
+      expect(() => preprocessChildren([<div else-if />])).toThrow(
+        '[Ruvy] cannot use "else-if" directive without a previous "if" or "else-if" directive.'
+      );
+    });
+
+    it('should throw when no "if" or "else-if" are used before "else"', () => {
+      expect(() => preprocessChildren([<div else />])).toThrow(
+        '[Ruvy] cannot use "else" directive without a previous "if" or "else-if" directive.'
+      );
+    });
+
+    it('should return null when previous if is true', () => {
+      expect(preprocessChildren([<div if={true} />, <div else-if={true} />])).toStrictEqual([
+        <div if={true} />,
+        null,
+      ]);
+    });
+
+    it('should return template when previous if is false', () => {
+      expect(preprocessChildren([<div if={false} />, <div else-if={true} />])).toStrictEqual([
+        null,
+        <div else-if={true} />,
+      ]);
+    });
+
+    it('should return null when previous (if or else-if) is true', () => {
+      expect(
+        preprocessChildren([<div if={false} />, <div else-if={true} />, <div else-if={true} />])
+      ).toStrictEqual([null, <div else-if={true} />, null]);
+    });
+
+    it('should return null when previous (if or else-if) is true', () => {
+      expect(
+        preprocessChildren([<div if={true} />, <div else-if={true} />, <div else />])
+      ).toStrictEqual([<div if={true} />, null, null]);
+
+      expect(
+        preprocessChildren([<div if={false} />, <div else-if={true} />, <div else />])
+      ).toStrictEqual([null, <div else-if={true} />, null]);
+    });
+
+    it('should return template when none of the previous (if or else-if) is true', () => {
+      expect(
+        preprocessChildren([<div if={false} />, <div else-if={false} />, <div else />])
+      ).toStrictEqual([null, null, <div else />]);
+    });
+
+    it.each(
+      [
+        [<div else />],
+        [<div />, <div else />],
+        [<div if />, <div else />, <div else />],
+        [<div else-if />],
+        [<div if />, <div />, <div else />],
+        [<div if />, <div />, <div else-if />],
+        [<div else-if />, <div />, <div else-if />],
+      ].map(it => [it])
+    )('should throw : more cases', it => {
+      expect(() => preprocessChildren(it)).toThrow();
     });
   });
 });

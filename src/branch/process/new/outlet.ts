@@ -1,7 +1,7 @@
 import { Core } from '../../../core/index.js';
 import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from '../../types.js';
 import { getOutletDepth, initBranch } from '../../utils/index.js';
-import process from '../index.js';
+import { createNewBranchChildren } from '../index.js';
 
 const outlet = (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {
   const { props, type } = template;
@@ -12,7 +12,7 @@ const outlet = (template: BranchTemplateFunction, parent: Branch, key: BranchKey
 
   const child = Core.singleton.router?.getComponentByDepth(depth);
 
-  branch.children = [process(child, undefined, branch, 0)];
+  branch.children = createNewBranchChildren([child], branch);
 
   return branch;
 };

@@ -1,4 +1,4 @@
-import { Outlet, RuvyNode, getRoute, useMemo } from '../index.js';
+import { Outlet, RuvyNode, getPathname, useMemo } from '../index.js';
 import { DocItem } from '../types/index.js';
 import SideBar from './SideBar.js';
 
@@ -9,7 +9,7 @@ export interface DocWithSideBarProps {
 }
 
 const DocWithSideBar = ({ rootURL, mainComponent, sideBarItems }: DocWithSideBarProps) => {
-  const route = getRoute();
+  const route = getPathname();
 
   const showMain = useMemo(() => {
     return route === rootURL;

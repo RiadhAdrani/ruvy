@@ -32,9 +32,10 @@ export default ({ content }: MarkdownProps) => {
 
       if (isBlank(hash)) return;
 
-      const view = ref.value.querySelector(hash);
-
-      view?.scrollIntoView();
+      setTimeout(() => {
+        const view = ref.value?.querySelector(hash);
+        view?.scrollIntoView();
+      }, 100);
     }
   }, content);
 

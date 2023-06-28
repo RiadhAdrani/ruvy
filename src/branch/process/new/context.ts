@@ -1,6 +1,6 @@
 import { initBranch } from '../../utils/index.js';
 import { Branch, BranchKey, BranchTag, BranchTemplate } from '../../types.js';
-import process from '../index.js';
+import { createNewBranchChildren } from '../index.js';
 
 /**
  * create a new context branch
@@ -19,7 +19,7 @@ const context = (template: BranchTemplate, parent: Branch, key: BranchKey): Bran
     parent,
   });
 
-  branch.children = children.map((child, index) => process(child, undefined, branch, index));
+  branch.children = createNewBranchChildren(children, branch);
 
   return branch;
 };

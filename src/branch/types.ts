@@ -18,6 +18,7 @@ export enum BranchTag {
   Outlet = '#-outlet-branch',
   Context = '#-context-branch',
   Portal = '#-portal-branch',
+  Conditional = '#-conditional-branch',
 }
 
 export enum HookType {
@@ -177,4 +178,9 @@ export interface ContextObject<T = unknown> {
 export interface ContextComponentProps<T = unknown> {
   value: T;
   children?: Array<unknown>;
+}
+
+export interface BranchProcessor<B = unknown, T = BranchTemplate> {
+  create: (template: T, parent: Branch, key: BranchKey) => Branch<B>;
+  diff: (template: T, current: Branch<B>) => Array<unknown>;
 }

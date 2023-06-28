@@ -1,5 +1,5 @@
 import { Branch, BranchStatus, BranchTag } from '../../types.js';
-import process from '../index.js';
+import { createNewBranchChildren } from '../index.js';
 
 /**
  * create the root branch.
@@ -20,7 +20,7 @@ const root = (container: HTMLElement, child: unknown): Branch => {
     unmountedChildren: [],
   };
 
-  branch.children = [process(child, undefined, branch, 0)];
+  branch.children = createNewBranchChildren([child], branch);
 
   return branch;
 };

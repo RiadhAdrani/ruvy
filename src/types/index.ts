@@ -31,6 +31,8 @@ export interface UtilityProps {
   children: Array<RuvyNode>;
   key: BranchKey;
   if: boolean;
+  else: unknown;
+  'else-if': boolean;
 }
 
 export type PropsWithUtility<T extends object> = Partial<UtilityProps> & T;
