@@ -1,12 +1,9 @@
+import { PropsWithUtility } from 'src/index.js';
 import { createNewBranchChildren } from '../../../branch/index.js';
 import { Branch, BranchKey, BranchTag, BranchTemplate } from '../../../branch/types.js';
 import { initBranch } from '../../../branch/utils/index.js';
 
-export interface PortalProps {
-  container: Element;
-  key?: BranchKey;
-  children?: Array<unknown>;
-}
+export type PortalProps = PropsWithUtility<{ container: Element }>;
 
 export const Portal = (props: PortalProps) => props as unknown as JSX.Element;
 
