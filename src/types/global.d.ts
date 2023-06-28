@@ -1023,7 +1023,7 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<BaseHTMLProps & DOMEvents<E> & T>;
+    Partial<BaseProps & BaseHTMLProps & DOMEvents<E> & T>;
 
   type SVGCommonPropsWith<K extends keyof SVGAttributes> = BaseSVGProps & {
     [P in K]: SVGAttributes[P];
@@ -1033,7 +1033,7 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<BaseSVGProps & DOMEvents<E> & T>;
+    Partial<BaseProps & BaseSVGProps & DOMEvents<E> & T>;
 
   type BlockQuoteProps = Pick<HTMLAttributes, 'cite'>;
 
