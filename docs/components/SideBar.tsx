@@ -9,7 +9,7 @@ export interface SideBarProps {
   root: string;
 }
 
-export interface SideBarLinkProps extends ComponentProps<HTMLAnchorElement, AProps> {
+export interface SideBarLinkProps extends HTMLElementProps<HTMLAnchorElement, AProps> {
   item: DocItem;
   root: string;
 }

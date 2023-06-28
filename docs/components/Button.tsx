@@ -1,7 +1,7 @@
 import { join } from '../utils/utils.js';
 import { PropsWithChildren, useMemo, joinClasses } from '../index.js';
 
-interface UButtonProps extends ComponentProps<HTMLButtonElement, ButtonProps> {
+interface UButtonProps extends HTMLElementProps<HTMLButtonElement, ButtonProps> {
   type: 'text' | 'fill' | 'outline';
 }
 

@@ -1,6 +1,7 @@
 import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
 import { BranchKey, BranchTemplate } from '../branch/types.js';
 import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
+import { type } from 'os';
 
 declare global {
   function createJsxElement(
@@ -143,7 +144,264 @@ declare global {
 
   type AriaProps = { [key in `aria-${keyof Aria}`]: string | number | boolean };
 
-  interface SVGProps {
+  type XMLAttrType = string | number;
+
+  interface HTMLAttributes {
+    accept: StringWithAutoComplete<'audio/*' | 'video/*' | 'image/*'>;
+    'accept-charset': string;
+    accesskey: string;
+    action: string;
+    /**
+     * @deprecated
+     */
+    align: string;
+    allow: boolean;
+    allowfullscreen: boolean;
+    allowpaymentrequest: boolean;
+    alt: string;
+    async: boolean;
+    autocapitalize: StringWithAutoComplete<
+      'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
+    >;
+    autocomplete: string;
+    autofocus: boolean;
+    autoplay: boolean;
+    /**
+     * @obsolete
+     */
+    background: string;
+    /**
+     * @obsolete
+     */
+    bgcolor: string;
+    /**
+     * @legacy
+     */
+    border: string;
+    buffered: string;
+    capture: StringWithAutoComplete<'user' | 'environment'>;
+    charset: string;
+    checked: boolean;
+    cite: string;
+    class: Arrayable<string>;
+    color: string;
+    cols: number;
+    colspan: number;
+    content: string;
+    contenteditable: boolean;
+    /**
+     * @non-standard
+     */
+    contextmenu: string;
+    controls: boolean;
+    coords: string;
+    compact: string;
+    crossorigin: StringWithAutoComplete<'anonymous' | 'use-credentials' | ''>;
+    /**
+     * @experimental
+     */
+    csp: string;
+    data: string;
+    datetime: string;
+    decoding: string;
+    default: boolean;
+    def: string;
+    defer: boolean;
+    dir: StringWithAutoComplete<'ltr' | 'rtl' | 'auto'>;
+    dirname: string;
+    disabled: boolean;
+    download: string;
+    draggalbe: boolean;
+    enctype: StringWithAutoComplete<
+      'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'
+    >;
+    /**
+     * @experimental
+     */
+    enterkeyhint: string;
+    for: string;
+    form: string;
+    formaction: string;
+    formmethod: string;
+    formenctype: string;
+    formnovalidate: string;
+    formtarget: string;
+    headers: string;
+    height: string | number;
+    hidden: boolean;
+    high: string | number;
+    href: string;
+    hreflang: string;
+    'http-equiv': StringWithAutoComplete<
+      'content-security-policy' | 'content-type' | 'default-style' | 'x-ua-compatibl' | 'refresh'
+    >;
+    id: string;
+    integrity: string;
+    /**
+     * @deprecated
+     */
+    intrinsicsize: string | number;
+    inputmode: StringWithAutoComplete<
+      'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+    >;
+    ismap: boolean;
+    itemprop: string;
+    kind: StringWithAutoComplete<
+      'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata'
+    >;
+    label: string;
+    lang: string;
+    /**
+     * @deprecated
+     */
+    language: string;
+    /**
+     * @experimental
+     */
+    loading: StringWithAutoComplete<'lazy' | 'eager'>;
+    list: string;
+    loop: boolean;
+    low: number | string;
+    /**
+     * @deprecated
+     */
+    manifest: string;
+    max: number | string;
+    maxlength: number | string;
+    minlength: number | string;
+    media: string;
+    method: StringWithAutoComplete<'post' | 'get' | 'dialog'>;
+    min: number | string;
+    multiple: boolean;
+    muted: boolean;
+    name: string;
+    noshade: boolean;
+    novalidate: boolean;
+    open: boolean;
+    optimum: number | string;
+    pattern: string;
+    ping: string;
+    placeholder: string;
+    playsinline: boolean;
+    poster: string;
+    preload: boolean;
+    readonly: boolean;
+    referrerpolicy: StringWithAutoComplete<
+      | 'no-referrer'
+      | 'no-referrer-when-downgrade'
+      | 'origin'
+      | 'origin-when-cross-origin'
+      | 'same-origin'
+      | 'strict-origin'
+      | 'strict-origin-when-cross-origin'
+      | 'unsafe-url'
+    >;
+    rel: StringWithAutoComplete<
+      | 'alternate'
+      | 'author'
+      | 'bookmark'
+      | 'canonical'
+      | 'dns-prefetch'
+      | 'external'
+      | 'help'
+      | 'icon'
+      | 'licence'
+      | 'manifest'
+      | 'me'
+      | 'modulepreload'
+      | 'next'
+      | 'nofollow'
+      | 'noopener'
+      | 'noreferrer'
+      | 'opener'
+      | 'pingback'
+      | 'preconnect'
+      | 'prefetch'
+      | 'preload'
+      | 'prerender'
+      | 'prev'
+      | 'stylesheet'
+      | 'tag'
+    >;
+    required: boolean;
+    reversed: boolean;
+    role: string;
+    rows: number | string;
+    rowspan: number | string;
+    sandbox: StringWithAutoComplete<
+      | 'allow-downloads'
+      | 'allow-downloads-without-user-activation'
+      | 'allow-forms'
+      | 'allow-modals'
+      | 'allow-orientation-lock'
+      | 'allow-pointer-lock'
+      | 'allow-popups'
+      | 'allow-popups-to-escape-sandbox'
+      | 'allow-presentation'
+      | 'allow-same-origi'
+      | 'allow-script'
+      | 'allow-storage-access-by-user-activation'
+      | 'allow-top-navigation'
+      | 'allow-top-navigation-by-user-activation'
+      | 'allow-top-navigation-to-custom-protocols'
+    >;
+    scope: StringWithAutoComplete<'row' | 'co' | 'rowgroup' | 'colgroup'>;
+    /**
+     * @deprecated
+     */
+    scoped: boolean;
+    selected: boolean;
+    shape: string;
+    size: number | string;
+    sizes: number | string;
+    slot: string;
+    span: number | string;
+    spellcheck: boolean;
+    src: string;
+    srcset: string;
+    srcdoc: string;
+    srclang: string;
+    start: number | string;
+    step: number | string;
+    style: string | Selector;
+    /**
+     * @deprecated
+     */
+    summary: string;
+    tabindex: number | string;
+    target: StringWithAutoComplete<'_self' | '_blank' | '_parent' | '_top'>;
+    title: string;
+    translate: StringWithAutoComplete<'yes' | '' | 'no'>;
+    type: StringWithAutoComplete<
+      | 'button'
+      | 'checkbox'
+      | 'color'
+      | 'date'
+      | 'datetime-local'
+      | 'email'
+      | 'file'
+      | 'hidden'
+      | 'image'
+      | 'month'
+      | 'number'
+      | 'password'
+      | 'radio'
+      | 'reset'
+      | 'search'
+      | 'submit'
+      | 'tel'
+      | 'text'
+      | 'time'
+      | 'url'
+      | 'week'
+    >;
+    usemap: string;
+    value: string | number;
+    width: string | number;
+    wrap: StringWithAutoComplete<'hard' | 'soft' | 'off'>;
+  }
+
+  interface SVGAttributes {
     'accent-height': string;
     accumulate: StringWithAutoComplete<'none' | 'sum'>;
     additive: StringWithAutoComplete<'replace' | 'sum'>;
@@ -164,282 +422,547 @@ declare global {
       | 'center'
       | 'bottom'
     >;
-    alphabetic: number;
+    /**
+     * @deprecated
+     */
+    alphabetic: number | string;
     amplitude: string;
-    'arabic-form': string;
-    ascent: string;
+    /**
+     * @deprecated
+     */
+    'arabic-form': StringWithAutoComplete<'initial' | 'medial' | 'terminal' | 'isolated'>;
+    /**
+     * @deprecated
+     */
+    ascent: number | string;
     attributeName: string;
-    attributeType: string;
-    azimuth: string;
+    /**
+     * @deprecated
+     */
+    attributeType: StringWithAutoComplete<'CSS' | 'XML' | 'auto'>;
+    azimuth: number | string;
 
-    baseFrequency: string;
-    'baseline-shift': string;
+    baseFrequency: number | string;
+    'baseline-shift': StringWithAutoComplete<'sub' | 'super'> | number;
+    /**
+     * @deprecated
+     */
     baseProfile: string;
+    /**
+     * @deprecated
+     */
     bbox: string;
     begin: string;
-    bias: string;
+    bias: number | string;
     by: string;
 
-    calcMode: string;
-    'cap-height': string;
-    clip: string;
-    clipPathUnits: string;
+    calcMode: StringWithAutoComplete<'discrete' | 'linear' | 'paced' | 'spline'>;
+    /**
+     * @deprecated
+     */
+    'cap-height': number | string;
+    class: Arrayable<string>;
+    /**
+     * @deprecated
+     */
+    clip: StringWithAutoComplete<'auto'>;
+    clipPathUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
     'clip-path': string;
-    'clip-rule': string;
-    'color-interpolation': string;
-    'color-interpolation-filters': string;
+    'clip-rule': StringWithAutoComplete<'nonzero' | 'evenodd' | 'inherit'>;
+    'color-interpolation': StringWithAutoComplete<'auto' | 'sRGB' | 'linearRGB'>;
+    'color-interpolation-filters': StringWithAutoComplete<'auto' | 'sRGB' | 'linearRGB'>;
+    /**
+     * @deprecated
+     */
     'color-profile': string;
     'color-rendering': string;
+    /**
+     * @deprecated
+     */
     contentScriptType: string;
+    /**
+     * @deprecated
+     */
     contentStyleType: string;
-    crossorigin: string;
-    cursor: string;
+    crossorigin: StringWithAutoComplete<'anonymous' | '' | 'use-credentials'>;
+    cursor: StringWithAutoComplete<
+      | 'auto'
+      | 'crosshair'
+      | 'default'
+      | 'pointer'
+      | 'move'
+      | 'e-resize'
+      | 'ne-resize'
+      | 'nw-resize'
+      | 'n-resize'
+      | 'se-resize'
+      | 'sw-resize'
+      | 's-resize '
+      | 'w-resize'
+      | 'text'
+      | 'wait'
+      | 'help'
+    >;
     cx: number | string;
     cy: number | string;
     color: string;
 
-    d: number | string;
+    d: string;
+    /**
+     * @deprecated
+     */
     decelerate: string;
+    def: string;
     descent: string;
-    diffuseConstant: string;
-    direction: string;
+    diffuseConstant: number | string;
+    direction: StringWithAutoComplete<'ltr' | 'rtl'>;
     display: string;
-    divisor: string;
-    'dominant-baseline': string;
-    dur: string;
+    divisor: number | string;
+    'dominant-baseline': StringWithAutoComplete<
+      | 'auto'
+      | 'text-bottom'
+      | 'alphabetic'
+      | 'ideographic'
+      | 'middle'
+      | 'central'
+      | 'mathematical'
+      | 'hanging'
+      | 'text-top'
+    >;
+    dur: StringWithAutoComplete<'media' | 'indefinite'>;
     dx: number | string;
     dy: number | string;
 
-    edgeMode: string;
-    elevation: string;
-    'enable-background': string;
+    edgeMode: StringWithAutoComplete<'duplicate' | 'wrap' | 'none'>;
+    elevation: number | string;
+    /**
+     * @deprecated
+     */
+    'enable-background': StringWithAutoComplete<'accumulate'>;
     end: string;
-    exponent: string;
+    exponent: number | string;
 
-    fill: string;
-    'fill-opacity': string;
-    'fill-rule': string;
+    fill: StringWithAutoComplete<'freeze' | 'remove'>;
+    'fill-opacity': number | string;
+    'fill-rule': StringWithAutoComplete<'nonzero' | 'evenodd'>;
     filter: string;
-    filterRes: string;
-    filterUnits: string;
+    /**
+     * @deprecated
+     */
+    filterRes: number | string;
+    filterUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
     'flood-color': string;
+    'flood-opacity': number | string;
     'font-family': string;
     'font-size': string;
-    'font-size-adjust': string;
+    'font-size-adjust': number | string;
     'font-stretch': string;
-    'font-style': string;
-    'font-weight': string;
+    'font-style': StringWithAutoComplete<'normal' | 'italic' | 'oblique'>;
+    'font-weight': number | StringWithAutoComplete<'normal' | 'bold' | 'bolder' | 'lighter'>;
     format: string;
-    from: string;
-    fr: string;
-    fx: string;
-    fy: string;
+    from: number | string;
+    fr: number | string;
+    fx: number | string;
+    fy: number | string;
 
+    /**
+     * @deprecated
+     */
     g1: string;
+    /**
+     * @deprecated
+     */
     g2: string;
+    /**
+     * @deprecated
+     */
     'glyph-name': string;
+    /**
+     * @deprecated
+     */
     'glyph-orientation-horizontal': string;
+    /**
+     * @deprecated
+     */
     'glyph-orientation-vertical': string;
     glyphRef: string;
     gradientTransform: string;
-    gradientUnits: string;
-
+    gradientUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
+    /**
+     * @deprecated
+     */
     hanging: string;
-    height: string;
+    height: number | string;
     href: string;
     hreflang: string;
-    'horiz-adv-x': string;
-    'horiz-origin-x': string;
+    /**
+     * @deprecated
+     */
+    'horiz-adv-x': number | string;
+    /**
+     * @deprecated
+     */
+    'horiz-origin-x': number | string;
 
+    id: string;
+    /**
+     * @deprecated
+     */
     ideographic: string;
-    'image-rendering': string;
-    in: string;
-    in2: string;
-    intercept: string;
-
+    'image-rendering': StringWithAutoComplete<'auto' | 'optimizeSpeed' | 'optimizeQuality'>;
+    in: StringWithAutoComplete<
+      | 'SourceGraphic'
+      | 'SourceAlpha'
+      | 'BackgroundImage'
+      | 'BackgroundAlpha'
+      | 'FillPaint'
+      | 'StrokePaint'
+    >;
+    in2: StringWithAutoComplete<
+      | 'SourceGraphic'
+      | 'SourceAlpha'
+      | 'BackgroundImage'
+      | 'BackgroundAlpha'
+      | 'FillPaint'
+      | 'StrokePaint'
+    >;
+    intercept: number | string;
+    /**
+     * @deprecated
+     */
     k: string;
-    k1: string;
-    k2: string;
-    k3: string;
-    k4: string;
-    kernelMatrix: string;
+    k1: number | string;
+    k2: number | string;
+    k3: number | string;
+    k4: number | string;
+    kernelMatrix: number | string;
+    /**
+     * @deprecated
+     */
     kernelUnitLength: string;
+    /**
+     * @deprecated
+     */
     kerning: string;
-    keyPoints: string;
+    keyPoints: number | string;
     keySplines: string;
-    keyTimes: string;
+    keyTimes: number | string;
 
     lang: string;
-    lengthAdjust: string;
-    'letter-spacing': string;
+    lengthAdjust: StringWithAutoComplete<'spacing' | 'spacingAndGlyphs'>;
+    'letter-spacing': StringWithAutoComplete<'normal'> | number;
     'lighting-color': string;
-    limitingConeAngle: string;
+    limitingConeAngle: number | string;
     local: string;
 
-    'marker-end': string;
-    'marker-mid': string;
-    'marker-start': string;
-    markerHeight: string;
-    markerUnits: string;
-    markerWidth: string;
+    'marker-end': StringWithAutoComplete<'none'>;
+    'marker-mid': StringWithAutoComplete<'none'>;
+    'marker-start': StringWithAutoComplete<'none'>;
+    markerHeight: number | string;
+    markerUnits: StringWithAutoComplete<'userSpaceOnUse' | 'strokeWidth'>;
+    markerWidth: number | string;
     mask: string;
-    maskContentUnits: string;
-    maskUnits: string;
+    maskContentUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
+    maskUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
+    /**
+     * @deprecated
+     */
     mathematical: string;
-    max: string;
+    max: number | string;
     media: string;
-    method: string;
-    min: string;
+    /**
+     * @experimental
+     */
+    method: StringWithAutoComplete<'align' | 'stretch'>;
+    min: number | string;
     mode: string;
-
+    /**
+     * @deprecated
+     */
     name: string;
-    numOctaves: string;
+    numOctaves: number | string;
 
     offset: string;
-    opacity: string;
-    operator: string;
-    order: string;
-    orient: string;
-    orientation: string;
+    opacity: number | string;
+    operator: StringWithAutoComplete<
+      'over' | 'in' | 'out' | 'atop' | 'xor' | 'lighter' | 'arithmetic'
+    >;
+    order: number | string;
+    orient: StringWithAutoComplete<'auto' | 'auto-start-reverse'> | number;
+    /**
+     * @deprecated
+     */
+    orientation: StringWithAutoComplete<'h' | 'v'>;
     origin: string;
-    overflow: string;
-    'overline-position': string;
-    'overline-thickness': string;
-
-    'panose-1': string;
-    'paint-order': string;
+    overflow: StringWithAutoComplete<'visible' | 'hidden' | 'scroll' | 'auto'>;
+    'overline-position': number | string;
+    'overline-thickness': number | string;
+    /**
+     * @deprecated
+     */
+    'panose-1': number | string;
+    'paint-order': StringWithAutoComplete<'normal' | 'fill' | 'stroke' | 'markers'>;
     path: string;
-    pathLength: string;
-    patternContentUnits: string;
+    pathLength: number | string;
+    patternContentUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
     patternTransform: string;
-    patternUnits: string;
+    patternUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
     ping: string;
-    'pointer-events': string;
-    points: string;
-    pointsAtX: string;
-    pointsAtY: string;
-    pointsAtZ: string;
-    preserveAlpha: string;
+    'pointer-events': StringWithAutoComplete<
+      | 'bounding-box'
+      | 'visiblePainted'
+      | 'visibleFill'
+      | 'visibleStroke'
+      | 'visible'
+      | 'painted'
+      | 'fill'
+      | 'stroke'
+      | 'all'
+      | 'none'
+    >;
+    points: number | string;
+    pointsAtX: number | string;
+    pointsAtY: number | string;
+    pointsAtZ: number | string;
+    preserveAlpha: boolean;
     preserveAspectRatio: string;
-    primitiveUnits: string;
+    primitiveUnits: StringWithAutoComplete<'userSpaceOnUse' | 'objectBoundingBox'>;
 
-    r: string;
-    radius: string;
+    r: number | string;
+    radius: number | string;
     referrerPolicy: string;
-    refX: string;
-    refY: string;
+    refX: StringWithAutoComplete<'left' | 'center' | 'right'> | number;
+    refY: StringWithAutoComplete<'top' | 'center' | 'bottom'> | number;
     rel: string;
     'rendering-intent': string;
-    repeatCount: string;
-    repeatDur: string;
+    repeatCount: number | string;
+    repeatDur: StringWithAutoComplete<'indefinite'>;
     requiredExtensions: string;
+    /**
+     * @deprecated
+     */
     requiredFeatures: string;
-    restart: string;
+    restart: StringWithAutoComplete<'always' | 'whenNotActive' | 'never'>;
     result: string;
-    rotate: string;
-    rx: string;
-    ry: string;
+    rotate: StringWithAutoComplete<'auto' | 'auto-reverse'> | number;
+    rx: number | string;
+    ry: number | string;
 
-    scale: string;
-    seed: string;
-    'shape-rendering': string;
-    slope: string;
-    spacing: string;
-    specularConstant: string;
-    specularExponent: string;
+    scale: number | string;
+    seed: number | string;
+    'shape-rendering': StringWithAutoComplete<
+      'auto' | 'optimizeSpeed' | 'crispEdges' | 'geometricPrecision'
+    >;
+    /**
+     * @experimental
+     */
+    side: string;
+    /**
+     * @deprecated
+     */
+    slope: number | string;
+    spacing: StringWithAutoComplete<'auto' | 'exact'>;
+    specularConstant: number | string;
+    specularExponent: number | string;
     speed: string;
-    spreadMethod: string;
-    startOffset: string;
-    stdDeviation: string;
-    stemh: string;
-    stemv: string;
-    stitchTiles: string;
-    'stop-color': string;
-    'stop-opacity': string;
-    'strikethrough-position': string;
-    'strikethrough-thickness': string;
+    spreadMethod: StringWithAutoComplete<'pad' | 'reflect' | 'repeat'>;
+    startOffset: number | string;
+    stdDeviation: number | string;
+    /**
+     * @deprecated
+     */
+    stemh: number | string;
+    /**
+     * @deprecated
+     */
+    stemv: number | string;
+    stitchTiles: StringWithAutoComplete<'noStitch' | 'stitch'>;
+    'stop-color': StringWithAutoComplete<'currentcolor'>;
+    'stop-opacity': number | string;
+    'strikethrough-position': number | string;
+    'strikethrough-thickness': number | string;
+    /**
+     * @deprecated
+     */
     string: string;
     stroke: string;
-    'stroke-dasharray': string;
-    'stroke-dashoffset': string;
-    'stroke-linecap': string;
-    'stroke-linejoin': string;
-    'stroke-miterlimit': string;
-    'stroke-opacity': string;
-    'stroke-width': string;
-    surfaceScale: string;
+    'stroke-dasharray': StringWithAutoComplete<'none'>;
+    'stroke-dashoffset': number | string;
+    'stroke-linecap': StringWithAutoComplete<'butt' | 'round' | 'square'>;
+    'stroke-linejoin': StringWithAutoComplete<'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round'>;
+    'stroke-miterlimit': number | string;
+    'stroke-opacity': number | string;
+    'stroke-width': number | string;
+    style: string | Selector;
+    surfaceScale: number | string;
     systemLanguage: string;
 
-    tabindex: string;
-    tableValues: string;
-    target: string;
-    targetX: string;
-    targetY: string;
-    'text-anchor': string;
+    tabindex: number | string;
+    tableValues: number | string;
+    target: StringWithAutoComplete<'_self' | '_parent' | '_top' | '_blank'>;
+    targetX: number | string;
+    targetY: number | string;
+    'text-anchor': StringWithAutoComplete<'start' | 'middle' | 'end'>;
     'text-decoration': string;
-    'text-rendering': string;
-    textLength: string;
+    'text-rendering': StringWithAutoComplete<
+      'auto' | 'optimizeSpeed' | 'optimizeLegibility' | 'geometricPrecision'
+    >;
+    textLength: number | string;
     to: string;
     transform: string;
     'transform-origin': string;
-    type: string;
-
+    type: StringWithAutoComplete<
+      | 'translate'
+      | 'scale'
+      | 'rotate'
+      | 'skewX'
+      | 'skewY'
+      | 'matrix'
+      | 'saturate'
+      | 'hueRotate'
+      | 'luminanceToAlpha'
+      | 'identity'
+      | 'table'
+      | 'discrete'
+      | 'linear'
+      | 'gamma'
+      | 'fractalNoise'
+      | 'turbulence'
+    >;
+    /**
+     * @deprecated
+     */
     u1: string;
+    /**
+     * @deprecated
+     */
     u2: string;
-    'underline-position': string;
-    'underline-thickness': string;
+    'underline-position': number | string;
+    'underline-thickness': number | string;
+    /**
+     * @deprecated
+     */
     unicode: string;
     'unicode-bidi': string;
+    /**
+     * @deprecated
+     */
     'unicode-range': string;
+    /**
+     * @deprecated
+     */
     'units-per-em': string;
 
-    'v-alphabetic': string;
-    'v-hanging': string;
-    'v-ideographic': string;
-    'v-mathematical': string;
+    /**
+     * @deprecated
+     */
+    'v-alphabetic': number | string;
+    /**
+     * @deprecated
+     */
+    'v-hanging': number | string;
+    /**
+     * @deprecated
+     */
+    'v-ideographic': number | string;
+    /**
+     * @deprecated
+     */
+    'v-mathematical': number | string;
     values: string;
-    'vector-effect': string;
+    'vector-effect': StringWithAutoComplete<
+      'none' | 'non-scaling-stroke' | 'non-scaling-size' | 'non-rotation' | 'fixed-position'
+    >;
+    /**
+     * @deprecated
+     */
     version: string;
-    'vert-adv-y': string;
-    'vert-origin-x': string;
-    'vert-origin-y': string;
+    /**
+     * @deprecated
+     */
+    'vert-adv-y': number | string;
+    /**
+     * @deprecated
+     */
+    'vert-origin-x': number | string;
+    /**
+     * @deprecated
+     */
+    'vert-origin-y': number | string;
     viewBox: string;
+    /**
+     * @deprecated
+     */
     viewTarget: string;
-    visibility: string;
+    visibility: StringWithAutoComplete<'visible' | 'hidden' | 'collapse'>;
 
-    width: string;
-    widths: string;
+    width: number | string;
+    /**
+     * @deprecated
+     */
+    widths: number | string;
     'word-spacing': string;
-    'writing-mode': string;
+    'writing-mode': StringWithAutoComplete<'horizontal-tb' | 'vertical-rl' | 'vertical-lr'>;
 
-    x: string;
-    'x-height': string;
-    x1: string;
-    x2: string;
-    xChannelSelector: string;
+    x: number | string;
+    /**
+     * @deprecated
+     */
+    'x-height': number | string;
+    x1: number | string;
+    x2: number | string;
+    xChannelSelector: StringWithAutoComplete<'R' | 'G' | 'B' | 'A'>;
+
     'xlink:actuate': string;
+    /**
+     * @deprecated
+     */
     'xlink:arcrole': string;
+    /**
+     * @deprecated
+     */
     'xlink:href': string;
     'xlink:role': string;
+    /**
+     * @deprecated
+     */
     'xlink:show': string;
+    /**
+     * @deprecated
+     */
     'xlink:title': string;
+    /**
+     * @deprecated
+     */
     'xlink:type': string;
+    /**
+     * @deprecated
+     */
     'xml:base': string;
+    /**
+     * @deprecated
+     */
     'xml:lang': string;
+    /**
+     * @deprecated
+     */
     'xml:space': string;
 
-    y: string;
-    y1: string;
-    y2: string;
-    yChannelSelector: string;
+    y: number | string;
+    y1: number | string;
+    y2: number | string;
+    yChannelSelector: StringWithAutoComplete<'R' | 'G' | 'B' | 'A'>;
 
-    z: string;
+    z: number | string;
+    /**
+     * @deprecated
+     */
     zoomAndPan: string;
   }
 
-  type SVGCommonProps = BaseProps &
+  type BaseSVGProps = BaseProps &
     Pick<
-      SVGProps,
+      SVGAttributes,
       | 'lang'
       | 'tabindex'
       | 'requiredExtensions'
@@ -475,393 +998,259 @@ declare global {
 
   type BaseProps = Partial<UtilityProps>;
 
-  interface CommonHTMLProps extends AriaProps, BaseProps {
-    class: Arrayable<string>;
-    id: string;
-    style: Selector | string;
-    value: string | number;
-    lang: string;
-    accesskey: string;
-    autocapitalize: StringWithAutoComplete<
-      'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters'
-    >;
-    contenteditable: StringWithAutoComplete<'true' | 'false'>;
-    contextmenu: string;
-    compact: string;
-    dir: StringWithAutoComplete<'ltr' | 'rtl' | 'auto'>;
-    draggable: StringWithAutoComplete<'true' | 'false'>;
-    hidden: boolean;
-    playsinline: string;
-    role: string;
-    slot: string;
-    spellcheck: StringWithAutoComplete<'true' | 'false'>;
-    tabindex: string;
-    title: string;
-    translate: StringWithAutoComplete<'yes' | 'no'>;
-    ref: unknown;
-  }
+  type BaseHTMLProps = Pick<
+    HTMLAttributes,
+    | 'class'
+    | 'id'
+    | 'style'
+    | 'value'
+    | 'accesskey'
+    | 'autocapitalize'
+    | 'contenteditable'
+    | 'contextmenu'
+    | 'dir'
+    | 'draggalbe'
+    | 'hidden'
+    | 'playsinline'
+    | 'role'
+    | 'slot'
+    | 'spellcheck'
+    | 'tabindex'
+    | 'title'
+    | 'translate'
+  >;
 
-  type ComponentProps<E extends Element = HTMLElement, T extends object = object> = Record<
+  type HTMLElementProps<E extends Element = HTMLElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<CommonHTMLProps> &
-    Partial<DOMEvents<E>> &
-    Partial<T>;
+    Partial<BaseHTMLProps & DOMEvents<E> & T>;
 
-  type SVGCommonPropsWith<K extends keyof SVGProps> = SVGCommonProps & {
-    [P in K]: SVGProps[P];
+  type SVGCommonPropsWith<K extends keyof SVGAttributes> = BaseSVGProps & {
+    [P in K]: SVGAttributes[P];
   };
 
-  type SVGComponentProps<E extends Element = SVGElement, T extends object = object> = Record<
+  type SVGElementProps<E extends Element = SVGElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<CommonHTMLProps> &
-    Partial<DOMEvents<E>> &
-    Partial<SVGCommonProps> &
-    Partial<T>;
+    Partial<BaseSVGProps & DOMEvents<E> & T>;
 
-  interface BlockQuoteProps {
-    cite: string;
-  }
+  type BlockQuoteProps = Pick<HTMLAttributes, 'cite'>;
 
-  interface HrProps {
-    align: string;
-    color: string;
-    noshade: boolean;
-    size: string;
-    width: string;
-  }
+  type HrProps = Pick<HTMLAttributes, 'align' | 'color' | 'size' | 'width' | 'noshade'>;
 
-  interface LiProps {
-    value: string;
-    type: string;
-  }
+  type LiProps = Pick<HTMLAttributes, 'value' | 'type'>;
 
-  interface OlProps {
-    reversed: boolean;
-    start: string;
-    type: string;
-  }
+  type OlProps = Pick<HTMLAttributes, 'type' | 'start' | 'reversed'>;
 
-  interface PreProps {
-    cols: number;
-    width: string;
-    wrap: 'hard' | 'soft' | 'off';
-  }
+  type PreProps = Pick<HTMLAttributes, 'cols' | 'width' | 'wrap'>;
 
-  interface UlProps {
-    compact: string;
-    type: string;
-  }
+  type UlProps = Pick<HTMLAttributes, 'compact' | 'type'>;
 
-  interface AProps extends SVGCommonPropsWith<'xlink:href'> {
-    download: string;
-    href: string;
-    hreflang: string;
-    ping: string;
-    referrerpolicy: string;
-    rel: string;
-    target: string;
-    type: string;
-  }
+  type AProps = Pick<
+    HTMLAttributes,
+    'download' | 'href' | 'hreflang' | 'ping' | 'referrerpolicy' | 'rel' | 'target' | 'type'
+  >;
 
-  interface BdiProps {
-    dir: string;
-  }
+  type BdiProps = Pick<HTMLAttributes, 'dir'>;
 
-  interface BdoProps {
-    dir: string;
-  }
+  type BdoProps = Pick<HTMLAttributes, 'dir'>;
 
-  interface DataProps {
-    value: string;
-  }
+  type DataProps = Pick<HTMLAttributes, 'value'>;
 
-  interface QProps {
-    cite: string;
-  }
+  type QProps = Pick<HTMLAttributes, 'cite'>;
 
-  interface TimeProps {
-    datetime: string;
-  }
+  type TimeProps = Pick<HTMLAttributes, 'datetime'>;
 
-  interface AreaProps {
-    alt: string;
-    coords: string;
-    download: string;
-    href: string;
-    ping: string;
-    referrerpolicy: string;
-    rel: string;
-    shape: string;
-    target: string;
-  }
+  type AreaProps = Pick<
+    HTMLAttributes,
+    'alt' | 'coords' | 'download' | 'href' | 'ping' | 'referrerpolicy' | 'rel' | 'shape' | 'target'
+  >;
 
-  interface AudioProps {
-    autoplay: boolean;
-    controls: boolean;
-    crossorigin: string;
-    loop: boolean;
-    muted: boolean;
-    preload: string;
-    src: string;
-  }
+  type AudioProps = Pick<
+    HTMLAttributes,
+    'autoplay' | 'controls' | 'crossorigin' | 'loop' | 'muted' | 'preload' | 'src'
+  >;
 
-  interface ImgProps {
-    alt: string;
-    crossorigin: string;
-    decoding: string;
-    height: string | number;
-    ismap: boolean;
-    loading: string;
-    referrerpolicy: string;
-    sizes: string;
-    src: string;
-    srcset: string;
-    width: string | number;
-    usemap: string;
-  }
+  type ImgProps = Pick<
+    HTMLAttributes,
+    | 'alt'
+    | 'crossorigin'
+    | 'decoding'
+    | 'height'
+    | 'ismap'
+    | 'loading'
+    | 'referrerpolicy'
+    | 'sizes'
+    | 'src'
+    | 'src'
+    | 'srcset'
+    | 'width'
+    | 'usemap'
+  >;
 
-  interface MapProps {
-    name: string;
-  }
+  type MapProps = Pick<HTMLAttributes, 'name'>;
 
-  interface TrackProps {
-    def: string;
-    kind: string;
-    label: string;
-    src: string;
-    srclang: string;
-  }
+  type TrackProps = Pick<HTMLAttributes, 'def' | 'kind' | 'label' | 'src' | 'srclang'>;
 
-  interface VideoProps {
-    autoplay: boolean;
-    crossorigin: string;
-    height: string | number;
-    loop: boolean;
-    muted: boolean;
-    playsinline: string;
-    poster: string;
-    preload: string;
-    src: string;
-    width: string | number;
-  }
+  type VideoProps = Pick<
+    HTMLAttributes,
+    | 'autoplay'
+    | 'crossorigin'
+    | 'height'
+    | 'loop'
+    | 'muted'
+    | 'playsinline'
+    | 'poster'
+    | 'preload'
+    | 'src'
+    | 'width'
+  >;
 
-  interface EmbedProps {
-    height: string | number;
-    src: string;
-    type: string;
-    width: string | number;
-  }
+  type EmbedProps = Pick<HTMLAttributes, 'height' | 'src' | 'type' | 'width'>;
 
-  interface IframeProps {
-    allow: string;
-    allowfullscreen: string;
-    allowpaymentrequest: string;
-    height: string | number;
-    loading: string;
-    name: string;
-    referrerpolicy: string;
-    sandbox: string;
-    src: string;
-    srcdoc: string;
-    width: string | number;
-  }
+  type IframeProps = Pick<
+    HTMLAttributes,
+    | 'allow'
+    | 'allowfullscreen'
+    | 'allowpaymentrequest'
+    | 'height'
+    | 'loading'
+    | 'name'
+    | 'referrerpolicy'
+    | 'sandbox'
+    | 'src'
+    | 'srcdoc'
+    | 'width'
+  >;
 
-  interface ObjectProps {
-    data: string;
-    form: string;
-    height: string | number;
-    name: string;
-    type: string;
-    usemap: string;
-    width: string | number;
-  }
+  type ObjectProps = Pick<
+    HTMLAttributes,
+    'data' | 'form' | 'height' | 'name' | 'type' | 'usemap' | 'width'
+  >;
 
-  interface SourceProps {
-    type: string;
-  }
+  type SourceProps = Pick<HTMLAttributes, 'type'>;
 
-  interface CanvasProps {
-    height: string | number;
-    width: string | number;
-  }
+  type CanvasProps = Pick<HTMLAttributes, 'height' | 'width'>;
 
-  interface DelProps {
-    cite: string;
-    datetime: string;
-  }
+  type DelProps = Pick<HTMLAttributes, 'cite' | 'datetime'>;
 
-  interface InsProps {
-    cite: string;
-    datetime: string;
-  }
+  type InsProps = Pick<HTMLAttributes, 'cite' | 'datetime'>;
 
-  interface ColProps {
-    span: string;
-  }
+  type ColProps = Pick<HTMLAttributes, 'span'>;
 
-  interface ColGroupProps {
-    span: string;
-  }
+  type ColGroupProps = Pick<HTMLAttributes, 'span'>;
 
-  interface TdProps {
-    colspan: string;
-    headers: string;
-    rowspan: string;
-  }
+  type TdProps = Pick<HTMLAttributes, 'span' | 'headers' | 'rowspan'>;
 
-  interface ThProps {
-    colspan: string;
-    headers: string;
-    rowspan: string;
-    scope: string;
-  }
+  type ThProps = Pick<HTMLAttributes, 'colspan' | 'headers' | 'rowspan' | 'scope'>;
 
-  interface ButtonProps {
-    autofocus: string;
-    disabled: boolean;
-    form: string;
-    formaction: string;
-    formenctype: string;
-    formmethod: string;
-    formnovalidate: string;
-    formtarget: string;
-    name: string;
-    type: string;
-    value: string;
-  }
+  type ButtonProps = Pick<
+    HTMLAttributes,
+    | 'autofocus'
+    | 'disabled'
+    | 'form'
+    | 'formaction'
+    | 'formenctype'
+    | 'formmethod'
+    | 'formnovalidate'
+    | 'formtarget'
+    | 'name'
+    | 'type'
+    | 'value'
+  >;
 
-  interface FieldsetProps {
-    disabled: boolean;
-    form: string;
-    name: string;
-  }
+  type FieldsetProps = Pick<HTMLAttributes, 'disabled' | 'form' | 'name'>;
 
-  interface FormProps {
-    acceptcharset: string;
-    autocomplete: string;
-    name: string;
-    rel: string;
-    action: string;
-    enctype: string;
-    method: string;
-    novalidate: string;
-    target: string;
-  }
+  type FormProps = Pick<
+    HTMLAttributes,
+    | 'accept-charset'
+    | 'autocomplete'
+    | 'name'
+    | 'rel'
+    | 'action'
+    | 'enctype'
+    | 'method'
+    | 'novalidate'
+    | 'target'
+  >;
 
-  interface InputProps {
-    accept: string;
-    alt: string;
-    autocomplete: string;
-    capture: string;
-    checked: boolean;
-    dirname: string;
-    disabled: boolean;
-    form: string;
-    formaction: string;
-    formenctype: string;
-    formmethod: string;
-    formnovalidate: string;
-    formtarget: string;
-    height: string | number;
-    list: string;
-    max: number | string;
-    maxlength: number | string;
-    min: number | string;
-    minlength: number | string;
-    multiple: boolean;
-    name: string;
-    pattern: string;
-    placeholder: string;
-    readonly: boolean;
-    required: boolean;
-    size: string;
-    src: string;
-    step: string | number;
-    value: string | number;
-    width: string;
-    type: string;
-  }
+  type InputProps = Pick<
+    HTMLAttributes,
+    | 'accept'
+    | 'alt'
+    | 'autocomplete'
+    | 'capture'
+    | 'checked'
+    | 'dirname'
+    | 'disabled'
+    | 'form'
+    | 'formaction'
+    | 'formenctype'
+    | 'formmethod'
+    | 'formnovalidate'
+    | 'formtarget'
+    | 'height'
+    | 'list'
+    | 'max'
+    | 'maxlength'
+    | 'min'
+    | 'minlength'
+    | 'multiple'
+    | 'name'
+    | 'placeholder'
+    | 'readonly'
+    | 'required'
+    | 'size'
+    | 'src'
+    | 'step'
+    | 'value'
+    | 'width'
+    | 'type'
+  >;
 
-  interface LabelProps {
-    for: string;
-  }
+  type LabelProps = Pick<HTMLAttributes, 'for'>;
 
-  interface MeterProps {
-    value: number;
-    min: number;
-    max: number;
-    low: number;
-    high: number;
-    optimum: number;
-  }
+  type MeterProps = Pick<HTMLAttributes, 'value' | 'min' | 'max' | 'low' | 'high' | 'optimum'>;
 
-  interface OptgroupProps {
-    disabled: boolean;
-    label: string;
-  }
+  type OptgroupProps = Pick<HTMLAttributes, 'disabled' | 'label'>;
 
-  interface OptionProps {
-    disabled: boolean;
-    label: string;
-    selected: boolean;
-    value: string;
-  }
+  type OptionProps = Pick<HTMLAttributes, 'disabled' | 'label' | 'selected' | 'value'>;
 
-  interface OutputProps {
-    for: string;
-    form: string;
-    name: string;
-  }
+  type OutputProps = Pick<HTMLAttributes, 'for' | 'form' | 'name'>;
 
-  interface ProgressProps {
-    max: number;
-    value: number;
-  }
+  type ProgressProps = Pick<HTMLAttributes, 'max' | 'value'>;
 
-  interface SelectProps {
-    autocomplete: string;
-    autofocus: string;
-    disabled: boolean;
-    form: string;
-    multiple: boolean;
-    name: string;
-    required: boolean;
-    size: string;
-  }
+  type SelectProps = Pick<
+    HTMLAttributes,
+    'autocomplete' | 'autofocus' | 'disabled' | 'form' | 'multiple' | 'name' | 'required' | 'size'
+  >;
 
-  interface TextareaProps {
-    autocomplete: string;
-    autofocus: string;
-    cols: number;
-    disabled: boolean;
-    form: string;
-    maxlength: number;
-    name: string;
-    placeholder: string;
-    readonly: boolean;
-    required: boolean;
-    spellcheck: string;
-    wrap: string;
-  }
+  type TextareaProps = Pick<
+    HTMLAttributes,
+    | 'autocomplete'
+    | 'autofocus'
+    | 'cols'
+    | 'disabled'
+    | 'form'
+    | 'maxlength'
+    | 'name'
+    | 'placeholder'
+    | 'readonly'
+    | 'required'
+    | 'spellcheck'
+    | 'wrap'
+  >;
 
-  interface DetailsProps {
-    open: boolean;
-  }
+  type DetailsProps = Pick<HTMLAttributes, 'open'>;
 
-  interface DialogProps {
-    open: boolean;
-  }
+  type DialogProps = Pick<HTMLAttributes, 'open'>;
 
-  interface SlotProps {
-    name: string;
-  }
+  type SlotProps = Pick<HTMLAttributes, 'name'>;
 
-  type AnimateProps = Pick<
-    SVGProps,
+  type SVGAnimateProps = Pick<
+    SVGAttributes,
     | 'begin'
     | 'dur'
     | 'end'
@@ -883,194 +1272,413 @@ declare global {
     | 'accumulate'
   >;
 
-  type AnimateMotionProps = Pick<SVGProps, 'keyPoints' | 'path' | 'rotate'>;
+  type SVGAnimateMotionProps = Pick<SVGAttributes, 'keyPoints' | 'path' | 'rotate'>;
+
+  type SVGCircleProps = Pick<SVGAttributes, 'cx' | 'cy' | 'r' | 'pathLength'>;
+
+  type SVGClipPathProps = Pick<SVGAttributes, 'clipPathUnits'>;
+
+  type SVGEllipseProps = Pick<SVGAttributes, 'cx' | 'cy' | 'rx' | 'ry' | 'pathLength'>;
+
+  type SVGFeBlendProps = Pick<SVGAttributes, 'in' | 'in2' | 'mode'>;
+
+  type SVGFeColorMatrixProps = Pick<SVGAttributes, 'in' | 'type' | 'values'>;
+
+  type SVGFeComponentTransferProps = Pick<SVGAttributes, 'in'>;
+
+  type SVGFeCompositeProps = Pick<
+    SVGAttributes,
+    'in' | 'in2' | 'operator' | 'k1' | 'k2' | 'k3' | 'k4'
+  >;
+
+  type SVGFeConvolveMatrixProps = Pick<
+    SVGAttributes,
+    | 'in'
+    | 'order'
+    | 'kernelMatrix'
+    | 'divisor'
+    | 'bias'
+    | 'targetX'
+    | 'targetY'
+    | 'edgeMode'
+    | 'kernelUnitLength'
+    | 'preserveAlpha'
+  >;
+
+  type SVGFeDiffuseLightingProps = Pick<
+    SVGAttributes,
+    'in' | 'surfaceScale' | 'diffuseConstant' | 'kernelUnitLength'
+  >;
+
+  type SVGFeDisplacementMapProps = Pick<
+    SVGAttributes,
+    'in' | 'in2' | 'scale' | 'xChannelSelector' | 'yChannelSelector'
+  >;
+
+  type SVGFeDistantLightProps = Pick<SVGAttributes, 'azimuth' | 'elevation'>;
+
+  type SVGFeDropShadowProps = Pick<SVGAttributes, 'dx' | 'dy' | 'stdDeviation'>;
+
+  type SVGFeFloodProps = Pick<SVGAttributes, 'flood-color' | 'flood-opacity'>;
+
+  type SVGFeGaussianBlurProps = Pick<SVGAttributes, 'in' | 'stdDeviation' | 'edgeMode'>;
+
+  type SVGFeImageProps = Pick<SVGAttributes, 'crossorigin' | 'preserveAspectRatio' | 'xlink:href'>;
+
+  type SVGFeMergeNodeProps = Pick<SVGAttributes, 'in'>;
+
+  type SVGFeMorphologyProps = Pick<SVGAttributes, 'in' | 'operator' | 'radius'>;
+
+  type SVGFeOffsetProps = Pick<SVGAttributes, 'in' | 'dx' | 'dy'>;
+
+  type SVGFePointLightProps = Pick<SVGAttributes, 'x' | 'y' | 'z'>;
+
+  type SVGFeSpecularLightingProps = Pick<
+    SVGAttributes,
+    'in' | 'surfaceScale' | 'specularConstant' | 'specularExponent' | 'kernelUnitLength'
+  >;
+
+  type SVGFeSpotLightProps = Pick<
+    SVGAttributes,
+    | 'x'
+    | 'y'
+    | 'z'
+    | 'pointsAtX'
+    | 'pointsAtY'
+    | 'pointsAtZ'
+    | 'specularExponent'
+    | 'limitingConeAngle'
+  >;
+
+  type SVGFeTileProps = Pick<SVGAttributes, 'in'>;
+
+  type SVGFeTurbulenceProps = Pick<
+    SVGAttributes,
+    'baseFrequency' | 'numOctaves' | 'seed' | 'stitchTiles' | 'type'
+  >;
+
+  type SVGFilterProps = Pick<
+    SVGAttributes,
+    | 'x'
+    | 'y'
+    | 'z'
+    | 'width'
+    | 'height'
+    | 'filterRes'
+    | 'filterUnits'
+    | 'primitiveUnits'
+    | 'xlink:href'
+  >;
+
+  type SVGForeignObjectProps = Pick<SVGAttributes, 'height' | 'width' | 'x' | 'z'>;
+
+  type SVGImageProps = Pick<
+    SVGAttributes,
+    'x' | 'y' | 'width' | 'height' | 'href' | 'preserveAspectRatio' | 'crossorigin'
+  >;
+
+  type SVGLineProps = Pick<SVGAttributes, 'x1' | 'x2' | 'y1' | 'y2' | 'pathLength'>;
+
+  type SVGLinearGradientProps = Pick<
+    SVGAttributes,
+    | 'gradientUnits'
+    | 'gradientTransform'
+    | 'href'
+    | 'spreadMethod'
+    | 'x1'
+    | 'x2'
+    | 'xlink:href'
+    | 'y1'
+    | 'y2'
+  >;
+
+  type SVGMarkerProps = Pick<
+    SVGAttributes,
+    | 'markerHeight'
+    | 'markerUnits'
+    | 'markerWidth'
+    | 'orient'
+    | 'preserveAspectRatio'
+    | 'refX'
+    | 'refY'
+    | 'viewBox'
+  >;
+
+  type SVGMaskProps = Pick<
+    SVGAttributes,
+    'height' | 'maskContentUnits' | 'maskUnits' | 'x' | 'y' | 'width'
+  >;
+
+  type SVGMPathProps = Pick<SVGAttributes, 'xlink:href'>;
+
+  type SVGPathProps = Pick<SVGAttributes, 'd' | 'pathLength'>;
+
+  type SVGPatternProps = Pick<
+    SVGAttributes,
+    | 'height'
+    | 'href'
+    | 'patternContentUnits'
+    | 'patternTransform'
+    | 'patternUnits'
+    | 'preserveAspectRatio'
+    | 'viewBox'
+    | 'width'
+    | 'x'
+    | 'xlink:href'
+    | 'y'
+  >;
+
+  type SVGPolygonProps = Pick<SVGAttributes, 'points' | 'pathLength'>;
+
+  type SVGPolylineProps = Pick<SVGAttributes, 'points' | 'pathLength'>;
+
+  type SVGRadialGradientProps = Pick<
+    SVGAttributes,
+    | 'cx'
+    | 'cy'
+    | 'fr'
+    | 'fx'
+    | 'fy'
+    | 'gradientUnits'
+    | 'gradientTransform'
+    | 'href'
+    | 'r'
+    | 'spreadMethod'
+    | 'xlink:href'
+  >;
+
+  type SVGRectProps = Pick<
+    SVGAttributes,
+    'x' | 'y' | 'width' | 'height' | 'rx' | 'ry' | 'pathLength'
+  >;
+
+  type SVGSetProps = Pick<SVGAttributes, 'to'>;
+
+  type SVGStopProps = Pick<SVGAttributes, 'offset' | 'stop-color' | 'stop-opacity'>;
+
+  type SVGSVGProps = Pick<
+    SVGAttributes,
+    | 'baseProfile'
+    | 'contentScriptType'
+    | 'contentStyleType'
+    | 'height'
+    | 'preserveAspectRatio'
+    | 'version'
+    | 'viewBox'
+    | 'width'
+    | 'x'
+    | 'y'
+  >;
+
+  type SVGSymbolProps = Pick<
+    SVGAttributes,
+    'height' | 'preserveAspectRatio' | 'refX' | 'refY' | 'viewBox' | 'width' | 'x' | 'y'
+  >;
+
+  type SVGTextProps = Pick<
+    SVGAttributes,
+    'x' | 'y' | 'dx' | 'dy' | 'rotate' | 'lengthAdjust' | 'textLength'
+  >;
+
+  type SVGTextPathProps = Pick<
+    SVGAttributes,
+    'href' | 'lengthAdjust' | 'method' | 'path' | 'side' | 'spacing' | 'startOffset' | 'textLength'
+  >;
+
+  type SVGTSpanProps = Pick<
+    SVGAttributes,
+    'x' | 'y' | 'dx' | 'dy' | 'rotate' | 'lengthAdjust' | 'textLength'
+  >;
+
+  type SVGUseProps = Pick<SVGAttributes, 'href' | 'xlink:href' | 'x' | 'y' | 'width' | 'height'>;
 
   namespace JSX {
     type Element = BranchTemplate<Any>;
 
     interface IntrinsicElements extends Record<string, unknown> {
-      a: ComponentProps<HTMLAnchorElement, AProps>;
-      abbr: ComponentProps;
-      address: ComponentProps;
-      area: ComponentProps<HTMLAreaElement, AreaProps>;
-      article: ComponentProps;
-      aside: ComponentProps;
-      audio: ComponentProps<HTMLAudioElement, AudioProps>;
-      b: ComponentProps;
-      base: ComponentProps<HTMLBaseElement>;
-      bdi: ComponentProps<HTMLElement, BdiProps>;
-      bdo: ComponentProps<HTMLElement, BdoProps>;
-      big: ComponentProps;
-      blockquote: ComponentProps<HTMLQuoteElement, BlockQuoteProps>;
-      body: ComponentProps<HTMLBodyElement>;
-      br: ComponentProps<HTMLBRElement>;
-      button: ComponentProps<HTMLButtonElement, ButtonProps>;
-      canvas: ComponentProps<HTMLCanvasElement, CanvasProps>;
-      caption: ComponentProps;
-      center: ComponentProps;
-      cite: ComponentProps;
-      code: ComponentProps;
-      col: ComponentProps<HTMLTableColElement, ColProps>;
-      colgroup: ComponentProps<HTMLTableColElement, ColGroupProps>;
-      data: ComponentProps<HTMLDataElement, DataProps>;
-      datalist: ComponentProps<HTMLDataListElement>;
-      dd: ComponentProps;
-      del: ComponentProps<HTMLModElement, DelProps>;
-      details: ComponentProps<HTMLDetailsElement, DetailsProps>;
-      dfn: ComponentProps;
-      dialog: ComponentProps<HTMLDialogElement, DialogProps>;
-      div: ComponentProps<HTMLDivElement>;
-      dl: ComponentProps<HTMLDListElement>;
-      dt: ComponentProps;
-      em: ComponentProps;
-      embed: ComponentProps<HTMLEmbedElement, EmbedProps>;
-      fieldset: ComponentProps<HTMLFieldSetElement, FieldsetProps>;
-      figcaption: ComponentProps;
-      figure: ComponentProps;
-      footer: ComponentProps;
-      form: ComponentProps<HTMLFormElement, FormProps>;
-      h1: ComponentProps<HTMLHeadingElement>;
-      h2: ComponentProps<HTMLHeadingElement>;
-      h3: ComponentProps<HTMLHeadingElement>;
-      h4: ComponentProps<HTMLHeadingElement>;
-      h5: ComponentProps<HTMLHeadingElement>;
-      h6: ComponentProps<HTMLHeadingElement>;
-      head: ComponentProps<HTMLHeadElement>;
-      header: ComponentProps;
-      hgroup: ComponentProps;
-      hr: ComponentProps<HTMLHRElement, HrProps>;
-      html: ComponentProps<HTMLHtmlElement>;
-      i: ComponentProps;
-      iframe: ComponentProps<HTMLIFrameElement, IframeProps>;
-      img: ComponentProps<HTMLImageElement, ImgProps>;
-      input: ComponentProps<HTMLInputElement, InputProps>;
-      ins: ComponentProps<HTMLModElement, InsProps>;
-      kbd: ComponentProps;
-      keygen: ComponentProps;
-      label: ComponentProps<HTMLLabelElement, LabelProps>;
-      legend: ComponentProps<HTMLLegendElement>;
-      li: ComponentProps<HTMLLIElement, LiProps>;
-      link: ComponentProps<HTMLLinkElement>;
-      main: ComponentProps;
-      map: ComponentProps<HTMLMapElement, MapProps>;
-      mark: ComponentProps;
-      menu: ComponentProps<HTMLMenuElement>;
-      menuitem: ComponentProps;
-      meta: ComponentProps<HTMLMetaElement>;
-      meter: ComponentProps<HTMLMeterElement, MeterProps>;
-      nav: ComponentProps;
-      noindex: ComponentProps;
-      noscript: ComponentProps;
-      object: ComponentProps<HTMLObjectElement, ObjectProps>;
-      ol: ComponentProps<HTMLOListElement, OlProps>;
-      optgroup: ComponentProps<HTMLOptGroupElement, OptgroupProps>;
-      option: ComponentProps<HTMLOptionElement, OptionProps>;
-      output: ComponentProps<HTMLOutputElement, OutputProps>;
-      p: ComponentProps<HTMLParagraphElement>;
-      param: ComponentProps<HTMLParamElement>;
-      picture: ComponentProps<HTMLPictureElement>;
-      pre: ComponentProps<HTMLPreElement, PreProps>;
-      progress: ComponentProps<HTMLProgressElement, ProgressProps>;
-      q: ComponentProps<HTMLQuoteElement, QProps>;
-      rp: ComponentProps;
-      rt: ComponentProps;
-      ruby: ComponentProps;
-      s: ComponentProps;
-      samp: ComponentProps;
-      slot: ComponentProps<HTMLSlotElement, SlotProps>;
-      script: ComponentProps<HTMLScriptElement>;
-      section: ComponentProps;
-      select: ComponentProps<HTMLSelectElement, SelectProps>;
-      small: ComponentProps;
-      source: ComponentProps<HTMLSourceElement, SourceProps>;
-      span: ComponentProps<HTMLSpanElement>;
-      strong: ComponentProps;
-      style: ComponentProps<HTMLStyleElement>;
-      sub: ComponentProps;
-      summary: ComponentProps;
-      sup: ComponentProps;
-      table: ComponentProps<HTMLTableElement>;
-      template: ComponentProps<HTMLTemplateElement>;
-      tbody: ComponentProps<HTMLTableSectionElement>;
-      td: ComponentProps<HTMLTableDataCellElement, TdProps>;
-      textarea: ComponentProps<HTMLTextAreaElement, TextareaProps>;
-      tfoot: ComponentProps<HTMLTableSectionElement>;
-      th: ComponentProps<HTMLTableHeaderCellElement, ThProps>;
-      thead: ComponentProps<HTMLTableSectionElement>;
-      time: ComponentProps<HTMLTimeElement, TimeProps>;
-      title: ComponentProps<HTMLTitleElement>;
-      tr: ComponentProps<HTMLTableRowElement>;
-      track: ComponentProps<HTMLTrackElement, TrackProps>;
-      u: ComponentProps;
-      ul: ComponentProps<HTMLUListElement, UlProps>;
-      var: ComponentProps;
-      video: ComponentProps<HTMLVideoElement>;
-      wbr: ComponentProps;
-      webview: ComponentProps;
+      a: HTMLElementProps<HTMLAnchorElement, AProps>;
+      abbr: HTMLElementProps;
+      address: HTMLElementProps;
+      area: HTMLElementProps<HTMLAreaElement, AreaProps>;
+      article: HTMLElementProps;
+      aside: HTMLElementProps;
+      audio: HTMLElementProps<HTMLAudioElement, AudioProps>;
+      b: HTMLElementProps;
+      base: HTMLElementProps<HTMLBaseElement>;
+      bdi: HTMLElementProps<HTMLElement, BdiProps>;
+      bdo: HTMLElementProps<HTMLElement, BdoProps>;
+      big: HTMLElementProps;
+      blockquote: HTMLElementProps<HTMLQuoteElement, BlockQuoteProps>;
+      body: HTMLElementProps<HTMLBodyElement>;
+      br: HTMLElementProps<HTMLBRElement>;
+      button: HTMLElementProps<HTMLButtonElement, ButtonProps>;
+      canvas: HTMLElementProps<HTMLCanvasElement, CanvasProps>;
+      caption: HTMLElementProps;
+      center: HTMLElementProps;
+      cite: HTMLElementProps;
+      code: HTMLElementProps;
+      col: HTMLElementProps<HTMLTableColElement, ColProps>;
+      colgroup: HTMLElementProps<HTMLTableColElement, ColGroupProps>;
+      data: HTMLElementProps<HTMLDataElement, DataProps>;
+      datalist: HTMLElementProps<HTMLDataListElement>;
+      dd: HTMLElementProps;
+      del: HTMLElementProps<HTMLModElement, DelProps>;
+      details: HTMLElementProps<HTMLDetailsElement, DetailsProps>;
+      dfn: HTMLElementProps;
+      dialog: HTMLElementProps<HTMLDialogElement, DialogProps>;
+      div: HTMLElementProps<HTMLDivElement>;
+      dl: HTMLElementProps<HTMLDListElement>;
+      dt: HTMLElementProps;
+      em: HTMLElementProps;
+      embed: HTMLElementProps<HTMLEmbedElement, EmbedProps>;
+      fieldset: HTMLElementProps<HTMLFieldSetElement, FieldsetProps>;
+      figcaption: HTMLElementProps;
+      figure: HTMLElementProps;
+      footer: HTMLElementProps;
+      form: HTMLElementProps<HTMLFormElement, FormProps>;
+      h1: HTMLElementProps<HTMLHeadingElement>;
+      h2: HTMLElementProps<HTMLHeadingElement>;
+      h3: HTMLElementProps<HTMLHeadingElement>;
+      h4: HTMLElementProps<HTMLHeadingElement>;
+      h5: HTMLElementProps<HTMLHeadingElement>;
+      h6: HTMLElementProps<HTMLHeadingElement>;
+      head: HTMLElementProps<HTMLHeadElement>;
+      header: HTMLElementProps;
+      hgroup: HTMLElementProps;
+      hr: HTMLElementProps<HTMLHRElement, HrProps>;
+      html: HTMLElementProps<HTMLHtmlElement>;
+      i: HTMLElementProps;
+      iframe: HTMLElementProps<HTMLIFrameElement, IframeProps>;
+      img: HTMLElementProps<HTMLImageElement, ImgProps>;
+      input: HTMLElementProps<HTMLInputElement, InputProps>;
+      ins: HTMLElementProps<HTMLModElement, InsProps>;
+      kbd: HTMLElementProps;
+      keygen: HTMLElementProps;
+      label: HTMLElementProps<HTMLLabelElement, LabelProps>;
+      legend: HTMLElementProps<HTMLLegendElement>;
+      li: HTMLElementProps<HTMLLIElement, LiProps>;
+      link: HTMLElementProps<HTMLLinkElement>;
+      main: HTMLElementProps;
+      map: HTMLElementProps<HTMLMapElement, MapProps>;
+      mark: HTMLElementProps;
+      menu: HTMLElementProps<HTMLMenuElement>;
+      menuitem: HTMLElementProps;
+      meta: HTMLElementProps<HTMLMetaElement>;
+      meter: HTMLElementProps<HTMLMeterElement, MeterProps>;
+      nav: HTMLElementProps;
+      noindex: HTMLElementProps;
+      noscript: HTMLElementProps;
+      object: HTMLElementProps<HTMLObjectElement, ObjectProps>;
+      ol: HTMLElementProps<HTMLOListElement, OlProps>;
+      optgroup: HTMLElementProps<HTMLOptGroupElement, OptgroupProps>;
+      option: HTMLElementProps<HTMLOptionElement, OptionProps>;
+      output: HTMLElementProps<HTMLOutputElement, OutputProps>;
+      p: HTMLElementProps<HTMLParagraphElement>;
+      param: HTMLElementProps<HTMLParamElement>;
+      picture: HTMLElementProps<HTMLPictureElement>;
+      pre: HTMLElementProps<HTMLPreElement, PreProps>;
+      progress: HTMLElementProps<HTMLProgressElement, ProgressProps>;
+      q: HTMLElementProps<HTMLQuoteElement, QProps>;
+      rp: HTMLElementProps;
+      rt: HTMLElementProps;
+      ruby: HTMLElementProps;
+      s: HTMLElementProps;
+      samp: HTMLElementProps;
+      slot: HTMLElementProps<HTMLSlotElement, SlotProps>;
+      script: HTMLElementProps<HTMLScriptElement>;
+      section: HTMLElementProps;
+      select: HTMLElementProps<HTMLSelectElement, SelectProps>;
+      small: HTMLElementProps;
+      source: HTMLElementProps<HTMLSourceElement, SourceProps>;
+      span: HTMLElementProps<HTMLSpanElement>;
+      strong: HTMLElementProps;
+      style: HTMLElementProps<HTMLStyleElement>;
+      sub: HTMLElementProps;
+      summary: HTMLElementProps;
+      sup: HTMLElementProps;
+      table: HTMLElementProps<HTMLTableElement>;
+      template: HTMLElementProps<HTMLTemplateElement>;
+      tbody: HTMLElementProps<HTMLTableSectionElement>;
+      td: HTMLElementProps<HTMLTableDataCellElement, TdProps>;
+      textarea: HTMLElementProps<HTMLTextAreaElement, TextareaProps>;
+      tfoot: HTMLElementProps<HTMLTableSectionElement>;
+      th: HTMLElementProps<HTMLTableHeaderCellElement, ThProps>;
+      thead: HTMLElementProps<HTMLTableSectionElement>;
+      time: HTMLElementProps<HTMLTimeElement, TimeProps>;
+      title: HTMLElementProps<HTMLTitleElement>;
+      tr: HTMLElementProps<HTMLTableRowElement>;
+      track: HTMLElementProps<HTMLTrackElement, TrackProps>;
+      u: HTMLElementProps;
+      ul: HTMLElementProps<HTMLUListElement, UlProps>;
+      var: HTMLElementProps;
+      video: HTMLElementProps<HTMLVideoElement>;
+      wbr: HTMLElementProps;
+      webview: HTMLElementProps;
 
       //SVG
-      animate: SVGComponentProps<SVGAnimateElement, AnimateProps>;
-      animateMotion: SVGComponentProps<SVGAnimateMotionElement, AnimateMotionProps>;
-
-      // TODO create proper typing
-      circle: SVGComponentProps;
-      clipPath: SVGComponentProps;
-      defs: SVGComponentProps;
-      desc: SVGComponentProps;
-      ellipse: SVGComponentProps;
-      feBlend: SVGComponentProps;
-      feColorMatrix: SVGComponentProps;
-      feComponentTransfer: SVGComponentProps;
-      feComposite: SVGComponentProps;
-      feConvolveMatrix: SVGComponentProps;
-      feDiffuseLighting: SVGComponentProps;
-      feDisplacementMap: SVGComponentProps;
-      feDistantLight: SVGComponentProps;
-      feDropShadow: SVGComponentProps;
-      feFlood: SVGComponentProps;
-      feFuncA: SVGComponentProps;
-      feFuncB: SVGComponentProps;
-      feFuncG: SVGComponentProps;
-      feFuncR: SVGComponentProps;
-      feGaussianBlur: SVGComponentProps;
-      feImage: SVGComponentProps;
-      feMerge: SVGComponentProps;
-      feMergeNode: SVGComponentProps;
-      feMorphology: SVGComponentProps;
-      feOffset: SVGComponentProps;
-      fePointLight: SVGComponentProps;
-      feSpecularLighting: SVGComponentProps;
-      feSpotLight: SVGComponentProps;
-      feTile: SVGComponentProps;
-      feTurbulence: SVGComponentProps;
-      filter: SVGComponentProps;
-      foreignObject: SVGComponentProps;
-      g: SVGComponentProps;
-      hatch: SVGComponentProps;
-      hatchpath: SVGComponentProps;
-      image: SVGComponentProps;
-      line: SVGComponentProps;
-      lineGradient: SVGComponentProps;
-      marker: SVGComponentProps;
-      mask: SVGComponentProps;
-      metadata: SVGComponentProps;
-      mpath: SVGComponentProps;
-      path: SVGComponentProps;
-      pattern: SVGComponentProps;
-      polygon: SVGComponentProps;
-      polyline: SVGComponentProps;
-      radialGradient: SVGComponentProps;
-      rect: SVGComponentProps;
-      set: SVGComponentProps;
-      stop: SVGComponentProps;
-      svg: SVGComponentProps;
-      switch: SVGComponentProps;
-      symbol: SVGComponentProps;
-      text: SVGComponentProps;
-      textPath: SVGComponentProps;
-      tspan: SVGComponentProps;
-      use: SVGComponentProps;
-      view: SVGComponentProps;
+      animate: SVGElementProps<SVGAnimateElement, SVGAnimateProps>;
+      animateMotion: SVGElementProps<SVGAnimateMotionElement, SVGAnimateMotionProps>;
+      circle: SVGElementProps<SVGCircleElement, SVGCircleProps>;
+      clipPath: SVGElementProps<SVGClipPathElement, SVGClipPathProps>;
+      defs: SVGElementProps;
+      desc: SVGElementProps;
+      ellipse: SVGElementProps<SVGEllipseElement, SVGEllipseProps>;
+      feBlend: SVGElementProps<SVGFEBlendElement, SVGFeBlendProps>;
+      feColorMatrix: SVGElementProps<SVGFEColorMatrixElement, SVGFeColorMatrixProps>;
+      feComponentTransfer: SVGElementProps<
+        SVGFEComponentTransferElement,
+        SVGFeComponentTransferProps
+      >;
+      feComposite: SVGElementProps<SVGFECompositeElement, SVGFeCompositeProps>;
+      feConvolveMatrix: SVGElementProps<SVGFEConvolveMatrixElement, SVGFeConvolveMatrixProps>;
+      feDiffuseLighting: SVGElementProps<SVGFEDiffuseLightingElement, SVGFeDiffuseLightingProps>;
+      feDisplacementMap: SVGElementProps<SVGFEDisplacementMapElement, SVGFeDisplacementMapProps>;
+      feDistantLight: SVGElementProps<SVGFEDistantLightElement, SVGFeDistantLightProps>;
+      feDropShadow: SVGElementProps<SVGFEDropShadowElement, SVGFeDropShadowProps>;
+      feFlood: SVGElementProps<SVGFEFloodElement, SVGFeFloodProps>;
+      feFuncA: SVGElementProps;
+      feFuncB: SVGElementProps;
+      feFuncG: SVGElementProps;
+      feFuncR: SVGElementProps;
+      feGaussianBlur: SVGElementProps<SVGFEGaussianBlurElement, SVGFeGaussianBlurProps>;
+      feImage: SVGElementProps<SVGFEImageElement, SVGFeImageProps>;
+      feMerge: SVGElementProps;
+      feMergeNode: SVGElementProps<SVGFEMergeNodeElement, SVGFeMergeNodeProps>;
+      feMorphology: SVGElementProps<SVGFEMorphologyElement, SVGFeMorphologyProps>;
+      feOffset: SVGElementProps<SVGFEOffsetElement, SVGFeOffsetProps>;
+      fePointLight: SVGElementProps<SVGFEPointLightElement, SVGFePointLightProps>;
+      feSpecularLighting: SVGElementProps<SVGFESpecularLightingElement, SVGFeSpecularLightingProps>;
+      feSpotLight: SVGElementProps<SVGFESpotLightElement, SVGFeSpotLightProps>;
+      feTile: SVGElementProps<SVGFETileElement, SVGFeTileProps>;
+      feTurbulence: SVGElementProps<SVGFETurbulenceElement, SVGFeTurbulenceProps>;
+      filter: SVGElementProps<SVGFilterElement, SVGFilterProps>;
+      foreignObject: SVGElementProps<SVGForeignObjectElement, SVGForeignObjectProps>;
+      g: SVGElementProps;
+      hatch: SVGElementProps;
+      hatchpath: SVGElementProps;
+      image: SVGElementProps<SVGImageElement, SVGImageProps>;
+      line: SVGElementProps<SVGLineElement, SVGLineProps>;
+      linearGradient: SVGElementProps<SVGLinearGradientElement, SVGLinearGradientProps>;
+      marker: SVGElementProps<SVGMarkerElement, SVGMarkerProps>;
+      mask: SVGElementProps<SVGMaskElement, SVGMaskProps>;
+      metadata: SVGElementProps;
+      mpath: SVGElementProps<SVGMPathElement, SVGMPathProps>;
+      path: SVGElementProps<SVGPathElement, SVGPathProps>;
+      pattern: SVGElementProps<SVGPatternElement, SVGPatternProps>;
+      polygon: SVGElementProps<SVGPolygonElement, SVGPolygonProps>;
+      polyline: SVGElementProps<SVGPolylineElement, SVGPolylineProps>;
+      radialGradient: SVGElementProps<SVGRadialGradientElement, SVGRadialGradientProps>;
+      rect: SVGElementProps<SVGRectElement, SVGRectProps>;
+      set: SVGElementProps<SVGSetElement, SVGSetProps>;
+      stop: SVGElementProps<SVGStopElement, SVGStopProps>;
+      svg: SVGElementProps<SVGSVGElement, SVGSVGProps>;
+      switch: SVGElementProps;
+      symbol: SVGElementProps<SVGSymbolElement, SVGSymbolProps>;
+      text: SVGElementProps<SVGTextElement, SVGTextProps>;
+      textPath: SVGElementProps<SVGTextPathElement, SVGTextPathProps>;
+      tspan: SVGElementProps<SVGTSpanElement, SVGTSpanProps>;
+      use: SVGElementProps<SVGUseElement, SVGUseProps>;
+      view: SVGElementProps;
     }
   }
 }
