@@ -1,7 +1,6 @@
 import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
-import { BranchKey, BranchTemplate } from '../branch/types.js';
+import { BranchTemplate } from '../branch/types.js';
 import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
-import { type } from 'os';
 
 declare global {
   function createJsxElement(
