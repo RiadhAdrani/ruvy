@@ -1,4 +1,4 @@
-import { haveSameTagAndType } from '../../check/index.js';
+import { haveSameTagAndType } from '../../utils/index.js';
 import {
   ActionType,
   Branch,
