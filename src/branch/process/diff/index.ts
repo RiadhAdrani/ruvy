@@ -22,7 +22,7 @@ import { PortalBranchType } from '../new/portal.js';
 import contextComponentHandler from '../../components/context/context.js';
 import element from './element.js';
 import fragment from './fragment.js';
-import fn from './function.js';
+import callableComponentHandler from '../../components/callable/callable.js';
 import outlet from './outlet.js';
 import portal from './portal.js';
 import text from './text.js';
@@ -174,7 +174,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Function: {
-        children = fn(current, template as BranchTemplateFunction);
+        children = callableComponentHandler.diff(template as BranchTemplateFunction, current);
         break;
       }
       case BranchTag.Outlet: {

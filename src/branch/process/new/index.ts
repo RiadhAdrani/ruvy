@@ -7,7 +7,7 @@ import {
   BranchTemplate,
   BranchTemplateFunction,
 } from '../../types.js';
-import fn from '../new/function.js';
+import callableComponentHandler from '../../components/callable/callable.js';
 import contextComponentHandler from '../../components/context/context.js';
 import element from './element.js';
 import empty from './empty.js';
@@ -28,7 +28,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
 
   switch (tag) {
     case BranchTag.Function: {
-      return fn(template as BranchTemplateFunction, parent, key);
+      return callableComponentHandler.create(template as BranchTemplateFunction, parent, key);
     }
     case BranchTag.Element: {
       return element(template as BranchTemplate<string>, parent, key);
