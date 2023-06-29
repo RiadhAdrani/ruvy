@@ -4,7 +4,7 @@ import createNewBranch from './new/index.js';
 import diffBranches from './diff/index.js';
 import { getCorrectKey, preprocessChildren } from '../utils/index.js';
 
-export { commit, collectActions } from './common/index.js';
+export { commit, collectActions } from '../utils/index.js';
 export { Portal } from './new/portal.js';
 
 /**

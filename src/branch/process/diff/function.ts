@@ -1,6 +1,6 @@
 import { Branch, BranchTemplateFunction } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
-import { collectPendingEffect } from '../common/index.js';
+import { collectPendingEffect } from '../../utils/index.js';
 
 /**
  * diff function branch from a template.
