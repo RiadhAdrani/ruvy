@@ -1,4 +1,4 @@
-import { getTag } from '../../check/index.js';
+import { getTag } from '../../utils/index.js';
 import { createFragmentTemplate } from '../../create/index.js';
 import {
   Branch,
