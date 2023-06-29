@@ -19,7 +19,7 @@ import { unmountBranch } from '../../utils/index.js';
 import process from '../index.js';
 import createNewBranch from '../new/index.js';
 import { PortalBranchType } from '../new/portal.js';
-import context from './context.js';
+import contextComponentHandler from '../../components/context/context.js';
 import element from './element.js';
 import fragment from './fragment.js';
 import fn from './function.js';
@@ -182,7 +182,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Context: {
-        children = context(current, template as BranchTemplate);
+        children = contextComponentHandler.diff(template as BranchTemplate, current);
         break;
       }
       case BranchTag.Portal: {

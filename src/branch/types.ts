@@ -180,7 +180,7 @@ export interface ContextComponentProps<T = unknown> {
   children?: Array<unknown>;
 }
 
-export interface BranchProcessor<B = unknown, T = BranchTemplate> {
+export interface ComponentHandler<B = unknown, T = BranchTemplate> {
   create: (template: T, parent: Branch, key: BranchKey) => Branch<B>;
   diff: (template: T, current: Branch<B>) => Array<unknown>;
 }

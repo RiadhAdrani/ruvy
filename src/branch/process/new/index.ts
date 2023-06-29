@@ -8,7 +8,7 @@ import {
   BranchTemplateFunction,
 } from '../../types.js';
 import fn from '../new/function.js';
-import context from './context.js';
+import contextComponentHandler from '../../components/context/context.js';
 import element from './element.js';
 import empty from './empty.js';
 import fragment from './fragment.js';
@@ -43,7 +43,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return outlet(template as BranchTemplateFunction, parent, key);
     }
     case BranchTag.Context: {
-      return context(template as BranchTemplate, parent, key);
+      return contextComponentHandler.create(template as BranchTemplate, parent, key);
     }
     case BranchTag.Null: {
       return empty(parent, key);
