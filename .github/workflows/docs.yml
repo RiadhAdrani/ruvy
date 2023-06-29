@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - master
+    paths:
+      - docs/**
+      - vite.dev.config.ts
+      - index.html
+      - package.json
+      - public/**
 permissions:
   contents: write
 jobs:
