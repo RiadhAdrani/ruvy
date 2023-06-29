@@ -1,11 +1,11 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from '../../create/index.js';
+import { createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import element from '../new/element.js';
-import root from '../new/root.js';
+import element from '../process/new/element.js';
+import root from '../process/new/root.js';
 import createRemoveBranchAction from './removeBranch.js';
-import { BranchTemplate } from '../../types.js';
+import { BranchTemplate } from '../types.js';
 
 createJsxElement;
 

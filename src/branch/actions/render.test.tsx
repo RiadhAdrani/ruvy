@@ -1,13 +1,13 @@
 /** @jsx createJsxElement */
 
-import { createFragmentTemplate, createJsxElement } from '../../create/index.js';
+import { createFragmentTemplate, createJsxElement } from '../create/index.js';
 
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
-import { initBranch } from '../../utils/index.js';
+import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
-import { Branch, BranchStatus, BranchTag, BranchTemplate } from '../../types.js';
-import text from '../new/text.js';
-import element from '../new/element.js';
+import { Branch, BranchStatus, BranchTag, BranchTemplate } from '../types.js';
+import text from '../process/new/text.js';
+import element from '../process/new/element.js';
 
 createFragmentTemplate;
 createJsxElement;

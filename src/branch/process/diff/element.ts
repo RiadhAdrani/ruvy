@@ -1,7 +1,7 @@
 import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
 import { ActionType, Branch, BranchTemplate, PropDiff } from '../../types.js';
 import { IgnoredProps, assignRef, preprocessProps } from '../../utils/index.js';
-import createAction from '../actions/index.js';
+import createAction from '../../actions/index.js';
 
 /**
  * creates a diffing array for two element props

@@ -14,7 +14,7 @@ import {
   getBranchWithKey,
   preprocessChildren,
 } from '../../utils/index.js';
-import createAction from '../actions/index.js';
+import createAction from '../../actions/index.js';
 import { unmountBranch } from '../../utils/index.js';
 import process from '../index.js';
 import createNewBranch from '../new/index.js';

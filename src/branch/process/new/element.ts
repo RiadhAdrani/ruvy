@@ -2,7 +2,7 @@ import { ActionType, Branch, BranchKey, BranchTag, BranchTemplate } from '../../
 import { initBranch, postprocessProps, preprocessProps } from '../../utils/index.js';
 import { collectPendingEffect } from '../../utils/index.js';
 import { createNewBranchChildren } from '../index.js';
-import createAction from '../actions/index.js';
+import createAction from '../../actions/index.js';
 
 /**
  * create a new branch element from a template.
