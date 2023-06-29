@@ -1,12 +1,12 @@
 /** @jsx createJsxElement */
 /** @jsxFrag createFragmentTemplate */
 
-import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
+import { createJsxElement, createFragmentTemplate } from '../create/index.js';
 
 import { beforeEach, describe, expect, it } from 'vitest';
-import root from '../new/root.js';
-import element from '../new/element.js';
-import { collectActions, commit } from '../../utils/index.js';
+import root from '../process/new/root.js';
+import element from '../process/new/element.js';
+import { collectActions, commit } from '../utils/index.js';
 import createReorderHostElement from './reorderElement.js';
 
 createFragmentTemplate;

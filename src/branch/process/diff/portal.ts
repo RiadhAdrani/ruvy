@@ -1,6 +1,6 @@
 import { ActionType, Branch, BranchTemplate } from '../../types.js';
 import { PortalBranchType, PortalProps } from '../new/portal.js';
-import createAction from '../actions/index.js';
+import createAction from '../../actions/index.js';
 
 /**
  * perform diffing of a context template and branch.

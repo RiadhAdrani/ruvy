@@ -1,5 +1,5 @@
 import { Callback } from '@riadh-adrani/utils';
-import { Branch } from '../../types.js';
+import { Branch } from '../types.js';
 
 /**
  * removes a branch from parent

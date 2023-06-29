@@ -1,6 +1,6 @@
 import { areEqual } from '@riadh-adrani/utils';
 import { ActionType, Branch } from '../../types.js';
-import createAction from '../actions/index.js';
+import createAction from '../../actions/index.js';
 
 /**
  * diff text branch with data.

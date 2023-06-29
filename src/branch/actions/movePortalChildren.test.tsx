@@ -1,12 +1,12 @@
 /** @jsx createJsxElement */
 
-import { createJsxElement } from '../../create/index.js';
+import { createJsxElement } from '../create/index.js';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { createElement } from '@riadh-adrani/dom-utils';
-import { Portal, PortalBranchType } from '../new/portal.js';
-import { initBranch } from '../../../branch/utils/index.js';
+import { Portal, PortalBranchType } from '../process/new/portal.js';
+import { initBranch } from '../utils/index.js';
 import createMovePortalChildren from './movePortalChildren.js';
-import { Branch, BranchTag } from '../../../branch/types.js';
+import { Branch, BranchTag } from '../types.js';
 
 createJsxElement;
 
