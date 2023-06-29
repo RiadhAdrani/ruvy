@@ -11,7 +11,7 @@ createJsxElement;
 describe('new.empty', () => {
   it('should create a new empty branch', () => {
     const parent = initBranch();
-    const div = empty(parent, 0);
+    const div = empty.create(null, parent, 0);
 
     expect(div).toStrictEqual<Branch>({
       children: [],

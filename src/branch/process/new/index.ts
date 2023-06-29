@@ -10,7 +10,7 @@ import {
 import callableComponentHandler from '../../components/callable/callable.js';
 import contextComponentHandler from '../../components/context/context.js';
 import elementComponentHandler from '../../components/element/element.js';
-import empty from './empty.js';
+import emptyComponentHandler from '../../components/empty/empty.js';
 import fragment from './fragment.js';
 import outlet from './outlet.js';
 import portal, { PortalBranchType } from './portal.js';
@@ -46,7 +46,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return contextComponentHandler.create(template as BranchTemplate, parent, key);
     }
     case BranchTag.Null: {
-      return empty(parent, key);
+      return emptyComponentHandler.create(null, parent, key);
     }
     case BranchTag.Portal: {
       return portal(template as BranchTemplate<PortalBranchType>, parent, key);

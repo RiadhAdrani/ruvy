@@ -1,4 +1,4 @@
-import { Branch, BranchKey, BranchStatus, BranchTag } from '../../types.js';
+import { Branch, BranchKey, BranchStatus, BranchTag, ComponentHandler } from '../../types.js';
 import { initBranch } from '../../utils/index.js';
 
 /**
@@ -6,7 +6,7 @@ import { initBranch } from '../../utils/index.js';
  * @param parent parent branch
  * @param key key
  */
-const empty = (parent: Branch, key: BranchKey): Branch => {
+const create = (_: null, parent: Branch, key: BranchKey): Branch => {
   const branch: Branch = initBranch({
     key,
     status: BranchStatus.Mounted,
@@ -18,4 +18,9 @@ const empty = (parent: Branch, key: BranchKey): Branch => {
   return branch;
 };
 
-export default empty;
+const emptyComponentHandler: ComponentHandler<unknown, null> = {
+  create,
+  diff: () => [],
+};
+
+export default emptyComponentHandler;
