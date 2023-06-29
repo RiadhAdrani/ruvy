@@ -20,7 +20,7 @@ import process from '../index.js';
 import createNewBranch from '../new/index.js';
 import { PortalBranchType } from '../new/portal.js';
 import contextComponentHandler from '../../components/context/context.js';
-import element from './element.js';
+import elementComponentHandler from '../../components/element/element.js';
 import fragment from './fragment.js';
 import callableComponentHandler from '../../components/callable/callable.js';
 import outlet from './outlet.js';
@@ -162,7 +162,10 @@ const diffBranches = (
 
     switch (tag) {
       case BranchTag.Element: {
-        children = element(current as Branch<string>, template as BranchTemplate<string>);
+        children = elementComponentHandler.diff(
+          template as BranchTemplate<string>,
+          current as Branch<string>
+        );
         break;
       }
       case BranchTag.Text: {

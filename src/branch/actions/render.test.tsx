@@ -7,7 +7,7 @@ import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
 import { Branch, BranchStatus, BranchTag, BranchTemplate } from '../types.js';
 import text from '../process/new/text.js';
-import element from '../process/new/element.js';
+import element from '../components/element/element.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -37,7 +37,7 @@ describe('createRenderAction', () => {
   });
 
   it('should inject div in the root', () => {
-    const branch = element((<div />) as BranchTemplate<string>, root, 0);
+    const branch = element.create((<div />) as BranchTemplate<string>, root, 0);
 
     createRenderAction(branch)();
 
@@ -48,7 +48,11 @@ describe('createRenderAction', () => {
   });
 
   it('should inject div with props', () => {
-    const branch = element((<div class="test" id="test" />) as BranchTemplate<string>, root, 0);
+    const branch = element.create(
+      (<div class="test" id="test" />) as BranchTemplate<string>,
+      root,
+      0
+    );
 
     createRenderAction(branch)();
 
@@ -58,7 +62,7 @@ describe('createRenderAction', () => {
   it('should inject div with events', () => {
     const onClick = vitest.fn();
 
-    const branch = element((<div onClick={onClick} />) as BranchTemplate<string>, root, 0);
+    const branch = element.create((<div onClick={onClick} />) as BranchTemplate<string>, root, 0);
 
     createRenderAction(branch)();
 

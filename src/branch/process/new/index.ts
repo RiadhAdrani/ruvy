@@ -9,7 +9,7 @@ import {
 } from '../../types.js';
 import callableComponentHandler from '../../components/callable/callable.js';
 import contextComponentHandler from '../../components/context/context.js';
-import element from './element.js';
+import elementComponentHandler from '../../components/element/element.js';
 import empty from './empty.js';
 import fragment from './fragment.js';
 import outlet from './outlet.js';
@@ -31,7 +31,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return callableComponentHandler.create(template as BranchTemplateFunction, parent, key);
     }
     case BranchTag.Element: {
-      return element(template as BranchTemplate<string>, parent, key);
+      return elementComponentHandler.create(template as BranchTemplate<string>, parent, key);
     }
     case BranchTag.Fragment: {
       return fragment(template as BranchTemplate<typeof createFragmentTemplate>, parent, key);

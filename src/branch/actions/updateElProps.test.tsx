@@ -2,10 +2,9 @@
 
 import { createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
-import element from '../process/new/element.js';
+import element, { diffElementProps } from '../components/element/element.js';
 import root from '../process/new/root.js';
 import createRenderAction from './render.js';
-import { diffElementProps } from '../process/diff/element.js';
 import createElPropsUpdateAction from './updateElProps.js';
 import { cast } from '@riadh-adrani/utils';
 
@@ -19,12 +18,12 @@ describe('updateElProps', () => {
   it('should update attribute', () => {
     const parent = root(document.body, null);
 
-    const div = element(<div class="test" />, parent, 0);
+    const div = element.create(<div class="test" />, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe(`<div class="test"></div>`);
 
-    const div2 = element(<div class="test-2" />, parent, 0);
+    const div2 = element.create(<div class="test-2" />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -34,12 +33,12 @@ describe('updateElProps', () => {
   it('should add attribute', () => {
     const parent = root(document.body, null);
 
-    const div = element(<div />, parent, 0);
+    const div = element.create(<div />, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe('<div></div>');
 
-    const div2 = element(<div class="test" />, parent, 0);
+    const div2 = element.create(<div class="test" />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -49,12 +48,12 @@ describe('updateElProps', () => {
   it('should remove an attribute', () => {
     const parent = root(document.body, null);
 
-    const div = element(<div class="test" />, parent, 0);
+    const div = element.create(<div class="test" />, parent, 0);
     createRenderAction(div)();
 
     expect(document.body.innerHTML).toBe(`<div class="test"></div>`);
 
-    const div2 = element(<div />, parent, 0);
+    const div2 = element.create(<div />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
     createElPropsUpdateAction(div, diffs)();
 
@@ -66,10 +65,10 @@ describe('updateElProps', () => {
 
     const onClick = vitest.fn();
 
-    const div = element(<div />, parent, 0);
+    const div = element.create(<div />, parent, 0);
     createRenderAction(div)();
 
-    const div2 = element(<div onClick={onClick} />, parent, 0);
+    const div2 = element.create(<div onClick={onClick} />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();
@@ -85,10 +84,10 @@ describe('updateElProps', () => {
     const onClick = vitest.fn();
     const onClick2 = vitest.fn();
 
-    const div = element(<div onClick={onClick} />, parent, 0);
+    const div = element.create(<div onClick={onClick} />, parent, 0);
     createRenderAction(div)();
 
-    const div2 = element(<div onClick={onClick2} />, parent, 0);
+    const div2 = element.create(<div onClick={onClick2} />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();
@@ -104,10 +103,10 @@ describe('updateElProps', () => {
 
     const onClick = vitest.fn();
 
-    const div = element(<div onClick={onClick} />, parent, 0);
+    const div = element.create(<div onClick={onClick} />, parent, 0);
     createRenderAction(div)();
 
-    const div2 = element(<div />, parent, 0);
+    const div2 = element.create(<div />, parent, 0);
     const diffs = diffElementProps(div.props, div2.props);
 
     createElPropsUpdateAction(div, diffs)();
