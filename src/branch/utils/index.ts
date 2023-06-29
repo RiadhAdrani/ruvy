@@ -409,7 +409,7 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
       // reset conditions array, because if should be the first in a conditional block
       conditions = [];
 
-      const value = getPropertyFromTemplate<boolean>(child, 'if') !== false;
+      const value = getPropertyFromTemplate<boolean>(child, 'if') as boolean;
 
       conditions.push({ type: 'if', value });
 
@@ -431,7 +431,7 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
       }
 
       const value = getPropertyFromTemplate<boolean>(child, 'else-if') !== false;
-      const fullfilled = conditions.some(it => it.value === true);
+      const fullfilled = conditions.some(it => it.value);
 
       conditions.push({ type: 'else-if', value: !fullfilled && value });
 
@@ -445,7 +445,7 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
         throw '[Ruvy] cannot use "else" directive without a previous "if" or "else-if" directive.';
       }
 
-      const fullfilled = conditions.some(it => it.value === true);
+      const fullfilled = conditions.some(it => it.value);
       conditions = [];
 
       return fullfilled ? null : child;
