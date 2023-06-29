@@ -16,7 +16,10 @@ import {
   merge,
 } from '@riadh-adrani/utils';
 import {
+  ActionPriority,
+  ActionType,
   Branch,
+  BranchAction,
   BranchKey,
   BranchProps,
   BranchStatus,
@@ -30,6 +33,8 @@ import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-a
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
 import { Any, CallbackWithArgs } from 'src/index.js';
 import { Core } from '../../core/Core.js';
+import { collectEffects, unmountEffects } from '../hooks/index.js';
+import createAction from '../process/actions/index.js';
 
 /**
  * checks if the given is a valid component template
@@ -596,4 +601,71 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
     // if none of the above
     return child;
   });
+};
+
+export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
+  const out: Array<BranchAction> = [];
+
+  out.push(...collectEffects(branch).map(item => createAction(item.type, branch, item.callback)));
+
+  return out;
+};
+
+/**
+ * collect branch pending actions for the unmount.
+ * @param branch target
+ */
+export const unmountBranch = (branch: Branch): void => {
+  branch.status = BranchStatus.Unmounting;
+
+  // branch effect hooks
+  unmountEffects(branch);
+
+  // check if branch is element or text
+  if (isHostBranch(branch)) {
+    branch.pendingActions.push(createAction(ActionType.Unmount, branch));
+  }
+
+  branch.pendingActions.push(...collectPendingEffect(branch));
+
+  // apply recursively
+  branch.children.forEach(unmountBranch);
+};
+
+export const actionsSorter = (a1: BranchAction, a2: BranchAction): number => {
+  if (ActionPriority[a1.type] === ActionPriority[a2.type]) {
+    return a1.requestTime - a2.requestTime;
+  }
+
+  return ActionPriority[a1.type] - ActionPriority[a2.type];
+};
+
+export const collectActions = (branch: Branch): Array<BranchAction> => {
+  const actions: Array<BranchAction> = [];
+
+  if (branch.old) {
+    actions.push(...collectActions(branch.old));
+  }
+
+  actions.push(...branch.pendingActions);
+
+  branch.unmountedChildren.forEach(child => {
+    actions.push(...collectActions(child));
+  });
+
+  branch.children.forEach(child => {
+    actions.push(...collectActions(child));
+  });
+
+  return actions;
+};
+
+/**
+ * sort and commit changes in the DOM.
+ * @param root tree root
+ */
+export const commit = (actions: Array<BranchAction>) => {
+  const sorted = actions.sort(actionsSorter);
+
+  sorted.forEach(a => a.callback());
 };

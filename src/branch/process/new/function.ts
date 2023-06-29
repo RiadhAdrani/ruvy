@@ -1,6 +1,6 @@
 import { Branch, BranchKey, BranchTag, BranchTemplateFunction } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
-import { collectPendingEffect } from '../common/index.js';
+import { collectPendingEffect } from '../../utils/index.js';
 import { createNewBranchChildren } from '../index.js';
 import { initBranch } from '../../utils/index.js';
 

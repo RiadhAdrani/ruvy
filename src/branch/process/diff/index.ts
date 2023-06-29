@@ -15,7 +15,7 @@ import {
   preprocessChildren,
 } from '../../utils/index.js';
 import createAction from '../actions/index.js';
-import { unmountBranch } from '../common/index.js';
+import { unmountBranch } from '../../utils/index.js';
 import process from '../index.js';
 import createNewBranch from '../new/index.js';
 import { PortalBranchType } from '../new/portal.js';

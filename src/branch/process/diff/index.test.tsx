@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import root from '../new/root.js';
 import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from './index.js';
 import { ActionType, Branch, BranchKey, BranchStatus } from '../../types.js';
-import { collectActions, commit } from '../common/index.js';
+import { collectActions, commit } from '../../utils/index.js';
 
 createFragmentTemplate;
 createJsxElement;
