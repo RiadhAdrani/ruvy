@@ -1,4 +1,4 @@
-# Ruvy &middot; <a href="https://www.npmjs.com/package/@riadh-adrani/ruvy"><img src="https://img.shields.io/npm/v/@riadh-adrani/ruvy?color=blue"/></a> <a href="https://github.com/RiadhAdrani/ruvy/actions/workflows/actions.yml"><img src="https://github.com/RiadhAdrani/ruvy/actions/workflows/actions.yml/badge.svg"/></a>
+# Ruvy &middot; <a href="https://www.npmjs.com/package/@riadh-adrani/ruvy"><img src="https://img.shields.io/npm/v/@riadh-adrani/ruvy?color=blue"/></a> <a href="https://github.com/RiadhAdrani/ruvy/actions/workflows/actions.yml"><img src="https://github.com/RiadhAdrani/ruvy/actions/workflows/actions.yml/badge.svg"/></a> <a href="https://github.com/RiadhAdrani/ruvy/actions/workflows/docs.yml"><img src="https://github.com/RiadhAdrani/ruvy/actions/workflows/docs.yml/badge.svg"/></a>
 
 Ruvy is a lightweight front-end framework inspired by the principles of React, designed specifically for learning purposes. It incorporates familiar concepts such as JSX, function components, and hooks, providing a simplified and synchronous approach to building web applications.
 
@@ -13,6 +13,8 @@ Ruvy is a lightweight front-end framework inspired by the principles of React, d
 ## Getting Started
 
 To get started with Ruvy, you can generate a starter template using our `cli` (coming soon).
+
+Or you can try it in [`StackBlitz`](https://stackblitz.com/edit/ruvy?file=package.json,src%2Fmain.tsx).
 
 ## Contributing
 

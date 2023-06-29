@@ -1,5 +1,10 @@
 {
   "name": "@riadh-adrani/ruvy",
+  "description": "Ruvy is a lightweight front-end framework inspired by the principles of React, designed specifically for learning purposes. It incorporates familiar concepts such as JSX, function components, and hooks, providing a simplified and synchronous approach to building web applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RiadhAdrani/ruvy"
+  },
   "version": "0.4.2",
   "type": "module",
   "types": "./build/index.d.ts",
