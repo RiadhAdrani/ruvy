@@ -1,7 +1,55 @@
-import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
-import { ActionType, Branch, BranchTemplate, PropDiff } from '../../types.js';
-import { IgnoredProps, assignRef, preprocessProps } from '../../utils/index.js';
+import {
+  ActionType,
+  Branch,
+  BranchKey,
+  BranchTag,
+  BranchTemplate,
+  ComponentHandler,
+  PropDiff,
+} from '../../types.js';
+import {
+  IgnoredProps,
+  assignRef,
+  initBranch,
+  postprocessProps,
+  preprocessProps,
+} from '../../utils/index.js';
+import { collectPendingEffect } from '../../utils/index.js';
+import { createNewBranchChildren } from '../../process/index.js';
 import createAction from '../../actions/index.js';
+import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
+
+/**
+ * create a new branch element from a template.
+ * @param template element template
+ * @param parent parent branch
+ * @param key element key
+ */
+const create = (
+  template: BranchTemplate<string>,
+  parent: Branch,
+  key: BranchKey
+): Branch<string> => {
+  const { props, type, children } = template;
+
+  const branch: Branch<string> = initBranch({
+    tag: BranchTag.Element,
+    type,
+    parent,
+    key,
+    props: preprocessProps(props),
+  });
+
+  postprocessProps(branch);
+
+  const renderAction = createAction(ActionType.Render, branch);
+
+  branch.pendingActions.push(renderAction, ...collectPendingEffect(branch));
+
+  branch.children = createNewBranchChildren(children, branch);
+
+  return branch;
+};
 
 /**
  * creates a diffing array for two element props
@@ -43,7 +91,7 @@ export const diffElementProps = (
  * @param parent parent branch
  * @param key element key
  */
-const element = (current: Branch<string>, template: BranchTemplate<string>): Array<unknown> => {
+const diff = (template: BranchTemplate<string>, current: Branch<string>): Array<unknown> => {
   // preprocess props
   template.props = preprocessProps(template.props);
 
@@ -63,4 +111,9 @@ const element = (current: Branch<string>, template: BranchTemplate<string>): Arr
   return children;
 };
 
-export default element;
+const elementComponentHandler: ComponentHandler<string, BranchTemplate<string>> = {
+  create,
+  diff,
+};
+
+export default elementComponentHandler;
