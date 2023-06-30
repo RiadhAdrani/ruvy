@@ -1,4 +1,4 @@
-import { createNewBranchChildren } from '../../process/index.js';
+import { createNewBranchChildren } from '../components.js';
 import {
   Branch,
   BranchKey,

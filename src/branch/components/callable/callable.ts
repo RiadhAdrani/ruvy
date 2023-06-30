@@ -7,7 +7,7 @@ import {
 } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
 import { collectPendingEffect } from '../../utils/index.js';
-import { createNewBranchChildren } from '../../index.js';
+import { createNewBranchChildren } from '../components.js';
 import { initBranch } from '../../utils/index.js';
 
 /**

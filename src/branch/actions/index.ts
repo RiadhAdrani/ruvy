@@ -7,7 +7,7 @@ import createTextUpdateAction from './updateText.js';
 import createRemoveBranchAction from './removeBranch.js';
 import createReorderHostElement from './reorderElement.js';
 import createMovePortalChildren from './movePortalChildren.js';
-import { PortalBranchType } from '../process/new/portal.js';
+import { PortalBranchType } from '../components/portal/portal.js';
 
 /**
  * create an branch action

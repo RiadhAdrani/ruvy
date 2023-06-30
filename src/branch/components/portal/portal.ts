@@ -1,5 +1,5 @@
 import { PropsWithUtility } from '../../../index.js';
-import { createNewBranchChildren } from '../../../branch/index.js';
+import { createNewBranchChildren } from '../components.js';
 import {
   ActionType,
   Branch,

@@ -1,5 +1,5 @@
 import { Branch, BranchStatus, BranchTag } from '../../types.js';
-import { createNewBranchChildren } from '../../process/index.js';
+import { createNewBranchChildren } from '../components.js';
 import { initBranch } from '../../utils/index.js';
 
 /**
