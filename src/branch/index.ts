@@ -21,6 +21,6 @@ export * from './process/index.js';
 
 export { default as process } from './process/index.js';
 
-export { default as createRoot } from './process/new/root.js';
+export { default as createRoot } from './components/root/root.js';
 
 export const Outlet = (): BranchTemplate => null as unknown as BranchTemplate;

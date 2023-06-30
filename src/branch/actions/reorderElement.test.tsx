@@ -4,7 +4,7 @@
 import { createJsxElement, createFragmentTemplate } from '../create/index.js';
 
 import { beforeEach, describe, expect, it } from 'vitest';
-import root from '../process/new/root.js';
+import root from '../components/root/root.js';
 import element from '../components/element/element.js';
 import { collectActions, commit } from '../utils/index.js';
 import createReorderHostElement from './reorderElement.js';
