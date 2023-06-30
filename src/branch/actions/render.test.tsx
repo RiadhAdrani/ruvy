@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
 import { Branch, BranchStatus, BranchTag, BranchTemplate } from '../types.js';
-import text from '../process/new/text.js';
+import text from '../components/text/text.js';
 import element from '../components/element/element.js';
 
 createFragmentTemplate;
@@ -26,7 +26,7 @@ describe('createRenderAction', () => {
   });
 
   it('should inject text in the root', () => {
-    const branch = text('text', root, 0);
+    const branch = text.create('text', root, 0);
 
     createRenderAction(branch)();
 
