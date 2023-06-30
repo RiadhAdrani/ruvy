@@ -3,7 +3,7 @@
 import { createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import element from '../components/element/element.js';
-import root from '../process/new/root.js';
+import root from '../components/root/root.js';
 import { collectActions, commit } from '../utils/index.js';
 import createTextUpdateAction from './updateText.js';
 

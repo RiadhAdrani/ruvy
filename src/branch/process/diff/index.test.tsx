@@ -3,7 +3,7 @@
 
 import { createFragmentTemplate, createJsxElement } from '../../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import root from '../new/root.js';
+import root from '../../components/root/root.js';
 import { arrangeChildren, diffNewChildren, diffTypes, removeChildrenExcess } from './index.js';
 import { ActionType, Branch, BranchKey, BranchStatus } from '../../types.js';
 import { collectActions, commit } from '../../utils/index.js';

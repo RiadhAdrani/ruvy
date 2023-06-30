@@ -3,13 +3,13 @@
 import { createJsxElement } from '../../create/index.js';
 import { describe, expect, it } from 'vitest';
 import { Branch, BranchStatus, BranchTag } from '../../types.js';
-import root from './root.js';
+import createRoot from './root.js';
 
 createJsxElement;
 
 describe('new.root', () => {
   it('should create a new empty branch', () => {
-    const rt = root(document.body, null);
+    const rt = createRoot(document.body, null);
 
     expect(rt).toStrictEqual<Branch>({
       children: [

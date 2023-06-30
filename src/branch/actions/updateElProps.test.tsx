@@ -3,7 +3,7 @@
 import { createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import element, { diffElementProps } from '../components/element/element.js';
-import root from '../process/new/root.js';
+import root from '../components/root/root.js';
 import createRenderAction from './render.js';
 import createElPropsUpdateAction from './updateElProps.js';
 import { cast } from '@riadh-adrani/utils';
