@@ -24,7 +24,7 @@ import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import callableComponentHandler from '../../components/callable/callable.js';
 import outletComponentHandler from '../../components/outlet/outlet.js';
 import portalComponentHandler, { type PortalBranchType } from '../../components/portal/portal.js';
-import text from './text.js';
+import textComponentHandler from '../../components/text/text.js';
 
 /**
  * TODO: move to utils
@@ -168,7 +168,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Text: {
-        children = text(current as Branch<string>, `${template}`);
+        children = textComponentHandler.diff(`${template}`, current as Branch<string>);
         break;
       }
       case BranchTag.Fragment: {

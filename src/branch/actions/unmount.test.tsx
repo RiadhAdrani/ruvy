@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
 import { Branch, BranchStatus, BranchTag } from '../types.js';
-import text from '../process/new/text.js';
+import text from '../components/text/text.js';
 import createUnmountAction from './unmount.js';
 import { removeNode } from '@riadh-adrani/dom-utils';
 
@@ -26,7 +26,7 @@ describe('createUnmountAction', () => {
   });
 
   it('should unmount branch instance', () => {
-    const branch = text('text', root, 0);
+    const branch = text.create('text', root, 0);
 
     // mount branch
     createRenderAction(branch)();
@@ -39,7 +39,7 @@ describe('createUnmountAction', () => {
   });
 
   it('should unmount branch even if instance is not in body', () => {
-    const branch = text('text', root, 0);
+    const branch = text.create('text', root, 0);
 
     // mount branch
     createRenderAction(branch)();

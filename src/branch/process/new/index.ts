@@ -14,7 +14,7 @@ import emptyComponentHandler from '../../components/empty/empty.js';
 import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import outletComponentHandler from '../../components/outlet/outlet.js';
 import portalComponentHandler, { PortalBranchType } from '../../components/portal/portal.js';
-import text from './text.js';
+import textComponentHandler from '../../components/text/text.js';
 
 /**
  * create a brand new branch from a given template
@@ -41,7 +41,7 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       );
     }
     case BranchTag.Text: {
-      return text(`${template}`, parent, key);
+      return textComponentHandler.create(`${template}`, parent, key);
     }
     case BranchTag.Outlet: {
       return outletComponentHandler.create(template as BranchTemplateFunction, parent, key);
