@@ -21,7 +21,7 @@ import createNewBranch from '../new/index.js';
 import { PortalBranchType } from '../new/portal.js';
 import contextComponentHandler from '../../components/context/context.js';
 import elementComponentHandler from '../../components/element/element.js';
-import fragment from './fragment.js';
+import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import callableComponentHandler from '../../components/callable/callable.js';
 import outlet from './outlet.js';
 import portal from './portal.js';
@@ -173,7 +173,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Fragment: {
-        children = fragment(template as BranchTemplateFragment);
+        children = fragmentComponentHandler.diff(template as BranchTemplateFragment, current);
         break;
       }
       case BranchTag.Function: {
