@@ -11,7 +11,7 @@ import callableComponentHandler from '../../components/callable/callable.js';
 import contextComponentHandler from '../../components/context/context.js';
 import elementComponentHandler from '../../components/element/element.js';
 import emptyComponentHandler from '../../components/empty/empty.js';
-import fragment from './fragment.js';
+import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import outlet from './outlet.js';
 import portal, { PortalBranchType } from './portal.js';
 import text from './text.js';
@@ -34,7 +34,11 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return elementComponentHandler.create(template as BranchTemplate<string>, parent, key);
     }
     case BranchTag.Fragment: {
-      return fragment(template as BranchTemplate<typeof createFragmentTemplate>, parent, key);
+      return fragmentComponentHandler.create(
+        template as BranchTemplate<typeof createFragmentTemplate>,
+        parent,
+        key
+      );
     }
     case BranchTag.Text: {
       return text(`${template}`, parent, key);

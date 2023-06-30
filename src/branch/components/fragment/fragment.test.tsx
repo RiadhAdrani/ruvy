@@ -15,7 +15,7 @@ describe('new.fragment', () => {
     const parent = initBranch();
     const jsx = (<></>) as BranchTemplateFragment;
 
-    const branch = fragment(jsx, parent, 0);
+    const branch = fragment.create(jsx, parent, 0);
 
     expect(branch).toStrictEqual<Branch>({
       children: [],
@@ -29,5 +29,15 @@ describe('new.fragment', () => {
       parent,
       unmountedChildren: [],
     });
+  });
+});
+
+describe('diff.fragment', () => {
+  it('should just return children', () => {
+    const template = <>hello world</>;
+
+    expect(fragment.diff(template as BranchTemplateFragment, initBranch())).toStrictEqual([
+      'hello world',
+    ]);
   });
 });
