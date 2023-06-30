@@ -13,7 +13,7 @@ import elementComponentHandler from '../../components/element/element.js';
 import emptyComponentHandler from '../../components/empty/empty.js';
 import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import outletComponentHandler from '../../components/outlet/outlet.js';
-import portal, { PortalBranchType } from './portal.js';
+import portalComponentHandler, { PortalBranchType } from '../../components/portal/portal.js';
 import text from './text.js';
 
 /**
@@ -53,7 +53,11 @@ const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Bra
       return emptyComponentHandler.create(null, parent, key);
     }
     case BranchTag.Portal: {
-      return portal(template as BranchTemplate<PortalBranchType>, parent, key);
+      return portalComponentHandler.create(
+        template as BranchTemplate<PortalBranchType>,
+        parent,
+        key
+      );
     }
     default: {
       throw '[Ruvy] Invalid template tag: this error should not happen !!!';

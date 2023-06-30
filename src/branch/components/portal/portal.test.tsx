@@ -1,17 +1,35 @@
 /** @jsx createJsxElement */
-/** @jsxFrag createFragmentTemplate */
 
-import { createFragmentTemplate, createJsxElement } from '../../create/index.js';
-
-import { ActionType, BranchTag } from '../../../branch/types.js';
-import { initBranch } from '../../../branch/utils/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Portal } from '../index.js';
-import portal from './portal.js';
+import { createJsxElement } from '../../create/index.js';
+import { initBranch } from '../../utils/index.js';
+import portal, { Portal } from './portal.js';
+import { pick } from '@riadh-adrani/utils';
+import { ActionType, BranchTag } from '../../../branch/types.js';
 import { createElement } from '@riadh-adrani/dom-utils';
 
-createFragmentTemplate;
 createJsxElement;
+
+describe('new.portal', () => {
+  it('should create a new portal branch', () => {
+    const parent = initBranch();
+    const myPortal = <Portal container={document.body}>Hello</Portal>;
+
+    const branch = portal.create(myPortal, parent, 0);
+
+    expect(pick(branch, 'tag', 'type', 'parent', 'key', 'props', 'instance')).toStrictEqual({
+      tag: BranchTag.Portal,
+      type: Portal,
+      parent,
+      key: 0,
+      props: {
+        children: ['Hello'],
+        container: document.body,
+      },
+      instance: document.body,
+    });
+  });
+});
 
 describe('diff.portal', () => {
   beforeEach(() => {
@@ -28,7 +46,9 @@ describe('diff.portal', () => {
       instance: container,
     });
 
-    expect(portal(current, <Portal container={container}>Hello</Portal>)).toStrictEqual(['Hello']);
+    expect(portal.diff(<Portal container={container}>Hello</Portal>, current)).toStrictEqual([
+      'Hello',
+    ]);
   });
 
   it('should update container and instance', () => {
@@ -41,7 +61,7 @@ describe('diff.portal', () => {
       instance: document.body,
     });
 
-    portal(current, <Portal container={container} />);
+    portal.diff(<Portal container={container} />, current);
 
     expect(current.instance).toStrictEqual(container);
     expect(current.props.container).toStrictEqual(container);
@@ -57,7 +77,7 @@ describe('diff.portal', () => {
       instance: document.body,
     });
 
-    portal(current, <Portal container={container} />);
+    portal.diff(<Portal container={container} />, current);
 
     expect(current.pendingActions[0].type).toStrictEqual(ActionType.UpdatePortalChildren);
   });

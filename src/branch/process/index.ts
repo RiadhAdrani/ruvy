@@ -5,7 +5,7 @@ import diffBranches from './diff/index.js';
 import { getCorrectKey, preprocessChildren } from '../utils/index.js';
 
 export { commit, collectActions } from '../utils/index.js';
-export { Portal } from './new/portal.js';
+export { Portal } from '../components/portal/portal.js';
 
 /**
  * process a template with its corresponding branch if it exist

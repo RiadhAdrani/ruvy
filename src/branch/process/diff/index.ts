@@ -18,13 +18,12 @@ import createAction from '../../actions/index.js';
 import { unmountBranch } from '../../utils/index.js';
 import process from '../index.js';
 import createNewBranch from '../new/index.js';
-import { PortalBranchType } from '../new/portal.js';
 import contextComponentHandler from '../../components/context/context.js';
 import elementComponentHandler from '../../components/element/element.js';
 import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import callableComponentHandler from '../../components/callable/callable.js';
 import outletComponentHandler from '../../components/outlet/outlet.js';
-import portal from './portal.js';
+import portalComponentHandler, { type PortalBranchType } from '../../components/portal/portal.js';
 import text from './text.js';
 
 /**
@@ -189,7 +188,10 @@ const diffBranches = (
         break;
       }
       case BranchTag.Portal: {
-        children = portal(current, template as BranchTemplate<PortalBranchType>);
+        children = portalComponentHandler.diff(
+          template as BranchTemplate<PortalBranchType>,
+          current
+        );
         break;
       }
       default:
