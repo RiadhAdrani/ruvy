@@ -21,7 +21,7 @@ describe('new.outlet', () => {
     new Core();
 
     const parent = initBranch();
-    const branch = outlet(<Outlet />, parent, 0);
+    const branch = outlet.create(<Outlet />, parent, 0);
 
     expect(branch.type).toStrictEqual(Outlet);
     expect(branch.tag).toStrictEqual(BranchTag.Outlet);
@@ -32,7 +32,7 @@ describe('new.outlet', () => {
 
   it('should return root element', () => {
     const parent = initBranch();
-    const branch = outlet(<Outlet />, parent, 0);
+    const branch = outlet.create(<Outlet />, parent, 0);
 
     expect(branch.type).toStrictEqual(Outlet);
     expect(branch.tag).toStrictEqual(BranchTag.Outlet);
