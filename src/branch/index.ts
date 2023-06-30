@@ -17,10 +17,9 @@ export { createFragmentTemplate, createJsxElement, createTemplate } from './crea
 
 export * from './types.js';
 
-export * from './process/index.js';
+export * from './components/components.js';
+export { process } from './components/components.js';
 
-export { default as process } from './process/index.js';
-
-export { default as createRoot } from './components/root/root.js';
+export { commit, collectActions } from './utils/index.js';
 
 export const Outlet = (): BranchTemplate => null as unknown as BranchTemplate;

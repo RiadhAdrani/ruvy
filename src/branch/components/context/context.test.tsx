@@ -4,7 +4,8 @@ import { createJsxElement } from '../../create/index.js';
 import { describe, expect, it } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { createContext, createContextComponent } from '../../hooks/useContext/useContext.js';
-import { BranchStatus, BranchTag, process } from '../../index.js';
+import { BranchStatus, BranchTag } from '../../index.js';
+import { process } from '../components.js';
 import contextComponentHandler from './context.js';
 import { omit } from '@riadh-adrani/utils';
 

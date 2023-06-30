@@ -15,7 +15,7 @@ import {
   preprocessProps,
 } from '../../utils/index.js';
 import { collectPendingEffect } from '../../utils/index.js';
-import { createNewBranchChildren } from '../../process/index.js';
+import { createNewBranchChildren } from '../components.js';
 import createAction from '../../actions/index.js';
 import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
 

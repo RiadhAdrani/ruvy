@@ -1,6 +1,6 @@
 import { Callback } from '@riadh-adrani/utils';
 import { Branch } from '../types.js';
-import { PortalBranchType } from '../process/new/portal.js';
+import { PortalBranchType } from '../components/portal/portal.js';
 import { getClosestChildrenHostBranches } from '../utils/index.js';
 
 const createMovePortalChildren = (branch: Branch<PortalBranchType>): Callback => {

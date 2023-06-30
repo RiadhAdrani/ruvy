@@ -1,6 +1,6 @@
 import { initBranch } from '../../utils/index.js';
 import { Branch, BranchKey, BranchTag, BranchTemplate, ComponentHandler } from '../../types.js';
-import { createNewBranchChildren } from '../../index.js';
+import { createNewBranchChildren } from '../components.js';
 import { areEqual } from '@riadh-adrani/utils';
 
 /**

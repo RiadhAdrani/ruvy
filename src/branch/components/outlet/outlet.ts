@@ -7,7 +7,7 @@ import {
   ComponentHandler,
 } from '../../types.js';
 import { getOutletDepth, initBranch } from '../../utils/index.js';
-import { createNewBranchChildren } from '../../process/index.js';
+import { createNewBranchChildren } from '../components.js';
 
 const create = (template: BranchTemplateFunction, parent: Branch, key: BranchKey): Branch => {
   const { props, type } = template;
