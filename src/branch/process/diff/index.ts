@@ -23,7 +23,7 @@ import contextComponentHandler from '../../components/context/context.js';
 import elementComponentHandler from '../../components/element/element.js';
 import fragmentComponentHandler from '../../components/fragment/fragment.js';
 import callableComponentHandler from '../../components/callable/callable.js';
-import outlet from './outlet.js';
+import outletComponentHandler from '../../components/outlet/outlet.js';
 import portal from './portal.js';
 import text from './text.js';
 
@@ -181,7 +181,7 @@ const diffBranches = (
         break;
       }
       case BranchTag.Outlet: {
-        children = outlet(current);
+        children = outletComponentHandler.diff(template as BranchTemplateFunction, current);
         break;
       }
       case BranchTag.Context: {
