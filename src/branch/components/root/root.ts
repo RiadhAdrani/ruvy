@@ -20,4 +20,15 @@ const createRoot = (container: HTMLElement, child: unknown): Branch => {
   return branch;
 };
 
+export const createRootComponent = (container: HTMLElement): Branch => {
+  const branch: Branch = initBranch({
+    tag: BranchTag.Root,
+    type: BranchTag.Root,
+    instance: container,
+    status: BranchStatus.Mounted,
+  });
+
+  return branch;
+};
+
 export default createRoot;
