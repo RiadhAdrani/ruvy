@@ -1,6 +1,6 @@
 import { isUndefined } from '@riadh-adrani/utils';
-import { Branch } from '../types.js';
-import { getCorrectKey, getTag } from '../utils/index.js';
+import { Branch, ComponentFunctionHandler, FragmentType } from '../types.js';
+import { collectPendingEffect, getCorrectKey, getTag } from '../utils/index.js';
 import { haveSameTagAndType } from '../utils/index.js';
 import {
   ActionType,
@@ -17,15 +17,20 @@ import {
 } from '../utils/index.js';
 import createAction from '../actions/index.js';
 import { unmountBranch } from '../utils/index.js';
-import contextComponentHandler from '../components/context/context.js';
-import elementComponentHandler from '../components/element/element.js';
-import fragmentComponentHandler from '../components/fragment/fragment.js';
-import callableComponentHandler from '../components/callable/callable.js';
-import outletComponentHandler from '../components/outlet/outlet.js';
-import portalComponentHandler, { type PortalBranchType } from '../components/portal/portal.js';
-import textComponentHandler from '../components/text/text.js';
+import contextComponentHandler, { handleContextComponent } from '../components/context/context.js';
+import elementComponentHandler, { handleElementComponent } from '../components/element/element.js';
+import fragmentComponentHandler, {
+  handleFragmentComponent,
+} from '../components/fragment/fragment.js';
+import callableComponentHandler, { handleCallable } from '../components/callable/callable.js';
+import outletComponentHandler, { handleOutletComponent } from '../components/outlet/outlet.js';
+import portalComponentHandler, {
+  handlePortalComponent,
+  type PortalBranchType,
+} from '../components/portal/portal.js';
+import textComponentHandler, { handleTextComponent } from '../components/text/text.js';
 import { createFragmentTemplate } from '../index.js';
-import emptyComponentHandler from './empty/empty.js';
+import emptyComponentHandler, { handleEmptyComponent } from './empty/empty.js';
 
 export const handleTemplate = (
   template: unknown,
@@ -330,6 +335,131 @@ export const createNewBranch = (template: unknown, parent: Branch, key: BranchKe
       throw '[Ruvy] Invalid template tag: this error should not happen !!!';
     }
   }
+};
+
+export const handleComponent = (
+  template: unknown,
+  current: Branch | undefined,
+  parent: Branch,
+  index: number
+): Branch => {
+  const key = getCorrectKey(template, index);
+  const tag = getTag(template);
+
+  let res: ReturnType<ComponentFunctionHandler>;
+
+  if (current && !haveSameTagAndType(current, template)) {
+    // we move current to old,
+    const old = current;
+
+    // collect unmount effects,
+    unmountBranch(old);
+
+    // compute the new one and merge it
+    const newBranch = handleComponent(template, undefined, parent, index);
+    newBranch.old = old;
+
+    // replace current with newly computed one.
+    // bruh : current = newBranch;
+    const i = (current.parent as Branch).children.findIndex(child => child === old);
+    (current.parent as Branch).children[i] = newBranch;
+
+    return newBranch;
+  }
+
+  switch (tag) {
+    case BranchTag.Function: {
+      res = handleCallable(template as BranchTemplateFunction, current, parent, key);
+      break;
+    }
+    case BranchTag.Element: {
+      res = handleElementComponent(
+        template as BranchTemplate<string>,
+        current as Branch<string>,
+        parent,
+        key
+      );
+      break;
+    }
+    case BranchTag.Fragment: {
+      res = handleFragmentComponent(
+        template as BranchTemplateFragment,
+        current as Branch<FragmentType>,
+        parent,
+        key
+      );
+      break;
+    }
+    case BranchTag.Text: {
+      res = handleTextComponent(template as string, current as Branch<BranchTag.Text>, parent, key);
+      break;
+    }
+    case BranchTag.Outlet: {
+      res = handleOutletComponent(template as BranchTemplateFunction, current, parent, key);
+      break;
+    }
+    case BranchTag.Context: {
+      res = handleContextComponent(template as BranchTemplate, current, parent, key);
+      break;
+    }
+    case BranchTag.Null: {
+      res = handleEmptyComponent(
+        template as BranchTemplate,
+        current as Branch<BranchTag.Null>,
+        parent,
+        key
+      );
+      break;
+    }
+    case BranchTag.Portal: {
+      res = handlePortalComponent(
+        template as BranchTemplate<PortalBranchType>,
+        current as Branch<PortalBranchType>,
+        parent,
+        key
+      );
+      break;
+    }
+    default: {
+      throw '[Ruvy] Invalid template tag: this error should not happen !!!';
+    }
+  }
+
+  const { branch, unprocessedChildren } = res;
+
+  // collect pending effects
+  branch.pendingActions.push(...collectPendingEffect(branch));
+
+  // process children
+  const children = preprocessChildren(unprocessedChildren);
+
+  if (!current) {
+    branch.children = children.map((child, index) =>
+      handleComponent(child, undefined, branch, index)
+    );
+  } else {
+    // perform old branches cleanup
+    current.old = undefined;
+    current.unmountedChildren = [];
+
+    const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
+
+    removeChildrenExcess(current, newChildrenKeys);
+
+    diffNewChildren(current, children);
+
+    arrangeChildren(current, children);
+  }
+
+  // check if output children have duplicate keys
+  const keys = branch.children.map(item => item.key);
+  const unique = new Set(keys);
+
+  if (unique.size !== keys.length) {
+    throw '[Ruvy] unexpected duplicate key';
+  }
+
+  return branch;
 };
 
 export { default as handleCallable } from './callable/callable.js';
