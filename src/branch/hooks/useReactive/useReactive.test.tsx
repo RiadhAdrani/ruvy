@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { useReactive } from './useReactive.js';
 import { initBranch } from '../../utils/index.js';
-import { HookType, process } from '../../index.js';
+import { HookType, handleComponent } from '../../index.js';
 import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
 
 createFragmentTemplate;
@@ -18,7 +18,7 @@ describe('useReactive', () => {
         return <div>{count.value}</div>;
       };
 
-      const out = process(<Child />, undefined, branch, 0);
+      const out = handleComponent(<Child />, undefined, branch, 0);
 
       expect(out.hooks[`${HookType.Reactive}@0`]).toStrictEqual({
         data: { value: 0 },
@@ -39,7 +39,7 @@ describe('useReactive', () => {
         return <div></div>;
       };
 
-      expect(() => process(<Child />, undefined, branch, 0)).toThrow(
+      expect(() => handleComponent(<Child />, undefined, branch, 0)).toThrow(
         '[Ruvy] useReactive accepts only object values'
       );
     });

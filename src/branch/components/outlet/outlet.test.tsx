@@ -5,43 +5,10 @@ import { createJsxElement } from '../../create/index.js';
 import { Core, createRouter } from '../../../core/index.js';
 import { Outlet } from '../../index.js';
 import { initBranch } from '../../utils/index.js';
-import outlet, { handleOutletComponent } from './outlet.js';
+import { handleOutletComponent } from './outlet.js';
 import { BranchTag } from '../../types.js';
 
 createJsxElement;
-
-describe('new.outlet', () => {
-  beforeEach(() => {
-    new Core();
-
-    createRouter([{ path: '/', component: 'root element' }], {});
-  });
-
-  it('should return nothing', () => {
-    new Core();
-
-    const parent = initBranch();
-    const branch = outlet.create(<Outlet />, parent, 0);
-
-    expect(branch.type).toStrictEqual(Outlet);
-    expect(branch.tag).toStrictEqual(BranchTag.Outlet);
-
-    expect(branch.children.length).toBe(1);
-    expect(branch.children[0].tag).toBe(BranchTag.Null);
-  });
-
-  it('should return root element', () => {
-    const parent = initBranch();
-    const branch = outlet.create(<Outlet />, parent, 0);
-
-    expect(branch.type).toStrictEqual(Outlet);
-    expect(branch.tag).toStrictEqual(BranchTag.Outlet);
-
-    expect(branch.children.length).toBe(1);
-    expect(branch.children[0].tag).toBe(BranchTag.Text);
-    expect(branch.children[0].text).toBe('root element');
-  });
-});
 
 describe('handleOutletComponent', () => {
   beforeEach(() => {

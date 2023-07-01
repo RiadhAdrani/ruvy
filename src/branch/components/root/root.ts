@@ -1,5 +1,5 @@
 import { Branch, BranchStatus, BranchTag } from '../../types.js';
-import { createNewBranchChildren } from '../components.js';
+import { handleComponent } from '../components.js';
 import { initBranch } from '../../utils/index.js';
 
 /**
@@ -15,18 +15,7 @@ const createRoot = (container: HTMLElement, child: unknown): Branch => {
     status: BranchStatus.Mounted,
   });
 
-  branch.children = createNewBranchChildren([child], branch);
-
-  return branch;
-};
-
-export const createRootComponent = (container: HTMLElement): Branch => {
-  const branch: Branch = initBranch({
-    tag: BranchTag.Root,
-    type: BranchTag.Root,
-    instance: container,
-    status: BranchStatus.Mounted,
-  });
+  branch.children = [handleComponent(child, undefined, branch, 0)];
 
   return branch;
 };

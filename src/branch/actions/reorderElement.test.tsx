@@ -5,9 +5,9 @@ import { createJsxElement, createFragmentTemplate } from '../create/index.js';
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import root from '../components/root/root.js';
-import element from '../components/element/element.js';
 import { collectActions, commit } from '../utils/index.js';
 import createReorderHostElement from './reorderElement.js';
+import { handleComponent } from '../index.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -28,7 +28,7 @@ describe('createReorderHostElement', () => {
       </div>
     );
 
-    const branch = element.create(div, parent, 0);
+    const branch = handleComponent(div, undefined, parent, 0);
     commit(collectActions(branch));
 
     expect(document.body.innerHTML).toBe('<div><input><input><button></button></div>');
@@ -56,7 +56,7 @@ describe('createReorderHostElement', () => {
       </div>
     );
 
-    const branch = element.create(div, parent, 0);
+    const branch = handleComponent(div, undefined, parent, 0);
     commit(collectActions(branch));
 
     expect(document.body.innerHTML).toBe('<div><input><input><button></button></div>');
