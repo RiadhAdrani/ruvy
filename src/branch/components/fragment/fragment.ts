@@ -1,9 +1,11 @@
 import { createNewBranchChildren } from '../components.js';
 import {
   Branch,
+  BranchFragmentType,
   BranchKey,
   BranchTag,
   BranchTemplateFragment,
+  ComponentFunctionHandler,
   ComponentHandler,
 } from '../../types.js';
 import { collectPendingEffect, initBranch } from '../../utils/index.js';
@@ -37,6 +39,18 @@ const diff = (template: BranchTemplateFragment): Array<unknown> => {
   const { children } = template;
 
   return children;
+};
+
+export const handleFragmentComponent: ComponentFunctionHandler<
+  BranchTemplateFragment,
+  BranchFragmentType
+> = (template, current, parent, key) => {
+  const { type, children, props } = template;
+
+  const branch: Branch<BranchFragmentType> =
+    current ?? initBranch({ key, props, type, parent, tag: BranchTag.Fragment });
+
+  return { unprocessedChildren: children, branch };
 };
 
 const fragmentComponentHandler: ComponentHandler<unknown, BranchTemplateFragment> = {

@@ -128,7 +128,9 @@ export type BranchTemplateFunction = BranchTemplate<
   CallbackWithArgs<[Record<string, unknown>], unknown>
 >;
 
-export type BranchTemplateFragment = BranchTemplate<typeof createFragmentTemplate>;
+export type BranchFragmentType = typeof createFragmentTemplate;
+
+export type BranchTemplateFragment = BranchTemplate<BranchFragmentType>;
 
 export interface HookData<T> {
   key: string;
