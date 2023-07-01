@@ -3,6 +3,7 @@ import {
   BranchKey,
   BranchTag,
   BranchTemplateFunction,
+  ComponentFunctionHandler,
   ComponentHandler,
 } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
@@ -48,6 +49,24 @@ const diff = (template: BranchTemplateFunction, current: Branch): Array<unknown>
 const callableComponentHandler: ComponentHandler<unknown, BranchTemplateFunction> = {
   create,
   diff,
+};
+
+export const handleCallable: ComponentFunctionHandler<BranchTemplateFunction> = (
+  template,
+  current,
+  parent,
+  key
+) => {
+  const { props, type } = template;
+
+  const branch: Branch =
+    current ?? initBranch({ key, props, tag: BranchTag.Function, type, parent });
+
+  const child = useHooksContext(() => type(props), branch);
+
+  branch.pendingActions.push(...collectPendingEffect(branch));
+
+  return { branch, unprocessedChildren: [child] };
 };
 
 export default callableComponentHandler;

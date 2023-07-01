@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Changed
+
+- refactored project structure for a smaller bundle size.
+
 ## 0.4.2 - 2023-06-28
 
 ## 0.4.1 - 2023-06-28
