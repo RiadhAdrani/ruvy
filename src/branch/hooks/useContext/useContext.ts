@@ -24,12 +24,12 @@ export const createContext = <T = unknown>(initial: T): ContextObject<T> => {
     Provider: null as Any,
   };
 
-  const Provider = <T = unknown>({ value, children }: ContextComponentProps<T>) =>
+  const Provider = ({ value, children }: ContextComponentProps<T>) =>
     createContextComponent<T>({
       value,
       children,
-      initial: initial as unknown as T,
-      object: object as unknown as ContextObject<T>,
+      initial,
+      object,
     });
 
   object.Provider = Provider;
@@ -43,11 +43,13 @@ export const createContextComponent = <T>({
   object,
   initial,
 }: ContextComponentProps<T> & { object: ContextObject<T>; initial: T }) => {
-  return createTemplate<BranchTag.Context>(
+  const template = createTemplate<BranchTag.Context>(
     BranchTag.Context,
     { value, initial, object },
     children ?? []
   );
+
+  return template;
 };
 
 /**
