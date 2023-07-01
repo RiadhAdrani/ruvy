@@ -4,6 +4,7 @@ import {
   BranchKey,
   BranchTag,
   BranchTemplate,
+  ComponentFunctionHandler,
   ComponentHandler,
   PropDiff,
 } from '../../types.js';
@@ -17,7 +18,7 @@ import {
 import { collectPendingEffect } from '../../utils/index.js';
 import { createNewBranchChildren } from '../components.js';
 import createAction from '../../actions/index.js';
-import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
+import { areEqual, forEachKey, hasProperty, isUndefined } from '@riadh-adrani/utils';
 
 /**
  * create a new branch element from a template.
@@ -114,6 +115,51 @@ const diff = (template: BranchTemplate<string>, current: Branch<string>): Array<
 const elementComponentHandler: ComponentHandler<string, BranchTemplate<string>> = {
   create,
   diff,
+};
+
+export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<string>, string> = (
+  template,
+  current,
+  parent,
+  key
+) => {
+  const { type, props, children } = template;
+
+  const branch: Branch<string> =
+    current ??
+    initBranch({
+      tag: BranchTag.Element,
+      type,
+      parent,
+      key,
+      props: preprocessProps(props),
+    });
+
+  postprocessProps(branch);
+
+  if (isUndefined(current)) {
+    const renderAction = createAction(ActionType.Render, branch);
+
+    branch.pendingActions.push(renderAction);
+  } else {
+    // update props
+    const propsDiff = diffElementProps(branch.props, props);
+
+    if (propsDiff.length > 0) {
+      // create an action to update props
+      branch.pendingActions.push(createAction(ActionType.UpdateProps, branch, propsDiff));
+
+      // override current props
+      branch.props = props;
+    }
+  }
+
+  assignRef(branch, props);
+
+  return {
+    branch,
+    unprocessedChildren: children,
+  };
 };
 
 export default elementComponentHandler;
