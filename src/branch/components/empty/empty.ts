@@ -1,4 +1,11 @@
-import { Branch, BranchKey, BranchStatus, BranchTag, ComponentHandler } from '../../types.js';
+import {
+  Branch,
+  BranchKey,
+  BranchStatus,
+  BranchTag,
+  ComponentFunctionHandler,
+  ComponentHandler,
+} from '../../types.js';
 import { initBranch } from '../../utils/index.js';
 
 /**
@@ -21,6 +28,25 @@ const create = (_: null, parent: Branch, key: BranchKey): Branch => {
 const emptyComponentHandler: ComponentHandler<unknown, null> = {
   create,
   diff: () => [],
+};
+
+export const handleEmptyComponent: ComponentFunctionHandler<unknown, BranchTag.Null> = (
+  _,
+  current,
+  parent,
+  key
+) => {
+  const branch =
+    current ??
+    initBranch<BranchTag.Null>({
+      key,
+      status: BranchStatus.Mounted,
+      tag: BranchTag.Null,
+      type: BranchTag.Null,
+      parent,
+    });
+
+  return { branch, unprocessedChildren: [] };
 };
 
 export default emptyComponentHandler;
