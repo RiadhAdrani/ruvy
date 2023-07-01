@@ -673,3 +673,18 @@ export const commit = (actions: Array<BranchAction>) => {
 
   sorted.forEach(a => a.callback());
 };
+
+/**
+ * change the index of an element in an array from `fromIndex` to `toIndex`
+ * @param array target array
+ * @param fromIndex element index
+ * @param toIndex new element index
+ */
+export function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number): Array<T> {
+  const arrayCopy = [...array];
+  const element = arrayCopy.splice(fromIndex, 1)[0];
+
+  arrayCopy.splice(toIndex, 0, element);
+
+  return arrayCopy;
+}
