@@ -4,6 +4,7 @@ import {
   BranchKey,
   BranchTag,
   BranchTemplateFunction,
+  ComponentFunctionHandler,
   ComponentHandler,
 } from '../../types.js';
 import { getOutletDepth, initBranch } from '../../utils/index.js';
@@ -34,6 +35,25 @@ const diff = (_: unknown, current: Branch): Array<unknown> => {
 const outletComponentHandler: ComponentHandler<unknown, BranchTemplateFunction> = {
   create,
   diff,
+};
+
+export const handleOutletComponent: ComponentFunctionHandler<BranchTemplateFunction> = (
+  template,
+  current,
+  parent,
+  key
+) => {
+  const { props, type } = template;
+
+  const branch: Branch = current ?? initBranch({ key, props, tag: BranchTag.Outlet, type, parent });
+
+  const depth = getOutletDepth(branch) - 1;
+  const child = Core.singleton.router?.getComponentByDepth(depth);
+
+  return {
+    unprocessedChildren: [child],
+    branch,
+  };
 };
 
 export default outletComponentHandler;
