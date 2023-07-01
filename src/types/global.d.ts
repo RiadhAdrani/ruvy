@@ -993,6 +993,8 @@ declare global {
       | 'vector-effect'
       | 'visibility'
       | 'xlink:title'
+      | 'class'
+      | 'style'
     >;
 
   type BaseProps = Partial<UtilityProps>;
