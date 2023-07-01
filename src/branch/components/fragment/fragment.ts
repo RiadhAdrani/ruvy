@@ -1,7 +1,7 @@
 import { createNewBranchChildren } from '../components.js';
 import {
   Branch,
-  BranchFragmentType,
+  FragmentType,
   BranchKey,
   BranchTag,
   BranchTemplateFragment,
@@ -43,11 +43,11 @@ const diff = (template: BranchTemplateFragment): Array<unknown> => {
 
 export const handleFragmentComponent: ComponentFunctionHandler<
   BranchTemplateFragment,
-  BranchFragmentType
+  FragmentType
 > = (template, current, parent, key) => {
   const { type, children, props } = template;
 
-  const branch: Branch<BranchFragmentType> =
+  const branch: Branch<FragmentType> =
     current ?? initBranch({ key, props, type, parent, tag: BranchTag.Fragment });
 
   return { unprocessedChildren: children, branch };
