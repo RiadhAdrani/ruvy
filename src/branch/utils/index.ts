@@ -480,7 +480,11 @@ export const postprocessProps = (branch: Branch): void => {
   // ? SVG
   // if branch type is svg, we change the namespace to SVG
   // if not, we search for the closest svg namespaced parent
-  if (branch.type === 'svg' || findParentWith(branch, it => it.props.ns === Namespace.SVG)) {
+  if (
+    branch.type === 'svg' ||
+    (findParentWith(branch, it => it.props.ns === Namespace.SVG) &&
+      branch.props.ns !== Namespace.SVG)
+  ) {
     branch.props.ns = Namespace.SVG;
   }
 };
