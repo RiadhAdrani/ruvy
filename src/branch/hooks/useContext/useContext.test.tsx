@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createContext, useContext } from './useContext.js';
 import { BranchSymbol, BranchTag, BranchTemplate } from '../../types.js';
-import { process } from '../../index.js';
+import { handleComponent } from '../../index.js';
 import { initBranch } from '../../utils/index.js';
 import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
 
@@ -28,7 +28,7 @@ describe('useContext', () => {
   it('should create a context component with value, children and object', () => {
     const parent = initBranch({});
 
-    const branch = process(<TestContext.Provider value={{}} />, undefined, parent, 0);
+    const branch = handleComponent(<TestContext.Provider value={{}} />, undefined, parent, 0);
 
     const ctx = branch.children[0];
 
@@ -53,7 +53,7 @@ describe('useContext', () => {
       return <div />;
     };
 
-    process(
+    handleComponent(
       <TestContext.Provider value={{}}>
         <Child />
       </TestContext.Provider>,
@@ -74,7 +74,7 @@ describe('useContext', () => {
       return <div />;
     };
 
-    const callback = () => process(<Child />, undefined, parent, 0);
+    const callback = () => handleComponent(<Child />, undefined, parent, 0);
 
     expect(callback).toThrow('Unexpected State: useContext used outside of Context');
   });
@@ -90,7 +90,7 @@ describe('useContext', () => {
       return <div />;
     };
 
-    process(
+    handleComponent(
       <TestContext.Provider value={{}}>
         <TestContext.Provider value={{ hello: 'world' }}>
           <Child />

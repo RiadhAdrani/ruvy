@@ -1,4 +1,3 @@
-import { isUndefined } from '@riadh-adrani/utils';
 import { Branch, ComponentFunctionHandler, FragmentType } from '../types.js';
 import { collectPendingEffect, getCorrectKey, getTag } from '../utils/index.js';
 import { haveSameTagAndType } from '../utils/index.js';
@@ -17,88 +16,14 @@ import {
 } from '../utils/index.js';
 import createAction from '../actions/index.js';
 import { unmountBranch } from '../utils/index.js';
-import contextComponentHandler, { handleContextComponent } from '../components/context/context.js';
-import elementComponentHandler, { handleElementComponent } from '../components/element/element.js';
-import fragmentComponentHandler, {
-  handleFragmentComponent,
-} from '../components/fragment/fragment.js';
-import callableComponentHandler, { handleCallable } from '../components/callable/callable.js';
-import outletComponentHandler, { handleOutletComponent } from '../components/outlet/outlet.js';
-import portalComponentHandler, {
-  handlePortalComponent,
-  type PortalBranchType,
-} from '../components/portal/portal.js';
-import textComponentHandler, { handleTextComponent } from '../components/text/text.js';
-import { createFragmentTemplate } from '../index.js';
-import emptyComponentHandler, { handleEmptyComponent } from './empty/empty.js';
-
-export const handleTemplate = (
-  template: unknown,
-  current: Branch | undefined,
-  parent: Branch,
-  index: number
-): Branch => {
-  const $key = getCorrectKey(template, index);
-
-  const out = isUndefined(current)
-    ? createNewBranch(template, parent, $key)
-    : diffBranches(template, current as Branch, parent, index);
-
-  // check if output children have duplicate keys
-  const keys = out.children.map(item => item.key);
-  const unique = new Set(keys);
-
-  if (unique.size !== keys.length) {
-    throw '[Ruvy] unexpected duplicate key';
-  }
-
-  return out;
-};
-
-/**
- * process a template with its corresponding branch if it exist
- * @param template new template
- * @param current existing branch
- * @param parent parent branch
- * @param index index in parent
- */
-export const process = (
-  template: unknown,
-  current: Branch | undefined,
-  parent: Branch,
-  index: number
-): Branch => {
-  const $key = getCorrectKey(template, index);
-
-  const out = isUndefined(current)
-    ? createNewBranch(template, parent, $key)
-    : diffBranches(template, current as Branch, parent, index);
-
-  // check if output children have duplicate keys
-  const keys = out.children.map(item => item.key);
-  const unique = new Set(keys);
-
-  if (unique.size !== keys.length) {
-    throw '[Ruvy] unexpected duplicate key';
-  }
-
-  return out;
-};
-
-/**
- * process children for a new branch
- * @param children
- * @param parent
- * @returns
- */
-export const createNewBranchChildren = (
-  children: Array<unknown>,
-  parent: Branch
-): Array<Branch> => {
-  return preprocessChildren(children).map((child, index) =>
-    process(child, undefined, parent, index)
-  );
-};
+import { handleContextComponent } from '../components/context/context.js';
+import { handleElementComponent } from '../components/element/element.js';
+import { handleFragmentComponent } from '../components/fragment/fragment.js';
+import { handleCallableComponent } from '../components/callable/callable.js';
+import { handleOutletComponent } from '../components/outlet/outlet.js';
+import { handlePortalComponent, type PortalBranchType } from '../components/portal/portal.js';
+import { handleTextComponent } from '../components/text/text.js';
+import { handleEmptyComponent } from './empty/empty.js';
 
 /**
  * TODO: move to utils
@@ -145,9 +70,9 @@ export const diffNewChildren = (current: Branch, children: Array<unknown>) => {
     const exists = oldKeys.includes(key);
 
     if (exists) {
-      diffBranches(child, getBranchWithKey(current, key) as Branch, current, index);
+      handleComponent(child, getBranchWithKey(current, key) as Branch, current, index);
     } else {
-      current.children.push(createNewBranch(child, current, key));
+      current.children.push(handleComponent(child, undefined, current, index));
     }
   });
 };
@@ -187,7 +112,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
  * @param parent parent
  * @param index index of template in template parent
  */
-export const diffTypes = (
+export const handleComponentsWithDifferentTypes = (
   template: unknown,
   current: Branch,
   parent: Branch,
@@ -200,7 +125,7 @@ export const diffTypes = (
   unmountBranch(old);
 
   // compute the new one and merge it
-  const newBranch = process(template, undefined, parent, index);
+  const newBranch = handleComponent(template, undefined, parent, index);
   newBranch.old = old;
 
   // replace current with newly computed one.
@@ -210,139 +135,12 @@ export const diffTypes = (
   (current.parent as Branch).children[i] = newBranch;
 };
 
-/**
- * diff a branch an a template
- * @param template new template
- * @param current current branch
- * @param parent parent
- * @param index index in parent
- */
-export const diffBranches = (
-  template: unknown,
-  current: Branch,
-  parent: Branch,
-  index: number
-): Branch => {
-  // perform old branches cleanup
-  current.old = undefined;
-  current.unmountedChildren = [];
-
-  if (haveSameTagAndType(current, template)) {
-    // we perform diffing
-    const tag = current.tag;
-
-    let children: Array<unknown> = [];
-
-    switch (tag) {
-      case BranchTag.Element: {
-        children = elementComponentHandler.diff(
-          template as BranchTemplate<string>,
-          current as Branch<string>
-        );
-        break;
-      }
-      case BranchTag.Text: {
-        children = textComponentHandler.diff(`${template}`, current as Branch<string>);
-        break;
-      }
-      case BranchTag.Fragment: {
-        children = fragmentComponentHandler.diff(template as BranchTemplateFragment, current);
-        break;
-      }
-      case BranchTag.Function: {
-        children = callableComponentHandler.diff(template as BranchTemplateFunction, current);
-        break;
-      }
-      case BranchTag.Outlet: {
-        children = outletComponentHandler.diff(template as BranchTemplateFunction, current);
-        break;
-      }
-      case BranchTag.Context: {
-        children = contextComponentHandler.diff(template as BranchTemplate, current);
-        break;
-      }
-      case BranchTag.Portal: {
-        children = portalComponentHandler.diff(
-          template as BranchTemplate<PortalBranchType>,
-          current
-        );
-        break;
-      }
-      default:
-        break;
-    }
-
-    children = preprocessChildren(children);
-
-    const newChildrenKeys = children.map((child, index) => getCorrectKey(child, index));
-
-    removeChildrenExcess(current, newChildrenKeys);
-
-    diffNewChildren(current, children);
-
-    arrangeChildren(current, children);
-  } else {
-    diffTypes(template, current, parent, index);
-  }
-
-  return current;
-};
-
-/**
- * create a brand new branch from a given template
- * @param template jsx, string, number...
- * @param parent parent branch
- * @param key branch key
- * @returns
- */
-export const createNewBranch = (template: unknown, parent: Branch, key: BranchKey): Branch => {
-  const tag = getTag(template);
-
-  switch (tag) {
-    case BranchTag.Function: {
-      return callableComponentHandler.create(template as BranchTemplateFunction, parent, key);
-    }
-    case BranchTag.Element: {
-      return elementComponentHandler.create(template as BranchTemplate<string>, parent, key);
-    }
-    case BranchTag.Fragment: {
-      return fragmentComponentHandler.create(
-        template as BranchTemplate<typeof createFragmentTemplate>,
-        parent,
-        key
-      );
-    }
-    case BranchTag.Text: {
-      return textComponentHandler.create(`${template}`, parent, key);
-    }
-    case BranchTag.Outlet: {
-      return outletComponentHandler.create(template as BranchTemplateFunction, parent, key);
-    }
-    case BranchTag.Context: {
-      return contextComponentHandler.create(template as BranchTemplate, parent, key);
-    }
-    case BranchTag.Null: {
-      return emptyComponentHandler.create(null, parent, key);
-    }
-    case BranchTag.Portal: {
-      return portalComponentHandler.create(
-        template as BranchTemplate<PortalBranchType>,
-        parent,
-        key
-      );
-    }
-    default: {
-      throw '[Ruvy] Invalid template tag: this error should not happen !!!';
-    }
-  }
-};
-
-export const handleComponent = (
+export const handleComponent = <T = unknown>(
   template: unknown,
   current: Branch | undefined,
   parent: Branch,
   index: number
-): Branch => {
+): Branch<T> => {
   const key = getCorrectKey(template, index);
   const tag = getTag(template);
 
@@ -364,12 +162,12 @@ export const handleComponent = (
     const i = (current.parent as Branch).children.findIndex(child => child === old);
     (current.parent as Branch).children[i] = newBranch;
 
-    return newBranch;
+    return newBranch as Branch<T>;
   }
 
   switch (tag) {
     case BranchTag.Function: {
-      res = handleCallable(template as BranchTemplateFunction, current, parent, key);
+      res = handleCallableComponent(template as BranchTemplateFunction, current, parent, key);
       break;
     }
     case BranchTag.Element: {
@@ -459,20 +257,10 @@ export const handleComponent = (
     throw '[Ruvy] unexpected duplicate key';
   }
 
-  return branch;
+  return branch as Branch<T>;
 };
 
-export { default as handleCallable } from './callable/callable.js';
-export { default as handleContext } from './context/context.js';
-export { default as handleElement } from './element/element.js';
-export { default as handleEmpty } from './empty/empty.js';
-export { default as handleFragment } from './fragment/fragment.js';
-export { default as handleOutlet } from './outlet/outlet.js';
-
-export { default as handlePortal, Portal } from './portal/portal.js';
-
-export { default as handleText } from './text/text.js';
-
 export { default as createRoot } from './root/root.js';
+export { Portal } from './portal/portal.js';
 
-export default process;
+export default handleComponent;

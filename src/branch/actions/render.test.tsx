@@ -6,8 +6,7 @@ import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
 import { Branch, BranchStatus, BranchTag, BranchTemplate } from '../types.js';
-import text from '../components/text/text.js';
-import element from '../components/element/element.js';
+import { handleComponent } from '../index.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -26,9 +25,9 @@ describe('createRenderAction', () => {
   });
 
   it('should inject text in the root', () => {
-    const branch = text.create('text', root, 0);
+    const branch = handleComponent('text', undefined, root, 0);
 
-    createRenderAction(branch)();
+    createRenderAction(branch as Branch<string>)();
 
     expect(document.body.outerHTML).toBe('<body>text</body>');
 
@@ -37,9 +36,9 @@ describe('createRenderAction', () => {
   });
 
   it('should inject div in the root', () => {
-    const branch = element.create((<div />) as BranchTemplate<string>, root, 0);
+    const branch = handleComponent((<div />) as BranchTemplate<string>, undefined, root, 0);
 
-    createRenderAction(branch)();
+    createRenderAction(branch as Branch<string>)();
 
     expect(document.body.outerHTML).toBe('<body><div></div></body>');
 
@@ -48,13 +47,14 @@ describe('createRenderAction', () => {
   });
 
   it('should inject div with props', () => {
-    const branch = element.create(
+    const branch = handleComponent(
       (<div class="test" id="test" />) as BranchTemplate<string>,
+      undefined,
       root,
       0
     );
 
-    createRenderAction(branch)();
+    createRenderAction(branch as Branch<string>)();
 
     expect(document.body.outerHTML).toBe(`<body><div class="test" id="test"></div></body>`);
   });
@@ -62,9 +62,9 @@ describe('createRenderAction', () => {
   it('should inject div with events', () => {
     const onClick = vitest.fn();
 
-    const branch = element.create((<div onClick={onClick} />) as BranchTemplate<string>, root, 0);
+    const branch = handleComponent(<div onClick={onClick} />, undefined, root, 0);
 
-    createRenderAction(branch)();
+    createRenderAction(branch as Branch<string>)();
 
     expect(document.body.outerHTML).toBe('<body><div></div></body>');
 

@@ -19,7 +19,7 @@ import {
   RuvyNode,
   collectActions,
   commit,
-  process,
+  handleComponent,
   createRoot,
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
@@ -75,7 +75,7 @@ export class Core {
     if (!isUpdate) {
       this.current = createRoot(this.host, template);
     } else {
-      process(template, this.current.children[0], this.current, 0);
+      handleComponent(template, this.current.children[0], this.current, 0);
     }
 
     commit(collectActions(this.current));
@@ -263,9 +263,13 @@ export const getSearchParams = <T extends QueryParams>(): T => {
 };
 
 /**
- * @deprecated use `getPathname` instead.
- *
  * retrieves the current route without the base.
+ *
+ * use `getPathname` instead.
+ *
+ *
+ * @deprecated
+ *
  */
 export const getRoute = (): string => {
   return throwIfNoRouter(() => getRouteFromUrl(Core.singleton.router.base));

@@ -3,7 +3,7 @@ import { createJsxElement, createFragmentTemplate } from '../../create/index.js'
 import { initBranch } from '../../utils/index.js';
 import { usePromise } from './usePromise.js';
 import { HookData, HookType, UsePromiseData, UsePromiseState } from '../../types.js';
-import { process } from '../../index.js';
+import { handleComponent } from '../../index.js';
 import { runAfter } from '@riadh-adrani/utils';
 
 createFragmentTemplate;
@@ -28,7 +28,7 @@ describe('usePromise', () => {
       return <div />;
     };
 
-    const out = process(<Child />, undefined, branch, 0);
+    const out = handleComponent(<Child />, undefined, branch, 0);
 
     expect(out.hooks[`${HookType.Promise}@0`]).toStrictEqual<HookData<UsePromiseData<number>>>({
       data: { callback, state: 'pending', value: undefined },
@@ -62,7 +62,7 @@ describe('usePromise', () => {
       return <div />;
     };
 
-    const out = process(<Child />, undefined, branch, 0);
+    const out = handleComponent(<Child />, undefined, branch, 0);
 
     await runAfter(50, () => 0);
 
@@ -87,7 +87,7 @@ describe('usePromise', () => {
       return <div />;
     };
 
-    const out = process(<Child />, undefined, branch, 0);
+    const out = handleComponent(<Child />, undefined, branch, 0);
 
     // await the first fetch
     await runAfter(50, () => 0);

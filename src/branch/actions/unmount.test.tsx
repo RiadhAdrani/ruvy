@@ -6,9 +6,9 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { initBranch } from '../utils/index.js';
 import createRenderAction from './render.js';
 import { Branch, BranchStatus, BranchTag } from '../types.js';
-import text from '../components/text/text.js';
 import createUnmountAction from './unmount.js';
 import { removeNode } from '@riadh-adrani/dom-utils';
+import { handleComponent } from '../index.js';
 
 createJsxElement;
 
@@ -26,7 +26,7 @@ describe('createUnmountAction', () => {
   });
 
   it('should unmount branch instance', () => {
-    const branch = text.create('text', root, 0);
+    const branch = handleComponent<string>('text', undefined, root, 0);
 
     // mount branch
     createRenderAction(branch)();
@@ -39,13 +39,13 @@ describe('createUnmountAction', () => {
   });
 
   it('should unmount branch even if instance is not in body', () => {
-    const branch = text.create('text', root, 0);
+    const branch = handleComponent<string>('text', undefined, root, 0);
 
     // mount branch
     createRenderAction(branch)();
     expect(document.body.outerHTML).toBe('<body>text</body>');
 
-    // emulate user modifying the element
+    // simulate user modifying the element
     removeNode(branch.instance as Element);
     branch.instance = undefined;
 

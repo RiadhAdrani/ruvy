@@ -2,10 +2,10 @@
 
 import { createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import element from '../components/element/element.js';
 import root from '../components/root/root.js';
 import { collectActions, commit } from '../utils/index.js';
 import createTextUpdateAction from './updateText.js';
+import { handleComponent } from '../index.js';
 
 createJsxElement;
 
@@ -17,7 +17,7 @@ describe('updateElProps', () => {
   it('should update text', () => {
     const parent = root(document.body, null);
 
-    const div = element.create(<div>Hello</div>, parent, 0);
+    const div = handleComponent<string>(<div>Hello</div>, undefined, parent, 0);
     commit(collectActions(div));
 
     expect(document.body.innerHTML).toBe('<div>Hello</div>');
@@ -29,7 +29,7 @@ describe('updateElProps', () => {
   it('should not update text', () => {
     const parent = root(document.body, null);
 
-    const div = element.create(<div>Hello</div>, parent, 0);
+    const div = handleComponent<string>(<div>Hello</div>, undefined, parent, 0);
     commit(collectActions(div));
 
     expect(document.body.innerHTML).toBe('<div>Hello</div>');

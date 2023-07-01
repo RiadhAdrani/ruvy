@@ -18,7 +18,7 @@ export { createFragmentTemplate, createJsxElement, createTemplate } from './crea
 export * from './types.js';
 
 export * from './components/components.js';
-export { process } from './components/components.js';
+export { handleComponent } from './components/components.js';
 
 export { commit, collectActions } from './utils/index.js';
 
