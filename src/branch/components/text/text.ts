@@ -59,13 +59,13 @@ const textComponentHandler: ComponentHandler<string, string> = {
   diff,
 };
 
-export const handleTextComponent: ComponentFunctionHandler<string, string> = (
+export const handleTextComponent: ComponentFunctionHandler<string, BranchTag.Text> = (
   template,
   current,
   parent,
   key
 ) => {
-  const branch: Branch<string> =
+  const branch: Branch<BranchTag.Text> =
     current ??
     initBranch({
       key,
