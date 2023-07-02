@@ -550,6 +550,11 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
 
   const last = () => conditions[conditions.length - 1];
 
+  const error = `[Ruvy] unexpected condition directive : This error can happen for one of the following reasons: ${[
+    'You are trying to use an "else-if" or "else" statement without a single "if" at the top of the conditions chain.',
+    'You are passing "else-if" or "else" as props to a children which may or may not fullfill the previous condition.',
+  ].map(it => `\n-${it}`)}`;
+
   return children.map(child => {
     // ? check for `if` directive
     if (templateHasProperty(child, 'if')) {
@@ -567,14 +572,14 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
     if (templateHasProperty(child, 'else-if')) {
       // check if conditions array is empty
       if (conditions.length === 0) {
-        throw '[Ruvy] cannot use "else-if" directive without a previous "if" or "else-if" directive.';
+        throw error;
       }
 
       // if the last one is "else" we throw
       // this case should not happen because we will reset the array after "else" directive
       const previous = last();
       if (previous.type === 'else') {
-        throw '[Ruvy] cannot use "else-if" directive after an "else" directive.';
+        throw error;
       }
 
       const value = getPropertyFromTemplate<boolean>(child, 'else-if') !== false;
@@ -589,7 +594,7 @@ export const preprocessChildren = (children: Array<unknown>): Array<unknown> => 
     if (templateHasProperty(child, 'else')) {
       // check if conditions array is empty
       if (conditions.length === 0) {
-        throw '[Ruvy] cannot use "else" directive without a previous "if" or "else-if" directive.';
+        throw error;
       }
 
       const fullfilled = conditions.some(it => it.value);

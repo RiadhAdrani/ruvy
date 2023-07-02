@@ -625,15 +625,11 @@ describe('utils', () => {
     });
 
     it('should throw when no "if" or "else-if" are used before "else-if"', () => {
-      expect(() => preprocessChildren([<div else-if />])).toThrow(
-        '[Ruvy] cannot use "else-if" directive without a previous "if" or "else-if" directive.'
-      );
+      expect(() => preprocessChildren([<div else-if />])).toThrow();
     });
 
     it('should throw when no "if" or "else-if" are used before "else"', () => {
-      expect(() => preprocessChildren([<div else />])).toThrow(
-        '[Ruvy] cannot use "else" directive without a previous "if" or "else-if" directive.'
-      );
+      expect(() => preprocessChildren([<div else />])).toThrow();
     });
 
     it('should return null when previous if is true', () => {
