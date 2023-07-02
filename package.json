@@ -39,7 +39,8 @@
     "format:check": "npx prettier --check ./",
     "lint": "npx eslint . --fix --ext .ts",
     "format": "npx prettier --write --check ./",
-    "publish:manual": "yarn build && yarn publish"
+    "publish:manual": "yarn build && yarn publish",
+    "setup:husky": "yarn global add husky && husky install"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.2",
