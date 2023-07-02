@@ -50,6 +50,9 @@ const createRenderAction = (branch: Branch<string>): Callback => {
     branch.status = BranchStatus.Mounted;
 
     assignRef(branch, branch.props);
+
+    // attach branch to dom node
+    (render as unknown as Record<string, unknown>)['__ruvy__node__'] = branch;
   };
 };
 
