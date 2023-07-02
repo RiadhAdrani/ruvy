@@ -1,5 +1,6 @@
 import {
   Arrayable,
+  areEqual,
   cast,
   forEachKey,
   hasProperty,
@@ -227,7 +228,18 @@ export const getNamespace = (branch: Branch): Namespace => {
 /**
  * Ignored props, which should not be rendered into the DOM.
  */
-export const IgnoredProps = ['ns', 'children', 'key', 'ref', 'if', 'else', 'else-if'];
+export const IgnoredProps = [
+  'ns',
+  'children',
+  'key',
+  'ref',
+  'if',
+  'else',
+  'else-if',
+  'switch',
+  'case',
+  'case:default',
+];
 
 /**
  * create an object of html attributes from the branch props.
@@ -541,16 +553,75 @@ export const templateHasProperty = (template: unknown, prop: string): boolean =>
 /**
  * preprocess children.
  *
+ * - process `switch`, `case` and `case:default` directives.
  * - process `if`, `else-if` and `else` directive.
  *
  * @param children array of chilren
  */
-export const preprocessChildren = (children: Array<unknown>): Array<unknown> => {
+export const preprocessChildren = (children: Array<unknown>, branch: Branch): Array<unknown> => {
+  // make sure that we process something
+  if (children.length === 0) {
+    return [];
+  }
+
+  // we need to check for a switch directive in the parent
+  if (hasProperty(branch.props, 'switch')) {
+    const allChildrenHaveCaseProp = children.every(
+      it => templateHasProperty(it, 'case') || templateHasProperty(it, 'case:default')
+    );
+
+    if (!allChildrenHaveCaseProp) {
+      throw '[Ruvy] unexpected switch directive use: at least one of the children of the switch component does not have a case or case:default property';
+    }
+
+    const caseDefaultOnlyAtEnd = children.every((it, index) => {
+      const has = templateHasProperty(it, 'case:default');
+      const isLastIndex = index === children.length - 1;
+
+      if (isLastIndex) {
+        return true;
+      }
+
+      return !isLastIndex && !has;
+    });
+
+    if (!caseDefaultOnlyAtEnd) {
+      throw '[Ruvy] unexpected "case:defailt" directive use: use "case:default" only at the end of the switch bloc.';
+    }
+
+    const switchValue = branch.props.switch;
+    let fullfilled = false;
+
+    return children.filter(it => {
+      if (fullfilled) return false;
+
+      // check case
+      if (templateHasProperty(it, 'case')) {
+        const value = getPropertyFromTemplate(it, 'case');
+
+        if (areEqual(value, switchValue)) {
+          fullfilled = true;
+          return true;
+        }
+      }
+
+      // check case:default
+      if (templateHasProperty(it, 'case:default')) {
+        // check case:default put in the end of children
+
+        fullfilled = true;
+        return true;
+      }
+
+      return false;
+    });
+  }
+
   let conditions: Array<{ type: 'if' | 'else-if' | 'else'; value: boolean }> = [];
 
   const last = () => conditions[conditions.length - 1];
 
-  const error = `[Ruvy] unexpected condition directive : This error can happen for one of the following reasons: ${[
+  const error = `[Ruvy] unexpected condition directive use: This error can happen for one of the following reasons: ${[
     'You are trying to use an "else-if" or "else" statement without a single "if" at the top of the conditions chain.',
     'You are passing "else-if" or "else" as props to a children which may or may not fullfill the previous condition.',
   ].map(it => `\n-${it}`)}`;

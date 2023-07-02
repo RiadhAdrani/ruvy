@@ -33,6 +33,9 @@ export interface UtilityProps {
   if: boolean;
   else: unknown;
   'else-if': boolean;
+  switch: unknown;
+  case: unknown;
+  'case:default': unknown;
 }
 
-export type PropsWithUtility<T extends object> = Partial<UtilityProps> & T;
+export type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;

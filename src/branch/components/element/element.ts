@@ -82,10 +82,10 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
     if (propsDiff.length > 0) {
       // create an action to update props
       branch.pendingActions.push(createAction(ActionType.UpdateProps, branch, propsDiff));
-
-      // override current props
-      branch.props = props;
     }
+
+    // override current props
+    branch.props = props;
   }
 
   assignRef(branch, props);

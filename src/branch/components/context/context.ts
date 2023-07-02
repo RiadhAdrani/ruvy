@@ -28,15 +28,17 @@ export const handleContextComponent: ComponentFunctionHandler = (
     const newObject = props.object;
     const newValue = props.value;
 
-    if (!areEqual(newObject, current.props.object)) {
+    if (!areEqual(newObject, branch.props.object)) {
       // TODO : transform into Action
-      current.props.object = newObject;
+      branch.props.object = newObject;
     }
 
-    if (!areEqual(newValue, current.props.value)) {
+    if (!areEqual(newValue, branch.props.value)) {
       // TODO : transform into Action
-      current.props.value = newValue;
+      branch.props.value = newValue;
     }
+
+    branch.props = props;
   }
 
   return {

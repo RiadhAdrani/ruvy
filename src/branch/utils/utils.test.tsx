@@ -616,70 +616,116 @@ describe('utils', () => {
   });
 
   describe('preprocessChildren', () => {
-    it('should return template when if is not false', () => {
-      expect(preprocessChildren([<div if />])).toStrictEqual([<div if />]);
+    describe('if directives', () => {
+      it('should return template when if is not false', () => {
+        expect(preprocessChildren([<div if />], initBranch())).toStrictEqual([<div if />]);
+      });
+
+      it('should return null when if is false', () => {
+        expect(preprocessChildren([<div if={false} />], initBranch())).toStrictEqual([null]);
+      });
+
+      it('should throw when no "if" or "else-if" are used before "else-if"', () => {
+        expect(() => preprocessChildren([<div else-if />], initBranch())).toThrow();
+      });
+
+      it('should throw when no "if" or "else-if" are used before "else"', () => {
+        expect(() => preprocessChildren([<div else />], initBranch())).toThrow();
+      });
+
+      it('should return null when previous if is true', () => {
+        expect(
+          preprocessChildren([<div if={true} />, <div else-if={true} />], initBranch())
+        ).toStrictEqual([<div if={true} />, null]);
+      });
+
+      it('should return template when previous if is false', () => {
+        expect(
+          preprocessChildren([<div if={false} />, <div else-if={true} />], initBranch())
+        ).toStrictEqual([null, <div else-if={true} />]);
+      });
+
+      it('should return null when previous (if or else-if) is true', () => {
+        expect(
+          preprocessChildren(
+            [<div if={false} />, <div else-if={true} />, <div else-if={true} />],
+            initBranch()
+          )
+        ).toStrictEqual([null, <div else-if={true} />, null]);
+      });
+
+      it('should return null when previous (if or else-if) is true', () => {
+        expect(
+          preprocessChildren(
+            [<div if={true} />, <div else-if={true} />, <div else />],
+            initBranch()
+          )
+        ).toStrictEqual([<div if={true} />, null, null]);
+
+        expect(
+          preprocessChildren(
+            [<div if={false} />, <div else-if={true} />, <div else />],
+            initBranch()
+          )
+        ).toStrictEqual([null, <div else-if={true} />, null]);
+      });
+
+      it('should return template when none of the previous (if or else-if) is true', () => {
+        expect(
+          preprocessChildren(
+            [<div if={false} />, <div else-if={false} />, <div else />],
+            initBranch()
+          )
+        ).toStrictEqual([null, null, <div else />]);
+      });
+
+      it.each(
+        [
+          [<div else />],
+          [<div />, <div else />],
+          [<div if />, <div else />, <div else />],
+          [<div else-if />],
+          [<div if />, <div />, <div else />],
+          [<div if />, <div />, <div else-if />],
+          [<div else-if />, <div />, <div else-if />],
+        ].map(it => [it])
+      )('should throw : more cases', it => {
+        expect(() => preprocessChildren(it, initBranch())).toThrow();
+      });
     });
 
-    it('should return null when if is false', () => {
-      expect(preprocessChildren([<div if={false} />])).toStrictEqual([null]);
-    });
+    describe('switch directive', () => {
+      it('should throw when at least one children does not have a case or case:default directive', () => {
+        const branch = initBranch({ props: { switch: true } });
 
-    it('should throw when no "if" or "else-if" are used before "else-if"', () => {
-      expect(() => preprocessChildren([<div else-if />])).toThrow();
-    });
+        const children = [<div case />, <div />];
 
-    it('should throw when no "if" or "else-if" are used before "else"', () => {
-      expect(() => preprocessChildren([<div else />])).toThrow();
-    });
+        expect(() => preprocessChildren(children, branch)).toThrow();
+      });
 
-    it('should return null when previous if is true', () => {
-      expect(preprocessChildren([<div if={true} />, <div else-if={true} />])).toStrictEqual([
-        <div if={true} />,
-        null,
-      ]);
-    });
+      it('should throw when case:default directive is used before the end', () => {
+        const branch = initBranch({ props: { switch: true } });
 
-    it('should return template when previous if is false', () => {
-      expect(preprocessChildren([<div if={false} />, <div else-if={true} />])).toStrictEqual([
-        null,
-        <div else-if={true} />,
-      ]);
-    });
+        const children = [<div case />, <div case:default />, <div case />];
 
-    it('should return null when previous (if or else-if) is true', () => {
-      expect(
-        preprocessChildren([<div if={false} />, <div else-if={true} />, <div else-if={true} />])
-      ).toStrictEqual([null, <div else-if={true} />, null]);
-    });
+        expect(() => preprocessChildren(children, branch)).toThrow();
+      });
 
-    it('should return null when previous (if or else-if) is true', () => {
-      expect(
-        preprocessChildren([<div if={true} />, <div else-if={true} />, <div else />])
-      ).toStrictEqual([<div if={true} />, null, null]);
+      it('should return first children with fullfilled case', () => {
+        const branch = initBranch({ props: { switch: true } });
 
-      expect(
-        preprocessChildren([<div if={false} />, <div else-if={true} />, <div else />])
-      ).toStrictEqual([null, <div else-if={true} />, null]);
-    });
+        const children = [<div case={false} />, <button case />, <img case />];
 
-    it('should return template when none of the previous (if or else-if) is true', () => {
-      expect(
-        preprocessChildren([<div if={false} />, <div else-if={false} />, <div else />])
-      ).toStrictEqual([null, null, <div else />]);
-    });
+        expect(preprocessChildren(children, branch)).toStrictEqual([<button case />]);
+      });
 
-    it.each(
-      [
-        [<div else />],
-        [<div />, <div else />],
-        [<div if />, <div else />, <div else />],
-        [<div else-if />],
-        [<div if />, <div />, <div else />],
-        [<div if />, <div />, <div else-if />],
-        [<div else-if />, <div />, <div else-if />],
-      ].map(it => [it])
-    )('should throw : more cases', it => {
-      expect(() => preprocessChildren(it)).toThrow();
+      it('should return fallback to "case:default"', () => {
+        const branch = initBranch({ props: { switch: true } });
+
+        const children = [<div case={false} />, <button case={false} />, <img case:default />];
+
+        expect(preprocessChildren(children, branch)).toStrictEqual([<img case:default />]);
+      });
     });
   });
 });

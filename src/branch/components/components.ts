@@ -213,7 +213,7 @@ export const handleComponent = <T = unknown>(
   branch.pendingActions.push(...collectPendingEffect(branch));
 
   // process children
-  const children = preprocessChildren(unprocessedChildren);
+  const children = preprocessChildren(unprocessedChildren, branch);
 
   if (!current) {
     branch.children = children.map((child, index) =>

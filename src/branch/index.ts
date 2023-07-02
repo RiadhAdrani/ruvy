@@ -13,7 +13,10 @@ export {
   usePromise,
 } from './hooks/index.js';
 
-export { createFragmentTemplate, createJsxElement, createTemplate } from './create/index.js';
+import { createFragmentTemplate } from './create/index.js';
+
+export { createJsxElement, createTemplate } from './create/index.js';
+export { createFragmentTemplate };
 
 export * from './types.js';
 

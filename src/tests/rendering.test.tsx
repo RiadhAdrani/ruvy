@@ -1,5 +1,7 @@
+import { useEffect, useState } from '../index.js';
 import { Core, mountApp } from '../core/Core.js';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { runAfter } from '@riadh-adrani/utils';
 
 describe('Rendering', () => {
   const mount = (app: JSX.Element) => mountApp({ callback: () => app, hostElement: document.body });
@@ -100,6 +102,58 @@ describe('Rendering', () => {
           </>
         )
       ).toThrow();
+    });
+  });
+
+  describe('switch case case:default directives', () => {
+    it('should render first children with fullfilled switch case', () => {
+      const App = () => {
+        return (
+          <div switch={3}>
+            <div case={0} class="0" />
+            <div case={1} class="1" />
+            <div case={2} class="2" />
+            <div case={3} class="3" />
+            <div case={4} class="4" />
+            <div case={5} class="5" />
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<div><div class="3"></div></div>');
+    });
+
+    it('should work with updates', async () => {
+      const App = () => {
+        const [count, setCount] = useState(0);
+
+        useEffect(() => {
+          runAfter(20, () => {
+            setCount(5);
+          });
+        });
+
+        return (
+          <div switch={count}>
+            <div case={0} class="0" />
+            <div case={1} class="1" />
+            <div case={2} class="2" />
+            <div case={3} class="3" />
+            <div case={4} class="4" />
+            <div case={5} class="5" />
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<div><div class="0"></div></div>');
+
+      setTimeout(() => {
+        expect(document.body.innerHTML).toBe('<div><div class="5"></div></div>');
+      }, 30);
     });
   });
 });

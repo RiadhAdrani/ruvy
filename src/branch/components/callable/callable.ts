@@ -20,6 +20,10 @@ export const handleCallableComponent: ComponentFunctionHandler<BranchTemplateFun
 
   const child = useHooksContext(() => type(props), branch);
 
+  if (current) {
+    branch.props = props;
+  }
+
   return { branch, unprocessedChildren: [child] };
 };
 

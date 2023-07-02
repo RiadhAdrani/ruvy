@@ -44,6 +44,8 @@ export const handlePortalComponent: ComponentFunctionHandler<
 
       current.pendingActions.push(createAction(ActionType.UpdatePortalChildren, current));
     }
+
+    branch.props = props;
   }
 
   return { branch, unprocessedChildren: children ?? [] };

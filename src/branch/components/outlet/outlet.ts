@@ -20,6 +20,10 @@ export const handleOutletComponent: ComponentFunctionHandler<BranchTemplateFunct
   const depth = getOutletDepth(branch) - 1;
   const child = Core.singleton.router?.getComponentByDepth(depth);
 
+  if (current) {
+    branch.props = props;
+  }
+
   return {
     unprocessedChildren: [child],
     branch,
