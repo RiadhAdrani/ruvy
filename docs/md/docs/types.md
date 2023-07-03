@@ -2,70 +2,31 @@
 
 <br/>
 
-### `Any`
+## `PortalProps`
 
 ```ts
-type Any = any;
+type PortalProps = PropsWithUtility<{ container: Element }>;
 ```
 
-### `PropsWithChildren`
+Props used for [`<Portal/>`](/docs/api/portal) component.
+
+<br/>
+
+@see [`PropsWithUtility`](#propswithutility)
+
+---
+
+## `PortalBranchType`
 
 ```ts
-type PropsWithChildren<T extends object> = { children?: Array<RuvyNode> } & T;
+type PortalBranchType = typeof Portal;
 ```
 
-### `CallbackWithArgs`
+Branch type for [`<Portal/>`](/docs/api/portal) component.
 
-```ts
-type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;
-```
+---
 
-### `DOMEventTarget`
-
-```ts
-type DOMEventTarget<T extends Element> = Event & T;
-```
-
-### `DOMEvent`
-
-```ts
-type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event &
-  E & {
-    target: DOMEventTarget<HTMLElement>;
-    currentTarget: DOMEventTarget<T>;
-  };
-```
-
-### `DOMEventHandler`
-
-```ts
-type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
-  event: DOMEvent<E, T>
-) => void;
-```
-
-### `Selector`
-
-```ts
-type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties[key]> } & Record<
-  string,
-  unknown
->;
-```
-
-### `Effect`
-
-```ts
-type Effect = Callback<Callback | void>;
-```
-
-### `Key`
-
-```ts
-type Key = string | number;
-```
-
-### `Namespace`
+## `Namespace`
 
 ```ts
 enum Namespace {
@@ -75,45 +36,412 @@ enum Namespace {
 }
 ```
 
-### `RuvyNode`
+Accepted namespaces for DOM element rendering.
+
+---
+
+## `BranchTag`
+
+```ts
+enum BranchTag {
+  Function = '#-function-branch',
+  Element = '#-element-branch',
+  Root = '#-root-branch',
+  Fragment = '#-fragment-branch',
+  Text = '#-text-branch',
+  Null = '#-null-branch',
+  Outlet = '#-outlet-branch',
+  Context = '#-context-branch',
+  Portal = '#-portal-branch',
+  Conditional = '#-conditional-branch',
+}
+```
+
+Enumeration of the possible Branch tags.
+
+---
+
+## `BranchTag`
+
+```ts
+enum HookType {
+  State = '#-use-state',
+  Effect = '#-use-effect',
+  Memo = '#-use-Memo',
+  Ref = '#-use-ref',
+  Context = '#-use-context',
+  Reactive = '#-use-reactive',
+  Promise = '#-use-promise',
+}
+```
+
+Enumeration of the possible Hook types.
+
+---
+
+## `BranchStatus`
+
+```ts
+enum BranchStatus {
+  Mounted = '#-mounted',
+  Mounting = '#-pending',
+  Unmounting = '#-un-mounting',
+  Unmounted = '#-un-mounted',
+}
+```
+
+Includes branch status.
+
+---
+
+## `ActionType`
+
+```ts
+enum ActionType {
+  Render = '#-action-render-element',
+  Reorder = '#-action-order-elements',
+  Cleanup = '#-action-clean-effect',
+  Effect = '#-action-run-effect',
+  Unmount = '#-action-unmount-element',
+  UpdateProps = '#-action-update-props',
+  UpdateText = '#-action-text-node',
+  Unmounted = '#-action-unmounted',
+  RemoveBranch = '#-action-remove-branch',
+  UpdatePortalChildren = '#-action-update-portal-children',
+}
+```
+
+Enumeration of the different commit action types.
+
+---
+
+## `UseMemoData`
+
+```ts
+interface UseMemoData<T = unknown> {
+  deps: unknown;
+  value: T;
+}
+```
+
+Schema of the data store in a [`useMemo`](/docs/api/useMemo) hook.
+
+---
+
+## `UseMemoParams`
+
+```ts
+interface UseMemoParams<T = unknown> {
+  callback: () => T;
+  deps?: unknown;
+}
+```
+
+Schema of the data needed for [`useMemo`](/docs/api/useMemo) hook.
+
+---
+
+## `UseRefData`
+
+```ts
+interface UseRefData<T = unknown> {
+  value: T;
+}
+```
+
+Schema of the data store in [`useRef`](/docs/api/useRef) hook.
+
+---
+
+## `Effect`
+
+```ts
+type Effect = Callback<Callback | void>;
+```
+
+Type for multiple effects creator, like the [`useEffect`](/docs/api/useEffect) hook.
+
+---
+
+## `UseEffectData`
+
+```ts
+interface UseEffectData {
+  deps: unknown;
+  callback: Effect;
+  cleanUp?: Effect;
+  pendingEffect?: Effect;
+  pendingCleanUp?: Effect;
+}
+```
+
+Schema of the data store in [`useEffect`](/docs/api/useEffect) hook.
+
+---
+
+## `UseEffectParams`
+
+```ts
+type UseEffectParams = Pick<UseEffectData, 'callback' | 'deps'>;
+```
+
+Schema of the data needed for [`useEffect`](/docs/api/useEffect) hook.
+
+<br/>
+
+@see [`UseEffectData`](#useeffectdata)
+
+---
+
+## `UsePromiseState`
+
+```ts
+type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
+```
+
+Describe state of the [`usePromise`](/docs/api/usePromise) hook.
+
+---
+
+## `UsePromiseParams`
+
+```ts
+type UsePromiseParams<T = unknown> = Callback<Promise<T>>;
+```
+
+Schema of the data needed for the [`usePromise`](/docs/api/usePromise) hook.
+
+---
+
+## `UsePromiseReturn`
+
+```ts
+type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
+```
+
+Describe array returned by [`usePromise`](/docs/api/usePromise) hook.
+
+<br/>
+
+@see [`UsePromiseState`](#usepromisestate)
+
+---
+
+## `UsePromiseReturn`
+
+```ts
+type UsePromiseData<T = unknown> = {
+  callback: Callback<Promise<T>>;
+  state: UsePromiseState;
+  value: T | undefined;
+};
+```
+
+Schema of the data store in the [`usePromise`](/docs/api/usePromise) hook.
+
+<br/>
+
+@see [`UsePromiseState`](#usepromisestate)
+
+---
+
+## `BranchProps`
+
+```ts
+type BranchProps = Record<string, unknown>;
+```
+
+Describe object storing a branch props.
+
+---
+
+## `BranchHooks`
+
+```ts
+type BranchHooks = Record<string, HookData<unknown>>;
+```
+
+Describe object storing a branch hooks.
+
+<br/>
+
+@see [`HookData`](#hookdata)
+
+---
+
+## `BranchKey`
+
+```ts
+type BranchKey = string | number;
+```
+
+Valid types of a branch/component key.
+
+---
+
+## `BranchTemplate`
+
+```ts
+interface BranchTemplate<T = unknown> {
+  type: T;
+  props: Record<string, unknown>;
+  children: Array<unknown>;
+  symbol: typeof BranchSymbol;
+  key?: BranchKey;
+}
+```
+
+Describes template generated by `JSX` components.
+
+<br/>
+
+@see [`BranchKey`](#branchkey)
+
+---
+
+## `BranchTemplateFunction`
+
+```ts
+type BranchTemplateFunction = BranchTemplate<CallbackWithArgs<[Record<string, unknown>], unknown>>;
+```
+
+Describes template generated by a `JSX` functional component.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate)
+
+---
+
+## `FragmentType`
+
+```ts
+type FragmentType = typeof createFragmentTemplate;
+```
+
+Branch type of a `JSX` fragment element.
+
+---
+
+## `BranchTemplateFragment`
+
+```ts
+type BranchTemplateFragment = BranchTemplate<FragmentType>;
+```
+
+Describes template generated by a fragment `JSX` component.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate), [`FragmentType`](#fragmenttype)
+
+---
+
+## `HookDispatcher`
+
+```ts
+type HookDispatcher<D, R> = (key: string, data: D, current: Branch) => R;
+```
+
+Describes a common hook dispatcher.
+
+<br/>
+
+@see [`Branch`](#branch)
+
+---
+
+## `BranchAction`
+
+```ts
+interface BranchAction {
+  type: ActionType;
+  requestTime: number;
+  callback: Callback;
+  debug?: unknown;
+}
+```
+
+Schema of a commit action.
+
+<br/>
+
+@see [`ActionType`](#actiontype)
+
+---
+
+## `Branch`
+
+```ts
+interface Branch<Type = unknown> {
+  text?: string;
+  tag: BranchTag;
+  type: Type;
+  props: BranchProps;
+  hooks: BranchHooks;
+  pendingActions: Array<BranchAction>;
+  parent?: Branch;
+  status: BranchStatus;
+  children: Array<Branch>;
+  instance?: Node;
+  key: BranchKey;
+  old?: Branch;
+  unmountedChildren: Array<Branch>;
+}
+```
+
+Schema of a Branch, the equivalent of a `Fiber` in `React`.
+
+<br/>
+
+@see [`BranchTag`](#branchtag), [`BranchProps`](#branchprops), [`BranchHooks`](#branchhooks), [`BranchAction`](#branchaction), [`BranchStatus`](#branchstatus), [`BranchKey`](#branchkey)
+
+---
+
+## `PropDiff`
+
+```ts
+interface PropDiff<T = unknown> {
+  prop: string;
+  value: T;
+  op: 'set' | 'update' | 'remove';
+  priority: number;
+}
+```
+
+Result of an element's prop diffing operation.
+
+---
+
+## `RuvyNode`
 
 ```ts
 type RuvyNode = BranchTemplate | string | boolean | null | undefined | number;
 ```
 
-### `StateArray`
+Possible types of a Ruvy `JSX` element.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate)
+
+---
+
+## `RuvyNode`
 
 ```ts
-type StateArray<T> = [T, (value: T) => void, Callback<T>];
+type RuvyNode = BranchTemplate | string | boolean | null | undefined | number;
 ```
 
-### `MountParams`
+Possible types of a Ruvy `JSX` element.
 
-```ts
-interface MountParams {
-  hostElement: HTMLElement;
-  callback: Callback<JSX.Element>;
-}
-```
+<br/>
 
-### `RawRoute`
+@see [`BranchTemplate`](#branchtemplate)
 
-```ts
-interface RawRoute<T = unknown> extends CommonRoute<T> {
-  routes?: Array<RawRoute>;
-}
-```
+---
 
-### `RouterParams`
-
-```ts
-interface RouterParams {
-  base?: string;
-  scrollToTop?: boolean;
-}
-```
-
-### `ContextObject`
+## `ContextObject`
 
 ```ts
 interface ContextObject<T = unknown> {
@@ -121,40 +449,66 @@ interface ContextObject<T = unknown> {
 }
 ```
 
-### `UsePromiseReturn`
+Object schema created by the [`createContext`](/docs/api/createContext) method.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate), [`ContextComponentProps`](#contextcomponentprops), [`BranchTag`](#branchtag)
+
+---
+
+## `ContextComponentProps`
 
 ```ts
-type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
-```
-
-### `UsePromiseState`
-
-```ts
-type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
-```
-
-### `PortalProps`
-
-```ts
-interface PortalProps {
-  container: Element;
-  key?: BranchKey;
+interface ContextComponentProps<T = unknown> {
+  value: T;
   children?: Array<unknown>;
 }
 ```
 
-### `UtilityProps`
+Props needed for a context provider component.
+
+---
+
+## `ComponentHandler`
+
+### `@deprecated`
 
 ```ts
-interface UtilityProps {
-  children: Array<RuvyNode>;
-  key: BranchKey;
-  if: boolean;
+interface ComponentHandler<B = unknown, T = BranchTemplate, D = unknown> {
+  create: (template: T, parent: Branch, key: BranchKey, data?: D) => Branch<B>;
+  diff: (template: T, current: Branch<B>, data?: D) => Array<unknown>;
 }
 ```
 
-### `PropsWithUtility`
+Describe a common component handler generator.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate), [`Branch`](#branch), [`BranchKey`](#branchkey),
+
+---
+
+## `ComponentFunctionHandler`
 
 ```ts
-type PropsWithUtility<T extends object> = Partial<UtilityProps> & T;
+type ComponentFunctionHandler<T = BranchTemplate, B = unknown, D = unknown> = (
+  template: T,
+  current: Branch<B> | undefined,
+  parent: Branch,
+  key: BranchKey,
+  data?: D
+) => { branch: Branch<B>; unprocessedChildren: Array<unknown> };
 ```
+
+Describe a common component handler.
+
+<br/>
+
+@see [`BranchTemplate`](#branchtemplate), [`Branch`](#branch), [`BranchKey`](#branchkey),
+
+<!-- TODO add core types -->
+<!-- TODO add router types -->
+<!-- TODO add scheduler types -->
+<!-- TODO add store types -->
+<!-- TODO add exported and global types -->
