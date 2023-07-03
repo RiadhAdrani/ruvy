@@ -559,6 +559,8 @@ export const templateHasProperty = (template: unknown, prop: string): boolean =>
  * @param children array of chilren
  */
 export const preprocessChildren = (children: Array<unknown>, branch: Branch): Array<unknown> => {
+  let $children = children;
+
   // make sure that we process something
   if (children.length === 0) {
     return [];
@@ -566,7 +568,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
 
   // we need to check for a switch directive in the parent
   if (hasProperty(branch.props, 'switch')) {
-    const allChildrenHaveCaseProp = children.every(
+    const allChildrenHaveCaseProp = $children.every(
       it => templateHasProperty(it, 'case') || templateHasProperty(it, 'case:default')
     );
 
@@ -574,9 +576,9 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
       throw '[Ruvy] unexpected switch directive use: at least one of the children of the switch component does not have a case or case:default property';
     }
 
-    const caseDefaultOnlyAtEnd = children.every((it, index) => {
+    const caseDefaultOnlyAtEnd = $children.every((it, index) => {
       const has = templateHasProperty(it, 'case:default');
-      const isLastIndex = index === children.length - 1;
+      const isLastIndex = index === $children.length - 1;
 
       if (isLastIndex) {
         return true;
@@ -592,7 +594,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
     const switchValue = branch.props.switch;
     let fullfilled = false;
 
-    return children.filter(it => {
+    $children = $children.filter(it => {
       if (fullfilled) return false;
 
       // check case
@@ -626,7 +628,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
     'You are passing "else-if" or "else" as props to a children which may or may not fullfill the previous condition.',
   ].map(it => `\n-${it}`)}`;
 
-  return children.map(child => {
+  $children = $children.map(child => {
     // ? check for `if` directive
     if (templateHasProperty(child, 'if')) {
       // reset conditions array, because if should be the first in a conditional block
@@ -674,13 +676,15 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
       return fullfilled ? null : child;
     }
 
-    // if no conditions, we reset the array
+    // if no conditions, we reset the array.
     // needed when we just only place an `if` statement without an `else` or `else-if`
     conditions = [];
 
     // if none of the above
     return child;
   });
+
+  return $children;
 };
 
 export const collectPendingEffect = (branch: Branch): Array<BranchAction> => {
