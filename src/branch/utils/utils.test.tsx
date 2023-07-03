@@ -716,7 +716,7 @@ describe('utils', () => {
 
         const children = [<div case={false} />, <button case />, <img case />];
 
-        expect(preprocessChildren(children, branch)).toStrictEqual([<button case />]);
+        expect(preprocessChildren(children, branch)).toStrictEqual([null, <button case />, null]);
       });
 
       it('should return fallback to "case:default"', () => {
@@ -724,7 +724,11 @@ describe('utils', () => {
 
         const children = [<div case={false} />, <button case={false} />, <img case:default />];
 
-        expect(preprocessChildren(children, branch)).toStrictEqual([<img case:default />]);
+        expect(preprocessChildren(children, branch)).toStrictEqual([
+          null,
+          null,
+          <img case:default />,
+        ]);
       });
     });
   });

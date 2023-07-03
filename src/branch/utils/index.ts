@@ -594,8 +594,8 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
     const switchValue = branch.props.switch;
     let fullfilled = false;
 
-    $children = $children.filter(it => {
-      if (fullfilled) return false;
+    $children = $children.map(it => {
+      if (fullfilled) return null;
 
       // check case
       if (templateHasProperty(it, 'case')) {
@@ -603,7 +603,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
 
         if (areEqual(value, switchValue)) {
           fullfilled = true;
-          return true;
+          return it;
         }
       }
 
@@ -612,10 +612,10 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
         // check case:default put in the end of children
 
         fullfilled = true;
-        return true;
+        return it;
       }
 
-      return false;
+      return null;
     });
   }
 
