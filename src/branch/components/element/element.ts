@@ -59,6 +59,8 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
 ) => {
   const { type, props, children } = template;
 
+  const $props = preprocessProps(props);
+
   const branch: Branch<string> =
     current ??
     initBranch({
@@ -66,10 +68,8 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
       type,
       parent,
       key,
-      props: preprocessProps(props),
+      props: $props,
     });
-
-  postprocessProps(branch);
 
   if (isUndefined(current)) {
     const renderAction = createAction(ActionType.Render, branch);
@@ -77,7 +77,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
     branch.pendingActions.push(renderAction);
   } else {
     // update props
-    const propsDiff = diffElementProps(branch.props, props);
+    const propsDiff = diffElementProps(branch.props, $props);
 
     if (propsDiff.length > 0) {
       // create an action to update props
@@ -85,8 +85,10 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
     }
 
     // override current props
-    branch.props = props;
+    branch.props = $props;
   }
+
+  postprocessProps(branch);
 
   assignRef(branch, props);
 
