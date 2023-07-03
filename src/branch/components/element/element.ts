@@ -13,7 +13,7 @@ import {
   postprocessProps,
   preprocessProps,
 } from '../../utils/index.js';
-import createAction from '../../actions/index.js';
+import createAction from '../../actions/actions.js';
 import { areEqual, forEachKey, hasProperty, isUndefined } from '@riadh-adrani/utils';
 
 /**

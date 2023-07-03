@@ -1,5 +1,5 @@
 import { ActionType, Branch, BranchTag, ComponentFunctionHandler } from '../../types.js';
-import createAction from '../../actions/index.js';
+import createAction from '../../actions/actions.js';
 import { areEqual } from '@riadh-adrani/utils';
 import { initBranch } from '../../utils/index.js';
 

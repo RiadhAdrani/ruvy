@@ -50,7 +50,7 @@ import { createTemplate } from '../create/index.js';
 import root from '../components/root/root.js';
 import { Outlet, Portal, useState } from '../index.js';
 import { omit, shuffle } from '@riadh-adrani/utils';
-import createAction from '../actions/index.js';
+import createAction from '../actions/actions.js';
 
 createFragmentTemplate;
 createJsxElement;

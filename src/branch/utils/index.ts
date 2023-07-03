@@ -35,7 +35,7 @@ import { Outlet, Portal, createFragmentTemplate } from '../index.js';
 import { Any, CallbackWithArgs } from 'src/index.js';
 import { Core } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
-import createAction from '../actions/index.js';
+import createAction from '../actions/actions.js';
 
 /**
  * checks if the given is a valid component template
