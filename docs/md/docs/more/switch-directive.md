@@ -1,0 +1,50 @@
+# `switch` directive
+
+A structural directive that conditionally includes a child component based on the comparison of its value with child's`case` value.
+
+<br/>
+
+### Example
+
+```ts
+<div switch={1}>
+  <div case={0}>0</div>
+  <div case={1}>2</div> // 👈 will be rendered
+  <div case={2}>3</div>
+</div>
+```
+
+# `case` directive
+
+Used on children to make `switch` directives compare and select the given children if comparison is positive.
+
+> ⚠️ If parent does not include a `switch` directive, this directive will be ignored.
+
+<br/>
+
+### Example
+
+```ts
+<div switch={1}>
+  <div case={0}>0</div>
+  <div case={1}>2</div> // 👈 will be rendered
+  <div case={2}>3</div>
+</div>
+```
+
+# `case:default` directive
+
+Used as a fallback when every previous `case` failed.
+
+> ⚠️ Should only be used on the last children component.
+
+### Example
+
+```ts
+<div switch={-1}>
+  <div case={0}>0</div>
+  <div case={1}>2</div>
+  <div case={2}>3</div>
+  <div case:default>No case is matched</div> // 👈 will be rendered
+</div>
+```

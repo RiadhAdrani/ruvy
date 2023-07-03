@@ -161,6 +161,10 @@ We saved the best for last, we offer [`if`](/docs/more/if-directive), [`else-if`
 </>
 ```
 
+### switch directives
+
+You can also check the [`switch directives`](/docs/more/switch-directive), works like `switch` in Javascript.
+
 <hr/>
 
 ## Rendering lists
