@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- Add `switch`, `case` and `case:default` directives.
+- Attach host `Branch` object to dom node.
+- `ref` typing.
+
+### Changed
+
+- `useState` accepts an initilizer function, and a setter callback.
+- improved project structure.
+- improved typing.
+
 ## 0.4.3 - 2023-07-01
 
 ### Changed
