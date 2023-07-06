@@ -10,7 +10,7 @@
 function useState<T>(initialState: T): StateArray<T>;
 ```
 
-The only parameter is the `initialState`, which as its name suggests, initialize the state value.
+The only parameter is the `initialState`, which as its name suggests, initialize the state value, it can be a intializer callback like `React`.
 
 <br/>
 
@@ -19,7 +19,7 @@ The only parameter is the `initialState`, which as its name suggests, initialize
 `useState` returns a [StateArray](/docs/types#statearray), which is an array of three values:
 
 1. `value` : The current state, which will take the value of `initialState` during the first render.
-2. `setter`: a function that lets you update the state which will trigger a re-render.
+2. `setter`: a function that lets you update the state which will trigger a re-render, accepts a callback with the current state as the argument.
 3. `getter` : a function that returns the current value of the state. useful when trying to access the state value within an _asynchronous function_ .
 
 <hr/>
