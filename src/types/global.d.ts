@@ -959,45 +959,44 @@ declare global {
     zoomAndPan: string;
   }
 
-  type BaseSVGProps = BaseProps &
-    Pick<
-      SVGAttributes,
-      | 'lang'
-      | 'tabindex'
-      | 'requiredExtensions'
-      | 'systemLanguage'
-      | 'clip-path'
-      | 'clip-rule'
-      | 'color'
-      | 'color-interpolation'
-      | 'color-rendering'
-      | 'cursor'
-      | 'display'
-      | 'fill'
-      | 'fill-opacity'
-      | 'fill-rule'
-      | 'filter'
-      | 'mask'
-      | 'opacity'
-      | 'pointer-events'
-      | 'shape-rendering'
-      | 'stroke'
-      | 'stroke-dasharray'
-      | 'stroke-dashoffset'
-      | 'stroke-linecap'
-      | 'stroke-linejoin'
-      | 'stroke-miterlimit'
-      | 'stroke-opacity'
-      | 'stroke-width'
-      | 'transform'
-      | 'vector-effect'
-      | 'visibility'
-      | 'xlink:title'
-      | 'class'
-      | 'style'
-    >;
+  type BaseSVGProps = Pick<
+    SVGAttributes,
+    | 'lang'
+    | 'tabindex'
+    | 'requiredExtensions'
+    | 'systemLanguage'
+    | 'clip-path'
+    | 'clip-rule'
+    | 'color'
+    | 'color-interpolation'
+    | 'color-rendering'
+    | 'cursor'
+    | 'display'
+    | 'fill'
+    | 'fill-opacity'
+    | 'fill-rule'
+    | 'filter'
+    | 'mask'
+    | 'opacity'
+    | 'pointer-events'
+    | 'shape-rendering'
+    | 'stroke'
+    | 'stroke-dasharray'
+    | 'stroke-dashoffset'
+    | 'stroke-linecap'
+    | 'stroke-linejoin'
+    | 'stroke-miterlimit'
+    | 'stroke-opacity'
+    | 'stroke-width'
+    | 'transform'
+    | 'vector-effect'
+    | 'visibility'
+    | 'xlink:title'
+    | 'class'
+    | 'style'
+  >;
 
-  type BaseProps = Partial<UtilityProps>;
+  type BaseProps<E> = Partial<UtilityProps & { ref: { value: E } }>;
 
   type BaseHTMLProps = Pick<
     HTMLAttributes,
@@ -1025,17 +1024,13 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<BaseProps & BaseHTMLProps & DOMEvents<E> & T>;
-
-  type SVGCommonPropsWith<K extends keyof SVGAttributes> = BaseSVGProps & {
-    [P in K]: SVGAttributes[P];
-  };
+    Partial<BaseProps<E> & BaseHTMLProps & DOMEvents<E> & T>;
 
   type SVGElementProps<E extends Element = SVGElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<BaseProps & BaseSVGProps & DOMEvents<E> & T>;
+    Partial<BaseProps<E> & BaseSVGProps & DOMEvents<E> & T>;
 
   type BlockQuoteProps = Pick<HTMLAttributes, 'cite'>;
 
