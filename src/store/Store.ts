@@ -1,7 +1,9 @@
-import { copy, forEachKey, hasProperty } from '@riadh-adrani/utils';
+import { copy, forEachKey, hasProperty, isFunction } from '@riadh-adrani/utils';
 import {
   EffectCallback,
+  SetStateCallback,
   StateArray,
+  StateSetter,
   StoreEffectsCollection,
   StoreItemsCollection,
 } from './types.js';
@@ -50,7 +52,17 @@ export default class Store {
     const collection = this.getItemsCollection(name);
 
     const $value = copy(collection.get(key) as T);
-    const $setter = (value: T) => collection.update(key, value);
+    const $setter: StateSetter<T> = value => {
+      let $value: T;
+
+      if (isFunction(value)) {
+        $value = (value as SetStateCallback<T>)(collection.get(key) as T);
+      } else {
+        $value = value as T;
+      }
+
+      collection.update(key, $value);
+    };
     const $getter = () => copy(collection.get(key) as T);
 
     return [$value, $setter, $getter];
