@@ -14,7 +14,11 @@ describe('joinClasses', () => {
     expect(joinClasses('one', 'two', ['three', 'four'])).toBe('one two three four');
   });
 
-  it('should filter null and undefined', () => {
-    expect(joinClasses('one', 'two', null, undefined)).toBe('one two');
+  it('should filter falsy values', () => {
+    expect(joinClasses('one', false, 'two', null, undefined)).toBe('one two');
+  });
+
+  it('should filter falsy values nested', () => {
+    expect(joinClasses('one', [false], 'two', [null, undefined])).toBe('one  two');
   });
 });
