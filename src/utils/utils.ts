@@ -5,7 +5,9 @@ import { Arrayable, isArray, isFalsy } from '@riadh-adrani/utils';
  * and returns a valid className as `string`.
  * @param classes array of : `Array<string>` | `string` | `null` | `undefined`
  */
-export const joinClasses = (...classes: Array<Arrayable<string> | undefined | null>): string => {
+export const joinClasses = (
+  ...classes: Array<Arrayable<string> | undefined | null | boolean>
+): string => {
   const filtered = classes.filter(it => !isFalsy(it));
 
   return filtered.map(it => (isArray(it) ? (it as Array<string>).join(' ') : it)).join(' ');

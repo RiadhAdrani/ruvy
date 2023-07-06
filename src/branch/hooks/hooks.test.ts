@@ -63,17 +63,7 @@ describe('dispatchSetState', () => {
   let branch: Branch;
 
   beforeEach(() => {
-    branch = {
-      children: [],
-      hooks: {},
-      key: 0,
-      pendingActions: [],
-      props: {},
-      status: BranchStatus.Mounting,
-      tag: BranchTag.Element,
-      type: 'div',
-      unmountedChildren: [],
-    };
+    branch = initBranch();
   });
 
   it('should create a hook entry with value, setter and a getter', () => {
@@ -117,6 +107,27 @@ describe('dispatchSetState', () => {
     expect(val).toBe('test');
 
     set('test-2');
+    expect(get()).toBe('test-2');
+  });
+
+  it('should run a state initializer', () => {
+    const initializer = vitest.fn(() => 0);
+
+    const [val] = useHooksContext(() => {
+      return dispatchUseState('0', initializer, branch);
+    }, branch);
+
+    expect(val).toBe(0);
+    expect(initializer).toHaveBeenCalledOnce();
+  });
+
+  it('should run a state setter', () => {
+    const [, set, get] = useHooksContext(() => {
+      return dispatchUseState('0', 'test', branch);
+    }, branch);
+
+    expect(get()).toBe('test');
+    set(() => 'test-2');
     expect(get()).toBe('test-2');
   });
 });

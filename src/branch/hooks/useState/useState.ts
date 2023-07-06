@@ -1,12 +1,17 @@
-import { areEqual } from '@riadh-adrani/utils';
-import { StateArray } from '../../../store/types.js';
+import { areEqual, isFunction } from '@riadh-adrani/utils';
+import {
+  SetStateCallback,
+  StateArray,
+  StateGetter,
+  StateInitializer,
+} from '../../../store/types.js';
 import { HookDispatcher, HookType } from '../../types.js';
 import { Core } from '../../../core/Core.js';
 import { dispatchHook } from '../index.js';
 
 /**
  * create a scoped state.
- * @param initValue initial value
+ * @param initValue initial value, or a callback that returns the initial value.
  * @returns [`value`,`setter`,`getter`]
  */
 export const useState = <T>(initValue: T): StateArray<T> => {
@@ -25,9 +30,20 @@ export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
   current
 ) => {
   if (!current.hooks[key]) {
+    let value: unknown;
+
+    if (isFunction(data)) {
+      // accept state initializer
+      const initializer = data as StateInitializer<unknown>;
+
+      value = initializer();
+    } else {
+      value = data;
+    }
+
     current.hooks[key] = {
-      data,
-      initialData: data,
+      data: value,
+      initialData: value,
       key,
       type: HookType.State,
     };
@@ -35,9 +51,18 @@ export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
 
   const value = current.hooks[key].data;
 
-  // TODO : allow a setter function callback
-  // TODO : add it to docs
-  const setter = (value: unknown) => {
+  const setter: StateArray<unknown>[1] = valueOrCallback => {
+    let value: unknown;
+
+    if (isFunction(valueOrCallback)) {
+      const callback = valueOrCallback as SetStateCallback<unknown>;
+      const currentValue = current.hooks[key].data;
+
+      value = callback(currentValue);
+    } else {
+      value = valueOrCallback;
+    }
+
     if (!areEqual(value, current.hooks[key].data)) {
       current.hooks[key].data = value;
 
@@ -45,7 +70,7 @@ export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
     }
   };
 
-  const getter = () => current.hooks[key].data;
+  const getter: StateGetter<unknown> = () => current.hooks[key].data;
 
   return [value, setter, getter];
 };

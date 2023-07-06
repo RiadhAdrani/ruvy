@@ -46,4 +46,10 @@ export interface StoreEffectsCollection extends StoreCollection<StoreEffect> {
   set: StoreEffectSetter;
 }
 
-export type StateArray<T> = [T, (value: T) => void, Callback<T>];
+export type SetStateCallback<T> = (currentValue: T) => T;
+export type StateSetter<T> = (valeuOrSetter: T | SetStateCallback<T>) => void;
+export type StateGetter<T> = Callback<T>;
+
+export type StateInitializer<T> = Callback<T>;
+
+export type StateArray<T> = [T, StateSetter<T>, StateGetter<T>];
