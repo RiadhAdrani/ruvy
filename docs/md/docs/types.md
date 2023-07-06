@@ -507,8 +507,410 @@ Describe a common component handler.
 
 @see [`BranchTemplate`](#branchtemplate), [`Branch`](#branch), [`BranchKey`](#branchkey),
 
-<!-- TODO add core types -->
-<!-- TODO add router types -->
-<!-- TODO add scheduler types -->
-<!-- TODO add store types -->
-<!-- TODO add exported and global types -->
+---
+
+## `MountParams`
+
+```ts
+interface MountParams {
+  hostElement: HTMLElement;
+  callback: Callback<JSX.Element>;
+}
+```
+
+Describe parameters needed to mount a `Ruvy` app.
+
+<br/>
+
+---
+
+## `CommonRoute`
+
+```ts
+interface CommonRoute<T = unknown> {
+  path: string;
+  redirectTo?: string;
+  title?: string;
+  component: T;
+}
+```
+
+Common routing properties.
+
+<br/>
+
+---
+
+## `RawRoute`
+
+```ts
+interface RawRoute<T = unknown> extends CommonRoute<T> {
+  routes?: Array<RawRoute<T>>;
+}
+```
+
+Route schema for Router initialization.
+
+<br/>
+
+@see [`CommonRoute`](#commonroute)
+
+---
+
+## `Route`
+
+```ts
+interface Route<T = unknown> extends CommonRoute<T> {
+  fragments: Array<string>;
+  isDynamic: boolean;
+}
+```
+
+Processed Router's route schema.
+
+<br/>
+
+@see [`CommonRoute`](#commonroute)
+
+<br/>
+
+---
+
+## `RouterConstructorParams`
+
+```ts
+interface RouterConstructorParams {
+  onStateChange: Callback;
+  base?: string;
+  scrollToTop?: boolean;
+  titleSuffix?: string;
+  titlePrefix?: string;
+}
+```
+
+Router constructor parameters.
+
+<br/>
+
+---
+
+## `RouterParams`
+
+```ts
+interface RouterParams {
+  onStateChange: Callback;
+  base?: string;
+  scrollToTop?: boolean;
+  titleSuffix?: string;
+  titlePrefix?: string;
+}
+```
+
+Parameters schema for [`createRouter`](/docs/api/createRouter)
+
+<br/>
+
+---
+
+## `StoreItem`
+
+```ts
+interface StoreItem<T = unknown> {
+  key: string;
+  value: T;
+  history: Array<T>;
+  creationIndex: number;
+}
+```
+
+Global store item instance schema.
+
+<br/>
+
+---
+
+## `StoreEffect`
+
+```ts
+interface StoreEffect {
+  key: string;
+  dep: unknown;
+  effect: EffectCallback;
+  called: number;
+  shouldRun: boolean;
+  cleanUp?: Callback;
+}
+```
+
+Global store effect instance schema.
+
+<br/>
+
+@see [`EffectCallback`](#effectcallback)
+
+---
+
+## `EffectCallback`
+
+```ts
+type EffectCallback = Callback<void | Callback>;
+```
+
+Globally stored effect.
+
+---
+
+## `StoreItemSetter`
+
+```ts
+type StoreItemSetter<T = unknown> = (key: string, value: T) => void;
+```
+
+Globally stored item's setter.
+
+---
+
+## `StoreItemGetter`
+
+```ts
+type StoreItemGetter<T = unknown> = (key: string) => T;
+```
+
+Globally stored item's getter.
+
+---
+
+## `StoreItemCleaner`
+
+```ts
+type StoreItemCleaner = (item: StoreItem, wasUsed: boolean) => void;
+```
+
+Globally stored item's cleaner.
+
+---
+
+## `StoreItemUpdate`
+
+```ts
+type StoreItemUpdate<T = unknown> = (key: string, value: T) => void;
+```
+
+Globally stored item's update function.
+
+---
+
+## `StoreEffectSetter`
+
+```ts
+type StoreEffectSetter = (key: string, effect: EffectCallback, dep: unknown) => void;
+```
+
+Globally stored effect's setter.
+
+---
+
+## `StoreEffectRunner`
+
+```ts
+type StoreEffectRunner = (item: StoreEffect) => void;
+```
+
+---
+
+## `StoreEffectCleaner`
+
+```ts
+type StoreEffectCleaner = (item: StoreEffect, wasUsed: boolean) => void;
+```
+
+---
+
+## `StoreCollection`
+
+```ts
+interface StoreCollection<T> {
+  name: string;
+  items: Record<string, T>;
+  used: Array<string>;
+}
+```
+
+---
+
+## `StoreItemsCollection`
+
+```ts
+interface StoreItemsCollection extends StoreCollection<StoreItem> {
+  set: StoreItemSetter;
+  get: StoreItemGetter;
+  clean: StoreItemCleaner;
+  update: StoreItemUpdate;
+}
+```
+
+---
+
+## `StoreEffectsCollection`
+
+```ts
+interface StoreEffectsCollection extends StoreCollection<StoreEffect> {
+  runner: StoreEffectRunner;
+  clean: StoreEffectCleaner;
+  set: StoreEffectSetter;
+}
+```
+
+---
+
+## `SetStateCallback`
+
+```ts
+type SetStateCallback<T> = (currentValue: T) => T;
+```
+
+callback used as a setter for [`useState`](/docs/api/useState).
+
+---
+
+## `StateSetter`
+
+```ts
+type StateSetter<T> = (valeuOrSetter: T | SetStateCallback<T>) => void;
+```
+
+setter function returned by [`useState`](/docs/api/useState).
+
+<br/>
+
+@see [`SetStateCallback`](#setstatecallback)
+
+---
+
+## `StateGetter`
+
+```ts
+type StateGetter<T> = Callback<T>;
+```
+
+getter function returned by [`useState`](/docs/api/useState).
+
+---
+
+## `StateInitializer`
+
+```ts
+type StateInitializer<T> = Callback<T>;
+```
+
+a state initializer function provided to [`useState`](/docs/api/useState).
+
+---
+
+## `StateArray`
+
+```ts
+type StateArray<T> = [T, StateSetter<T>, StateGetter<T>];
+```
+
+a state initializer function provided to [`useState`](/docs/api/useState).
+
+<br/>
+
+@see [`StateSetter`](#statesetter), [`StateGetter`](#stategetter)
+
+---
+
+## `Any`
+
+```ts
+type Any = any;
+```
+
+helper type.
+
+---
+
+## `PropsWithChildren`
+
+### `@deprecated`
+
+```ts
+type PropsWithChildren<T extends object> = { children?: Array<RuvyNode> } & T;
+```
+
+---
+
+## `CallbackWithArgs`
+
+```ts
+type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;
+```
+
+---
+
+## `DOMEventTarget`
+
+```ts
+type DOMEventTarget<T extends Element> = Event & T;
+```
+
+---
+
+## `DOMEvent`
+
+```ts
+type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event &
+  E & {
+    target: DOMEventTarget<HTMLElement>;
+    currentTarget: DOMEventTarget<T>;
+  };
+```
+
+---
+
+## `DOMEventHandler`
+
+```ts
+type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
+  event: DOMEvent<E, T>
+) => void;
+```
+
+---
+
+## `Selector`
+
+```ts
+type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties[key]> } & Record<
+  string,
+  unknown
+>;
+```
+
+---
+
+## `UtilityProps`
+
+```ts
+interface UtilityProps {
+  children: Array<RuvyNode>;
+  key: BranchKey;
+  if: boolean;
+  else: unknown;
+  'else-if': boolean;
+  switch: unknown;
+  case: unknown;
+  'case:default': unknown;
+}
+```
+
+---
+
+## `PropsWithUtility`
+
+```ts
+type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
+```
+
+@see [`UtilityProps`](#utilityprops)
