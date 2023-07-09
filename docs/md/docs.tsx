@@ -21,6 +21,7 @@ import navigate from './docs/api/navigate.md';
 import replace from './docs/api/replace.md';
 import outlet from './docs/api/outlet.md';
 import portal from './docs/api/portal.md';
+import batch from './docs/api/batch.md';
 
 import more from './docs/more.md';
 import classAttribute from './docs/more/class-attribute.md';
@@ -49,6 +50,7 @@ export const ApiSections: Array<DocItem> = [
   { path: 'getPathname', component: getPathname, title: 'getPathname' },
   { path: 'replace', component: replace, title: 'replace' },
   { path: 'navigate', component: navigate, title: 'navigate' },
+  { path: 'batch', component: batch, title: 'batch' },
   { path: 'outlet', component: outlet, title: '<Outlet/>' },
   { path: 'portal', component: portal, title: '<Portal/>' },
 ];
