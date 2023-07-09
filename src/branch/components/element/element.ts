@@ -14,7 +14,7 @@ import {
   preprocessProps,
 } from '../../utils/index.js';
 import createAction from '../../actions/actions.js';
-import { areEqual, forEachKey, hasProperty, isUndefined } from '@riadh-adrani/utils';
+import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
 
 /**
  * creates a diffing array for two element props
@@ -71,7 +71,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
       props: $props,
     });
 
-  if (isUndefined(current)) {
+  if (!current) {
     const renderAction = createAction(ActionType.Render, branch);
 
     branch.pendingActions.push(renderAction);
