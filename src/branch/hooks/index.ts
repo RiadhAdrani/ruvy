@@ -61,15 +61,20 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
   const branch = ctx.get();
 
   if (branch === undefined) {
-    throw 'cannot use hooks outside of a functional component context.';
+    throw '[Ruvy] Unexpected Hook Call : cannot use hooks outside of a functional component context.';
   }
 
   index = index + 1;
 
   const key = createHookKey(type, index);
 
+  // check if branch is unmounting or unmounted
+  if ([BranchStatus.Unmounted, BranchStatus.Unmounting].includes(branch.status)) {
+    throw `[Ruvy] Unexpected State: Cannot dispatch hooks on an unmounted branch.`;
+  }
+
   if (branch.status === BranchStatus.Mounted && !hasProperty(branch.hooks, key)) {
-    throw `Unexpected State: Unable to find hook with key (${key})`;
+    throw `[Ruvy] Unexpected State: Unable to find hook with key (${key})`;
   }
 
   let output: unknown = undefined;
@@ -104,7 +109,7 @@ export const dispatchHook = <R = unknown, T = unknown>(type: HookType, data: T):
       break;
     }
     default: {
-      throw `unknown hook (${type}).`;
+      throw `[Ruvy] Unexpected State: unknown hook (${type}).`;
     }
   }
 

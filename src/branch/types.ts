@@ -33,7 +33,7 @@ export enum HookType {
 
 export enum BranchStatus {
   Mounted = '#-mounted',
-  Mounting = '#-pending',
+  Mounting = '#-mounting',
   Unmounting = '#-un-mounting',
   Unmounted = '#-un-mounted',
 }
