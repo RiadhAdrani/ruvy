@@ -28,6 +28,26 @@ export default ({ content }: MarkdownProps) => {
 
       Prism.highlightAll();
 
+      // we need to make every code block clickable which will copy its content:
+      ref.value.querySelectorAll(`.markdown-container pre[class*='language-']`).forEach(it => {
+        it.addEventListener('click', () => {
+          const content = it.textContent;
+
+          if (content === null) {
+            return;
+          }
+
+          navigator.clipboard
+            .writeText(content)
+            .then(() => {
+              alert('Snippet copied !');
+            })
+            .catch(error => {
+              console.error('Failed to copy text to clipboard:', error);
+            });
+        });
+      });
+
       const hash = location.hash;
 
       if (isBlank(hash)) return;

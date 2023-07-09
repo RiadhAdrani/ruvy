@@ -996,7 +996,9 @@ declare global {
     | 'style'
   >;
 
-  type BaseProps<E> = Partial<UtilityProps & { ref: { value: E } }>;
+  type DomElementRef<E> = { value: E | undefined };
+
+  type BaseProps<E> = Partial<UtilityProps & { ref: DomElementRef<E> }>;
 
   type BaseHTMLProps = Pick<
     HTMLAttributes,
