@@ -11,6 +11,7 @@ import {
   UseEffectParams,
 } from '../../types.js';
 import { dispatchHook } from '../index.js';
+import { batch } from '../../../core/Core.js';
 
 /**
  * schedule a callback effect to run once, or every time `deps` changes.
@@ -34,14 +35,16 @@ export const dispatchUseEffect: HookDispatcher<UseEffectParams, void> = (key, da
     return () => {
       const hook = cast<HookData<UseEffectData>>(current.hooks[key]);
 
-      const cleanup = cb();
+      // batch effect call
+      const cleanup = batch(cb);
 
       // reset pending effect
       hook.data.pendingEffect = undefined;
 
       if (cleanup) {
         const cleanCallback = () => {
-          cleanup();
+          // batch cleanup effect
+          batch(cleanup);
 
           // reset pending cleanup
           hook.data.cleanUp = undefined;

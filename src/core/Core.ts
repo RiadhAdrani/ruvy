@@ -177,6 +177,14 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
 };
 
 /**
+ * Batch updates in a synchronous callback .
+ * @param callback containing state updates.
+ */
+export const batch = <T>(callback: Callback<T>): T => {
+  return Core.batch(callback);
+};
+
+/**
  * creates a router for the ruvy application.
  *
  * ⚠️ Should be called before ``mountApp``
@@ -188,7 +196,7 @@ export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterPa
   Core.singleton.router = new Router(routes, {
     ...config,
     onStateChange: () =>
-      Core.batch(() => {
+      batch(() => {
         Core.notifyStateUpdated();
         Core.singleton.router.onPostStateChange();
       }),

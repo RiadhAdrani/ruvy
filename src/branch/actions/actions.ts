@@ -1,4 +1,4 @@
-import { Callback, cast, isFunction } from '@riadh-adrani/utils';
+import { Callback, cast, forEachKey, isFunction } from '@riadh-adrani/utils';
 import {
   ActionType,
   Branch,
@@ -12,6 +12,7 @@ import {
 import { PortalBranchType } from '../components/portal/portal.js';
 import {
   assignRef,
+  batchedEvent,
   getClosestChildrenHostBranches,
   getHostBranchIndexFromHostParent,
   getHtmlElementEventListeners,
@@ -150,6 +151,11 @@ export const createRenderAction = (branch: Branch<string>): Callback => {
       const ns = getNamespace(branch);
       const attributes = getHtmlElementProps(branch);
       const events = getHtmlElementEventListeners(branch);
+
+      // transform events to make them batch updates
+      forEachKey((key, callback) => {
+        events[key] = batchedEvent(callback);
+      }, events);
 
       render = createElement(branch.type, { namespace: ns, attributes, events });
     }

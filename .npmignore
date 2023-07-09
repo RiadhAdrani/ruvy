@@ -12,6 +12,7 @@ docs
 index.html
 src/**/*.test.js
 src/**/*.test.ts
+tests
 jest.config.js
 vite.config.ts
 vite.dev.config.ts

@@ -39,4 +39,5 @@ export type { StateArray } from './store/types.js';
 export * from './types/index.js';
 
 // utils
+export { batch } from './core/index.js';
 export * from './utils/utils.js';

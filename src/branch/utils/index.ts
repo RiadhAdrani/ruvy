@@ -451,10 +451,6 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
           }
         }
       }
-    } else if (isOnEventName(key)) {
-      // FIXME: better batch event at rendering/update step
-
-      props[key] = batchedEvent(value as CallbackWithArgs);
     } else {
       props[key] = value;
     }

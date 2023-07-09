@@ -1,6 +1,6 @@
 import { useEffect, useState } from '../index.js';
-import { Core, mountApp } from '../core/Core.js';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { Core, batch, mountApp } from '../core/Core.js';
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { runAfter } from '@riadh-adrani/utils';
 
 describe('Rendering', () => {
@@ -151,9 +151,87 @@ describe('Rendering', () => {
 
       expect(document.body.innerHTML).toBe('<div><div class="0"></div></div>');
 
-      setTimeout(() => {
+      await runAfter(30, () => {
         expect(document.body.innerHTML).toBe('<div><div class="5"></div></div>');
-      }, 30);
+      });
+    });
+  });
+
+  describe('batching', () => {
+    it('should batch updates [useEffect]', () => {
+      const fn = vitest.fn();
+
+      const App = () => {
+        const [, setCount] = useState(0);
+        const [, setCount2] = useState(0);
+
+        fn();
+
+        useEffect(() => {
+          setCount(1);
+          setCount2(2);
+        });
+
+        return <div></div>;
+      };
+
+      mount(<App />);
+
+      expect(fn).toHaveBeenCalledTimes(2);
+    });
+
+    it('should batch updates [DOM events]', () => {
+      const fn = vitest.fn();
+
+      const App = () => {
+        const [, setCount] = useState(0);
+        const [, setCount2] = useState(0);
+
+        fn();
+
+        return (
+          <button
+            onClick={() => {
+              setCount(1);
+              setCount2(2);
+            }}
+          ></button>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(fn).toHaveBeenCalledTimes(2);
+    });
+
+    it('should batch updates [batch]', async () => {
+      const fn = vitest.fn();
+
+      const App = () => {
+        const [, setCount] = useState(0);
+        const [, setCount2] = useState(0);
+
+        fn();
+
+        useEffect(() => {
+          runAfter(50, () => {
+            batch(() => {
+              setCount(1);
+              setCount2(2);
+            });
+          });
+        });
+
+        return <button></button>;
+      };
+
+      mount(<App />);
+
+      await runAfter(120, () => 0);
+
+      expect(fn).toHaveBeenCalledTimes(2);
     });
   });
 });
