@@ -1,3 +1,5 @@
+### `@experimental`
+
 # usePromise
 
 `usePromise` is a hook that runs an asynchronous function and stroing its return value, while keeping track of the state of the request.
