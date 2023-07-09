@@ -91,7 +91,7 @@ describe('handleContextComponent', () => {
       hooks: {},
       key: 0,
       props: { children: [], value: {}, object: TestContext, initial: {} },
-      status: BranchStatus.Mounting,
+      status: BranchStatus.Mounted,
       tag: BranchTag.Context,
       type: BranchTag.Context,
       parent: out.branch,

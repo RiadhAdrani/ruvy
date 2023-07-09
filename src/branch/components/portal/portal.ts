@@ -1,6 +1,7 @@
 import { PropsWithUtility } from '../../../index.js';
 import {
   ActionType,
+  BranchStatus,
   BranchTag,
   BranchTemplate,
   ComponentFunctionHandler,
@@ -30,6 +31,7 @@ export const handlePortalComponent: ComponentFunctionHandler<
       key,
       props,
       instance: container,
+      status: BranchStatus.Mounted,
     });
 
   if (current) {

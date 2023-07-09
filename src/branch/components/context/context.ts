@@ -1,5 +1,5 @@
 import { initBranch } from '../../utils/index.js';
-import { Branch, BranchTag, ComponentFunctionHandler } from '../../types.js';
+import { Branch, BranchStatus, BranchTag, ComponentFunctionHandler } from '../../types.js';
 import { isUndefined } from '@riadh-adrani/utils';
 
 export const handleContextComponent: ComponentFunctionHandler = (
@@ -26,6 +26,8 @@ export const handleContextComponent: ComponentFunctionHandler = (
 
   if (current) {
     branch.props = props;
+  } else {
+    branch.status = BranchStatus.Mounted;
   }
 
   return {

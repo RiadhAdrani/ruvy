@@ -1,6 +1,7 @@
 import { Core } from '../../../core/index.js';
 import {
   Branch,
+  BranchStatus,
   BranchTag,
   BranchTemplateFunction,
   ComponentFunctionHandler,
@@ -22,6 +23,8 @@ export const handleOutletComponent: ComponentFunctionHandler<BranchTemplateFunct
 
   if (current) {
     branch.props = props;
+  } else {
+    branch.status = BranchStatus.Mounted;
   }
 
   return {

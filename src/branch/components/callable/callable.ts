@@ -1,5 +1,6 @@
 import {
   Branch,
+  BranchStatus,
   BranchTag,
   BranchTemplateFunction,
   ComponentFunctionHandler,
@@ -22,6 +23,8 @@ export const handleCallableComponent: ComponentFunctionHandler<BranchTemplateFun
 
   if (current) {
     branch.props = props;
+  } else {
+    branch.status = BranchStatus.Mounted;
   }
 
   return { branch, unprocessedChildren: [child] };

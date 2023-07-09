@@ -22,7 +22,7 @@ describe('handleFragmentComponent', () => {
       key: 0,
       pendingActions: [],
       props: { children: [] },
-      status: BranchStatus.Mounting,
+      status: BranchStatus.Mounted,
       tag: BranchTag.Fragment,
       type: createFragmentTemplate,
       parent,

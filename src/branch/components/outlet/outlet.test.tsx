@@ -6,7 +6,7 @@ import { Core, createRouter } from '../../../core/index.js';
 import { Outlet } from '../../index.js';
 import { initBranch } from '../../utils/index.js';
 import { handleOutletComponent } from './outlet.js';
-import { BranchTag } from '../../types.js';
+import { BranchStatus, BranchTag } from '../../types.js';
 
 createJsxElement;
 
@@ -24,6 +24,7 @@ describe('handleOutletComponent', () => {
     const { branch } = handleOutletComponent(<Outlet />, undefined, parent, 0);
 
     expect(branch.type).toStrictEqual(Outlet);
+    expect(branch.status).toStrictEqual(BranchStatus.Mounted);
     expect(branch.tag).toStrictEqual(BranchTag.Outlet);
   });
 

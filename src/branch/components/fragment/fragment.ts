@@ -4,6 +4,7 @@ import {
   BranchTag,
   BranchTemplateFragment,
   ComponentFunctionHandler,
+  BranchStatus,
 } from '../../types.js';
 import { initBranch } from '../../utils/index.js';
 
@@ -14,7 +15,8 @@ export const handleFragmentComponent: ComponentFunctionHandler<
   const { type, children, props } = template;
 
   const branch: Branch<FragmentType> =
-    current ?? initBranch({ key, props, type, parent, tag: BranchTag.Fragment });
+    current ??
+    initBranch({ key, props, type, parent, tag: BranchTag.Fragment, status: BranchStatus.Mounted });
 
   return { unprocessedChildren: children, branch };
 };
