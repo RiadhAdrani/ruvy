@@ -577,6 +577,16 @@ Processed Router's route schema.
 
 ---
 
+## `TransformTitle`
+
+```ts
+type TransformTitle = (title: string) => string;
+```
+
+Transform current route's title before applying it.
+
+---
+
 ## `RouterConstructorParams`
 
 ```ts
@@ -586,6 +596,7 @@ interface RouterConstructorParams {
   scrollToTop?: boolean;
   titleSuffix?: string;
   titlePrefix?: string;
+  transformTitle?: TransformTitle;
 }
 ```
 
@@ -593,7 +604,9 @@ Router constructor parameters.
 
 <br/>
 
----
+@see [`TransformTitle`](#transformtitle)
+
+## <br/>
 
 ## `RouterParams`
 

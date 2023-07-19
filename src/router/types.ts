@@ -24,12 +24,15 @@ export interface Route<T = unknown> extends CommonRoute<T> {
   isDynamic: boolean;
 }
 
+export type TransformTitle = (title: string, route: Route) => string;
+
 export interface RouterConstructorParams {
   onStateChange: Callback;
   base?: string;
   scrollToTop?: boolean;
   titleSuffix?: string;
   titlePrefix?: string;
+  transformTitle?: TransformTitle;
 }
 
 export type RouterParams = Omit<RouterConstructorParams, 'onStateChange'>;

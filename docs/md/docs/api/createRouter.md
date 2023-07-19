@@ -20,6 +20,7 @@ acceps two arguments:
   - <small>_`scrolToTop`_</small> : (optional) auto scroll the window to the top when a new page loads.
   - <small>_`titleSuffix`_</small> : (optional) text to be added to all routes as a suffix.
   - <small>_`titlePrefix`_</small> : (optional) text to be added to all routes as a prefix.
+  - <small>_`transformTitle`_</small> : (optional) transform title before applying it.
 
 <hr/>
 

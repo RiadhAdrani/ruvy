@@ -6,6 +6,7 @@ import {
   Route,
   RouterConstructorParams,
   NavigationRequest,
+  TransformTitle,
 } from './types.js';
 import {
   findRouteFromList,
@@ -22,6 +23,7 @@ export default class Router<T = unknown> {
   onStateChange: Callback;
   titleSuffix = '';
   titlePrefix = '';
+  transformTitle: TransformTitle;
 
   context = new Context<number>();
 
@@ -154,7 +156,14 @@ export default class Router<T = unknown> {
 
   constructor(
     routes: Array<RawRoute>,
-    { onStateChange, base, scrollToTop, titlePrefix, titleSuffix }: RouterConstructorParams
+    {
+      onStateChange,
+      base,
+      scrollToTop,
+      titlePrefix,
+      titleSuffix,
+      transformTitle,
+    }: RouterConstructorParams
   ) {
     this.onStateChange = onStateChange;
     this.base = base ?? this.base;
@@ -162,6 +171,7 @@ export default class Router<T = unknown> {
     this.routes = flatten(routes);
     this.titlePrefix = titlePrefix ?? '';
     this.titleSuffix = titleSuffix ?? '';
+    this.transformTitle = transformTitle ?? (t => t);
 
     window.addEventListener('popstate', () => {
       this.onStateChange();
@@ -238,8 +248,12 @@ export default class Router<T = unknown> {
   }
 
   updateTitle() {
-    if (this.nearestRoute?.title) {
-      document.title = `${this.titlePrefix}${this.nearestRoute?.title}${this.titleSuffix}`;
+    const nearest = this.nearestRoute;
+
+    if (nearest && nearest.title) {
+      document.title = `${this.titlePrefix}${this.transformTitle(nearest.title, nearest)}${
+        this.titleSuffix
+      }`;
     }
   }
 
