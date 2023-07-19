@@ -531,6 +531,7 @@ interface CommonRoute<T = unknown> {
   path: string;
   redirectTo?: string;
   title?: string;
+  name?: string;
   component: T;
 }
 ```
@@ -576,6 +577,16 @@ Processed Router's route schema.
 
 ---
 
+## `TransformTitle`
+
+```ts
+type TransformTitle = (title: string) => string;
+```
+
+Transform current route's title before applying it.
+
+---
+
 ## `RouterConstructorParams`
 
 ```ts
@@ -585,6 +596,7 @@ interface RouterConstructorParams {
   scrollToTop?: boolean;
   titleSuffix?: string;
   titlePrefix?: string;
+  transformTitle?: TransformTitle;
 }
 ```
 
@@ -592,7 +604,9 @@ Router constructor parameters.
 
 <br/>
 
----
+@see [`TransformTitle`](#transformtitle)
+
+## <br/>
 
 ## `RouterParams`
 
@@ -914,3 +928,25 @@ type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
 ```
 
 @see [`UtilityProps`](#utilityprops)
+
+---
+
+## `NamedNavigationRequest`
+
+```ts
+interface NamedNavigationRequest {
+  name: string;
+  params?: Record<string, string | number>;
+  search?: Record<string, string | number>;
+}
+```
+
+---
+
+## `NavigationRequest`
+
+```ts
+type NavigationRequest = number | string | NamedNavigationRequest;
+```
+
+@see [`NamedNavigationRequest`](#namednavigationrequest)
