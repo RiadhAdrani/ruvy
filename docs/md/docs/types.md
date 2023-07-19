@@ -937,6 +937,7 @@ type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
 interface NamedNavigationRequest {
   name: string;
   params?: Record<string, string | number>;
+  search?: Record<string, string | number>;
 }
 ```
 

@@ -321,6 +321,12 @@ describe('Router class', () => {
       );
     });
 
+    it('should transform the named request with search params', () => {
+      expect(transformNavigationRequest({ name: 'User', search: { id: 1 } }, router.routes)).toBe(
+        '/user?id=1'
+      );
+    });
+
     it('should transform the named request with undefined params', () => {
       expect(transformNavigationRequest({ name: 'UserId' }, router.routes)).toBe('/user/undefined');
     });

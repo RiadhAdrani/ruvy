@@ -3,6 +3,7 @@ import type { Callback } from '@riadh-adrani/utils';
 export interface NamedNavigationRequest {
   name: string;
   params?: Record<string, string | number>;
+  search?: Record<string, string | number>;
 }
 
 export type NavigationRequest = number | string | NamedNavigationRequest;

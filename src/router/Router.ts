@@ -1,4 +1,11 @@
-import { isBlank, Callback, isObject, hasProperty, isNumber } from '@riadh-adrani/utils';
+import {
+  isBlank,
+  Callback,
+  isObject,
+  hasProperty,
+  isNumber,
+  forEachKey,
+} from '@riadh-adrani/utils';
 import { Context } from '../context/index.js';
 import {
   NamedNavigationRequest,
@@ -280,7 +287,7 @@ export const buildPathFromRequest = (
   request: NamedNavigationRequest,
   routes: Record<string, Route>
 ): string => {
-  const { name, params } = request;
+  const { name, params, search } = request;
 
   const key = Object.keys(routes).find(it => routes[it].name === name);
 
@@ -290,9 +297,7 @@ export const buildPathFromRequest = (
 
   const route = routes[key];
 
-  if (!route.isDynamic) return route.path;
-
-  const path = route.fragments
+  let path = route.fragments
     .map(it => {
       if (it.startsWith(':')) {
         const key = it.substring(1);
@@ -303,6 +308,22 @@ export const buildPathFromRequest = (
       return it;
     })
     .join('/');
+
+  // add searchparams
+  if (search) {
+    // transform arrays to string
+    const record: Record<string, string> = {};
+
+    forEachKey((key, value) => {
+      record[key] = `${value}`;
+    }, search);
+
+    const query = new URLSearchParams(record).toString();
+
+    if (!isBlank(query)) {
+      path = `${path}?${query}`;
+    }
+  }
 
   return `/${path}`;
 };
