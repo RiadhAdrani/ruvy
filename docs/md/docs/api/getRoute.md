@@ -1,6 +1,4 @@
-### `@deprecated` for naming purposes, use [getPathname](/docs/api/getPathname) instead
-
-<hr/>
+> `@deprecated` for naming purposes, use [getPathname](/docs/api/getPathname) instead
 
 # getRoute
 

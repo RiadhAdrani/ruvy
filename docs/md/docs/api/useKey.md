@@ -1,3 +1,5 @@
+> `@deprecated` , use [createStore](/docs/api/createStore) instead
+
 # useKey
 
 `useKey` is a function that lets you create a new global stateful variable with the given key.

@@ -93,7 +93,7 @@ export default ({ items, root }: PropsWithChildren<SideBarProps>) => {
         style={{ height: 'calc(100vh - var(--nav-bar-height))' }}
       >
         <div
-          class="col gap-2 overflow-auto p-t-10 w-[var(--side-bar-width)]"
+          class="col gap-2 overflow-auto p-y-10 w-[var(--side-bar-width)]"
           style={{ height: 'calc(100vh - var(--nav-bar-height))' }}
         >
           {items.map(it => {

@@ -8,15 +8,16 @@ All notable changes to this project will be documented in this file.
 
 - `name` route property, similar to `vue-router`.
 - `titleTransform` handler to preprocess the title before applying it.
-- `useStore` similar to `writable` store in `svelte`
+- `createStore` similar to `writable` store in `svelte`
 
 ### Changed
 
 - `navigate` now accepts a number or an object for a `named` route.
 
-### Removed
+### Deprecated
 
-- `useKey` is now replaced with `useStore`.
+- `useKey` is now replaced with `createStore`.
+- `Store` as it is becoming useless.
 
 ## 0.4.4 - 2023-07-06
 

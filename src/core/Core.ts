@@ -24,6 +24,7 @@ import {
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
 import getRouteFromUrl from '../router/utils/getRouteFromUrl.js';
+import { reset } from '../store/createStore.js';
 
 export class Core {
   static singleton: Core = new Core();
@@ -162,6 +163,9 @@ const throwIfNoRouter = <T = void>(callback: () => T): T => {
  * create and mount a ruvy app using the provided parameters.
  */
 export const mountApp = ({ callback, hostElement }: MountParams) => {
+  // reset global store
+  reset();
+
   Core.singleton.fn = callback;
   Core.singleton.host = hostElement;
 
@@ -207,6 +211,7 @@ export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterPa
  * creates a new global stateful variable with the given key.
  * @param key globally unique key.
  * @param value initial value
+ * @deprecated
  */
 export const useKey = <T>(key: string, value: T): StateArray<T> => {
   return Core.singleton.store.setItem<T>('state', key, value);

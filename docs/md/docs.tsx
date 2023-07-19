@@ -22,6 +22,7 @@ import replace from './docs/api/replace.md';
 import outlet from './docs/api/outlet.md';
 import portal from './docs/api/portal.md';
 import batch from './docs/api/batch.md';
+import createStore from './docs/api/createStore.md';
 
 import more from './docs/more.md';
 import classAttribute from './docs/more/class-attribute.md';
@@ -34,6 +35,7 @@ import { DocItem } from '../types/index.js';
 export const ApiSections: Array<DocItem> = [
   { path: 'mountApp', component: mountApp, title: 'mountApp' },
   { path: 'createRouter', component: createRouter, title: 'createRouter' },
+  { path: 'createStore', component: createStore, title: 'createStore' },
   { path: 'useState', component: useState, title: 'useState' },
   { path: 'useEffect', component: useEffect, title: 'useEffect' },
   { path: 'useMemo', component: useMemo, title: 'useMemo' },

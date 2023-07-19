@@ -16,6 +16,9 @@ export {
   usePromise,
 } from './branch/index.js';
 
+// store
+export { createStore } from './store/createStore.js';
+
 // components
 export { Portal } from './branch/index.js';
 

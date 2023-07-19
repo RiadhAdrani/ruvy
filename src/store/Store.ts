@@ -8,6 +8,9 @@ import {
   StoreItemsCollection,
 } from './types.js';
 
+/**
+ * @deprecated
+ */
 export default class Store {
   items: Record<string, StoreItemsCollection> = {};
   effects: Record<string, StoreEffectsCollection> = {};

@@ -34,7 +34,7 @@ export default () => {
       >
         <div class="row justify-between items-center max-w-1200px flex-1 z-2">
           <div class="row items-center gap-8">
-            <a href={'/?q=123#xy'} class="p-x-1">
+            <a href={{ name: 'Home' }} class="p-x-1">
               <h2>Ruvy</h2>
             </a>
             <div class="row hidden md:flex gap-1">

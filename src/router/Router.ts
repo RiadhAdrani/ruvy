@@ -148,6 +148,9 @@ export default class Router<T = unknown> {
     return expectedRoute?.component;
   }
 
+  /**
+   * @deprecated
+   */
   useContext<R>(callback: Callback<R>) {
     const depth = this.context.data ?? -1;
 
