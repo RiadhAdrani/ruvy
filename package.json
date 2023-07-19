@@ -37,6 +37,7 @@
     "test:once": "vitest run",
     "lint:check": "npx eslint . --ext .ts",
     "format:check": "npx prettier --check ./",
+    "types:check": "tsc --project tsconfig.build.json --noEmit",
     "lint": "npx eslint . --fix --ext .ts",
     "format": "npx prettier --write --check ./",
     "publish:manual": "yarn build && yarn publish",

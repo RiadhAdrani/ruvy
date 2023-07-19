@@ -1,7 +1,7 @@
 import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
 import { BranchTemplate } from '../branch/types.js';
 import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
-import { NamedNavigationRequest } from 'src/router/types.ts';
+import { NamedNavigationRequest } from '../router/types.js';
 
 declare global {
   function createJsxElement(
