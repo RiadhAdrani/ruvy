@@ -7,10 +7,10 @@
 ### Type & Parameters
 
 ```ts
-function navigate(path: string): void;
+function navigate(request: NavigationRequest): void;
 ```
 
-The only parameter is the `path` string.
+The only parameter is `request` of type [`NavigationRequest`](/docs/types#navigationrequest).
 
 <hr/>
 
@@ -22,21 +22,43 @@ The only parameter is the `path` string.
 
 ### Example
 
-#### Block user from accessing a page without being logged in.
+#### Navigate with a path string
 
 ```ts
-import { useEffect, useContext, navigate } from '@riadh-adrani/ruvy';
-import UserContext from './UserContext.js';
+// ...
 
-function User() {
-  const { isAuthenticated } = useContext(UserContext);
+navigate('/sign-in');
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/sign-in');
-    }
-  }, isAuthenticated);
+// ...
+```
 
-  // ...
-}
+#### Navigate with a named route
+
+```ts
+//...
+
+navigate({ name: 'Home' });
+
+//...
+```
+
+#### Navigate with a named dynamic route
+
+```ts
+//...
+
+navigate({ name: 'UserPage', params: { id: 1 } });
+
+//...
+```
+
+#### Navigate relatively
+
+```ts
+//...
+
+navigate(-1); // previous path
+navigate(1); // forward path
+
+//...
 ```

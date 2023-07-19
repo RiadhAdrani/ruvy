@@ -7,10 +7,10 @@
 ### Type & Parameters
 
 ```ts
-function replace(path: string): void;
+function replace(request: Exclude<NavigationRequest, number>): void;
 ```
 
-The only parameter is the `path` string.
+The only parameter is `request` of type [`NavigationRequest`](/docs/types#navigationrequest) omitting `number`.
 
 <hr/>
 
@@ -22,21 +22,32 @@ The only parameter is the `path` string.
 
 ### Example
 
-#### Block user from accessing a page without being logged in.
+#### Replace with a path string
 
 ```ts
-import { useEffect, useContext, replace } from '@riadh-adrani/ruvy';
-import UserContext from './UserContext.js';
+// ...
 
-function User() {
-  const { isAuthenticated } = useContext(UserContext);
+replace('/sign-in');
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      replace('/sign-in');
-    }
-  }, isAuthenticated);
+// ...
+```
 
-  // ...
-}
+#### Replace with a named route
+
+```ts
+//...
+
+replace({ name: 'Home' });
+
+//...
+```
+
+#### Replace with a named dynamic route
+
+```ts
+//...
+
+replace({ name: 'UserPage', params: { id: 1 } });
+
+//...
 ```

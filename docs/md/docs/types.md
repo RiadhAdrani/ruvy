@@ -531,6 +531,7 @@ interface CommonRoute<T = unknown> {
   path: string;
   redirectTo?: string;
   title?: string;
+  name?: string;
   component: T;
 }
 ```
@@ -914,3 +915,24 @@ type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
 ```
 
 @see [`UtilityProps`](#utilityprops)
+
+---
+
+## `NamedNavigationRequest`
+
+```ts
+interface NamedNavigationRequest {
+  name: string;
+  params?: Record<string, string | number>;
+}
+```
+
+---
+
+## `NavigationRequest`
+
+```ts
+type NavigationRequest = number | string | NamedNavigationRequest;
+```
+
+@see [`NamedNavigationRequest`](#namednavigationrequest)

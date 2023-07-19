@@ -31,7 +31,7 @@ export const createFromMD = (base: string, items: Array<RawRoute<RuvyNode>>) => 
 };
 
 export const routes: Array<RawRoute<RuvyNode>> = [
-  { path: '/', title: 'Ruvy', component: <Home /> },
+  { path: '/', title: 'Ruvy', component: <Home />, name: 'Home' },
   { path: '/docs', title: 'Docs', component: <Docs /> },
   { path: '/learn', title: 'Learn', component: <Learn /> },
   { path: '/acknowledgment', title: 'Acknowledgment', component: <Acknowledgment /> },

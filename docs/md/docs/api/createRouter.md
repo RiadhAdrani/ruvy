@@ -31,6 +31,7 @@ A route entry is of type [`RawRoute`](/docs/types#rawroute) composed of the foll
 
 - `path` : the path of the route or the segment of route.
 - `component` : the component representing the route.
+- `name` : (optional) a globally unique name.
 - `title` : (optional) the tab bar title of the route.
 - `redirectTo` : (optional) a redirection full path.
 
@@ -81,6 +82,7 @@ createRouter(
       path: '/',
       component: <Home />,
       title: 'Home',
+      name: 'Home',
       routes: [
         { path: 'docs', component: <Docs />, title: 'Docs' },
         { path: 'help', component: <Help />, title: 'Help' },
@@ -127,9 +129,10 @@ createRouter(
     { path: '/', component: <Home />, title: 'Home' },
     {
       path: '/user',
+      name: 'User',
       component: <User />,
       title: 'Docs',
-      routes: [{ path: ':id', component: <UserSecion /> }],
+      routes: [{ path: ':id', name: 'UserId', component: <UserSecion /> }],
     },
   ],
   {}

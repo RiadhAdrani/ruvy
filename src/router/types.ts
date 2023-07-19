@@ -1,7 +1,15 @@
 import type { Callback } from '@riadh-adrani/utils';
 
+export interface NamedNavigationRequest {
+  name: string;
+  params?: Record<string, string | number>;
+}
+
+export type NavigationRequest = number | string | NamedNavigationRequest;
+
 export interface CommonRoute<T = unknown> {
   path: string;
+  name?: string;
   redirectTo?: string;
   title?: string;
   component: T;

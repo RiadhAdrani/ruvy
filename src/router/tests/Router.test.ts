@@ -1,17 +1,32 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { RawRoute, Route } from '../types.js';
-import Router from '../Router.js';
+import Router, { isNamedNavigationRequest, transformNavigationRequest } from '../Router.js';
 import type { Callback } from '@riadh-adrani/utils';
 
-const testId: RawRoute = { path: ':id', component: 'test-id' };
-const test: RawRoute = { path: 'test', component: 'test', routes: [testId] };
+const testId: RawRoute = { path: ':id', component: 'test-id', name: 'TestId' };
+const test: RawRoute = { path: 'test', component: 'test', routes: [testId], name: 'Test' };
 
-const userIdAbout: RawRoute = { path: 'about', component: 'user-about' };
-const userId: RawRoute = { path: ':id', component: 'user-id', routes: [userIdAbout] };
-const user: RawRoute = { path: 'user', component: 'user', routes: [userId] };
-const redirect: RawRoute = { path: 'redirect', component: 'empty', redirectTo: '/user' };
+const userIdAbout: RawRoute = { path: 'about', component: 'user-about', name: 'UserAbout' };
+const userId: RawRoute = {
+  path: ':id',
+  component: 'user-id',
+  routes: [userIdAbout],
+  name: 'UserId',
+};
+const user: RawRoute = { path: 'user', component: 'user', routes: [userId], name: 'User' };
+const redirect: RawRoute = {
+  path: 'redirect',
+  component: 'empty',
+  redirectTo: '/user',
+  name: 'Redirect',
+};
 
-const root: RawRoute = { path: '/', component: 'home', routes: [test, user, redirect] };
+const root: RawRoute = {
+  path: '/',
+  component: 'home',
+  routes: [test, user, redirect],
+  name: 'Home',
+};
 
 describe('Router class', () => {
   let onChange: Callback;
@@ -176,6 +191,10 @@ describe('Router class', () => {
     expect(router.shouldTriggerUpdate('')).toBe(false);
   });
 
+  it('should not trigger update when request is 0', () => {
+    expect(router.shouldTriggerUpdate(0)).toBe(false);
+  });
+
   it('should not trigger update when path is equal', () => {
     expect(router.shouldTriggerUpdate('/')).toBe(false);
   });
@@ -192,6 +211,14 @@ describe('Router class', () => {
     router.push('/user/123');
 
     expect(router.shouldTriggerUpdate('/user/321')).toBe(true);
+  });
+
+  it('should trigger update', () => {
+    expect(router.shouldTriggerUpdate(1)).toBe(true);
+  });
+
+  it('should trigger update', () => {
+    expect(router.shouldTriggerUpdate(-1)).toBe(true);
   });
 
   it.each([
@@ -262,6 +289,40 @@ describe('Router class', () => {
       const route = router.getCatchRouteByDepth(1);
 
       expect(route?.component).toBe('*');
+    });
+  });
+
+  describe('isNamedNavigationRequest', () => {
+    it('should return true', () => {
+      expect(isNamedNavigationRequest({ name: 'test' })).toBe(true);
+    });
+
+    it('should return false', () => {
+      expect(isNamedNavigationRequest({ params: 'test' })).toBe(false);
+    });
+  });
+
+  describe('transformNavigationRequest', () => {
+    it('should return the number', () => {
+      expect(transformNavigationRequest(1, router.routes)).toBe(1);
+    });
+
+    it('should return the string', () => {
+      expect(transformNavigationRequest('/', router.routes)).toBe('/');
+    });
+
+    it('should transform the named request', () => {
+      expect(transformNavigationRequest({ name: 'Home' }, router.routes)).toBe('/');
+    });
+
+    it('should transform the named request with params', () => {
+      expect(transformNavigationRequest({ name: 'UserId', params: { id: 1 } }, router.routes)).toBe(
+        '/user/1'
+      );
+    });
+
+    it('should transform the named request with undefined params', () => {
+      expect(transformNavigationRequest({ name: 'UserId' }, router.routes)).toBe('/user/undefined');
     });
   });
 });

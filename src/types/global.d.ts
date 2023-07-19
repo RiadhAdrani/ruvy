@@ -1,6 +1,7 @@
 import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
 import { BranchTemplate } from '../branch/types.js';
 import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
+import { NamedNavigationRequest } from 'src/router/types.ts';
 
 declare global {
   function createJsxElement(
@@ -229,7 +230,7 @@ declare global {
     height: string | number;
     hidden: boolean;
     high: string | number;
-    href: string;
+    href: string | NamedNavigationRequest;
     hreflang: string;
     'http-equiv': StringWithAutoComplete<
       'content-security-policy' | 'content-type' | 'default-style' | 'x-ua-compatibl' | 'refresh'

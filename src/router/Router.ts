@@ -1,6 +1,12 @@
-import { isBlank, Callback } from '@riadh-adrani/utils';
+import { isBlank, Callback, isObject, hasProperty, isNumber } from '@riadh-adrani/utils';
 import { Context } from '../context/index.js';
-import { RawRoute, Route, RouterConstructorParams } from './types.js';
+import {
+  NamedNavigationRequest,
+  RawRoute,
+  Route,
+  RouterConstructorParams,
+  NavigationRequest,
+} from './types.js';
 import {
   findRouteFromList,
   flatten,
@@ -181,36 +187,50 @@ export default class Router<T = unknown> {
     return maybe.redirectTo ?? to;
   }
 
-  shouldTriggerUpdate(path: string): boolean {
-    if (isBlank(path)) {
+  shouldTriggerUpdate(request: string | number): boolean {
+    if (isNumber(request)) {
+      return request !== 0;
+    }
+
+    if (isBlank(request as string)) {
       return false;
     }
 
-    return path.trim() !== this.path;
+    return (request as string).trim() !== this.path;
   }
 
   isNavigatable(path: string): boolean {
     return path[0] === '/';
   }
 
-  push(to: string) {
-    if (!this.shouldTriggerUpdate(to)) {
+  push(to: NavigationRequest) {
+    const $to: string | number = transformNavigationRequest(to, this.routes);
+
+    if (!this.shouldTriggerUpdate($to)) {
       return;
     }
 
-    const path = this.getCorrectPath(to);
+    if (isNumber($to)) {
+      history.go($to as number);
+
+      return;
+    }
+
+    const path = this.getCorrectPath($to as string);
 
     history.pushState({ path }, '', `${this.base}${path}`);
 
     this.onStateChange();
   }
 
-  replace(to: string) {
-    if (!this.shouldTriggerUpdate(to)) {
+  replace(to: Exclude<NavigationRequest, number>) {
+    const $to: string | number = transformNavigationRequest(to, this.routes);
+
+    if (!this.shouldTriggerUpdate($to)) {
       return;
     }
 
-    const path = this.getCorrectPath(to);
+    const path = this.getCorrectPath(`${$to}`);
 
     history.replaceState({ path }, '', `${this.base}${path}`);
 
@@ -234,3 +254,52 @@ export default class Router<T = unknown> {
     this.updateScroll();
   }
 }
+
+export const isNamedNavigationRequest = (o: unknown): boolean => {
+  return isObject(o) && hasProperty(o, 'name');
+};
+
+export const buildPathFromRequest = (
+  request: NamedNavigationRequest,
+  routes: Record<string, Route>
+): string => {
+  const { name, params } = request;
+
+  const key = Object.keys(routes).find(it => routes[it].name === name);
+
+  if (!key) {
+    return '';
+  }
+
+  const route = routes[key];
+
+  if (!route.isDynamic) return route.path;
+
+  const path = route.fragments
+    .map(it => {
+      if (it.startsWith(':')) {
+        const key = it.substring(1);
+
+        return `${params ? params[key] : undefined}`;
+      }
+
+      return it;
+    })
+    .join('/');
+
+  return `/${path}`;
+};
+
+export const transformNavigationRequest = (
+  request: NavigationRequest,
+  routes: Record<string, Route>
+): string | number => {
+  // if string we return it
+  if (!isNamedNavigationRequest(request)) {
+    return request as string;
+  }
+
+  // we have a named request
+  // build the route
+  return buildPathFromRequest(request as NamedNavigationRequest, routes);
+};

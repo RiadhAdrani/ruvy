@@ -1,7 +1,7 @@
 import { isElement, setEvent } from '@riadh-adrani/dom-utils';
 import { isFunction, Callback } from '@riadh-adrani/utils';
 import { Context } from '../context/index.js';
-import { Router, RouterParams, RawRoute } from '../router/index.js';
+import { Router, RouterParams, RawRoute, NavigationRequest } from '../router/index.js';
 import { Scheduler } from '../scheduler/index.js';
 import {
   createEffectCollection,
@@ -229,18 +229,18 @@ export const setEffect = (
 
 /**
  * lets you navigate programmatically between routes.
- * @param path desintation path
+ * @param request desintation path
  */
-export const navigate = (path: string) => {
-  throwIfNoRouter(() => Core.singleton.router.push(path));
+export const navigate = (request: NavigationRequest) => {
+  throwIfNoRouter(() => Core.singleton.router.push(request));
 };
 
 /**
  * lets you replace the current route programmatically.
- * @param path desintation path
+ * @param request desintation path
  */
-export const replace = (path: string) => {
-  throwIfNoRouter(() => Core.singleton.router.replace(path));
+export const replace = (request: Exclude<NavigationRequest, number>) => {
+  throwIfNoRouter(() => Core.singleton.router.replace(request));
 };
 
 interface QueryParams {

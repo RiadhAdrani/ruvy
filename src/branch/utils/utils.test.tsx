@@ -3,7 +3,7 @@
 
 import { createFragmentTemplate, createJsxElement } from '../create/index.js';
 
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import {
   getHtmlElementEventListeners,
   getHtmlElementProps,
@@ -51,6 +51,8 @@ import root from '../components/root/root.js';
 import { Outlet, Portal, useState } from '../index.js';
 import { omit, shuffle } from '@riadh-adrani/utils';
 import createAction from '../actions/actions.js';
+import { createRouter, mountApp } from '../../index.js';
+import { Core } from '../../core/Core.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -473,6 +475,34 @@ describe('utils', () => {
   });
 
   describe('preprocessProps', () => {
+    beforeAll(() => {
+      createRouter([
+        { path: '/', name: 'Home', component: 'home' },
+        { path: '/user/:id', name: 'User', component: 'user' },
+      ]);
+
+      mountApp({ hostElement: document.body, callback: () => <div></div> });
+    });
+
+    afterAll(() => {
+      new Core();
+
+      document.body.innerHTML = '';
+    });
+
+    it('should transform href with named request', () => {
+      expect(preprocessProps({ href: { name: 'Home' } })).toStrictEqual({ href: '/' });
+    });
+
+    it('should transform href with dynamic named request', () => {
+      expect(preprocessProps({ href: { name: 'User', params: { id: 1 } } })).toStrictEqual({
+        href: '/user/1',
+      });
+      expect(preprocessProps({ href: { name: 'User' } })).toStrictEqual({
+        href: '/user/undefined',
+      });
+    });
+
     it('should transform and remove props with prefix [:class]', () => {
       expect(preprocessProps({ 'class:test': true })).toStrictEqual({ class: 'test' });
     });

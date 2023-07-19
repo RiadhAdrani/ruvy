@@ -36,6 +36,8 @@ import { Any, CallbackWithArgs } from 'src/index.js';
 import { Core } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
+import { buildPathFromRequest, isNamedNavigationRequest } from '../../router/Router.js';
+import { NamedNavigationRequest } from '../../router/types.js';
 
 /**
  * checks if the given is a valid component template
@@ -451,6 +453,15 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
           }
         }
       }
+    } else if (key === 'href' && isNamedNavigationRequest(value) && Core.singleton.router) {
+      /**
+       * check if href is an object
+       */
+      const request = value as NamedNavigationRequest;
+
+      const url = buildPathFromRequest(request, Core.singleton.router.routes);
+
+      props[key] = url;
     } else {
       props[key] = value;
     }
