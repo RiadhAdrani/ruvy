@@ -511,26 +511,6 @@ export const postprocessProps = (branch: Branch): void => {
 };
 
 /**
- * perform template preprocessing
- *
- * - nullify the template if it has an `if` prop set to `false`.
- *
- * @param template template object
- * @deprecated
- */
-export const preprocessTemplate = (template: unknown): unknown => {
-  // ? checks if the given template has an if directive and it should not be computed
-  if (
-    hasIfDirective(template) &&
-    !shouldTemplateWithIfDirectiveBeComputed(template as BranchTemplate)
-  ) {
-    return null;
-  }
-
-  return template;
-};
-
-/**
  * retrieve prop from a template ,if it is in fact a template, otherwise return `undefined`.
  * @param template template
  * @param prop property key

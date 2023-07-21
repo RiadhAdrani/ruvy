@@ -13,7 +13,6 @@ import useKey from './docs/api/useKey.md';
 import createContext from './docs/api/createContext.md';
 import createRouter from './docs/api/createRouter.md';
 import getParams from './docs/api/getParams.md';
-import getRoute from './docs/api/getRoute.md';
 import getPathname from './docs/api/getPathname.md';
 import getSearchParams from './docs/api/getSearchParams.md';
 import mountApp from './docs/api/mountApp.md';
@@ -48,7 +47,6 @@ export const ApiSections: Array<DocItem> = [
   { path: 'createContext', component: createContext, title: 'createContext' },
   { path: 'getParams', component: getParams, title: 'getParams' },
   { path: 'getSearchParams', component: getSearchParams, title: 'getSearchParams' },
-  { path: 'getRoute', component: getRoute, title: 'getRoute' },
   { path: 'getPathname', component: getPathname, title: 'getPathname' },
   { path: 'replace', component: replace, title: 'replace' },
   { path: 'navigate', component: navigate, title: 'navigate' },

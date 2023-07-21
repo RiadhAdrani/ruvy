@@ -6,7 +6,6 @@ import {
   isNumber,
   forEachKey,
 } from '@riadh-adrani/utils';
-import { Context } from '../context/index.js';
 import {
   NamedNavigationRequest,
   RawRoute,
@@ -31,8 +30,6 @@ export default class Router<T = unknown> {
   titleSuffix = '';
   titlePrefix = '';
   transformTitle: TransformTitle;
-
-  context = new Context<number>();
 
   get path(): string {
     return getRouteFromUrl(this.base);
@@ -66,36 +63,6 @@ export default class Router<T = unknown> {
 
   get params(): Record<string, string> {
     return getParams(this.path, this.nearestRoute?.path ?? '');
-  }
-
-  /**
-   * @deprecated
-   */
-  get component(): T | undefined {
-    const depth = this.context.data;
-    const current = this.nearestRoute;
-
-    if (depth === undefined) {
-      return undefined;
-    }
-
-    if (!current) {
-      return undefined;
-    }
-
-    if (current.fragments.length === 0 && depth === 0) {
-      return findRouteFromList<T>('/', this.routes)?.component;
-    }
-
-    if (current.fragments.length <= depth) {
-      return undefined;
-    }
-
-    const expected = `/${current.fragments.slice(0, depth + 1).join('/')}`;
-
-    const expectedRoute = findRouteFromList<T>(expected, this.routes);
-
-    return expectedRoute?.component;
   }
 
   getComponentByDepth(depth: number): T | undefined {
@@ -153,15 +120,6 @@ export default class Router<T = unknown> {
     }
 
     return expectedRoute?.component;
-  }
-
-  /**
-   * @deprecated
-   */
-  useContext<R>(callback: Callback<R>) {
-    const depth = this.context.data ?? -1;
-
-    return this.context.use(callback, depth + 1);
   }
 
   constructor(

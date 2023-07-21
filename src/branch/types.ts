@@ -182,14 +182,6 @@ export interface ContextComponentProps<T = unknown> {
   children?: Array<unknown>;
 }
 
-/**
- * @deprecated
- */
-export interface ComponentHandler<B = unknown, T = BranchTemplate, D = unknown> {
-  create: (template: T, parent: Branch, key: BranchKey, data?: D) => Branch<B>;
-  diff: (template: T, current: Branch<B>, data?: D) => Array<unknown>;
-}
-
 export type ComponentFunctionHandler<T = BranchTemplate, B = unknown, D = unknown> = (
   template: T,
   current: Branch<B> | undefined,

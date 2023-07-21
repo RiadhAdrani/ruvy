@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vitest } from 'vitest';
-import { Core, createRouter, getSearchParams, setEffect } from '../Core.js';
+import { Core, createRouter, getSearchParams } from '../Core.js';
 
 describe('Core', () => {
   let core: Core;
@@ -14,14 +14,6 @@ describe('Core', () => {
   });
 
   describe('constructor', () => {
-    it('should create a state item store', () => {
-      expect(core.store.items['state']).toBeTruthy();
-    });
-
-    it('should create an effect store', () => {
-      expect(core.store.effects['effect']).toBeTruthy();
-    });
-
     it('should assign the created value to the singleton', () => {
       expect(core).toStrictEqual(Core.singleton);
     });
@@ -75,14 +67,6 @@ describe('Core', () => {
 
       core.executeRoutine();
       expect(document.body.innerHTML).toBe('<div>2</div>');
-    });
-
-    it('should execute effects', () => {
-      const onMount = vitest.fn();
-      setEffect(onMount, 'on-mount');
-      core.executeRoutine(false);
-
-      expect(onMount).toHaveBeenCalledTimes(1);
     });
   });
 

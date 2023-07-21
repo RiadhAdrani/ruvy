@@ -21,7 +21,6 @@ import {
   postprocessProps,
   hasIfDirective,
   shouldTemplateWithIfDirectiveBeComputed,
-  preprocessTemplate,
   getPropertyFromTemplate,
   templateHasProperty,
   preprocessChildren,
@@ -604,16 +603,6 @@ describe('utils', () => {
       expect(shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: '' }, []))).toBe(
         true
       );
-    });
-  });
-
-  describe('preprocessTemplate', () => {
-    it('should nullify templates with a false if prop', () => {
-      expect(preprocessTemplate(createTemplate('div', { if: false }, []))).toStrictEqual(null);
-    });
-
-    it('should not nullify templates with a truthy if prop', () => {
-      expect(preprocessTemplate(createTemplate('div', { if: true }, []))).not.toStrictEqual(null);
     });
   });
 

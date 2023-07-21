@@ -3,12 +3,6 @@ import { isFunction, Callback } from '@riadh-adrani/utils';
 import { Context } from '../context/index.js';
 import { Router, RouterParams, RawRoute, NavigationRequest } from '../router/index.js';
 import { Scheduler } from '../scheduler/index.js';
-import {
-  createEffectCollection,
-  createStateCollection,
-  Store,
-  StateArray,
-} from '../store/index.js';
 import { MountParams } from './types.js';
 import { getClosestAnchorParent } from './utils/index.js';
 import {
@@ -24,7 +18,6 @@ import {
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
 import getRouteFromUrl from '../router/utils/getRouteFromUrl.js';
-import { reset } from '../store/createStore.js';
 
 export class Core {
   static singleton: Core = new Core();
@@ -37,28 +30,10 @@ export class Core {
   shouldUpdate = false;
   batchContext = new Context<boolean>();
   scheduler = new Scheduler();
-  store = new Store();
   router: Router<RuvyNode> = undefined as unknown as Router<RuvyNode>;
   routerContext = new Context<number>();
 
   constructor() {
-    this.store.createItemsStore(() =>
-      createStateCollection(this.store, {
-        name: 'state',
-        checkEqual: true,
-        forceSet: false,
-        keepUnused: false,
-        onChanged: () => this.notifyStateUpdated(),
-      })
-    );
-
-    this.store.createEffectsStore(() =>
-      createEffectCollection(this.store, {
-        name: 'effect',
-        keepUnused: false,
-      })
-    );
-
     Core.singleton = this;
   }
 
@@ -80,9 +55,6 @@ export class Core {
     }
 
     commit(collectActions(this.current));
-
-    this.store.launchEffects();
-    this.store.resetUsage();
 
     this.shouldUpdate = false;
   }
@@ -163,9 +135,6 @@ const throwIfNoRouter = <T = void>(callback: () => T): T => {
  * create and mount a ruvy app using the provided parameters.
  */
 export const mountApp = ({ callback, hostElement }: MountParams) => {
-  // reset global store
-  reset();
-
   Core.singleton.fn = callback;
   Core.singleton.host = hostElement;
 
@@ -205,31 +174,6 @@ export const createRouter = (routes: Array<RawRoute<RuvyNode>>, config: RouterPa
         Core.singleton.router.onPostStateChange();
       }),
   });
-};
-
-/**
- * creates a new global stateful variable with the given key.
- * @param key globally unique key.
- * @param value initial value
- * @deprecated
- */
-export const useKey = <T>(key: string, value: T): StateArray<T> => {
-  return Core.singleton.store.setItem<T>('state', key, value);
-};
-
-/**
- * creates a new global effect with the given key
- * @param callback effect
- * @param key globally unique key.
- * @param dependencies dependencies
- * @deprecated
- */
-export const setEffect = (
-  callback: Callback,
-  key: string,
-  dependencies: unknown = undefined
-): void => {
-  Core.singleton.store.setEffect('effect', key, callback, dependencies);
 };
 
 /**
@@ -273,19 +217,6 @@ export const getSearchParams = <T extends QueryParams>(): T => {
   });
 
   return queryParams;
-};
-
-/**
- * retrieves the current route without the base.
- *
- * use `getPathname` instead.
- *
- *
- * @deprecated
- *
- */
-export const getRoute = (): string => {
-  return throwIfNoRouter(() => getRouteFromUrl(Core.singleton.router.base));
 };
 
 /**

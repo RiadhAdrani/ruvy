@@ -2,7 +2,6 @@
 export { mountApp } from './core/index.js';
 
 // hooks
-export { useKey } from './core/index.js';
 export {
   useState,
   useEffect,
@@ -28,7 +27,6 @@ export {
   navigate,
   replace,
   getParams,
-  getRoute,
   getPathname,
   getSearchParams,
 } from './core/index.js';

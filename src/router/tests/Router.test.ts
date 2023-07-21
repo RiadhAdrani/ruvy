@@ -129,20 +129,8 @@ describe('Router class', () => {
     expect(route.path).toBe('/user/:id');
   });
 
-  it('should not get current component when no context is provided', () => {
-    const component = router.component;
-
-    expect(component).toBe(undefined);
-  });
-
   it('should get root component when depth is negative', () => {
     const component = router.getComponentByDepth(-1);
-
-    expect(component).toBe('home');
-  });
-
-  it('should get current component', () => {
-    const component = router.useContext(() => router.component);
 
     expect(component).toBe('home');
   });
@@ -154,37 +142,9 @@ describe('Router class', () => {
   });
 
   it('should return undefined when current depth is overflowing', () => {
-    router.push('/user');
-
-    const component = router.useContext(() => router.useContext(() => router.component));
-
-    expect(component).toBe(undefined);
-  });
-
-  it('should return undefined when current depth is overflowing', () => {
     const component = router.getComponentByDepth(1);
 
     expect(component).toBe(undefined);
-  });
-
-  it('should initialize depth to 0', () => {
-    router.useContext(() => {
-      expect(router.context.data).toBe(0);
-    });
-  });
-
-  it('should increment depth with nesting', () => {
-    router.useContext(() => {
-      expect(router.context.data).toBe(0);
-
-      router.useContext(() => {
-        expect(router.context.data).toBe(1);
-
-        router.useContext(() => {
-          expect(router.context.data).toBe(2);
-        });
-      });
-    });
   });
 
   it('should not trigger update when path is empty', () => {
