@@ -46,7 +46,7 @@ describe('Router class', () => {
 
   it('should throw when base is invalid', () => {
     expect(() => new Router([], { onStateChange: () => 0, base: 'bad-base' })).toThrow(
-      '[Ruvy] invalid base (bad-base)'
+      '[Ruvy] Unexpected Input : invalid base (bad-base), should start with "/"'
     );
   });
 
