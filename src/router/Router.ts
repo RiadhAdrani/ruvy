@@ -147,7 +147,7 @@ export default class Router<T = unknown> {
 
     // check if base is not blank and valid
     if (!isBlank(base ?? '') && !base?.startsWith('/')) {
-      throw `[Ruvy] invalid base (${base})`;
+      throw `[Ruvy] Unexpected Input : invalid base (${base}), should start with "/"`;
     }
 
     const path = this.getCorrectPath(getRouteFromUrl(this.base));
@@ -196,7 +196,9 @@ export default class Router<T = unknown> {
 
     const path = this.getCorrectPath($to as string);
 
-    history.pushState({ path }, '', `${this.base}${path}`);
+    const url = `${this.base}${path}`;
+
+    history.pushState({ path }, '', url);
 
     this.onStateChange();
   }
@@ -210,7 +212,9 @@ export default class Router<T = unknown> {
 
     const path = this.getCorrectPath(`${$to}`);
 
-    history.replaceState({ path }, '', `${this.base}${path}`);
+    const url = `${this.base}${path}`;
+
+    history.replaceState({ path }, '', url);
 
     this.onStateChange();
   }

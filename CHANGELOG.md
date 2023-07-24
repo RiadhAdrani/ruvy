@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Fixed
+
+- `anchor` element not working as intended
+
 ### Removed
 
 - removed all `deprecated` functions and classes.

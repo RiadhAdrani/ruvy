@@ -4,7 +4,7 @@ import { Context } from '../context/index.js';
 import { Router, RouterParams, RawRoute, NavigationRequest } from '../router/index.js';
 import { Scheduler } from '../scheduler/index.js';
 import { MountParams } from './types.js';
-import { getClosestAnchorParent } from './utils/index.js';
+import { getClosestAnchorParent } from './utils.js';
 import {
   createFragmentTemplate,
   createJsxElement,
@@ -108,10 +108,9 @@ setEvent(
 
     if (anchorEl) {
       const path: string | null = anchorEl.getAttribute('href');
-
       if (path && Core.singleton.router.isNavigatable(path)) {
-        navigate(path);
         e.preventDefault();
+        navigate(path);
       }
     }
   },

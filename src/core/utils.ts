@@ -1,4 +1,4 @@
-const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined => {
+export const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined => {
   if (element.tagName.toLowerCase() === 'a') {
     return element as HTMLAnchorElement;
   }
@@ -15,5 +15,3 @@ const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined
 
   return undefined;
 };
-
-export default getClosestAnchorParent;

@@ -1,6 +1,6 @@
 import { describe, beforeEach, it, expect } from 'vitest';
 import { mountApp } from '../Core.js';
-import { getClosestAnchorParent } from '../utils/index.js';
+import { getClosestAnchorParent } from '../utils.js';
 
 describe('Core utils', () => {
   beforeEach(() => {

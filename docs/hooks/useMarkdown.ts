@@ -1,4 +1,4 @@
-import { useEffect, createStore, useState } from '../index.js';
+import { useEffect, createStore, useMemo } from '../index.js';
 
 const [getMarkdownStore, setMarkdownStore] = createStore<Record<string, string>>('md-store', {});
 
@@ -7,19 +7,20 @@ const addEntry = (url: string, content: string) => {
 };
 
 const useMarkdown = (url: string) => {
-  const [content, setContent] = useState('');
+  const content = useMemo(() => {
+    const md = getMarkdownStore()[url];
+
+    return md ?? '';
+  }, [getMarkdownStore(), url]);
 
   useEffect(() => {
     const current: string | undefined = getMarkdownStore()[url];
 
-    if (content) {
-      setContent(current);
-    } else {
+    if (!current) {
       fetch(url).then(async res => {
         const text = await res.text();
 
         addEntry(url, text);
-        setContent(text);
       });
     }
   }, [url]);
