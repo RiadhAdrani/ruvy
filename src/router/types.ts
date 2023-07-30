@@ -1,4 +1,4 @@
-import type { Callback } from '@riadh-adrani/utils';
+import type { Callback } from '@riadh-adrani/type-utils';
 
 export interface NamedNavigationRequest {
   name: string;

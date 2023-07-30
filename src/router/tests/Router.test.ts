@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { RawRoute, Route } from '../types.js';
 import Router, { isNamedNavigationRequest, transformNavigationRequest } from '../Router.js';
-import type { Callback } from '@riadh-adrani/utils';
+import type { Callback } from '@riadh-adrani/type-utils';
 
 const testId: RawRoute = { path: ':id', component: 'test-id', name: 'TestId' };
 const test: RawRoute = { path: 'test', component: 'test', routes: [testId], name: 'Test' };

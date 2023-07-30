@@ -1,4 +1,4 @@
-import { isBlank } from '@riadh-adrani/utils';
+import { isBlank } from '@riadh-adrani/str-utils';
 
 export default (base = ''): string => {
   if (!isBlank(base)) {

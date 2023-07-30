@@ -1,4 +1,4 @@
-import { areEqual, cast, forEachKey } from '@riadh-adrani/utils';
+import { areEqual, cast, forEachKey } from '@riadh-adrani/obj-utils';
 import { EffectCallback } from '../../../store/types.js';
 import {
   ActionType,

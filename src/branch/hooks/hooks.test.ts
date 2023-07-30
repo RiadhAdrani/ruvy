@@ -25,7 +25,8 @@ import {
   dispatchUseRef,
   dispatchHook,
 } from './index.js';
-import { cast, omit } from '@riadh-adrani/utils';
+import { omit } from '@riadh-adrani/obj-utils';
+import { cast } from '@riadh-adrani/type-utils';
 import { initBranch } from '../utils/index.js';
 import { dispatchUseState } from './useState/useState.js';
 
@@ -413,7 +414,7 @@ describe('dispatchHook', () => {
 
   it('should throw when executed outside of the context', () => {
     expect(() => dispatchHook(HookType.State, 0)).toThrow(
-      'cannot use hooks outside of a functional component context.'
+      '[Ruvy] Unexpected Hook Call : cannot use hooks outside of a functional component context.'
     );
   });
 
@@ -426,7 +427,7 @@ describe('dispatchHook', () => {
       }, branch);
 
     expect(callback).toThrow(
-      `Unexpected State: Unable to find hook with key (${HookType.State}@0)`
+      `[Ruvy] Unexpected State: Unable to find hook with key (${HookType.State}@0)`
     );
   });
 

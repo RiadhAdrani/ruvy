@@ -1,4 +1,5 @@
-import { copy, isArray, isBlank } from '@riadh-adrani/utils';
+import { copy, isArray } from '@riadh-adrani/obj-utils';
+import { isBlank } from '@riadh-adrani/str-utils';
 import { RawRoute, Route } from '../types.js';
 import fragmentize from './fragmentize.js';
 

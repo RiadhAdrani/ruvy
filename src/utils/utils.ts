@@ -1,4 +1,5 @@
-import { Arrayable, isArray, isFalsy } from '@riadh-adrani/utils';
+import { isArray, isFalsy } from '@riadh-adrani/obj-utils';
+import type { Arrayable } from '@riadh-adrani/type-utils';
 
 /**
  * filters the list of provided classes (removes `null` and `undefined`)

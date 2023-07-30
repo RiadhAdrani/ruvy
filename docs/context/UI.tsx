@@ -2,7 +2,7 @@ import { Theme } from '../types/index.js';
 import { createContext, useCallback, useEffect, useMemo, useState } from '../index.js';
 import { isDarkMode } from '../utils/utils.js';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { isBoolean } from '@riadh-adrani/utils';
+import { isBoolean } from '@riadh-adrani/obj-utils';
 import useScroll from '../hooks/useScroll.js';
 
 interface IUIConext {

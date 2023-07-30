@@ -1,4 +1,4 @@
-import { Arrayable } from '@riadh-adrani/utils';
+import { Arrayable } from '@riadh-adrani/type-utils';
 import { PropsWithChildren, joinClasses, useMemo } from '../index.js';
 
 export interface LinkProps extends HTMLElementProps<HTMLAnchorElement, AProps> {

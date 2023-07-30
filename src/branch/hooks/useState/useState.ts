@@ -1,4 +1,4 @@
-import { areEqual, isFunction } from '@riadh-adrani/utils';
+import { areEqual, isFunction } from '@riadh-adrani/obj-utils';
 import {
   SetStateCallback,
   StateArray,

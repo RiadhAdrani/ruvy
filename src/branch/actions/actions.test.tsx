@@ -19,7 +19,7 @@ import {
   createTextUpdateAction,
 } from './actions.js';
 import { diffElementProps } from '../components/element/element.js';
-import { cast } from '@riadh-adrani/utils';
+import { cast } from '@riadh-adrani/type-utils';
 
 createJsxElement;
 createFragmentTemplate;

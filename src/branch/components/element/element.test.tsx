@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { diffElementProps, handleElementComponent } from './element.js';
 import { initBranch } from '../../utils/index.js';
 import { ActionType, BranchStatus, BranchTag, BranchTemplate } from '../../types.js';
-import { omit } from '@riadh-adrani/utils';
+import { omit } from '@riadh-adrani/obj-utils';
 
 createJsxElement;
 

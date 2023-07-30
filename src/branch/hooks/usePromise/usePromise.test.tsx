@@ -4,7 +4,7 @@ import { initBranch } from '../../utils/index.js';
 import { usePromise } from './usePromise.js';
 import { HookData, HookType, UsePromiseData, UsePromiseState } from '../../types.js';
 import { handleComponent } from '../../index.js';
-import { runAfter } from '@riadh-adrani/utils';
+import { runAfter } from '@riadh-adrani/async-utils';
 
 createFragmentTemplate;
 createJsxElement;
@@ -37,7 +37,7 @@ describe('usePromise', () => {
       type: HookType.Promise,
     });
 
-    await runAfter(50, () => 0);
+    await runAfter(() => 0, 50);
 
     expect(out.hooks[`${HookType.Promise}@0`]).toStrictEqual<HookData<UsePromiseData<number>>>({
       data: { callback, state: 'resolved', value: 0 },
@@ -64,7 +64,7 @@ describe('usePromise', () => {
 
     const out = handleComponent(<Child />, undefined, branch, 0);
 
-    await runAfter(50, () => 0);
+    await runAfter(() => 0, 50);
 
     expect(out.hooks[`${HookType.Promise}@0`]).toStrictEqual<HookData<UsePromiseData<number>>>({
       data: { callback, state: 'rejected', value: undefined },
@@ -90,7 +90,7 @@ describe('usePromise', () => {
     const out = handleComponent(<Child />, undefined, branch, 0);
 
     // await the first fetch
-    await runAfter(50, () => 0);
+    await runAfter(() => 0, 50);
 
     // refreshing
     _refresh();
@@ -102,7 +102,7 @@ describe('usePromise', () => {
       type: HookType.Promise,
     });
 
-    await runAfter(50, () => 0);
+    await runAfter(() => 0, 50);
 
     expect(out.hooks[`${HookType.Promise}@0`]).toStrictEqual<HookData<UsePromiseData<number>>>({
       data: { callback, state: 'resolved', value: 0 },

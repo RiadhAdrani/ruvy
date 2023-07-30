@@ -1,4 +1,5 @@
-import { isDefined, isFunction, Callback } from '@riadh-adrani/utils';
+import { isFunction, isUndefined } from '@riadh-adrani/obj-utils';
+import { Callback } from '@riadh-adrani/type-utils';
 
 export default class Context<T> {
   data?: T;
@@ -9,7 +10,7 @@ export default class Context<T> {
   }
 
   start(data: T): void {
-    if (!isDefined(data)) {
+    if (isUndefined(data)) {
       throw 'Unexpected Data: context data cannot be undefined.';
     }
 
@@ -21,7 +22,7 @@ export default class Context<T> {
   }
 
   end(): void {
-    if (isDefined(this.data)) {
+    if (!isUndefined(this.data)) {
       if (this.stack.length > 0) {
         this.data = this.stack.pop();
       } else {

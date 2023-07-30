@@ -1,5 +1,6 @@
 import { isElement, setEvent } from '@riadh-adrani/dom-utils';
-import { isFunction, Callback } from '@riadh-adrani/utils';
+import { isFunction } from '@riadh-adrani/obj-utils';
+import { Callback } from '@riadh-adrani/type-utils';
 import { Context } from '../context/index.js';
 import { Router, RouterParams, RawRoute, NavigationRequest } from '../router/index.js';
 import { Scheduler } from '../scheduler/index.js';

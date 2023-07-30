@@ -1,4 +1,5 @@
-import { Callback, hasProperty } from '@riadh-adrani/utils';
+import { hasProperty } from '@riadh-adrani/obj-utils';
+import { Callback } from '@riadh-adrani/type-utils';
 import Context from '../../context/Context.js';
 import {
   Branch,

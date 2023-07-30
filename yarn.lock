@@ -374,6 +374,16 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
+"@riadh-adrani/array-utils@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/array-utils/-/array-utils-1.0.0.tgz#ffc1b0bf1a80463850df092e48aa9860a465a4c5"
+  integrity sha512-MpEnGe6VQO9BDCgCcUlwDay1w5W2jH1iu6bI6H0uejy2f4iazPc9R1Ghg3tyeaNvAUvpydXqzW90fxJsXFaNVA==
+
+"@riadh-adrani/async-utils@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/async-utils/-/async-utils-1.0.0.tgz#11a3dbc02492d2b2fc8b24b49dea43b609540294"
+  integrity sha512-xLD7MTQkWimwBRQPxjVwHd4Lz8dZ9YFUmviFA41PqAHd4O+7zTzPAWsmP2PN6xax+cceUIK2f8EpMG7k4D+Y/g==
+
 "@riadh-adrani/dom-utils@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.1.0.tgz#6989110131449fb90e592d849027eb34de7fa8b8"
@@ -382,10 +392,20 @@
     "@riadh-adrani/utils" "^0.39.0"
     camelcase "^7.0.1"
 
-"@riadh-adrani/utils@0.42.2":
-  version "0.42.2"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/utils/-/utils-0.42.2.tgz#80466d3ec4a919a45fe6500ac997ad8e8d8d94b3"
-  integrity sha512-3VUMfi+Utp/l0f/4dxmyxhOf/Wmzt4c0MvXgYkz7AurrPG5iq6rifdeSzb/SZDuHCOtjsRUCt+MHz+yEswYgoA==
+"@riadh-adrani/obj-utils@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/obj-utils/-/obj-utils-1.0.0.tgz#5321c8f1f9b183e3c65641fa30274ce7da2a51c6"
+  integrity sha512-BYX/XQCKFQ1AMbFbPERGUTnuKE7nToiZw1fSiklkqXlnghJXa+ztiL4q1ZPLCpa/ewes1YAPV8NgMVWCoVJfdA==
+
+"@riadh-adrani/str-utils@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/str-utils/-/str-utils-1.0.0.tgz#65b358f8ba8e8dbf20880d6765cb23dcc71dbd1d"
+  integrity sha512-XL9XL9nWhUVZLXeCHIPpVyoKd2G+WtyjWSz+d5w94ZL2xZr7ybcXsIq8KY/rVeWRumUGs/HSM+28tmELYDNpzQ==
+
+"@riadh-adrani/type-utils@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/type-utils/-/type-utils-1.0.1.tgz#b9a8aceade106d7bd4b0e92dacf3c696303ea9b4"
+  integrity sha512-J60qIDUTTVlBwyzEntAFfTmpDLGHn1Xho/wa1WAcoGoafUTAe+WVNCeir+pVI7ZNw+AaqNoAeCxiZy9b+UOZtQ==
 
 "@riadh-adrani/utils@^0.39.0":
   version "0.39.0"

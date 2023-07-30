@@ -1,4 +1,4 @@
-import { areEqual } from '@riadh-adrani/utils';
+import { areEqual } from '@riadh-adrani/obj-utils';
 import { createTemplate } from '../../create/index.js';
 import {
   Branch,

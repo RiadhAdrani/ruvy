@@ -6,7 +6,7 @@ import { mangle } from 'marked-mangle';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
-import { isBlank } from '@riadh-adrani/utils';
+import { isBlank } from '@riadh-adrani/str-utils';
 
 marked.use(gfmHeadingId());
 marked.use(mangle());

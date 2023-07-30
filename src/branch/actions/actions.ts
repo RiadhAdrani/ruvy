@@ -1,4 +1,5 @@
-import { Callback, cast, forEachKey, isFunction } from '@riadh-adrani/utils';
+import { cast, forEachKey, isFunction } from '@riadh-adrani/obj-utils';
+import { Callback } from '@riadh-adrani/type-utils';
 import {
   ActionType,
   Branch,

@@ -1,4 +1,4 @@
-import { Arrayable } from '@riadh-adrani/utils';
+import { Arrayable } from '@riadh-adrani/type-utils';
 import type * as CSS from 'csstype';
 import { RuvyNode } from '../index.js';
 import { BranchKey } from 'src/branch/types.js';

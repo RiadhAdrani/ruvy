@@ -68,8 +68,12 @@
     "vitest": "^0.28.5"
   },
   "dependencies": {
+    "@riadh-adrani/array-utils": "1.0.0",
+    "@riadh-adrani/async-utils": "1.0.0",
     "@riadh-adrani/dom-utils": "1.1.0",
-    "@riadh-adrani/utils": "0.42.2",
+    "@riadh-adrani/obj-utils": "1.0.0",
+    "@riadh-adrani/str-utils": "1.0.0",
+    "@riadh-adrani/type-utils": "1.0.1",
     "csstype": "^3.1.1"
   }
 }

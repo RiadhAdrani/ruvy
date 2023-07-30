@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { ActionType, BranchStatus, BranchTag } from '../../types.js';
 import { handleTextComponent } from './text.js';
-import { omit } from '@riadh-adrani/utils';
+import { omit } from '@riadh-adrani/obj-utils';
 
 createJsxElement;
 

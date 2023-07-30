@@ -6,7 +6,7 @@ import { describe, expect, it, vitest } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { handleCallableComponent } from './callable.js';
 import { BranchStatus, BranchTag, HookType } from '../../../branch/types.js';
-import { omit } from '@riadh-adrani/utils';
+import { omit } from '@riadh-adrani/obj-utils';
 import { useState } from '../../index.js';
 
 createFragmentTemplate;

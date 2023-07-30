@@ -1,4 +1,4 @@
-import { areEqual, cast } from '@riadh-adrani/utils';
+import { areEqual, cast } from '@riadh-adrani/obj-utils';
 import { HookData, HookDispatcher, HookType, UseMemoData, UseMemoParams } from '../../types.js';
 import { dispatchHook } from '../index.js';
 

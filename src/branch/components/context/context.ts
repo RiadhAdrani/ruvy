@@ -1,6 +1,6 @@
 import { initBranch } from '../../utils/index.js';
 import { Branch, BranchStatus, BranchTag, ComponentFunctionHandler } from '../../types.js';
-import { isUndefined } from '@riadh-adrani/utils';
+import { isUndefined } from '@riadh-adrani/obj-utils';
 
 export const handleContextComponent: ComponentFunctionHandler = (
   template,

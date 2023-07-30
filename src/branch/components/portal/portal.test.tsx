@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createJsxElement } from '../../create/index.js';
 import { initBranch } from '../../utils/index.js';
 import { Portal, handlePortalComponent } from './portal.js';
-import { pick } from '@riadh-adrani/utils';
+import { pick } from '@riadh-adrani/obj-utils';
 import { ActionType, BranchTag } from '../../../branch/types.js';
 import { createElement } from '@riadh-adrani/dom-utils';
 

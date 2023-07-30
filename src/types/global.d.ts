@@ -1,4 +1,5 @@
-import type { Arrayable, StringWithAutoComplete } from '@riadh-adrani/utils';
+import type { Arrayable } from '@riadh-adrani/type-utils';
+import type { StringWithAutoComplete } from '@riadh-adrani/obj-utils';
 import { BranchTemplate } from '../branch/types.js';
 import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
 import { NamedNavigationRequest } from '../router/types.js';

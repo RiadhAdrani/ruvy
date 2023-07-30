@@ -6,7 +6,7 @@ import { initBranch } from '../../utils/index.js';
 import { createContext } from '../../hooks/useContext/useContext.js';
 import { BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from '../../index.js';
 import { handleContextComponent } from './context.js';
-import { omit } from '@riadh-adrani/utils';
+import { omit } from '@riadh-adrani/obj-utils';
 import { handleCallableComponent } from '../callable/callable.js';
 
 createJsxElement;

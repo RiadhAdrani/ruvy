@@ -1,7 +1,7 @@
 import { useEffect, useState } from '../index.js';
 import { Core, batch, mountApp } from '../core/Core.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
-import { runAfter } from '@riadh-adrani/utils';
+import { runAfter } from '@riadh-adrani/async-utils';
 
 describe('Rendering', () => {
   const mount = (app: JSX.Element) => mountApp({ callback: () => app, hostElement: document.body });
@@ -130,9 +130,9 @@ describe('Rendering', () => {
         const [count, setCount] = useState(0);
 
         useEffect(() => {
-          runAfter(20, () => {
+          runAfter(() => {
             setCount(5);
-          });
+          }, 20);
         });
 
         return (
@@ -151,9 +151,9 @@ describe('Rendering', () => {
 
       expect(document.body.innerHTML).toBe('<div><div class="0"></div></div>');
 
-      await runAfter(30, () => {
+      await runAfter(() => {
         expect(document.body.innerHTML).toBe('<div><div class="5"></div></div>');
-      });
+      }, 30);
     });
   });
 
@@ -216,12 +216,12 @@ describe('Rendering', () => {
         fn();
 
         useEffect(() => {
-          runAfter(50, () => {
+          runAfter(() => {
             batch(() => {
               setCount(1);
               setCount2(2);
             });
-          });
+          }, 50);
         });
 
         return <button></button>;
@@ -229,7 +229,7 @@ describe('Rendering', () => {
 
       mount(<App />);
 
-      await runAfter(120, () => 0);
+      await runAfter(() => 0, 120);
 
       expect(fn).toHaveBeenCalledTimes(2);
     });

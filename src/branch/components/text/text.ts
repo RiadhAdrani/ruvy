@@ -1,6 +1,6 @@
 import { ActionType, Branch, BranchTag, ComponentFunctionHandler } from '../../types.js';
 import createAction from '../../actions/actions.js';
-import { areEqual } from '@riadh-adrani/utils';
+import { areEqual } from '@riadh-adrani/obj-utils';
 import { initBranch } from '../../utils/index.js';
 
 export const handleTextComponent: ComponentFunctionHandler<string, BranchTag.Text> = (

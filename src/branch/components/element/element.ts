@@ -14,7 +14,7 @@ import {
   preprocessProps,
 } from '../../utils/index.js';
 import createAction from '../../actions/actions.js';
-import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/utils';
+import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/obj-utils';
 
 /**
  * creates a diffing array for two element props

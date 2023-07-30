@@ -1,11 +1,6 @@
-import {
-  isBlank,
-  Callback,
-  isObject,
-  hasProperty,
-  isNumber,
-  forEachKey,
-} from '@riadh-adrani/utils';
+import { isObject, hasProperty, isNumber, forEachKey } from '@riadh-adrani/obj-utils';
+import { isBlank } from '@riadh-adrani/str-utils';
+import { Callback } from '@riadh-adrani/type-utils';
 import {
   NamedNavigationRequest,
   RawRoute,

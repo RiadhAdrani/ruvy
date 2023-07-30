@@ -1,4 +1,4 @@
-import { Callback } from '@riadh-adrani/utils';
+import { Callback } from '@riadh-adrani/type-utils';
 import { CallbackWithArgs } from '../types/index.js';
 import { createFragmentTemplate } from './create/index.js';
 

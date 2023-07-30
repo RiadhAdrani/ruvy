@@ -1,21 +1,18 @@
 import {
-  Arrayable,
   areEqual,
-  cast,
   forEachKey,
   hasProperty,
   isArray,
-  isBlank,
   isBoolean,
-  isDefined,
   isFunction,
   isNull,
   isNumber,
   isObject,
-  isString,
   isUndefined,
   merge,
-} from '@riadh-adrani/utils';
+} from '@riadh-adrani/obj-utils';
+import { Arrayable, cast } from '@riadh-adrani/type-utils';
+import { isBlank, isString } from '@riadh-adrani/str-utils';
 import {
   ActionPriority,
   ActionType,
@@ -52,7 +49,7 @@ export const isValidTemplate = (o: unknown): boolean => {
 
   if (
     !hasProperty(temp, 'type') ||
-    !isDefined(temp.type) ||
+    isUndefined(temp.type) ||
     (!isFunction(temp.type) && isBlank(temp.type as string))
   ) {
     return false;

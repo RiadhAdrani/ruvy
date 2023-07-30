@@ -1,4 +1,4 @@
-import { areEqual, isNull, isObject } from '@riadh-adrani/utils';
+import { areEqual, isNull, isObject } from '@riadh-adrani/obj-utils';
 import { HookDispatcher, HookType } from '../../types.js';
 import { Core } from '../../../core/index.js';
 import { Any } from '../../../types/index.js';
