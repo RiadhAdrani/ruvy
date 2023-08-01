@@ -17,6 +17,7 @@ import {
   createUnmountAction,
   createElPropsUpdateAction,
   createTextUpdateAction,
+  createRenderInnerHTMLAction,
 } from './actions.js';
 import { diffElementProps } from '../components/element/element.js';
 import { cast } from '@riadh-adrani/type-utils';
@@ -133,6 +134,43 @@ describe('createRenderAction', () => {
     instance.click();
 
     expect(onClick).toHaveBeenCalledOnce();
+  });
+});
+describe('createRenderInnerHTMLAction', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  const root = initBranch({ tag: BranchTag.Root, type: BranchTag.Root, instance: document.body });
+
+  it('should inject innerHTML', () => {
+    const branch = handleComponent(<div />, undefined, root, 0);
+
+    createRenderAction(branch as Branch<string>)();
+    createRenderInnerHTMLAction(branch, 'text')();
+
+    expect(document.body.innerHTML).toBe('<div>text</div>');
+  });
+
+  it('should throw when instance is undefined', () => {
+    const branch = handleComponent(<div />, undefined, root, 0);
+
+    expect(() => createRenderInnerHTMLAction(branch, 'text')()).toThrow(
+      '[Ruvy] Unexpected State : cannot set innerHTML of a non-mounted or unmounted branch'
+    );
+  });
+
+  it('should update innerHTML', () => {
+    const branch = handleComponent(<div />, undefined, root, 0);
+
+    createRenderAction(branch as Branch<string>)();
+    createRenderInnerHTMLAction(branch, 'text')();
+
+    expect(document.body.innerHTML).toBe('<div>text</div>');
+
+    createRenderInnerHTMLAction(branch, 'text2')();
+
+    expect(document.body.innerHTML).toBe('<div>text2</div>');
   });
 });
 

@@ -1,7 +1,7 @@
 import { Arrayable } from '@riadh-adrani/type-utils';
 import type * as CSS from 'csstype';
 import { RuvyNode } from '../index.js';
-import { BranchKey } from 'src/branch/types.js';
+import { BranchKey } from '../branch/types.js';
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Any = any;

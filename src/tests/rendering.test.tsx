@@ -233,5 +233,30 @@ describe('Rendering', () => {
 
       expect(fn).toHaveBeenCalledTimes(2);
     });
+
+    it('should update innerHTML', () => {
+      const fn = vitest.fn();
+
+      const App = () => {
+        const [value, set] = useState('1');
+
+        fn();
+
+        return (
+          <>
+            <button onClick={() => set('2')} />
+            <div innerHTML={value} />
+          </>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<button></button><div>1</div>');
+
+      document.body.querySelector('button')?.click();
+
+      expect(document.body.innerHTML).toBe('<button></button><div>2</div>');
+    });
   });
 });

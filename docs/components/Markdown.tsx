@@ -1,6 +1,6 @@
 import createSanitizer from 'dompurify';
 import { marked } from 'marked';
-import { useEffect, useRef } from '../index.js';
+import { useEffect, useMemo, useRef } from '../index.js';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { mangle } from 'marked-mangle';
 import Prism from 'prismjs';
@@ -20,12 +20,13 @@ interface MarkdownProps {
 export default ({ content }: MarkdownProps) => {
   const ref = useRef<HTMLDivElement>();
 
+  const sanitizedContent = useMemo(
+    () => sanitizer.sanitize(marked.parse(content), { ADD_ATTR: ['target'] }),
+    content
+  );
+
   useEffect(() => {
     if (ref.value) {
-      const parsed = marked.parse(content);
-
-      ref.value.innerHTML = sanitizer.sanitize(parsed, { ADD_ATTR: ['target'] });
-
       Prism.highlightAll();
 
       // we need to make every code block clickable which will copy its content:
@@ -59,5 +60,5 @@ export default ({ content }: MarkdownProps) => {
     }
   }, content);
 
-  return <div class="markdown-container w-100%" ref={ref}></div>;
+  return <div class="markdown-container w-100%" ref={ref} innerHTML={sanitizedContent} />;
 };

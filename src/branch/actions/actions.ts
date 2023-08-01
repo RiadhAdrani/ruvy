@@ -51,6 +51,10 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
       callback = createRenderAction(branch as Branch<string>);
       break;
     }
+    case ActionType.RenderInnerHTML: {
+      callback = createRenderInnerHTMLAction(branch, data as string);
+      break;
+    }
     case ActionType.Unmount: {
       callback = createUnmountAction(branch as Branch<string>);
       break;
@@ -265,4 +269,14 @@ export const createElPropsUpdateAction = (
  */
 export const createTextUpdateAction = (branch: Branch, data: string): Callback => {
   return () => setTextNodeData(cast<Text>(branch.instance), data);
+};
+
+export const createRenderInnerHTMLAction = (branch: Branch, data: string): Callback => {
+  return () => {
+    if (!branch.instance) {
+      throw '[Ruvy] Unexpected State : cannot set innerHTML of a non-mounted or unmounted branch';
+    }
+
+    (branch.instance as HTMLElement).innerHTML = data;
+  };
 };

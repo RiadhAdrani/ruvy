@@ -42,6 +42,7 @@ export const BranchSymbol = Symbol.for('#-ruvy-branch');
 
 export enum ActionType {
   Render = '#-action-render-element',
+  RenderInnerHTML = '#-action-render-inner-html',
   Reorder = '#-action-order-elements',
   Cleanup = '#-action-clean-effect',
   Effect = '#-action-run-effect',
@@ -59,6 +60,7 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
   [
     ActionType.Unmount,
     ActionType.Render,
+    ActionType.RenderInnerHTML,
     ActionType.Unmounted,
     ActionType.RemoveBranch,
     ActionType.Reorder,
@@ -188,4 +190,4 @@ export type ComponentFunctionHandler<T = BranchTemplate, B = unknown, D = unknow
   parent: Branch,
   key: BranchKey,
   data?: D
-) => { branch: Branch<B>; unprocessedChildren: Array<unknown> };
+) => { branch: Branch<B>; unprocessedChildren: Array<unknown>; skipChildrenProcessing?: boolean };

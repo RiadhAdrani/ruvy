@@ -1024,17 +1024,26 @@ declare global {
     | 'translate'
   >;
 
+  interface BaseElementProps {
+    /**
+     * set element innerHTML.
+     *
+     * Be aware that using this attribute will cause children processing to be skipped entirely.
+     */
+    innerHTML: string;
+  }
+
   type HTMLElementProps<E extends Element = HTMLElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<BaseProps<E> & BaseHTMLProps & DOMEvents<E> & T>;
+    Partial<BaseProps<E> & BaseElementProps & BaseHTMLProps & DOMEvents<E> & T>;
 
   type SVGElementProps<E extends Element = SVGElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<BaseProps<E> & BaseSVGProps & DOMEvents<E> & T>;
+    Partial<BaseProps<E> & BaseElementProps & BaseSVGProps & DOMEvents<E> & T>;
 
   type BlockQuoteProps = Pick<HTMLAttributes, 'cite'>;
 

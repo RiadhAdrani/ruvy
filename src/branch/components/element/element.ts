@@ -14,7 +14,7 @@ import {
   preprocessProps,
 } from '../../utils/index.js';
 import createAction from '../../actions/actions.js';
-import { areEqual, forEachKey, hasProperty } from '@riadh-adrani/obj-utils';
+import { areEqual, forEachKey, hasProperty, getType } from '@riadh-adrani/obj-utils';
 
 /**
  * creates a diffing array for two element props
@@ -71,10 +71,21 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
       props: $props,
     });
 
+  const innerHTML = $props.innerHTML;
+
+  const skipChildrenProcessing = getType(innerHTML) === 'string';
+
   if (!current) {
     const renderAction = createAction(ActionType.Render, branch);
 
     branch.pendingActions.push(renderAction);
+
+    // check innerHTML
+    if (getType(innerHTML) === 'string') {
+      const renderInnerHTMLAction = createAction(ActionType.RenderInnerHTML, branch, innerHTML);
+
+      branch.pendingActions.push(renderInnerHTMLAction);
+    }
   } else {
     // update props
     const propsDiff = diffElementProps(branch.props, $props);
@@ -82,6 +93,12 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
     if (propsDiff.length > 0) {
       // create an action to update props
       branch.pendingActions.push(createAction(ActionType.UpdateProps, branch, propsDiff));
+    }
+
+    if (innerHTML !== branch.props.innerHTML) {
+      const renderInnerHTMLAction = createAction(ActionType.RenderInnerHTML, branch, innerHTML);
+
+      branch.pendingActions.push(renderInnerHTMLAction);
     }
 
     // override current props
@@ -95,6 +112,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
   return {
     branch,
     unprocessedChildren: children,
+    skipChildrenProcessing,
   };
 };
 

@@ -42,28 +42,35 @@ describe('handleElementComponent', () => {
     expect(type).toBe(ActionType.Render);
   });
 
-  it('should create a div with props', () => {
+  it('should skip children processing when innerHTML is defined', () => {
     const parent = initBranch();
-    const jsx = <div class="test"></div>;
-    const div = handleElementComponent(
-      jsx as unknown as BranchTemplate<string>,
-      undefined,
-      parent,
-      0
-    ).branch;
 
-    expect(omit(div, 'pendingActions')).toStrictEqual({
-      children: [],
-      hooks: {},
-      key: 0,
-      props: { children: [], class: 'test' },
-      status: BranchStatus.Mounting,
-      tag: BranchTag.Element,
-      type: 'div',
-      parent,
-      unmountedChildren: [],
+    const out = handleElementComponent(<div innerHTML="test" />, undefined, parent, 0);
+
+    expect(out.skipChildrenProcessing).toBe(true);
+  }),
+    it('should create a div with props', () => {
+      const parent = initBranch();
+      const jsx = <div class="test"></div>;
+      const div = handleElementComponent(
+        jsx as unknown as BranchTemplate<string>,
+        undefined,
+        parent,
+        0
+      ).branch;
+
+      expect(omit(div, 'pendingActions')).toStrictEqual({
+        children: [],
+        hooks: {},
+        key: 0,
+        props: { children: [], class: 'test' },
+        status: BranchStatus.Mounting,
+        tag: BranchTag.Element,
+        type: 'div',
+        parent,
+        unmountedChildren: [],
+      });
     });
-  });
 
   it('should not create an op when values are the same', () => {
     const oldBranch = initBranch({ props: { class: 'test' } });

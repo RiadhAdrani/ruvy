@@ -29,7 +29,7 @@ import {
 } from '../types.js';
 import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
-import { Any, CallbackWithArgs } from 'src/index.js';
+import { Any, CallbackWithArgs } from '../../index.js';
 import { Core } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
@@ -238,6 +238,7 @@ export const IgnoredProps = [
   'switch',
   'case',
   'case:default',
+  'innerHTML',
 ];
 
 /**

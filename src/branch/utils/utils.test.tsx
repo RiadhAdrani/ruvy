@@ -989,14 +989,15 @@ describe('common', () => {
     expect(ActionPriority).toStrictEqual({
       [ActionType.Unmount]: 0,
       [ActionType.Render]: 1,
-      [ActionType.Unmounted]: 2,
-      [ActionType.RemoveBranch]: 3,
-      [ActionType.Reorder]: 4,
-      [ActionType.UpdatePortalChildren]: 5,
-      [ActionType.UpdateProps]: 6,
-      [ActionType.UpdateText]: 7,
-      [ActionType.Cleanup]: 8,
-      [ActionType.Effect]: 9,
+      [ActionType.RenderInnerHTML]: 2,
+      [ActionType.Unmounted]: 3,
+      [ActionType.RemoveBranch]: 4,
+      [ActionType.Reorder]: 5,
+      [ActionType.UpdatePortalChildren]: 6,
+      [ActionType.UpdateProps]: 7,
+      [ActionType.UpdateText]: 8,
+      [ActionType.Cleanup]: 9,
+      [ActionType.Effect]: 10,
     });
   });
 
