@@ -33,6 +33,8 @@ import {
   collectActions,
   commit,
   actionsSorter,
+  isValidEventKey,
+  getEventFlags,
 } from './index.js';
 import {
   ActionPriority,
@@ -1219,5 +1221,39 @@ describe('common', () => {
         ActionType.Effect,
       ]);
     });
+  });
+});
+
+describe('isValidEventKey', () => {
+  it.each([
+    'onClick',
+    'onClick:prevent',
+    'onClick:stop',
+    'onClick:stop-prevent',
+    'onClick:prevent-stop',
+  ])('should accept event (%s)', key => {
+    expect(isValidEventKey(key)).toBe(true);
+  });
+
+  it.each(['on:prevent', 'onClick:is', 'onClick:stop-prevent-is', 'onClick:stop-prevent-stop'])(
+    'should refuse event (%s)',
+    key => {
+      expect(isValidEventKey(key)).toBe(false);
+    }
+  );
+});
+
+describe('getEventFlags', () => {
+  it('should return prevent', () => {
+    expect(getEventFlags('onClick:prevent')).toStrictEqual({ prevent: true });
+  });
+
+  it('should return stop', () => {
+    expect(getEventFlags('onClick:stop')).toStrictEqual({ stop: true });
+  });
+
+  it('should return prevent & stop', () => {
+    expect(getEventFlags('onClick:prevent-stop')).toStrictEqual({ prevent: true, stop: true });
+    expect(getEventFlags('onClick:stop-prevent')).toStrictEqual({ prevent: true, stop: true });
   });
 });

@@ -14,13 +14,16 @@ import { PortalBranchType } from '../components/portal/portal.js';
 import {
   assignRef,
   batchedEvent,
+  createEvent,
   getClosestChildrenHostBranches,
+  getEventName,
   getHostBranchIndexFromHostParent,
   getHtmlElementEventListeners,
   getHtmlElementProps,
   getNamespace,
   getParentHostBranch,
   isHostBranch,
+  isValidEventKey,
 } from '../utils/index.js';
 import {
   DomAttribute,
@@ -28,7 +31,6 @@ import {
   createElement,
   createTextNode,
   injectNode,
-  isOnEventName,
   removeAttribute,
   removeEvent,
   removeNode,
@@ -240,13 +242,17 @@ export const createElPropsUpdateAction = (
       const instance = branch.instance as Element;
 
       // event
-      if (isOnEventName(prop) && isFunction(value)) {
+      if (isValidEventKey(prop) && isFunction(value)) {
         const callback = value as Callback;
 
+        const name = getEventName(prop);
+
         if (op === 'remove') {
-          removeEvent(prop, instance);
+          removeEvent(name, instance);
         } else {
-          setEvent(prop, callback, instance);
+          const ev = createEvent(prop, callback);
+
+          setEvent(name, ev, instance);
         }
 
         return;

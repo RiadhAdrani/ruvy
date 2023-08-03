@@ -11,7 +11,7 @@ import {
   isUndefined,
   merge,
 } from '@riadh-adrani/obj-utils';
-import { Arrayable, cast } from '@riadh-adrani/type-utils';
+import { Arrayable, Callback, cast } from '@riadh-adrani/type-utils';
 import { isBlank, isString } from '@riadh-adrani/str-utils';
 import {
   ActionPriority,
@@ -27,13 +27,70 @@ import {
   Namespace,
   UseRefData,
 } from '../types.js';
-import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
+import { DomAttribute, DomEvent, DomEventHandler } from '@riadh-adrani/dom-utils';
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
 import { Any, CallbackWithArgs } from '../../index.js';
 import { Core, getCurrent } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
 import { NavigationRequest } from '../../router/types.js';
+
+export const isValidEventKey = (key: string): boolean => {
+  const regex = /^on[a-zA-Z]+(:((prevent|stop)(-(prevent|stop))?))?$/i;
+
+  return regex.test(key);
+};
+
+export interface EventFlags {
+  prevent?: boolean;
+  stop?: boolean;
+}
+
+export const getEventFlags = (key: string): EventFlags => {
+  if (!key.includes(':')) {
+    return {};
+  }
+
+  const flags: EventFlags = {};
+
+  const words = key.substring(key.indexOf(':') + 1).split('-');
+
+  words.forEach(it => {
+    if (it === 'prevent') {
+      flags.prevent = true;
+    }
+
+    if (it === 'stop') {
+      flags.stop = true;
+    }
+  });
+
+  return flags;
+};
+
+export const createEvent = (key: string, ev: Callback<void, [Event]>): Callback<void, [Event]> => {
+  const { prevent, stop } = getEventFlags(key);
+
+  return e => {
+    if (prevent) {
+      e.preventDefault();
+    }
+
+    if (stop) {
+      e.stopPropagation();
+    }
+
+    ev(e);
+  };
+};
+
+export const getEventName = (key: string): string => {
+  if (key.includes(':')) {
+    return key.substring(0, key.indexOf(':'));
+  }
+
+  return key;
+};
 
 /**
  * checks if the given is a valid component template
@@ -248,7 +305,7 @@ export const getHtmlElementProps = (branch: Branch): Record<string, DomAttribute
   const props: Record<string, DomAttribute> = {};
 
   forEachKey((key, value) => {
-    if (IgnoredProps.includes(key) || isOnEventName(key)) {
+    if (IgnoredProps.includes(key) || isValidEventKey(key)) {
       return;
     }
 
@@ -266,7 +323,7 @@ export const getHtmlElementEventListeners = (branch: Branch): Record<string, Dom
   const events: Record<string, DomEventHandler> = {};
 
   forEachKey((key, value) => {
-    if (isOnEventName(key) && isFunction(value)) {
+    if (isValidEventKey(key) && isFunction(value)) {
       events[key] = value as DomEventHandler;
     }
   }, branch.props);

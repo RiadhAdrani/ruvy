@@ -1,6 +1,6 @@
 import { PropsWithChildren } from '../index.js';
 
-interface UToggleProps extends HTMLElementProps<HTMLSpanElement, InputProps> {
+interface UToggleProps extends HTMLElementProps<HTMLLabelElement, InputProps> {
   onColor: string;
   onImg: string;
   offColor: string;

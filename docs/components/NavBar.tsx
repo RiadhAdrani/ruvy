@@ -112,7 +112,7 @@ export default () => {
         </div>
         <div class={'row items-center justify-between p-y-5 text-[var(--text-low)]'}>
           <p class={'p-x-2'}>Theme</p>
-          <Toggle checked={computedTheme === Theme.Dark} onChange={() => toggleTheme()} />
+          <Toggle checked={computedTheme === Theme.Dark} onChange:prevent={() => toggleTheme()} />
         </div>
         <Footer />
       </div>

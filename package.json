@@ -9,6 +9,7 @@
   "type": "module",
   "types": "./build/index.d.ts",
   "exports": "./build/index.js",
+  "main": "./build/index.js",
   "license": "MIT",
   "engines": {
     "node": ">=16.0.0"

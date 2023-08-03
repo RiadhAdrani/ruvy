@@ -1,7 +1,7 @@
 import type { Arrayable } from '@riadh-adrani/type-utils';
 import type { StringWithAutoComplete } from '@riadh-adrani/obj-utils';
 import { BranchTemplate } from '../branch/types.js';
-import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
+import { Any, DOMEvent, DOMEventHandler, Selector, UtilityProps } from './index.js';
 import { NamedNavigationRequest } from '../router/types.js';
 
 declare global {
@@ -91,6 +91,23 @@ declare global {
     onTouchMove: DOMEventHandler<TouchEvent, E>;
     onTouchStart: DOMEventHandler<TouchEvent, E>;
   }
+
+  type DOMEventsPrevented<E extends Element> = {
+    [key in `${keyof DOMEvents<E>}:prevent`]: DOMEvents<E>[keyof DOMEvents<E>];
+  };
+
+  type DOMEventsStopped<E extends Element> = {
+    [key in `${keyof DOMEvents<E>}:stop`]: DOMEvents<E>[keyof DOMEvents<E>];
+  };
+
+  type DOMEventsPreventedStopped<E extends Element> = {
+    [key in `${keyof DOMEvents<E>}:prevent-stop`]: DOMEvents<E>[keyof DOMEvents<E>];
+  };
+
+  type CombinedDOMEventKeys<E extends Element> = DOMEvents<E> &
+    DOMEventsPrevented<E> &
+    DOMEventsStopped<E> &
+    DOMEventsPreventedStopped<E>;
 
   interface Aria {
     autocomplete: string;
@@ -1037,13 +1054,13 @@ declare global {
     string | number,
     unknown
   > &
-    Partial<BaseProps<E> & BaseElementProps & BaseHTMLProps & DOMEvents<E> & T>;
+    Partial<BaseProps<E> & BaseElementProps & BaseHTMLProps & CombinedDOMEventKeys<E> & T>;
 
   type SVGElementProps<E extends Element = SVGElement, T extends object = object> = Record<
     string | number,
     unknown
   > &
-    Partial<BaseProps<E> & BaseElementProps & BaseSVGProps & DOMEvents<E> & T>;
+    Partial<BaseProps<E> & BaseElementProps & BaseSVGProps & CombinedDOMEventKeys<E> & T>;
 
   type BlockQuoteProps = Pick<HTMLAttributes, 'cite'>;
 
