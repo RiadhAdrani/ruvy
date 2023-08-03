@@ -177,7 +177,7 @@ export default class Router<T = unknown> {
   }
 
   push(to: NavigationRequest) {
-    const $to: string | number = transformNavigationRequest(to, this.routes);
+    const $to: string | number = this.transformNavigationRequest(to);
 
     if (!this.shouldTriggerUpdate($to)) {
       return;
@@ -199,7 +199,7 @@ export default class Router<T = unknown> {
   }
 
   replace(to: Exclude<NavigationRequest, number>) {
-    const $to: string | number = transformNavigationRequest(to, this.routes);
+    const $to: string | number = this.transformNavigationRequest(to);
 
     if (!this.shouldTriggerUpdate($to)) {
       return;
@@ -234,87 +234,77 @@ export default class Router<T = unknown> {
     this.updateTitle();
     this.updateScroll();
   }
+
+  buildPathFromRequest(request: NamedNavigationRequest): string {
+    const { name, params, search } = request;
+
+    const key = Object.keys(this.routes).find(it => this.routes[it].name === name);
+
+    if (!key) {
+      return '';
+    }
+
+    const route = this.routes[key];
+
+    let path = route.fragments
+      .map(it => {
+        if (it.startsWith(':')) {
+          const key = it.substring(1);
+
+          return `${params ? params[key] : undefined}`;
+        }
+
+        return it;
+      })
+      .join('/');
+
+    // add searchparams
+    if (search) {
+      // transform arrays to string
+      const record: Record<string, string> = {};
+
+      forEachKey((key, value) => {
+        record[key] = `${value}`;
+      }, search);
+
+      const query = new URLSearchParams(record).toString();
+
+      if (!isBlank(query)) {
+        path = `${path}?${query}`;
+      }
+    }
+
+    return `/${path}`;
+  }
+
+  transformNavigationRequest(request: NavigationRequest): string | number {
+    // if string we return it
+    if (!isNamedNavigationRequest(request)) {
+      return request as string;
+    }
+
+    // we have a named request
+    // build the route
+    return this.buildPathFromRequest(request as NamedNavigationRequest);
+  }
+
+  buildHrefFromRequest(request: NavigationRequest): string | undefined {
+    if (isNumber(request)) {
+      return undefined;
+    }
+
+    let url = this.transformNavigationRequest(request);
+
+    if (isNumber(request as number)) return undefined;
+
+    if (this.base) {
+      url = `${this.base}${url}`;
+    }
+
+    return url as string;
+  }
 }
 
 export const isNamedNavigationRequest = (o: unknown): boolean => {
   return isObject(o) && hasProperty(o, 'name');
-};
-
-export const buildPathFromRequest = (
-  request: NamedNavigationRequest,
-  routes: Record<string, Route>
-): string => {
-  const { name, params, search } = request;
-
-  const key = Object.keys(routes).find(it => routes[it].name === name);
-
-  if (!key) {
-    return '';
-  }
-
-  const route = routes[key];
-
-  let path = route.fragments
-    .map(it => {
-      if (it.startsWith(':')) {
-        const key = it.substring(1);
-
-        return `${params ? params[key] : undefined}`;
-      }
-
-      return it;
-    })
-    .join('/');
-
-  // add searchparams
-  if (search) {
-    // transform arrays to string
-    const record: Record<string, string> = {};
-
-    forEachKey((key, value) => {
-      record[key] = `${value}`;
-    }, search);
-
-    const query = new URLSearchParams(record).toString();
-
-    if (!isBlank(query)) {
-      path = `${path}?${query}`;
-    }
-  }
-
-  return `/${path}`;
-};
-
-export const buildHrefFromRequest = (
-  request: NavigationRequest,
-  routes: Record<string, Route>,
-  base?: string
-): string | undefined => {
-  if (isNumber(request)) {
-    return undefined;
-  }
-
-  let url = transformNavigationRequest(request, routes);
-
-  if (isNumber(request as number)) return undefined;
-
-  if (base) {
-    url = `${base}${url}`;
-  }
-
-  return url as string;
-};
-
-export const transformNavigationRequest = (
-  request: NavigationRequest,
-  routes: Record<string, Route>
-): string | number => {
-  // if string we return it
-  if (!isNamedNavigationRequest(request)) {
-    return request as string;
-  }
-
-  // we have a named request
-  // build the route
-  return buildPathFromRequest(request as NamedNavigationRequest, routes);
 };

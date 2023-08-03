@@ -33,7 +33,6 @@ import { Any, CallbackWithArgs } from '../../index.js';
 import { Core, getCurrent } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
-import { buildHrefFromRequest } from '../../router/Router.js';
 import { NavigationRequest } from '../../router/types.js';
 
 /**
@@ -452,16 +451,9 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
         }
       }
     } else if (key === 'href' && getCurrent().router) {
-      /**
-       * check if href is an object
-       */
       const request = value as NavigationRequest;
 
-      const url = buildHrefFromRequest(
-        request,
-        getCurrent().router.routes,
-        getCurrent().router.base
-      );
+      const url = getCurrent().router.buildHrefFromRequest(request);
 
       props[key] = url;
     } else {

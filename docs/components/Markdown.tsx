@@ -7,6 +7,7 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
 import { isBlank } from '@riadh-adrani/str-utils';
+import { getCurrent } from '../../src/core/Core.js';
 
 marked.use(gfmHeadingId());
 marked.use(mangle());
@@ -47,6 +48,18 @@ export default ({ content }: MarkdownProps) => {
               console.error('Failed to copy text to clipboard:', error);
             });
         });
+      });
+
+      const router = getCurrent().router;
+
+      ref.value.querySelectorAll('a').forEach(it => {
+        const href = it.getAttribute('href');
+
+        if (!href) return;
+
+        if (router.isNavigatable(href)) {
+          it.setAttribute('href', router.buildHrefFromRequest(href) ?? '');
+        }
       });
 
       const hash = location.hash;

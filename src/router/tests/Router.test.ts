@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { RawRoute, Route } from '../types.js';
-import Router, { isNamedNavigationRequest, transformNavigationRequest } from '../Router.js';
+import Router, { isNamedNavigationRequest } from '../Router.js';
 import type { Callback } from '@riadh-adrani/type-utils';
 
 const testId: RawRoute = { path: ':id', component: 'test-id', name: 'TestId' };
@@ -264,31 +264,31 @@ describe('Router class', () => {
 
   describe('transformNavigationRequest', () => {
     it('should return the number', () => {
-      expect(transformNavigationRequest(1, router.routes)).toBe(1);
+      expect(router.transformNavigationRequest(1)).toBe(1);
     });
 
     it('should return the string', () => {
-      expect(transformNavigationRequest('/', router.routes)).toBe('/');
+      expect(router.transformNavigationRequest('/')).toBe('/');
     });
 
     it('should transform the named request', () => {
-      expect(transformNavigationRequest({ name: 'Home' }, router.routes)).toBe('/');
+      expect(router.transformNavigationRequest({ name: 'Home' })).toBe('/');
     });
 
     it('should transform the named request with params', () => {
-      expect(transformNavigationRequest({ name: 'UserId', params: { id: 1 } }, router.routes)).toBe(
+      expect(router.transformNavigationRequest({ name: 'UserId', params: { id: 1 } })).toBe(
         '/user/1'
       );
     });
 
     it('should transform the named request with search params', () => {
-      expect(transformNavigationRequest({ name: 'User', search: { id: 1 } }, router.routes)).toBe(
+      expect(router.transformNavigationRequest({ name: 'User', search: { id: 1 } })).toBe(
         '/user?id=1'
       );
     });
 
     it('should transform the named request with undefined params', () => {
-      expect(transformNavigationRequest({ name: 'UserId' }, router.routes)).toBe('/user/undefined');
+      expect(router.transformNavigationRequest({ name: 'UserId' })).toBe('/user/undefined');
     });
   });
 });
