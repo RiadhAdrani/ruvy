@@ -1,4 +1,4 @@
-import { Core } from '../../../core/index.js';
+import { getCurrent } from '../../../core/Core.js';
 import {
   Branch,
   BranchStatus,
@@ -19,7 +19,7 @@ export const handleOutletComponent: ComponentFunctionHandler<BranchTemplateFunct
   const branch: Branch = current ?? initBranch({ key, props, tag: BranchTag.Outlet, type, parent });
 
   const depth = getOutletDepth(branch) - 1;
-  const child = Core.singleton.router?.getComponentByDepth(depth);
+  const child = getCurrent().router?.getComponentByDepth(depth);
 
   if (current) {
     branch.props = props;

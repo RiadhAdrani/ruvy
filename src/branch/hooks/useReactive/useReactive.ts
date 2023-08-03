@@ -1,6 +1,6 @@
 import { areEqual, isNull, isObject } from '@riadh-adrani/obj-utils';
 import { HookDispatcher, HookType } from '../../types.js';
-import { Core } from '../../../core/index.js';
+import { getCurrent } from '../../../core/Core.js';
 import { Any } from '../../../types/index.js';
 import { dispatchHook } from '../index.js';
 
@@ -21,7 +21,7 @@ function reactive<T extends object>(obj: T): T {
       if (!areEqual(old, value)) {
         (target as Record<string, unknown>)[key as string] = value;
 
-        Core.notifyStateUpdated();
+        getCurrent().notifyStateUpdated();
       }
 
       return true;

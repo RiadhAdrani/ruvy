@@ -18,7 +18,6 @@ export enum BranchTag {
   Outlet = '#-outlet-branch',
   Context = '#-context-branch',
   Portal = '#-portal-branch',
-  Conditional = '#-conditional-branch',
 }
 
 export enum HookType {

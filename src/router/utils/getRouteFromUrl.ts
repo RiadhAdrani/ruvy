@@ -1,15 +1,19 @@
 import { isBlank } from '@riadh-adrani/str-utils';
 
-export default (base = ''): string => {
+export const getPathFromURL = (url: string, base = ''): string => {
   if (!isBlank(base)) {
-    const includeBase = location.pathname.substring(0, base.length) === base;
+    const includeBase = url.substring(0, base.length) === base;
 
     if (!includeBase) {
-      return location.pathname;
+      return url;
     }
 
-    return location.pathname.substring(base.length);
+    return url.substring(base.length);
   } else {
-    return location.pathname;
+    return url;
   }
+};
+
+export default (base = ''): string => {
+  return getPathFromURL(location.pathname, base);
 };

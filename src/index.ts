@@ -1,5 +1,5 @@
 // init
-export { mountApp } from './core/index.js';
+export { mountApp } from './core/Core.js';
 
 // hooks
 export {
@@ -29,7 +29,7 @@ export {
   getParams,
   getPathname,
   getSearchParams,
-} from './core/index.js';
+} from './core/Core.js';
 export { Outlet } from './branch/index.js';
 
 // types
@@ -40,5 +40,5 @@ export type { StateArray } from './store/types.js';
 export * from './types/index.js';
 
 // utils
-export { batch } from './core/index.js';
+export { batch } from './core/Core.js';
 export * from './utils/utils.js';

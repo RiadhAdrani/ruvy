@@ -1,9 +1,10 @@
 import { isElement, setEvent } from '@riadh-adrani/dom-utils';
 import { isFunction } from '@riadh-adrani/obj-utils';
 import { Callback } from '@riadh-adrani/type-utils';
-import { Context } from '../context/index.js';
-import { Router, RouterParams, RawRoute, NavigationRequest } from '../router/index.js';
-import { Scheduler } from '../scheduler/index.js';
+import Context from '../context/Context.js';
+import Router from '../router/Router.js';
+import { NavigationRequest, RawRoute, RouterParams } from '../router/types.js';
+import Scheduler from '../scheduler/Scheduler.js';
 import { MountParams } from './types.js';
 import { getClosestAnchorParent } from './utils.js';
 import {
@@ -18,7 +19,7 @@ import {
   createRoot,
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
-import getRouteFromUrl from '../router/utils/getRouteFromUrl.js';
+import getRouteFromUrl, { getPathFromURL } from '../router/utils/getRouteFromUrl.js';
 
 export class Core {
   static singleton: Core = new Core();
@@ -105,13 +106,20 @@ setEvent(
   e => {
     const ev = e as unknown as DOMEvent<MouseEvent>;
 
+    const router = getCurrent().router;
+
+    if (!router) {
+      return;
+    }
+
     const anchorEl = getClosestAnchorParent(ev.target);
 
     if (anchorEl) {
       const path: string | null = anchorEl.getAttribute('href');
-      if (path && Core.singleton.router.isNavigatable(path)) {
+      if (path && router.isNavigatable(path)) {
         e.preventDefault();
-        navigate(path);
+
+        navigate(getPathFromURL(path, router.base));
       }
     }
   },
@@ -148,6 +156,8 @@ export const mountApp = ({ callback, hostElement }: MountParams) => {
     },
   });
 };
+
+export const getCurrent = () => Core.singleton;
 
 /**
  * Batch updates in a synchronous callback .

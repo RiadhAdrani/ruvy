@@ -30,11 +30,11 @@ import {
 import { DomAttribute, DomEvent, DomEventHandler, isOnEventName } from '@riadh-adrani/dom-utils';
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
 import { Any, CallbackWithArgs } from '../../index.js';
-import { Core } from '../../core/Core.js';
+import { Core, getCurrent } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
-import { buildPathFromRequest, isNamedNavigationRequest } from '../../router/Router.js';
-import { NamedNavigationRequest } from '../../router/types.js';
+import { buildHrefFromRequest } from '../../router/Router.js';
+import { NavigationRequest } from '../../router/types.js';
 
 /**
  * checks if the given is a valid component template
@@ -451,13 +451,17 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
           }
         }
       }
-    } else if (key === 'href' && isNamedNavigationRequest(value) && Core.singleton.router) {
+    } else if (key === 'href' && getCurrent().router) {
       /**
        * check if href is an object
        */
-      const request = value as NamedNavigationRequest;
+      const request = value as NavigationRequest;
 
-      const url = buildPathFromRequest(request, Core.singleton.router.routes);
+      const url = buildHrefFromRequest(
+        request,
+        getCurrent().router.routes,
+        getCurrent().router.base
+      );
 
       props[key] = url;
     } else {

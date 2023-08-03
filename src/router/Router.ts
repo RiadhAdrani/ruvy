@@ -285,6 +285,26 @@ export const buildPathFromRequest = (
   return `/${path}`;
 };
 
+export const buildHrefFromRequest = (
+  request: NavigationRequest,
+  routes: Record<string, Route>,
+  base?: string
+): string | undefined => {
+  if (isNumber(request)) {
+    return undefined;
+  }
+
+  let url = transformNavigationRequest(request, routes);
+
+  if (isNumber(request as number)) return undefined;
+
+  if (base) {
+    url = `${base}${url}`;
+  }
+
+  return url as string;
+};
+
 export const transformNavigationRequest = (
   request: NavigationRequest,
   routes: Record<string, Route>
