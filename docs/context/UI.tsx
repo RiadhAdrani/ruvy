@@ -1,6 +1,6 @@
 import { Theme } from '../types/index.js';
 import { createContext, useCallback, useEffect, useMemo, useState } from '../index.js';
-import { isDarkMode } from '../utils/utils.js';
+import { getLogo, isDarkMode } from '../utils/utils.js';
 import useLocalStorage from '../hooks/useLocalStorage.js';
 import { isBoolean } from '@riadh-adrani/obj-utils';
 import useScroll from '../hooks/useScroll.js';
@@ -37,6 +37,12 @@ export const UIProvider = ({ children }: { children?: unknown }) => {
 
   useEffect(() => {
     document.querySelector(':root')?.setAttribute('data-theme', computedTheme);
+
+    const iconElement = document.querySelector(`link[rel~='icon']`);
+
+    if (iconElement) {
+      (iconElement as HTMLLinkElement).href = getLogo();
+    }
   }, computedTheme);
 
   const toggleTheme = useCallback((value?: Theme) => {

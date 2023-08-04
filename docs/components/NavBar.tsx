@@ -6,9 +6,11 @@ import Link from './Link.js';
 import Button from './Button.js';
 import Footer from './Footer.js';
 import { isActive } from '../utils/utils.js';
+import useLogo from '../hooks/useLogo.js';
 
 export default () => {
   const { computedTheme, toggleTheme, isNavOpen, toggleNav } = useContext(UIContext);
+  const logo = useLogo();
 
   const menuItems = [
     { title: 'Learn', href: '/learn' },
@@ -34,8 +36,9 @@ export default () => {
       >
         <div class="row justify-between items-center max-w-1200px flex-1 z-2">
           <div class="row items-center gap-8">
-            <a href={{ name: 'Home' }} class="p-x-1">
-              <h2>Ruvy</h2>
+            <a href={{ name: 'Home' }} class="p-x-1 row-center gap-3">
+              <img src={logo} class="h-25px w-25px" />
+              <h2 class="hidden md:inline-block">Ruvy</h2>
             </a>
             <div class="row hidden md:flex gap-1">
               {menuItems.map(it => (
