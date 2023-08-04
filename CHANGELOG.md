@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - `innerHTML` attribute that allow direct setting of an HTMLElement innerHTML prop.
+- add event modifiers like `Vue.js`, in this form `onEvent:prevent`, `onEvent:stop` or both `onEvent:prevent-stop`.
 
 ## 0.4.8 - 2023-07-30
 
