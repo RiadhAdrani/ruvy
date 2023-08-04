@@ -27,6 +27,7 @@ import classAttribute from './docs/more/class-attribute.md';
 import joinClasses from './docs/more/joinClasses.md';
 import ifDirective from './docs/more/if-directive.md';
 import switchDirective from './docs/more/switch-directive.md';
+import eventModifiers from './docs/more/event-modifiers.md';
 
 import { DocItem } from '../types/index.js';
 
@@ -58,6 +59,7 @@ export const MoreSections: Array<DocItem> = [
   { path: 'joinClasses', component: joinClasses, title: 'joinClasses' },
   { path: 'if-directive', component: ifDirective, title: 'if directives' },
   { path: 'switch-directive', component: switchDirective, title: 'switch directives' },
+  { path: 'event-modifiers', component: eventModifiers, title: 'Event modifiers' },
 ];
 
 export const DocsSections: Array<DocItem> = [
