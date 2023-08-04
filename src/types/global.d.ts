@@ -92,17 +92,15 @@ declare global {
     onTouchStart: DOMEventHandler<TouchEvent, E>;
   }
 
-  type DOMEventsPrevented<E extends Element> = {
-    [key in `${keyof DOMEvents<E>}:prevent`]: DOMEvents<E>[keyof DOMEvents<E>];
+  type DOMEventPostModified<E extends Element, PostString extends string> = {
+    [K in keyof DOMEvents<E> as `${string & K}${PostString}`]: DOMEvents<E>[K];
   };
 
-  type DOMEventsStopped<E extends Element> = {
-    [key in `${keyof DOMEvents<E>}:stop`]: DOMEvents<E>[keyof DOMEvents<E>];
-  };
+  type DOMEventsPrevented<E extends Element> = DOMEventPostModified<E, ':prevent'>;
 
-  type DOMEventsPreventedStopped<E extends Element> = {
-    [key in `${keyof DOMEvents<E>}:prevent-stop`]: DOMEvents<E>[keyof DOMEvents<E>];
-  };
+  type DOMEventsStopped<E extends Element> = DOMEventPostModified<E, ':stop'>;
+
+  type DOMEventsPreventedStopped<E extends Element> = DOMEventPostModified<E, ':prevent-stop'>;
 
   type CombinedDOMEventKeys<E extends Element> = DOMEvents<E> &
     DOMEventsPrevented<E> &

@@ -38,6 +38,7 @@ import {
   setEvent,
   setTextNodeData,
 } from '@riadh-adrani/dom-utils';
+import { DOMEventHandler } from '../../index.js';
 
 /**
  * create an branch action
@@ -159,12 +160,22 @@ export const createRenderAction = (branch: Branch<string>): Callback => {
       const attributes = getHtmlElementProps(branch);
       const events = getHtmlElementEventListeners(branch);
 
-      // transform events to make them batch updates
+      const eventsWithNoDuplicate: Record<string, DOMEventHandler> = {};
+
       forEachKey((key, callback) => {
-        events[key] = batchedEvent(callback);
+        const cb = batchedEvent(createEvent(key, callback as Callback));
+
+        const newKey = getEventName(key);
+
+        eventsWithNoDuplicate[newKey] = cb;
       }, events);
 
-      render = createElement(branch.type, { namespace: ns, attributes, events });
+      // transform events to make them batch updates
+      render = createElement(branch.type, { namespace: ns, attributes });
+
+      forEachKey((key, callback) => {
+        setEvent(key, callback, render as HTMLElement);
+      }, eventsWithNoDuplicate);
     }
 
     branch.instance = render;

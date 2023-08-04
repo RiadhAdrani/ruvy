@@ -259,4 +259,100 @@ describe('Rendering', () => {
       expect(document.body.innerHTML).toBe('<button></button><div>2</div>');
     });
   });
+
+  describe('event modifiers', () => {
+    it('should stop propagation with :stop modifier', () => {
+      const onParentClick = vitest.fn();
+      const onChildClick = vitest.fn();
+
+      const App = () => {
+        return (
+          <div onClick={onParentClick}>
+            <button onClick:stop={onChildClick}>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(onParentClick).toHaveBeenCalledTimes(0);
+      expect(onChildClick).toHaveBeenCalledOnce();
+    });
+
+    it('should stop propagation with :prevent-stop modifier', () => {
+      const onParentClick = vitest.fn();
+      const onChildClick = vitest.fn();
+
+      const App = () => {
+        return (
+          <div onClick={onParentClick}>
+            <button onClick:prevent-stop={onChildClick}>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(onParentClick).toHaveBeenCalledTimes(0);
+      expect(onChildClick).toHaveBeenCalledOnce();
+    });
+
+    it('should prevent default with :prevent modifier', () => {
+      let stopped = false;
+
+      const App = () => {
+        return (
+          <div>
+            <button onClick:prevent={e => (stopped = e.defaultPrevented)}>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(stopped).toBe(true);
+    });
+
+    it('should prevent default with :prevent-stop modifier', () => {
+      let stopped = false;
+
+      const App = () => {
+        return (
+          <div>
+            <button onClick:prevent-stop={e => (stopped = e.defaultPrevented)}>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(stopped).toBe(true);
+    });
+
+    it('should not prevent default without :prevent modifier', () => {
+      let stopped = false;
+
+      const App = () => {
+        return (
+          <div>
+            <button onClick={e => (stopped = e.defaultPrevented)}>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(stopped).toBe(false);
+    });
+  });
 });
