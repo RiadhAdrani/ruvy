@@ -508,6 +508,20 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
         }
       }
     } else if (key === 'href' && getCurrent().router) {
+      const router = getCurrent().router;
+
+      if (!router) {
+        props[key] = value;
+
+        return;
+      }
+
+      if (isString(value) && !router.isNavigatable(value as string)) {
+        props[key] = value;
+
+        return;
+      }
+
       const request = value as NavigationRequest;
 
       const url = getCurrent().router.buildHrefFromRequest(request);

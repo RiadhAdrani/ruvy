@@ -492,6 +492,12 @@ describe('utils', () => {
       document.body.innerHTML = '';
     });
 
+    it('should not transform a valid external link', () => {
+      expect(preprocessProps({ href: 'https://github.com' })).toStrictEqual({
+        href: 'https://github.com',
+      });
+    });
+
     it('should transform href with named request', () => {
       expect(preprocessProps({ href: { name: 'Home' } })).toStrictEqual({ href: '/' });
     });
