@@ -58,7 +58,19 @@ describe('createJsxElement', () => {
     });
   });
 
-  it('should create an jsx element with children', () => {
+  it('should create a jsx element with a dynamic dom:tag', () => {
+    const template = <div dom:tag="button">Hello</div>;
+
+    expect(template).toStrictEqual<BranchTemplate>({
+      type: 'button',
+      children: ['Hello'],
+      props: { children: ['Hello'], 'dom:tag': 'button' },
+      symbol: BranchSymbol,
+      key: undefined,
+    });
+  });
+
+  it('should create a jsx element with children', () => {
     const template = (
       <div class="test" key="2">
         Hello

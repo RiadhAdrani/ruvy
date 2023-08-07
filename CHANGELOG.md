@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 ## 0.4.9 - 2023-08-04
+
 ### Added
+
 - `innerHTML` attribute that allow direct setting of an HTMLElement innerHTML prop.
 - add event modifiers like `Vue.js`, in this form `onEvent:prevent`, `onEvent:stop` or both `onEvent:prevent-stop`.
 
@@ -14,63 +16,83 @@ All notable changes to this project will be documented in this file.
 ## 0.4.7 - 2023-07-30
 
 ## 0.4.6 - 2023-07-24
+
 ### Removed
+
 - removed all `deprecated` functions and classes.
 
 ### Fixed
+
 - `anchor` element not working as intended
 
 ## 0.4.5 - 2023-07-19
+
 ### Added
+
 - `name` route property, similar to `vue-router`.
 - `titleTransform` handler to preprocess the title before applying it.
 - `createStore` similar to `writable` store in `svelte`
 
 ### Changed
+
 - `navigate` now accepts a number or an object for a `named` route.
 
 ### Deprecated
+
 - `useKey` is now replaced with `createStore`.
 - `Store` as it is becoming useless.
 
 ## 0.4.4 - 2023-07-06
+
 ### Added
+
 - Add `switch`, `case` and `case:default` directives.
 - Attach host `Branch` object to dom node.
 - `ref` typing.
 
 ### Changed
+
 - `useState` accepts an initilizer function, and a setter callback.
 - improved project structure.
 - improved typing.
 
 ## 0.4.3 - 2023-07-01
+
 ### Changed
+
 - refactored project structure for a smaller bundle size.
 
 ## 0.4.2 - 2023-06-28
 
 ## 0.4.1 - 2023-06-28
+
 ### Added
+
 - `else` and `else-if` directives that goes with `if` directive, similar to `vue.js`
 
 ### Changed
+
 - improve `JSX.Element`s typing
 - better `svg` elements typing
 
 ## 0.4.0 - 2023-06-25
+
 ### Added
+
 - `if` directive which accepts a boolean to determine if a component should be rendered or not.
 - `PropWithUtility` that allow the developer to initialize a prop type with optional `children`, `key` and `if` properties.
 - `getPathname` returns the current url without the `base`.
 
 ### Changed
+
 - `useReactive` uses `@riadh-adrani/utils/createReactive` to create reactive object instances.
 - `mountRouter` config is now optional.
 - deperecated `getRoute` in favor of `getPathname`.
 
 ## 0.3.0 - 2023-06-22
+
 ### Added
+
 - `useContext`, same as `react.js`.
 - `useReactive`, similar to `vue.js`'s `reactive`.
 - `usePromise`, a hook that allows the user to fetch data while tracking the request state and return value.
@@ -83,10 +105,13 @@ All notable changes to this project will be documented in this file.
 - add `<Portal/>` component, allowing to teleport elements in another DOM container.
 
 ### Fixed
+
 - `scrollToTop` not having any effect, when a new page is loaded.
 
 ## 0.2.0 - 2023-06-02
+
 ### Added
+
 - JSX syntax for writing expressive and reusable UI components.
 - Function components for a modular and composable code structure.
 - Hooks for managing state, performing side effects, and custom logic reuse: `useState`, `useEffect`, `useMemo`, `useCallback`, `useId` and `useRef`.

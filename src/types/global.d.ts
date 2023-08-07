@@ -1015,7 +1015,7 @@ declare global {
 
   type DomElementRef<E> = { value: E | undefined };
 
-  type BaseProps<E> = Partial<UtilityProps & { ref: DomElementRef<E> }>;
+  type BaseProps<E> = Partial<UtilityProps & { ref: DomElementRef<E>; 'dom:tag': string }>;
 
   type BaseHTMLProps = Pick<
     HTMLAttributes,

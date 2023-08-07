@@ -1,4 +1,5 @@
-import { BranchSymbol, BranchTemplate } from '../types.js';
+import { BranchSymbol, BranchTag, BranchTemplate } from '../types.js';
+import { getCorrectElementTag, getTag } from '../utils/index.js';
 
 /**
  * creates a component template.
@@ -11,15 +12,23 @@ export const createTemplate = <T = unknown>(
   props: Record<string, unknown>,
   children: Array<unknown>
 ): BranchTemplate<T> => {
+  // flatten children
   children = children.flat();
 
-  return {
+  const template: BranchTemplate<T> = {
     type,
     props: { ...props, children },
     children,
     symbol: BranchSymbol,
     key: (props?.key as string) ?? undefined,
   };
+
+  if (getTag(template) === BranchTag.Element) {
+    // check if there is a 'dom:tag' property
+    template.type = getCorrectElementTag(template as BranchTemplate<string>) as T;
+  }
+
+  return template;
 };
 
 /**

@@ -295,6 +295,7 @@ export const IgnoredProps = [
   'case',
   'case:default',
   'innerHTML',
+  'dom:tag',
 ];
 
 /**
@@ -822,3 +823,13 @@ export function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: numb
 
   return arrayCopy;
 }
+
+export const getCorrectElementTag = (template: BranchTemplate<string>): string => {
+  const tag = getPropertyFromTemplate(template, 'dom:tag');
+
+  if (isString(tag)) {
+    return tag as string;
+  }
+
+  return template.type;
+};
