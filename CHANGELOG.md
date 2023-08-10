@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- `dom:tag` to make html element tag dynamic.
+
+### Fixed
+
+- `<Portal/>` element not properly changing containers.
+
 ## 0.4.9 - 2023-08-04
 
 ### Added
