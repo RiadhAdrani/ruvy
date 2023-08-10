@@ -40,6 +40,8 @@ export const handlePortalComponent: ComponentFunctionHandler<
     const oldContainer = (current.props as unknown as PortalProps).container;
 
     if (newContainer !== oldContainer) {
+      current.instance = newContainer;
+
       current.pendingActions.push(createAction(ActionType.UpdatePortalChildren, current));
     }
 

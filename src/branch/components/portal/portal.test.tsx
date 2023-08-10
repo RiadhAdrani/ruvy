@@ -58,10 +58,10 @@ describe('handlePortalComponent', () => {
       0
     );
 
-    handlePortalComponent(<Portal container={document.body}>Hello</Portal>, undefined, parent, 0);
+    handlePortalComponent(<Portal container={document.body}>Hello</Portal>, branch, parent, 0);
 
-    expect(branch.instance).toStrictEqual(container);
-    expect(branch.props.container).toStrictEqual(container);
+    expect(branch.instance).toStrictEqual(document.body);
+    expect(branch.props.container).toStrictEqual(document.body);
   });
 
   it('should create an action', () => {

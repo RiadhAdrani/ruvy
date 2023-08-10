@@ -1,4 +1,4 @@
-import { useEffect, useState } from '../index.js';
+import { Portal, useEffect, useMemo, useState } from '../index.js';
 import { Core, batch, mountApp } from '../core/Core.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { runAfter } from '@riadh-adrani/async-utils';
@@ -353,6 +353,94 @@ describe('Rendering', () => {
       document.body.querySelector('button')?.click();
 
       expect(stopped).toBe(false);
+    });
+  });
+
+  describe('portal rendering', () => {
+    it('should render element in container', () => {
+      const App = () => {
+        return (
+          <>
+            <div></div>
+            <Portal container={document.body}>
+              <button />
+            </Portal>
+          </>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<button></button><div></div>');
+    });
+
+    it('should change element in new container', () => {
+      const App = () => {
+        const [v, setV] = useState(false);
+
+        const container = useMemo(() => {
+          if (!v) return document.body;
+
+          return document.querySelector('#container') as Element;
+        }, v);
+
+        useEffect(() => {
+          setV(true);
+        });
+
+        return (
+          <>
+            <div id="container"></div>
+            <Portal container={container}>
+              <button />
+            </Portal>
+          </>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<div id="container"><button></button></div>');
+    });
+
+    it('should change every child in new container', () => {
+      const App = () => {
+        const [v, setV] = useState(false);
+
+        const container = useMemo(() => {
+          if (!v) return document.body;
+
+          return document.querySelector('#container') as Element;
+        }, v);
+
+        useEffect(() => {
+          setV(true);
+        });
+
+        return (
+          <>
+            <div id="container"></div>
+            <Portal container={container}>
+              <>
+                <button />
+                <img />
+                <span />
+                <>
+                  <button />
+                  <img />
+                  <span />
+                </>
+              </>
+            </Portal>
+          </>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe(
+        '<div id="container"><button></button><img><span></span><button></button><img><span></span></div>'
+      );
     });
   });
 });
