@@ -492,6 +492,12 @@ describe('utils', () => {
       document.body.innerHTML = '';
     });
 
+    it('should transform event with true value to a function', () => {
+      const processed = preprocessProps({ 'onClick:prevent': true });
+
+      expect(typeof processed['onClick:prevent']).toStrictEqual('function');
+    });
+
     it('should not transform a valid external link', () => {
       expect(preprocessProps({ href: 'https://github.com' })).toStrictEqual({
         href: 'https://github.com',

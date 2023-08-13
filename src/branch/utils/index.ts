@@ -324,7 +324,7 @@ export const getHtmlElementEventListeners = (branch: Branch): Record<string, Dom
   const events: Record<string, DomEventHandler> = {};
 
   forEachKey((key, value) => {
-    if (isValidEventKey(key) && isFunction(value)) {
+    if (isValidEventKey(key) && (isFunction(value) || value === true)) {
       events[key] = value as DomEventHandler;
     }
   }, branch.props);
@@ -528,6 +528,8 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
       const url = getCurrent().router.buildHrefFromRequest(request);
 
       props[key] = url;
+    } else if (isValidEventKey(key) && value === true) {
+      props[key] = () => 0;
     } else {
       props[key] = value;
     }

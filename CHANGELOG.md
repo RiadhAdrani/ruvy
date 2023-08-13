@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Fixed
+
+- children not correctly reordered in some edge cases.
+- allow the use of event modifiers without an actual function value
+
 ## 0.4.10 - 2023-08-10
 
 ### Added

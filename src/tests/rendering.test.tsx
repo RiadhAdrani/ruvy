@@ -281,6 +281,24 @@ describe('Rendering', () => {
       expect(onChildClick).toHaveBeenCalledOnce();
     });
 
+    it('should stop propagation with :stop modifier without with true as value', () => {
+      const onParentClick = vitest.fn();
+
+      const App = () => {
+        return (
+          <div onClick={onParentClick}>
+            <button onClick:stop>hello</button>
+          </div>
+        );
+      };
+
+      mount(<App />);
+
+      document.body.querySelector('button')?.click();
+
+      expect(onParentClick).toHaveBeenCalledTimes(0);
+    });
+
     it('should stop propagation with :prevent-stop modifier', () => {
       const onParentClick = vitest.fn();
       const onChildClick = vitest.fn();

@@ -93,7 +93,7 @@ declare global {
   }
 
   type DOMEventPostModified<E extends Element, PostString extends string> = {
-    [K in keyof DOMEvents<E> as `${string & K}${PostString}`]: DOMEvents<E>[K];
+    [K in keyof DOMEvents<E> as `${string & K}${PostString}`]: DOMEvents<E>[K] | true;
   };
 
   type DOMEventsPrevented<E extends Element> = DOMEventPostModified<E, ':prevent'>;
