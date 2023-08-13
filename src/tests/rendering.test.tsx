@@ -443,4 +443,32 @@ describe('Rendering', () => {
       );
     });
   });
+
+  describe('text node rendering', () => {
+    it('should render text node', () => {
+      const App = () => {
+        return <>hello</>;
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('hello');
+    });
+
+    it('should render nodes correctly', () => {
+      const App = () => {
+        const [count, setCount] = useState<number | undefined>(undefined);
+
+        useEffect(() => {
+          setCount(0);
+        });
+
+        return <>{count} test</>;
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('0 test');
+    });
+  });
 });

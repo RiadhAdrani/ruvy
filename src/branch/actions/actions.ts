@@ -227,7 +227,11 @@ export const createUnmountAction =
       throw 'Cannot unmount a non-host branch.';
     }
 
-    removeNode(branch.instance as Element);
+    try {
+      removeNode(branch.instance as Element);
+    } catch (error) {
+      // node does not exist
+    }
 
     branch.status = BranchStatus.Unmounted;
 
