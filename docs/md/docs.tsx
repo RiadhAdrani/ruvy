@@ -19,6 +19,7 @@ import navigate from './docs/api/navigate.md';
 import replace from './docs/api/replace.md';
 import outlet from './docs/api/outlet.md';
 import portal from './docs/api/portal.md';
+import fragment from './docs/api/fragment.md';
 import batch from './docs/api/batch.md';
 import createStore from './docs/api/createStore.md';
 
@@ -51,6 +52,7 @@ export const ApiSections: Array<DocItem> = [
   { path: 'navigate', component: navigate, title: 'navigate' },
   { path: 'batch', component: batch, title: 'batch' },
   { path: 'outlet', component: outlet, title: '<Outlet/>' },
+  { path: 'fragment', component: fragment, title: '<Fragment/>' },
   { path: 'portal', component: portal, title: '<Portal/>' },
 ];
 

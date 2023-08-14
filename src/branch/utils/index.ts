@@ -34,6 +34,7 @@ import { Core, getCurrent } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
 import { NavigationRequest } from '../../router/types.js';
+import { Fragment } from '../components/fragment/fragment.js';
 
 export const isValidEventKey = (key: string): boolean => {
   const regex = /^on[a-zA-Z]+(:((prevent|stop)(-(prevent|stop))?))?$/i;
@@ -170,8 +171,12 @@ export const getTag = (o: unknown): BranchTag => {
       return BranchTag.Outlet;
     }
 
-    if (type === createFragmentTemplate) {
+    if (type === Fragment) {
       return BranchTag.Fragment;
+    }
+
+    if (type === createFragmentTemplate) {
+      return BranchTag.JsxFragment;
     }
 
     if (isFunction(type)) {

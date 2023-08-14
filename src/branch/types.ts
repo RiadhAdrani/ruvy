@@ -1,6 +1,7 @@
 import { Callback } from '@riadh-adrani/type-utils';
 import { CallbackWithArgs } from '../types/index.js';
 import { createFragmentTemplate } from './create/index.js';
+import { Fragment } from './components/fragment/fragment.js';
 
 export enum Namespace {
   HTML = 'http://www.w3.org/1999/xhtml',
@@ -12,6 +13,7 @@ export enum BranchTag {
   Function = '#-function-branch',
   Element = '#-element-branch',
   Root = '#-root-branch',
+  JsxFragment = '#-jsx-fragment-branch',
   Fragment = '#-fragment-branch',
   Text = '#-text-branch',
   Null = '#-null-branch',
@@ -129,9 +131,13 @@ export type BranchTemplateFunction = BranchTemplate<
   CallbackWithArgs<[Record<string, unknown>], unknown>
 >;
 
-export type FragmentType = typeof createFragmentTemplate;
+export type FragmentType = typeof Fragment;
 
 export type BranchTemplateFragment = BranchTemplate<FragmentType>;
+
+export type JsxFragmentType = typeof createFragmentTemplate;
+
+export type BranchTemplateJsxFragment = BranchTemplate<JsxFragmentType>;
 
 export interface HookData<T> {
   key: string;

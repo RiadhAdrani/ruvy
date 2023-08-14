@@ -2,6 +2,7 @@ import { Portal, useEffect, useMemo, useState } from '../index.js';
 import { Core, batch, mountApp } from '../core/Core.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { runAfter } from '@riadh-adrani/async-utils';
+import { Fragment } from '../branch/components/fragment/fragment.js';
 
 describe('Rendering', () => {
   const mount = (app: JSX.Element) => mountApp({ callback: () => app, hostElement: document.body });
@@ -378,12 +379,12 @@ describe('Rendering', () => {
     it('should render element in container', () => {
       const App = () => {
         return (
-          <>
+          <Fragment>
             <div></div>
             <Portal container={document.body}>
               <button />
             </Portal>
-          </>
+          </Fragment>
         );
       };
 
@@ -487,6 +488,44 @@ describe('Rendering', () => {
       mount(<App />);
 
       expect(document.body.innerHTML).toBe('0 test');
+    });
+  });
+
+  describe('Fragment Rendering', () => {
+    it('should render fragment children into the parent', () => {
+      const App = () => {
+        return <Fragment>hello</Fragment>;
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('hello');
+    });
+
+    it('should not render fragment children when "if" is false', () => {
+      const App = () => {
+        return <Fragment if={false}>hello</Fragment>;
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('');
+    });
+
+    it('should render fragment children satisfying switch statement', () => {
+      const App = () => {
+        return (
+          <Fragment switch={1}>
+            <div case={0}>0</div>
+            <div case={1}>1</div>
+            <div case={2}>2</div>
+          </Fragment>
+        );
+      };
+
+      mount(<App />);
+
+      expect(document.body.innerHTML).toBe('<div>1</div>');
     });
   });
 });

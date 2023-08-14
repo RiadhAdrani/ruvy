@@ -55,3 +55,4 @@ Here is the full list of the `API` methods :
 
 - [`<Outlet/>`](/docs/api/outlet)
 - [`<Portal/>`](/docs/api/portal)
+- [`<Fragment/>`](/docs/api/fragment)

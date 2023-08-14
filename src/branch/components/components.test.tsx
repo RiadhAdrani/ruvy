@@ -13,6 +13,7 @@ import {
 } from './components.js';
 import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from '../types.js';
 import { collectActions, commit, initBranch } from '../utils/index.js';
+import { Fragment } from './fragment/fragment.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -53,8 +54,15 @@ describe('handleComponent', () => {
     expect(branch.tag).toBe(BranchTag.Element);
   });
 
-  it('should create a fragment branch', () => {
+  it('should create a jsx fragment branch', () => {
     const template = <></>;
+    const branch = handleComponent(template, undefined, parent, 0);
+
+    expect(branch.tag).toBe(BranchTag.JsxFragment);
+  });
+
+  it('should create a fragment branch', () => {
+    const template = <Fragment></Fragment>;
     const branch = handleComponent(template, undefined, parent, 0);
 
     expect(branch.tag).toBe(BranchTag.Fragment);

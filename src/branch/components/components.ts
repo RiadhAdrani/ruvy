@@ -1,4 +1,10 @@
-import { Branch, ComponentFunctionHandler, FragmentType } from '../types.js';
+import {
+  Branch,
+  BranchTemplateFragment,
+  ComponentFunctionHandler,
+  FragmentType,
+  JsxFragmentType,
+} from '../types.js';
 import { collectPendingEffect, getCorrectKey, getTag, moveElement } from '../utils/index.js';
 import { haveSameTagAndType } from '../utils/index.js';
 import {
@@ -6,7 +12,7 @@ import {
   BranchKey,
   BranchTag,
   BranchTemplate,
-  BranchTemplateFragment,
+  BranchTemplateJsxFragment,
   BranchTemplateFunction,
 } from '../types.js';
 import {
@@ -18,7 +24,10 @@ import createAction from '../actions/actions.js';
 import { unmountBranch } from '../utils/index.js';
 import { handleContextComponent } from '../components/context/context.js';
 import { handleElementComponent } from '../components/element/element.js';
-import { handleFragmentComponent } from '../components/fragment/fragment.js';
+import {
+  handleFragmentComponent,
+  handleJsxFragmentComponent,
+} from '../components/fragment/fragment.js';
 import { handleCallableComponent } from '../components/callable/callable.js';
 import { handleOutletComponent } from '../components/outlet/outlet.js';
 import { handlePortalComponent, type PortalBranchType } from '../components/portal/portal.js';
@@ -158,6 +167,15 @@ export const handleComponent = <T = unknown>(
       res = handleElementComponent(
         template as BranchTemplate<string>,
         current as Branch<string>,
+        parent,
+        key
+      );
+      break;
+    }
+    case BranchTag.JsxFragment: {
+      res = handleJsxFragmentComponent(
+        template as BranchTemplateJsxFragment,
+        current as Branch<JsxFragmentType>,
         parent,
         key
       );

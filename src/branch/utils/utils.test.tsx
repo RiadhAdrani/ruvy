@@ -118,7 +118,7 @@ describe('utils', () => {
   describe('isHostBranch', () => {
     it.each([
       [BranchTag.Element, true],
-      [BranchTag.Fragment, false],
+      [BranchTag.JsxFragment, false],
       [BranchTag.Function, false],
       [BranchTag.Null, false],
       [BranchTag.Root, true],
@@ -826,7 +826,7 @@ describe('getTag', () => {
     [null, BranchTag.Null],
     [undefined, BranchTag.Null],
     [fc, BranchTag.Function],
-    [fr, BranchTag.Fragment],
+    [fr, BranchTag.JsxFragment],
     [div, BranchTag.Element],
     [portal, BranchTag.Portal],
   ])('should return correct branch type (%s) => (%s)', (obj, expected) => {
@@ -871,7 +871,7 @@ describe('haveSameTagAndType', () => {
     pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
-    tag: BranchTag.Fragment,
+    tag: BranchTag.JsxFragment,
     type: createFragmentTemplate,
     unmountedChildren: [],
   };
@@ -1049,7 +1049,7 @@ describe('common', () => {
       }
     );
 
-    it.each([[BranchTag.Fragment], [BranchTag.Function], [BranchTag.Null]])(
+    it.each([[BranchTag.JsxFragment], [BranchTag.Function], [BranchTag.Null]])(
       'should not add an Unmount action to pendingActions if (%s)',
       tag => {
         branch = initBranch({ tag });
