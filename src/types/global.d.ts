@@ -199,7 +199,7 @@ declare global {
     charset: string;
     checked: boolean;
     cite: string;
-    class: Arrayable<string>;
+    class: Arrayable<string | undefined | boolean | null>;
     color: string;
     cols: number;
     colspan: number;
@@ -477,7 +477,7 @@ declare global {
      * @deprecated
      */
     'cap-height': number | string;
-    class: Arrayable<string>;
+    class: Arrayable<string | undefined | boolean | null>;
     /**
      * @deprecated
      */

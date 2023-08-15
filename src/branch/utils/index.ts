@@ -29,7 +29,7 @@ import {
 } from '../types.js';
 import { DomAttribute, DomEvent, DomEventHandler } from '@riadh-adrani/dom-utils';
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
-import { Any, CallbackWithArgs } from '../../index.js';
+import { Any, CallbackWithArgs, joinClasses } from '../../index.js';
 import { Core, getCurrent } from '../../core/Core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
@@ -468,10 +468,11 @@ export const getOutletDepth = (branch: Branch): number => {
  * @param current class name or array of class names
  * @param className new class name
  */
-export const combineClasses = (current: Arrayable<string>, className: string): string => {
-  current = isArray(current) ? (current as Array<string>).join(' ') : current;
-
-  return `${current} ${className}`;
+export const combineClasses = (
+  current: Arrayable<string | undefined | boolean | null>,
+  className: string
+): string => {
+  return joinClasses(current, className);
 };
 
 const CLASS_PREFIX = 'class:';
