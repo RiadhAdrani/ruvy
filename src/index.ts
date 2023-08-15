@@ -19,7 +19,7 @@ export {
 export { createStore } from './store/createStore.js';
 
 // components
-export { Portal } from './branch/index.js';
+export { Portal, Fragment } from './branch/index.js';
 
 // router
 export {
