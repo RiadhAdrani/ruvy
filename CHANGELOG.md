@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - named `<Fragment/>` component.
 
+### Changed
+
+- `class` attributes now accepts arrayables of `boolean`, `undefied` or `null`.
+
 ## 0.4.11 - 2023-08-13
 
 ### Fixed
