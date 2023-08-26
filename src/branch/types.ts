@@ -53,6 +53,7 @@ export enum ActionType {
   Unmounted = '#-action-unmounted',
   RemoveBranch = '#-action-remove-branch',
   UpdatePortalChildren = '#-action-update-portal-children',
+  Mounted = '#-action-on-mounted',
 }
 
 export const ActionPriority: { [key in ActionType]: number } = (() => {
@@ -68,6 +69,7 @@ export const ActionPriority: { [key in ActionType]: number } = (() => {
     ActionType.UpdatePortalChildren,
     ActionType.UpdateProps,
     ActionType.UpdateText,
+    ActionType.Mounted,
     ActionType.Cleanup,
     ActionType.Effect,
   ].forEach((key, index) => (items[key] = index));

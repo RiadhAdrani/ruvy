@@ -82,6 +82,10 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
       callback = createMovePortalChildren(branch as Branch<PortalBranchType>);
       break;
     }
+    case ActionType.Mounted: {
+      callback = createMountedCallbackAction(branch as Branch<string>, data as Callback);
+      break;
+    }
     case ActionType.Cleanup:
     case ActionType.Effect: {
       callback = cast<Effect>(data);
@@ -109,6 +113,13 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
 };
 
 export default createAction;
+
+export const createMountedCallbackAction = (
+  branch: Branch<string>,
+  callback: (branch: Branch<string>) => void
+) => {
+  return () => callback(branch);
+};
 
 export const createMovePortalChildren = (branch: Branch<PortalBranchType>): Callback => {
   return () => {

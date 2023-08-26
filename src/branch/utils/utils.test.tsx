@@ -1010,8 +1010,9 @@ describe('common', () => {
       [ActionType.UpdatePortalChildren]: 6,
       [ActionType.UpdateProps]: 7,
       [ActionType.UpdateText]: 8,
-      [ActionType.Cleanup]: 9,
-      [ActionType.Effect]: 10,
+      [ActionType.Mounted]: 9,
+      [ActionType.Cleanup]: 10,
+      [ActionType.Effect]: 11,
     });
   });
 

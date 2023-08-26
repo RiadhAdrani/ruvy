@@ -86,6 +86,17 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
 
       branch.pendingActions.push(renderInnerHTMLAction);
     }
+
+    // we check for `dom:focused` to be truthy
+    if ($props['dom:focused']) {
+      // create a new action that will focus the element when mounted
+
+      const focusAction = createAction(ActionType.Mounted, branch, (branch: Branch) => {
+        (branch.instance as HTMLElement).focus?.();
+      });
+
+      branch.pendingActions.push(focusAction);
+    }
   } else {
     // update props
     const propsDiff = diffElementProps(branch.props, $props);

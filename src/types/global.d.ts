@@ -1,7 +1,7 @@
 import type { Arrayable } from '@riadh-adrani/type-utils';
 import type { StringWithAutoComplete } from '@riadh-adrani/obj-utils';
 import { BranchTemplate } from '../branch/types.js';
-import { Any, DOMEvent, DOMEventHandler, Selector, UtilityProps } from './index.js';
+import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
 import { NamedNavigationRequest } from '../router/types.js';
 
 declare global {
@@ -1015,7 +1015,14 @@ declare global {
 
   type DomElementRef<E> = { value: E | undefined };
 
-  type BaseProps<E> = Partial<UtilityProps & { ref: DomElementRef<E>; 'dom:tag': string }>;
+  type DomSpecificAttributes<E> = {
+    'dom:tag': string;
+    'dom:focused': boolean;
+    'dom:innerHTML': string;
+    ref: DomElementRef<E>;
+  };
+
+  type BaseProps<E> = Partial<UtilityProps & DomSpecificAttributes<E>>;
 
   type BaseHTMLProps = Pick<
     HTMLAttributes,

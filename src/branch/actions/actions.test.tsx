@@ -18,6 +18,7 @@ import {
   createElPropsUpdateAction,
   createTextUpdateAction,
   createRenderInnerHTMLAction,
+  createMountedCallbackAction,
 } from './actions.js';
 import { diffElementProps } from '../components/element/element.js';
 import { cast } from '@riadh-adrani/type-utils';
@@ -412,5 +413,24 @@ describe('updateElProps', () => {
 
     createTextUpdateAction(div.children[0], 'Hello')();
     expect(document.body.innerHTML).toBe('<div>Hello</div>');
+  });
+});
+
+describe('mountedCallback', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('should focus element', () => {
+    const parent = createRoot(document.body, null);
+
+    const input = handleComponent<string>(<input />, undefined, parent, 0);
+    commit(collectActions(input));
+
+    createMountedCallbackAction(input, branch => {
+      (branch.instance as HTMLElement).focus?.();
+    })();
+
+    expect(document.activeElement).toStrictEqual(input.instance);
   });
 });

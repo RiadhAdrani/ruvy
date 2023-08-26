@@ -299,8 +299,10 @@ export const IgnoredProps = [
   'switch',
   'case',
   'case:default',
+
   'dom:innerHTML',
   'dom:tag',
+  'dom:focused',
 ];
 
 /**
