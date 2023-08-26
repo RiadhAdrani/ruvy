@@ -1272,6 +1272,7 @@ declare global {
     | 'required'
     | 'spellcheck'
     | 'wrap'
+    | 'rows'
   >;
 
   type DetailsProps = Pick<HTMLAttributes, 'open'>;
