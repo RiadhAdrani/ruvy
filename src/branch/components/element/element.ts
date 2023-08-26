@@ -71,7 +71,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
       props: $props,
     });
 
-  const innerHTML = $props.innerHTML;
+  const innerHTML = $props['dom:innerHTML'];
 
   const skipChildrenProcessing = getType(innerHTML) === 'string';
 

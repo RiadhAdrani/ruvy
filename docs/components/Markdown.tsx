@@ -73,5 +73,5 @@ export default ({ content }: MarkdownProps) => {
     }
   }, content);
 
-  return <div class="markdown-container w-100%" ref={ref} innerHTML={sanitizedContent} />;
+  return <div class="markdown-container w-100%" ref={ref} dom:innerHTML={sanitizedContent} />;
 };

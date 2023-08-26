@@ -1045,7 +1045,7 @@ declare global {
      *
      * Be aware that using this attribute will cause children processing to be skipped entirely.
      */
-    innerHTML: string;
+    'dom:innerHTML': string;
   }
 
   type HTMLElementProps<E extends Element = HTMLElement, T extends object = object> = Record<

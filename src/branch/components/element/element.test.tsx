@@ -45,7 +45,7 @@ describe('handleElementComponent', () => {
   it('should skip children processing when innerHTML is defined', () => {
     const parent = initBranch();
 
-    const out = handleElementComponent(<div innerHTML="test" />, undefined, parent, 0);
+    const out = handleElementComponent(<div dom:innerHTML="test" />, undefined, parent, 0);
 
     expect(out.skipChildrenProcessing).toBe(true);
   }),

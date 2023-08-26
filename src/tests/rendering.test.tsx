@@ -246,7 +246,7 @@ describe('Rendering', () => {
         return (
           <>
             <button onClick={() => set('2')} />
-            <div innerHTML={value} />
+            <div dom:innerHTML={value} />
           </>
         );
       };
