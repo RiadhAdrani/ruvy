@@ -27,51 +27,53 @@ export default ({ content }: MarkdownProps) => {
   );
 
   useEffect(() => {
-    if (ref.value) {
-      Prism.highlightAll();
+    if (!ref.value) return;
 
-      // we need to make every code block clickable which will copy its content:
-      ref.value.querySelectorAll(`.markdown-container pre[class*='language-']`).forEach(it => {
-        it.addEventListener('click', () => {
-          const content = it.textContent;
+    ref.value.innerHTML = sanitizedContent;
 
-          if (content === null) {
-            return;
-          }
+    Prism.highlightAll();
 
-          navigator.clipboard
-            .writeText(content)
-            .then(() => {
-              alert('Snippet copied !');
-            })
-            .catch(error => {
-              console.error('Failed to copy text to clipboard:', error);
-            });
-        });
-      });
+    // we need to make every code block clickable which will copy its content:
+    ref.value.querySelectorAll(`.markdown-container pre[class*='language-']`).forEach(it => {
+      it.addEventListener('click', () => {
+        const content = it.textContent;
 
-      const router = getCurrent().router;
-
-      ref.value.querySelectorAll('a').forEach(it => {
-        const href = it.getAttribute('href');
-
-        if (!href) return;
-
-        if (router.isNavigatable(href)) {
-          it.setAttribute('href', router.buildHrefFromRequest(href) ?? '');
+        if (content === null) {
+          return;
         }
+
+        navigator.clipboard
+          .writeText(content)
+          .then(() => {
+            alert('Snippet copied !');
+          })
+          .catch(error => {
+            console.error('Failed to copy text to clipboard:', error);
+          });
       });
+    });
 
-      const hash = location.hash;
+    const router = getCurrent().router;
 
-      if (isBlank(hash)) return;
+    ref.value.querySelectorAll('a').forEach(it => {
+      const href = it.getAttribute('href');
 
-      setTimeout(() => {
-        const view = ref.value?.querySelector(hash);
-        view?.scrollIntoView();
-      }, 100);
-    }
+      if (!href) return;
+
+      if (router.isNavigatable(href)) {
+        it.setAttribute('href', router.buildHrefFromRequest(href) ?? '');
+      }
+    });
+
+    const hash = location.hash;
+
+    if (isBlank(hash)) return;
+
+    setTimeout(() => {
+      const view = ref.value?.querySelector(hash);
+      view?.scrollIntoView();
+    }, 100);
   }, content);
 
-  return <div class="markdown-container w-100%" ref={ref} dom:innerHTML={sanitizedContent} />;
+  return <div class="markdown-container w-100%" ref={ref} />;
 };
