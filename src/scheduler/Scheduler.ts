@@ -4,6 +4,8 @@ export default class Scheduler {
   stack: Array<Task> = [];
   current: Task | undefined;
 
+  count = 0;
+
   enqueue(task: Task) {
     const index = this.stack.findIndex($task => task.type === $task.type);
 
@@ -31,6 +33,8 @@ export default class Scheduler {
     }
 
     this.current.callback();
+
+    this.count = this.count + 1;
     this.current = undefined;
 
     if (this.stack.length !== 0) {

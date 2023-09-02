@@ -81,6 +81,7 @@ describe('Scheduler class', () => {
     expect(scheduler.stack).toStrictEqual([]);
     expect(callback).toHaveBeenCalledTimes(2);
     expect(scheduler.current).toBe(undefined);
+    expect(scheduler.count).toBe(2);
   });
 
   it('should enqueue a new task', () => {
