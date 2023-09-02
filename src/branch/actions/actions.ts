@@ -222,7 +222,11 @@ export const createReorderHostElement = (branch: Branch): Callback => {
 
     const { index } = getHostBranchIndexFromHostParent(branch);
 
-    changeChildPosition(instance as Element, index);
+    try {
+      changeChildPosition(instance as Element, index);
+    } catch (error) {
+      // parent destoyed
+    }
   };
 };
 

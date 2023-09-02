@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 - `innerHTML` to `dom:innerHTML` to indicate it's framework-specific.
 
+### Fixed
+
+- changing unmounted element position causes the app to crash.
+
 ## 0.4.12 - 2023-08-17
 
 ### Added
