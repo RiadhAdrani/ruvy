@@ -123,4 +123,31 @@ describe('handleElementComponent', () => {
 
     expect(branch.pendingActions.some(it => it.type === ActionType.UpdateProps)).toBe(false);
   });
+
+  it('should create an innerHTML action', () => {
+    const { branch } = handleElementComponent(
+      <div dom:innerHTML="test" />,
+      undefined,
+      initBranch(),
+      0
+    );
+
+    expect(branch.pendingActions.some(it => it.type === ActionType.RenderInnerHTML)).toBe(true);
+  });
+
+  it('should not create an innerHTML action when attribute did not change', () => {
+    const { branch } = handleElementComponent(
+      <div dom:innerHTML="test" />,
+      undefined,
+      initBranch(),
+      0
+    );
+
+    // simulate committing actions
+    branch.pendingActions = [];
+
+    handleElementComponent(<div dom:innerHTML="test" />, branch, initBranch(), 0);
+
+    expect(branch.pendingActions.some(it => it.type === ActionType.RenderInnerHTML)).toBe(false);
+  });
 });

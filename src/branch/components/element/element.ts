@@ -106,7 +106,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
       branch.pendingActions.push(createAction(ActionType.UpdateProps, branch, propsDiff));
     }
 
-    if (innerHTML !== branch.props.innerHTML) {
+    if (innerHTML !== branch.props['dom:innerHTML']) {
       const renderInnerHTMLAction = createAction(ActionType.RenderInnerHTML, branch, innerHTML);
 
       branch.pendingActions.push(renderInnerHTMLAction);

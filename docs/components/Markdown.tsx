@@ -29,7 +29,7 @@ export default ({ content }: MarkdownProps) => {
   useEffect(() => {
     if (!ref.value) return;
 
-    ref.value.innerHTML = sanitizedContent;
+    // ref.value.innerHTML = sanitizedContent;
 
     Prism.highlightAll();
 
@@ -75,5 +75,9 @@ export default ({ content }: MarkdownProps) => {
     }, 100);
   }, content);
 
-  return <div class="markdown-container w-100%" ref={ref} />;
+  return (
+    <>
+      <div class="markdown-container w-100%" ref={ref} dom:innerHTML={sanitizedContent} />
+    </>
+  );
 };
