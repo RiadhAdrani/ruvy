@@ -23,8 +23,6 @@ export * from './types.js';
 export * from './components/components.js';
 export { handleComponent } from './components/components.js';
 
-export { commit, collectActions } from './utils/index.js';
-
 export const Outlet = (): BranchTemplate => null as unknown as BranchTemplate;
 
 export { Fragment } from './components/fragment/fragment.js';

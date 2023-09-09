@@ -42,7 +42,7 @@ export const handlePortalComponent: ComponentFunctionHandler<
     if (newContainer !== oldContainer) {
       current.instance = newContainer;
 
-      current.pendingActions.push(createAction(ActionType.UpdatePortalChildren, current));
+      createAction(ActionType.UpdatePortalChildren, current);
     }
 
     branch.props = props;

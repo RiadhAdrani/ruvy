@@ -20,11 +20,11 @@ export const handleTextComponent: ComponentFunctionHandler<string, BranchTag.Tex
     });
 
   if (!current) {
-    branch.pendingActions.push(createAction(ActionType.Render, branch));
+    createAction(ActionType.Render, branch);
   } else {
-    // we check if text are different
+    // we check if texts are different
     if (!areEqual(current.text, template)) {
-      current.pendingActions.push(createAction(ActionType.UpdateText, current, template));
+      createAction(ActionType.UpdateText, current, template);
 
       current.text = template;
     }

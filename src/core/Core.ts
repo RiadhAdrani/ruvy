@@ -13,10 +13,11 @@ import {
   createTemplate,
   Branch,
   RuvyNode,
-  collectActions,
-  commit,
   handleComponent,
   createRoot,
+  BranchAction,
+  ActionType,
+  ActionsSorted,
 } from '../branch/index.js';
 import { DOMEvent } from '../types/index.js';
 import getRouteFromUrl, { getPathFromURL } from '../router/utils/getRouteFromUrl.js';
@@ -29,6 +30,8 @@ export class Core {
   current: Branch = undefined as unknown as Branch;
   host: HTMLElement = undefined as unknown as HTMLElement;
 
+  pendingActions: { [key in ActionType]?: Array<BranchAction> } = {};
+
   shouldUpdate = false;
   batchContext = new Context<boolean>();
   scheduler = new Scheduler();
@@ -37,6 +40,32 @@ export class Core {
 
   constructor() {
     Core.singleton = this;
+  }
+
+  /**
+   * @untested
+   */
+  queueAction(action: BranchAction): void {
+    const { type } = action;
+
+    if (!this.pendingActions[type]) {
+      this.pendingActions[type] = [];
+    }
+
+    this.pendingActions[type]?.push(action);
+  }
+
+  /**
+   * @untested
+   */
+  commitActions(): void {
+    ActionsSorted.forEach(type => this.pendingActions[type]?.forEach(action => action.callback()));
+
+    this.resetActions();
+  }
+
+  resetActions(): void {
+    this.pendingActions = {};
   }
 
   executeRoutine(isUpdate = true) {
@@ -56,7 +85,7 @@ export class Core {
       handleComponent(template, this.current.children[0], this.current, 0);
     }
 
-    commit(collectActions(this.current));
+    this.commitActions();
 
     this.shouldUpdate = false;
   }

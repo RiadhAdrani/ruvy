@@ -56,23 +56,25 @@ export enum ActionType {
   Mounted = '#-action-on-mounted',
 }
 
+export const ActionsSorted = [
+  ActionType.Unmount,
+  ActionType.Render,
+  ActionType.RenderInnerHTML,
+  ActionType.Unmounted,
+  ActionType.RemoveBranch,
+  ActionType.Reorder,
+  ActionType.UpdatePortalChildren,
+  ActionType.UpdateProps,
+  ActionType.UpdateText,
+  ActionType.Mounted,
+  ActionType.Cleanup,
+  ActionType.Effect,
+];
+
 export const ActionPriority: { [key in ActionType]: number } = (() => {
   const items = {} as unknown as { [key in ActionType]: number };
 
-  [
-    ActionType.Unmount,
-    ActionType.Render,
-    ActionType.RenderInnerHTML,
-    ActionType.Unmounted,
-    ActionType.RemoveBranch,
-    ActionType.Reorder,
-    ActionType.UpdatePortalChildren,
-    ActionType.UpdateProps,
-    ActionType.UpdateText,
-    ActionType.Mounted,
-    ActionType.Cleanup,
-    ActionType.Effect,
-  ].forEach((key, index) => (items[key] = index));
+  ActionsSorted.forEach((key, index) => (items[key] = index));
 
   return items;
 })();
@@ -155,6 +157,7 @@ export interface BranchAction {
   requestTime: number;
   callback: Callback;
   debug?: unknown;
+  branch: Branch;
 }
 
 export interface Branch<Type = unknown> {
@@ -163,7 +166,6 @@ export interface Branch<Type = unknown> {
   type: Type;
   props: BranchProps;
   hooks: BranchHooks;
-  pendingActions: Array<BranchAction>;
   parent?: Branch;
   status: BranchStatus;
   children: Array<Branch>;

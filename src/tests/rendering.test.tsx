@@ -1,7 +1,7 @@
 import { Portal, useEffect, useMemo, useState } from '../index.js';
 import { Core, batch, mountApp } from '../core/Core.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
-import { runAfter } from '@riadh-adrani/async-utils';
+import { runAfter, wait } from '@riadh-adrani/async-utils';
 import { Fragment } from '../branch/components/fragment/fragment.js';
 
 describe('Rendering', () => {
@@ -106,7 +106,7 @@ describe('Rendering', () => {
     });
   });
 
-  describe('switch case case:default directives', () => {
+  describe('switch case case:default directives', async () => {
     it('should render first children with fullfilled switch case', () => {
       const App = () => {
         return (
@@ -152,9 +152,9 @@ describe('Rendering', () => {
 
       expect(document.body.innerHTML).toBe('<div><div class="0"></div></div>');
 
-      await runAfter(() => {
-        expect(document.body.innerHTML).toBe('<div><div class="5"></div></div>');
-      }, 30);
+      await wait(30);
+
+      expect(document.body.innerHTML).toBe('<div><div class="5"></div></div>');
     });
   });
 

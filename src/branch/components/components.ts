@@ -5,7 +5,7 @@ import {
   FragmentType,
   JsxFragmentType,
 } from '../types.js';
-import { collectPendingEffect, getCorrectKey, getTag, moveElement } from '../utils/index.js';
+import { getCorrectKey, getTag, moveElement } from '../utils/index.js';
 import { haveSameTagAndType } from '../utils/index.js';
 import {
   ActionType,
@@ -91,9 +91,7 @@ export const arrangeChildren = (current: Branch, children: Array<unknown>) => {
       // we need to get Host element(s) and rearrange them
       const hosts = getClosestChildrenHostBranches(branch);
 
-      hosts.forEach(host => {
-        current.pendingActions.push(createAction(ActionType.Reorder, host));
-      });
+      hosts.forEach(host => createAction(ActionType.Reorder, host));
     }
   });
 };
@@ -226,9 +224,6 @@ export const handleComponent = <T = unknown>(
   }
 
   const { branch, unprocessedChildren } = res;
-
-  // collect pending effects
-  branch.pendingActions.push(...collectPendingEffect(branch));
 
   // process children
   const children = preprocessChildren(unprocessedChildren, branch);

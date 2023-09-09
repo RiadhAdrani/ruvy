@@ -18,7 +18,6 @@ describe('handleEmptyComponent', () => {
       children: [],
       hooks: {},
       key: 0,
-      pendingActions: [],
       props: {},
       status: BranchStatus.Mounted,
       tag: BranchTag.Null,
