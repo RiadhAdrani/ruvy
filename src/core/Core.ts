@@ -42,9 +42,6 @@ export class Core {
     Core.singleton = this;
   }
 
-  /**
-   * @untested
-   */
   queueAction(action: BranchAction): void {
     const { type } = action;
 
@@ -55,11 +52,16 @@ export class Core {
     this.pendingActions[type]?.push(action);
   }
 
-  /**
-   * @untested
-   */
+  commitAction(action: BranchAction): void {
+    try {
+      action.callback();
+    } catch (error) {
+      // nope
+    }
+  }
+
   commitActions(): void {
-    ActionsSorted.forEach(type => this.pendingActions[type]?.forEach(action => action.callback()));
+    ActionsSorted.forEach(type => this.pendingActions[type]?.forEach(this.commitAction));
 
     this.resetActions();
   }

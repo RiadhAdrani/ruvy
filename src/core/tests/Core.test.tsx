@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vitest } from 'vitest';
 import { Core, createRouter, getSearchParams } from '../Core.js';
+import { ActionType, BranchAction } from '../../branch/types.js';
+import { initBranch } from '../../branch/utils/index.js';
+import { Callback } from '@riadh-adrani/type-utils';
 
 describe('Core', () => {
   let core: Core;
@@ -132,6 +135,109 @@ describe('Core', () => {
       Core.singleton.router.push('/user?q=test&n=');
 
       expect(getSearchParams()).toStrictEqual({ q: 'test', n: '' });
+    });
+  });
+
+  describe('queueAction', () => {
+    const action: BranchAction = {
+      branch: initBranch(),
+      callback: () => 0,
+      requestTime: Date.now(),
+      type: ActionType.Render,
+    };
+
+    it('should add the action in the correct queue', () => {
+      Core.singleton.queueAction(action);
+
+      expect(Core.singleton.pendingActions).toStrictEqual({ [ActionType.Render]: [action] });
+    });
+
+    it('should create action queue for the first time', () => {
+      Core.singleton.queueAction(action);
+
+      expect(Core.singleton.pendingActions).toBeDefined();
+    });
+  });
+
+  describe('commitAction', () => {
+    let callback: Callback;
+    let action: BranchAction;
+
+    beforeEach(() => {
+      callback = vitest.fn();
+
+      action = {
+        branch: initBranch(),
+        callback,
+        requestTime: Date.now(),
+        type: ActionType.Render,
+      };
+    });
+
+    it('should run callback', () => {
+      Core.singleton.commitAction(action);
+
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('should catch error', () => {
+      action.callback = () => {
+        throw 'error !';
+      };
+
+      Core.singleton.commitAction(action);
+
+      expect(callback).not.toThrow('error !');
+    });
+  });
+
+  describe('resetActions', () => {
+    it('should reset action queues', () => {
+      const action: BranchAction = {
+        branch: initBranch(),
+        callback: () => 0,
+        requestTime: Date.now(),
+        type: ActionType.Render,
+      };
+
+      Core.singleton.queueAction(action);
+      Core.singleton.queueAction(action);
+
+      Core.singleton.resetActions();
+
+      expect(Core.singleton.pendingActions).toStrictEqual({});
+    });
+  });
+
+  describe('commitActions', () => {
+    let callback: Callback;
+    let action: BranchAction;
+
+    beforeEach(() => {
+      callback = vitest.fn();
+
+      action = {
+        branch: initBranch(),
+        callback,
+        requestTime: Date.now(),
+        type: ActionType.Render,
+      };
+    });
+
+    it('should run actions', () => {
+      Core.singleton.queueAction(action);
+
+      Core.singleton.commitActions();
+
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('should reset actions', () => {
+      Core.singleton.queueAction(action);
+
+      Core.singleton.commitActions();
+
+      expect(Core.singleton.pendingActions).toStrictEqual({});
     });
   });
 });
