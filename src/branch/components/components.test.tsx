@@ -12,8 +12,9 @@ import {
   removeChildrenExcess,
 } from './components.js';
 import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from '../types.js';
-import { collectActions, commit, initBranch } from '../utils/index.js';
+import { initBranch } from '../utils/index.js';
 import { Fragment } from './fragment/fragment.js';
+import { getCurrent } from '../../core/Core.js';
 
 createFragmentTemplate;
 createJsxElement;
@@ -24,6 +25,8 @@ describe('handleComponent', () => {
   let App: Branch;
 
   beforeEach(() => {
+    getCurrent().resetActions();
+
     document.body.innerHTML = '';
 
     App = root(
@@ -35,7 +38,7 @@ describe('handleComponent', () => {
       </div>
     );
 
-    commit(collectActions(App));
+    getCurrent().commitActions();
   });
 
   it('should create a function branch', () => {
@@ -132,7 +135,7 @@ describe('handleComponent', () => {
 
       arrangeChildren(branch, [<input key={2} />, <div key={0} />, <button key={1} />]);
 
-      expect(branch.pendingActions.filter(a => a.type === ActionType.Reorder).length).toBe(1);
+      expect(getCurrent().pendingActions[ActionType.Reorder]?.length).toBe(1);
     });
 
     it('should rearrange children', () => {
@@ -140,7 +143,7 @@ describe('handleComponent', () => {
 
       arrangeChildren(branch, [<input key={2} />, <button key={1} />, <div key={0} />]);
 
-      expect(branch.pendingActions.filter(a => a.type === ActionType.Reorder).length).toBe(2);
+      expect(getCurrent().pendingActions[ActionType.Reorder]?.length).toBe(2);
     });
   });
 

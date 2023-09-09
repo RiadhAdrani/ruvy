@@ -4,19 +4,29 @@ import { createJsxElement } from '../../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { diffElementProps, handleElementComponent } from './element.js';
 import { initBranch } from '../../utils/index.js';
-import { ActionType, BranchStatus, BranchTag, BranchTemplate } from '../../types.js';
+import { ActionType, Branch, BranchStatus, BranchTag, BranchTemplate } from '../../types.js';
 import { omit } from '@riadh-adrani/obj-utils';
+import { getCurrent } from '../../../core/Core.js';
+import { createRoot } from '../components.js';
 
 createJsxElement;
 
 describe('handleElementComponent', () => {
+  let root: Branch;
+
   beforeEach(() => {
     document.body.innerHTML = '';
+
+    getCurrent().resetActions();
+
+    root = createRoot(document.body, null);
   });
 
   it('should create a new element branch', () => {
     const parent = initBranch();
+
     const jsx = <div></div>;
+
     const div = handleElementComponent(
       jsx as unknown as BranchTemplate<string>,
       undefined,
@@ -36,10 +46,9 @@ describe('handleElementComponent', () => {
       unmountedChildren: [],
     });
 
-    expect(div.pendingActions.length).toBe(1);
+    const pending = getCurrent().pendingActions[ActionType.Render];
 
-    const { type } = div.pendingActions[0];
-    expect(type).toBe(ActionType.Render);
+    expect(pending?.length).toBe(1);
   });
 
   it('should skip children processing when innerHTML is defined', () => {
@@ -113,41 +122,45 @@ describe('handleElementComponent', () => {
 
     handleElementComponent(<div class="div" />, branch, initBranch(), 0);
 
-    expect(branch.pendingActions.some(it => it.type === ActionType.UpdateProps)).toBe(true);
+    const pending = getCurrent().pendingActions[ActionType.UpdateProps];
+
+    expect(pending?.length).toBe(1);
   });
 
   it('should not add an update props action when not needed', () => {
-    const { branch } = handleElementComponent(<div />, undefined, initBranch(), 0);
+    createRoot(document.body, <div />);
 
-    handleElementComponent(<div />, branch, initBranch(), 0);
+    getCurrent().commitActions();
 
-    expect(branch.pendingActions.some(it => it.type === ActionType.UpdateProps)).toBe(false);
+    handleElementComponent(<div />, root.children[0] as Branch<string>, initBranch(), 0);
+
+    const pending = getCurrent().pendingActions[ActionType.UpdateProps];
+
+    expect(pending?.length).toBe(undefined);
   });
 
   it('should create an innerHTML action', () => {
-    const { branch } = handleElementComponent(
-      <div dom:innerHTML="test" />,
-      undefined,
-      initBranch(),
-      0
-    );
+    handleElementComponent(<div dom:innerHTML="test" />, undefined, initBranch(), 0);
 
-    expect(branch.pendingActions.some(it => it.type === ActionType.RenderInnerHTML)).toBe(true);
+    const pending = getCurrent().pendingActions[ActionType.RenderInnerHTML];
+
+    expect(pending?.length).toBe(1);
   });
 
   it('should not create an innerHTML action when attribute did not change', () => {
-    const { branch } = handleElementComponent(
+    const root = createRoot(document.body, <div dom:innerHTML="test" />);
+
+    getCurrent().commitActions();
+
+    handleElementComponent(
       <div dom:innerHTML="test" />,
-      undefined,
+      root.children[0] as Branch<string>,
       initBranch(),
       0
     );
 
-    // simulate committing actions
-    branch.pendingActions = [];
+    const pending = getCurrent().pendingActions[ActionType.RenderInnerHTML];
 
-    handleElementComponent(<div dom:innerHTML="test" />, branch, initBranch(), 0);
-
-    expect(branch.pendingActions.some(it => it.type === ActionType.RenderInnerHTML)).toBe(false);
+    expect(pending?.length).toBe(undefined);
   });
 });

@@ -28,7 +28,6 @@ describe('handleCallable', () => {
     expect(omit(branch.branch, 'children')).toStrictEqual({
       hooks: {},
       key: 0,
-      pendingActions: [],
       props: { text: 1, children: [] },
       status: BranchStatus.Mounted,
       tag: BranchTag.Function,
@@ -59,7 +58,6 @@ describe('handleCallable', () => {
         },
       },
       key: 0,
-      pendingActions: [],
       props: { children: [] },
       status: BranchStatus.Mounted,
       tag: BranchTag.Function,

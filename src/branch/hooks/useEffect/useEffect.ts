@@ -102,6 +102,7 @@ export const collectEffects = (branch: Branch): Array<Omit<BranchAction, 'reques
         effects.push({
           callback: data.pendingCleanUp,
           type: ActionType.Cleanup,
+          branch,
         });
       }
 
@@ -109,6 +110,7 @@ export const collectEffects = (branch: Branch): Array<Omit<BranchAction, 'reques
         effects.push({
           callback: data.pendingEffect,
           type: ActionType.Effect,
+          branch,
         });
       }
     }

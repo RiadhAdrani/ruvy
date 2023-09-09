@@ -6,7 +6,7 @@ import {
   ComponentFunctionHandler,
 } from '../../types.js';
 import { useHooksContext } from '../../hooks/index.js';
-import { initBranch } from '../../utils/index.js';
+import { collectPendingEffect, initBranch } from '../../utils/index.js';
 
 export const handleCallableComponent: ComponentFunctionHandler<BranchTemplateFunction> = (
   template,
@@ -26,6 +26,8 @@ export const handleCallableComponent: ComponentFunctionHandler<BranchTemplateFun
   } else {
     branch.status = BranchStatus.Mounted;
   }
+
+  collectPendingEffect(branch);
 
   return { branch, unprocessedChildren: [child] };
 };

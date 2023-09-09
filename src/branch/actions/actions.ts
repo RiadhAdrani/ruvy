@@ -39,6 +39,7 @@ import {
   setTextNodeData,
 } from '@riadh-adrani/dom-utils';
 import { DOMEventHandler } from '../../index.js';
+import { getCurrent } from '../../core/Core.js';
 
 /**
  * create an branch action
@@ -96,18 +97,23 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     }
   }
 
-  const action: BranchAction = {
-    callback: () => {
-      // execute action
-      callback();
+  if (!callback) {
+    callback = () => 0;
 
-      // remove action from branch
-      branch.pendingActions = branch.pendingActions.filter(item => item !== action);
-    },
+    console.warn(
+      `Unexpected Input: The creation of an action of type ${type} failed to produce a callback.`
+    );
+  }
+
+  const action: BranchAction = {
+    callback,
     requestTime: Date.now(),
     type,
     debug: branch,
+    branch,
   };
+
+  getCurrent().queueAction(action);
 
   return action;
 };

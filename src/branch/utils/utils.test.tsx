@@ -30,9 +30,6 @@ import {
   isValidTextChild,
   isValidTemplate,
   unmountBranch,
-  collectActions,
-  commit,
-  actionsSorter,
   isValidEventKey,
   getEventFlags,
 } from './index.js';
@@ -49,17 +46,19 @@ import {
 import { createElement, injectNode } from '@riadh-adrani/dom-utils';
 import { createTemplate } from '../create/index.js';
 import root from '../components/root/root.js';
-import { Outlet, Portal, useState } from '../index.js';
+import { Outlet, Portal } from '../index.js';
 import { omit } from '@riadh-adrani/obj-utils';
-import { shuffle } from '@riadh-adrani/array-utils';
-import createAction from '../actions/actions.js';
 import { createRouter, mountApp } from '../../index.js';
-import { Core } from '../../core/Core.js';
+import { Core, getCurrent } from '../../core/Core.js';
 
 createFragmentTemplate;
 createJsxElement;
 
 describe('utils', () => {
+  beforeEach(() => {
+    getCurrent().resetActions();
+  });
+
   describe('getNamespace', () => {
     it('shoult get namespace from props', () => {
       const branch = initBranch({ props: { ns: Namespace.MATH } });
@@ -844,7 +843,6 @@ describe('haveSameTagAndType', () => {
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Function,
@@ -868,7 +866,6 @@ describe('haveSameTagAndType', () => {
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.JsxFragment,
@@ -882,7 +879,6 @@ describe('haveSameTagAndType', () => {
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Element,
@@ -896,7 +892,6 @@ describe('haveSameTagAndType', () => {
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Text,
@@ -908,7 +903,6 @@ describe('haveSameTagAndType', () => {
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounted,
     tag: BranchTag.Null,
@@ -999,6 +993,12 @@ describe('haveDuplicateKey', () => {
 });
 
 describe('common', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '';
+
+    getCurrent().resetActions();
+  });
+
   it('should be an object of {action type : number}', () => {
     expect(ActionPriority).toStrictEqual({
       [ActionType.Unmount]: 0,
@@ -1015,16 +1015,6 @@ describe('common', () => {
       [ActionType.Effect]: 11,
     });
   });
-
-  beforeEach(() => {
-    document.body.innerHTML = '';
-  });
-
-  const expectPendingActionsToBeEmpty = (branch: Branch) => {
-    expect(branch.pendingActions).toStrictEqual([]);
-
-    branch.children.forEach(expectPendingActionsToBeEmpty);
-  };
 
   describe('unmountBranch', () => {
     let branch: Branch;
@@ -1046,7 +1036,11 @@ describe('common', () => {
 
         unmountBranch(branch);
 
-        expect(branch.pendingActions.some(a => a.type === ActionType.Unmount)).toBe(true);
+        expect(branch.status).toBe(BranchStatus.Unmounting);
+
+        const actions = getCurrent().pendingActions[ActionType.Unmount];
+
+        expect(actions?.length).toBe(1);
       }
     );
 
@@ -1057,7 +1051,9 @@ describe('common', () => {
 
         unmountBranch(branch);
 
-        expect(branch.pendingActions.some(a => a.type === ActionType.Unmount)).toBe(false);
+        const actions = getCurrent().pendingActions[ActionType.Unmounted];
+
+        expect(actions).toBe(undefined);
       }
     );
 
@@ -1067,172 +1063,6 @@ describe('common', () => {
       branch.children.push(...[initBranch(), initBranch()]);
 
       unmountBranch(branch);
-    });
-  });
-
-  describe('commit', () => {
-    it('should render tree into the dom', () => {
-      const App = () => {
-        return (
-          <div>
-            <button>Click me</button>
-          </div>
-        );
-      };
-
-      const branch = root(document.body, <App />);
-
-      const actions = collectActions(branch);
-
-      commit(actions);
-
-      expectPendingActionsToBeEmpty(branch);
-
-      expect(document.body.innerHTML).toBe('<div><button>Click me</button></div>');
-    });
-
-    it('should render tree into the dom (nested Functional component)', () => {
-      const Button = ({ init = 0 }) => {
-        const [count] = useState(init);
-
-        return <button>{count}</button>;
-      };
-
-      const App = () => {
-        return (
-          <div>
-            <Button init={0} />
-            <Button init={1} />
-            <Button init={2} />
-          </div>
-        );
-      };
-
-      const branch = root(document.body, <App />);
-
-      const actions = collectActions(branch);
-
-      commit(actions);
-
-      expect(document.body.innerHTML).toBe(
-        '<div><button>0</button><button>1</button><button>2</button></div>'
-      );
-    });
-
-    it('should render tree into the dom (fragment)', () => {
-      const Button = ({ init = 0 }) => {
-        const [count] = useState(init);
-
-        return <button>{count}</button>;
-      };
-
-      const App = () => {
-        return (
-          <div>
-            <>
-              <Button init={0} />
-              <Button init={1} />
-              <Button init={2} />
-            </>
-          </div>
-        );
-      };
-
-      const branch = root(document.body, <App />);
-
-      const actions = collectActions(branch);
-
-      commit(actions);
-
-      expect(document.body.innerHTML).toBe(
-        '<div><button>0</button><button>1</button><button>2</button></div>'
-      );
-    });
-
-    it('should render tree into the dom with props and events', () => {
-      const onClick = vitest.fn();
-
-      const App = () => {
-        return (
-          <div>
-            <button {...{ onClick }} id={'btn'}>
-              Click me
-            </button>
-          </div>
-        );
-      };
-
-      const branch = root(document.body, <App />);
-
-      const actions = collectActions(branch);
-
-      commit(actions);
-
-      const btn = document.getElementById('btn');
-      btn?.click();
-
-      expect(document.body.innerHTML).toBe(`<div><button id="btn">Click me</button></div>`);
-      expect(onClick).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe('collectActions', () => {
-    const root = initBranch();
-    const parent = initBranch();
-    const child = initBranch();
-
-    root.children = [parent];
-    parent.children = [child];
-
-    root.pendingActions.push(createAction(ActionType.Effect, root));
-    parent.pendingActions.push(createAction(ActionType.Cleanup, parent));
-    child.pendingActions.push(createAction(ActionType.UpdateProps, child));
-
-    it('should collect all actions recursively', () => {
-      const collection = collectActions(root);
-
-      expect(collection.map(c => c.type)).toStrictEqual([
-        ActionType.Effect,
-        ActionType.Cleanup,
-        ActionType.UpdateProps,
-      ]);
-    });
-  });
-
-  describe('ActionSorter', () => {
-    const root = initBranch();
-    const parent = initBranch();
-    const child = initBranch();
-
-    root.children = [parent];
-    parent.children = [child];
-
-    root.pendingActions.push(createAction(ActionType.Effect, root));
-    root.pendingActions.push(createAction(ActionType.RemoveBranch, root));
-
-    parent.pendingActions.push(createAction(ActionType.Cleanup, parent));
-    parent.pendingActions.push(createAction(ActionType.Render, parent));
-    parent.pendingActions.push(createAction(ActionType.Unmount, parent));
-
-    child.pendingActions.push(createAction(ActionType.UpdateProps, child));
-    child.pendingActions.push(createAction(ActionType.UpdateText, child));
-    child.pendingActions.push(createAction(ActionType.Reorder, child));
-
-    it('should order action correclty', () => {
-      const actions = shuffle(collectActions(root));
-
-      const sorted = actions.sort(actionsSorter);
-
-      expect(sorted.map(s => s.type)).toStrictEqual([
-        ActionType.Unmount,
-        ActionType.Render,
-        ActionType.RemoveBranch,
-        ActionType.Reorder,
-        ActionType.UpdateProps,
-        ActionType.UpdateText,
-        ActionType.Cleanup,
-        ActionType.Effect,
-      ]);
     });
   });
 });

@@ -76,26 +76,20 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
   const skipChildrenProcessing = getType(innerHTML) === 'string';
 
   if (!current) {
-    const renderAction = createAction(ActionType.Render, branch);
-
-    branch.pendingActions.push(renderAction);
+    createAction(ActionType.Render, branch);
 
     // check innerHTML
     if (getType(innerHTML) === 'string') {
-      const renderInnerHTMLAction = createAction(ActionType.RenderInnerHTML, branch, innerHTML);
-
-      branch.pendingActions.push(renderInnerHTMLAction);
+      createAction(ActionType.RenderInnerHTML, branch, innerHTML);
     }
 
     // we check for `dom:focused` to be truthy
     if ($props['dom:focused']) {
       // create a new action that will focus the element when mounted
 
-      const focusAction = createAction(ActionType.Mounted, branch, (branch: Branch) => {
+      createAction(ActionType.Mounted, branch, (branch: Branch) => {
         (branch.instance as HTMLElement).focus?.();
       });
-
-      branch.pendingActions.push(focusAction);
     }
   } else {
     // update props
@@ -103,13 +97,11 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
 
     if (propsDiff.length > 0) {
       // create an action to update props
-      branch.pendingActions.push(createAction(ActionType.UpdateProps, branch, propsDiff));
+      createAction(ActionType.UpdateProps, branch, propsDiff);
     }
 
     if (innerHTML !== branch.props['dom:innerHTML']) {
-      const renderInnerHTMLAction = createAction(ActionType.RenderInnerHTML, branch, innerHTML);
-
-      branch.pendingActions.push(renderInnerHTMLAction);
+      createAction(ActionType.RenderInnerHTML, branch, innerHTML);
     }
 
     // override current props

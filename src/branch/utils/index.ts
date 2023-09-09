@@ -14,7 +14,6 @@ import {
 import { Arrayable, Callback, cast } from '@riadh-adrani/type-utils';
 import { isBlank, isString } from '@riadh-adrani/str-utils';
 import {
-  ActionPriority,
   ActionType,
   Branch,
   BranchAction,
@@ -257,7 +256,6 @@ export const initBranch = <T = unknown>(data?: Partial<Branch<T>>): Branch<T> =>
     children: [],
     hooks: {},
     key: 0,
-    pendingActions: [],
     props: {},
     status: BranchStatus.Mounting,
     tag: BranchTag.Null,
@@ -772,51 +770,13 @@ export const unmountBranch = (branch: Branch): void => {
 
   // check if branch is element or text
   if (isHostBranch(branch)) {
-    branch.pendingActions.push(createAction(ActionType.Unmount, branch));
+    createAction(ActionType.Unmount, branch);
   }
 
-  branch.pendingActions.push(...collectPendingEffect(branch));
+  collectEffects(branch).forEach(it => createAction(it.type, it.branch, it.callback));
 
   // apply recursively
   branch.children.forEach(unmountBranch);
-};
-
-export const actionsSorter = (a1: BranchAction, a2: BranchAction): number => {
-  if (ActionPriority[a1.type] === ActionPriority[a2.type]) {
-    return a1.requestTime - a2.requestTime;
-  }
-
-  return ActionPriority[a1.type] - ActionPriority[a2.type];
-};
-
-export const collectActions = (branch: Branch): Array<BranchAction> => {
-  const actions: Array<BranchAction> = [];
-
-  if (branch.old) {
-    actions.push(...collectActions(branch.old));
-  }
-
-  actions.push(...branch.pendingActions);
-
-  branch.unmountedChildren.forEach(child => {
-    actions.push(...collectActions(child));
-  });
-
-  branch.children.forEach(child => {
-    actions.push(...collectActions(child));
-  });
-
-  return actions;
-};
-
-/**
- * sort and commit changes in the DOM.
- * @param root tree root
- */
-export const commit = (actions: Array<BranchAction>) => {
-  const sorted = actions.sort(actionsSorter);
-
-  sorted.forEach(a => a.callback());
 };
 
 /**

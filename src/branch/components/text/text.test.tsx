@@ -1,15 +1,20 @@
 /** @jsx createJsxElement */
 
 import { createJsxElement } from '../../create/index.js';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { ActionType, BranchStatus, BranchTag } from '../../types.js';
 import { handleTextComponent } from './text.js';
 import { omit } from '@riadh-adrani/obj-utils';
+import { getCurrent } from '../../../core/Core.js';
 
 createJsxElement;
 
 describe('handleTextComponent', () => {
+  beforeEach(() => {
+    getCurrent().resetActions();
+  });
+
   const parent = initBranch();
 
   it('should create a text branch', () => {
@@ -28,9 +33,7 @@ describe('handleTextComponent', () => {
       unmountedChildren: [],
     });
 
-    expect(branch.pendingActions.length).toBe(1);
-    expect(branch.pendingActions[0].type).toBe(ActionType.Render);
-
+    expect(getCurrent().pendingActions[ActionType.Render]?.length).toBe(1);
     expect(unprocessedChildren).toStrictEqual([]);
   });
 
@@ -40,6 +43,6 @@ describe('handleTextComponent', () => {
     handleTextComponent('world', branch, parent, 0);
 
     expect(branch.text).toStrictEqual('world');
-    expect(branch.pendingActions.some(it => it.type === ActionType.UpdateText)).toBe(true);
+    expect(getCurrent().pendingActions[ActionType.UpdateText]?.length).toBe(1);
   });
 });

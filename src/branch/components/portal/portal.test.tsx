@@ -7,6 +7,7 @@ import { Portal, handlePortalComponent } from './portal.js';
 import { pick } from '@riadh-adrani/obj-utils';
 import { ActionType, BranchTag } from '../../../branch/types.js';
 import { createElement } from '@riadh-adrani/dom-utils';
+import { getCurrent } from '../../../core/Core.js';
 
 createJsxElement;
 
@@ -14,6 +15,8 @@ describe('handlePortalComponent', () => {
   const parent = initBranch();
 
   beforeEach(() => {
+    getCurrent().resetActions();
+
     document.body.innerHTML = '';
   });
 
@@ -74,8 +77,10 @@ describe('handlePortalComponent', () => {
       0
     );
 
+    getCurrent().commitActions();
+
     handlePortalComponent(<Portal container={document.body}>Hello</Portal>, branch, parent, 0);
 
-    expect(branch.pendingActions[0].type).toStrictEqual(ActionType.UpdatePortalChildren);
+    expect(getCurrent().pendingActions[ActionType.UpdatePortalChildren]?.length).toBe(1);
   });
 });
