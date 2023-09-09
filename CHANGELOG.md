@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Changed
+
+- optimized `actions` by collecting them while traversing the tree.
+
 ## 0.4.13 - 2023-09-02
 
 ### Added

@@ -24,6 +24,7 @@ import { diffElementProps } from '../components/element/element.js';
 import { cast } from '@riadh-adrani/type-utils';
 import { getCurrent } from '../../core/Core.js';
 import { pick } from '@riadh-adrani/obj-utils';
+import { msg } from '../../helpers/alert.js';
 
 createJsxElement;
 createFragmentTemplate;
@@ -59,17 +60,15 @@ describe('actions', () => {
 
       expect(getCurrent().pendingActions).toStrictEqual({ [ActionType.Render]: [action] });
     });
+
+    it('should throw when type is unknown', () => {
+      expect(() => createAction('my-action' as ActionType, branch)).toThrow(
+        msg(`unknown action type "my-action"`)
+      );
+    });
   });
 
   describe('createMovePortalChildren', () => {
-    beforeEach(() => {
-      document.body.innerHTML = '';
-    });
-
-    afterAll(() => {
-      document.body.innerHTML = '';
-    });
-
     it('should move all portal children instances to the new location', () => {
       const children = createElement('button', { children: 'Hello' });
 

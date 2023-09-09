@@ -40,6 +40,7 @@ import {
 } from '@riadh-adrani/dom-utils';
 import { DOMEventHandler } from '../../index.js';
 import { getCurrent } from '../../core/Core.js';
+import { msg } from '../../helpers/alert.js';
 
 /**
  * create an branch action
@@ -93,7 +94,7 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
       break;
     }
     default: {
-      throw `Unknown action type (${type})`;
+      throw msg(`unknown action type "${type}"`);
     }
   }
 
