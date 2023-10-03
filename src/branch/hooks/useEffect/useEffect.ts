@@ -11,7 +11,7 @@ import {
   UseEffectParams,
 } from '../../types.js';
 import { dispatchHook } from '../index.js';
-import { batch } from '../../../core/Core.js';
+import { batch } from '../../../core/core.js';
 
 /**
  * schedule a callback effect to run once, or every time `deps` changes.

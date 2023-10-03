@@ -2,7 +2,7 @@
 
 import { describe, expect, beforeEach, it } from 'vitest';
 import { createJsxElement } from '../../create/index.js';
-import { Core, createRouter } from '../../../core/Core.js';
+import { Core, createRouter } from '../../../core/core.js';
 import { Outlet } from '../../index.js';
 import { initBranch } from '../../utils/index.js';
 import { handleOutletComponent } from './outlet.js';

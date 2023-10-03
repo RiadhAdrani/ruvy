@@ -17,6 +17,7 @@ jest.config.js
 vite.config.ts
 vite.dev.config.ts
 tsconfig.json
+tsconfig.build.dts.json
 tsconfig.build.json
 package-lock.json
 yarn.lock

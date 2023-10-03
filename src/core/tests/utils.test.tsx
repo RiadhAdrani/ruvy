@@ -1,5 +1,5 @@
 import { describe, beforeEach, it, expect } from 'vitest';
-import { mountApp } from '../Core.js';
+import { mountApp } from '../core.js';
 import { getClosestAnchorParent } from '../utils.js';
 
 describe('Core utils', () => {

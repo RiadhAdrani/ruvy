@@ -4,8 +4,8 @@
   "exclude": ["**/*.test.ts", "**/*.test.tsx", "./src/dev", "./docs"],
   "compilerOptions": {
     "types": [],
-    "declaration": false,
-    "emitDeclarationOnly": false,
-    "removeComments": true
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "removeComments": false
   }
 }

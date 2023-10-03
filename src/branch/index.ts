@@ -9,8 +9,6 @@ export {
   useId,
   useContext,
   createContext,
-  useReactive,
-  usePromise,
 } from './hooks/index.js';
 
 import { createFragmentTemplate } from './create/index.js';

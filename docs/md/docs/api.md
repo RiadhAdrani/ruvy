@@ -24,7 +24,6 @@ Here is the full list of the `API` methods :
 - [`useContext`](/docs/api/useContext)
 - [`useId`](/docs/api/useId)
 - [`useReactive`](/docs/api/useReactive)
-- [`usePromise`](/docs/api/usePromise)
 
 <br/>
 

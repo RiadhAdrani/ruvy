@@ -6,7 +6,7 @@ import { diffElementProps, handleElementComponent } from './element.js';
 import { initBranch } from '../../utils/index.js';
 import { ActionType, Branch, BranchStatus, BranchTag, BranchTemplate } from '../../types.js';
 import { omit } from '@riadh-adrani/obj-utils';
-import { getCurrent } from '../../../core/Core.js';
+import { getCurrent } from '../../../core/core.js';
 import { createRoot } from '../components.js';
 
 createJsxElement;

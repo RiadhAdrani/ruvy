@@ -22,7 +22,7 @@ import createAction, {
 } from './actions.js';
 import { diffElementProps } from '../components/element/element.js';
 import { cast } from '@riadh-adrani/type-utils';
-import { getCurrent } from '../../core/Core.js';
+import { getCurrent } from '../../core/core.js';
 import { pick } from '@riadh-adrani/obj-utils';
 import { msg } from '../../helpers/alert.js';
 

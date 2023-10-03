@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vitest } from 'vitest';
-import { Core, createRouter, getSearchParams } from '../Core.js';
+import { Core, createRouter, getSearchParams } from '../core.js';
 import { ActionType, BranchAction } from '../../branch/types.js';
 import { initBranch } from '../../branch/utils/index.js';
 import { Callback } from '@riadh-adrani/type-utils';

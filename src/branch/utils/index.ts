@@ -29,7 +29,7 @@ import {
 import { DomAttribute, DomEvent, DomEventHandler } from '@riadh-adrani/dom-utils';
 import { Outlet, Portal, createFragmentTemplate } from '../index.js';
 import { Any, CallbackWithArgs, joinClasses } from '../../index.js';
-import { Core, getCurrent } from '../../core/Core.js';
+import { Core, getCurrent } from '../../core/core.js';
 import { collectEffects, unmountEffects } from '../hooks/index.js';
 import createAction from '../actions/actions.js';
 import { NavigationRequest } from '../../router/types.js';

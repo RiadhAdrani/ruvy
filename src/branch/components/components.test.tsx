@@ -14,7 +14,7 @@ import {
 import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from '../types.js';
 import { initBranch } from '../utils/index.js';
 import { Fragment } from './fragment/fragment.js';
-import { getCurrent } from '../../core/Core.js';
+import { getCurrent } from '../../core/core.js';
 
 createFragmentTemplate;
 createJsxElement;

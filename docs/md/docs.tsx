@@ -8,7 +8,6 @@ import useCallback from './docs/api/useCallback.md';
 import useContext from './docs/api/useContext.md';
 import useId from './docs/api/useId.md';
 import useReactive from './docs/api/useReactive.md';
-import usePromise from './docs/api/usePromise.md';
 import createContext from './docs/api/createContext.md';
 import createRouter from './docs/api/createRouter.md';
 import getParams from './docs/api/getParams.md';
@@ -43,7 +42,6 @@ export const ApiSections: Array<DocItem> = [
   { path: 'useContext', component: useContext, title: 'useContext' },
   { path: 'useId', component: useId, title: 'useId' },
   { path: 'useReactive', component: useReactive, title: 'useReactive' },
-  { path: 'usePromise', component: usePromise, title: 'usePromise' },
   { path: 'createContext', component: createContext, title: 'createContext' },
   { path: 'getParams', component: getParams, title: 'getParams' },
   { path: 'getSearchParams', component: getSearchParams, title: 'getSearchParams' },

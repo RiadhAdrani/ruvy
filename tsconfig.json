@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "ES2016",
     "useDefineForClassFields": true,
-    "module": "ES2020",
+    "module": "NodeNext",
     "lib": ["ESNext", "DOM"],
-    "moduleResolution": "node16",
+    "moduleResolution": "NodeNext",
     "outDir": "build",
     "strict": true,
     "declaration": true,

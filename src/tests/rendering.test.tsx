@@ -1,5 +1,5 @@
 import { Portal, useEffect, useMemo, useState } from '../index.js';
-import { Core, batch, mountApp } from '../core/Core.js';
+import { Core, batch, mountApp } from '../core/core.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { runAfter, wait } from '@riadh-adrani/async-utils';
 import { Fragment } from '../branch/components/fragment/fragment.js';

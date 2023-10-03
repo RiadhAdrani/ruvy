@@ -7,7 +7,7 @@ import { Portal, handlePortalComponent } from './portal.js';
 import { pick } from '@riadh-adrani/obj-utils';
 import { ActionType, BranchTag } from '../../../branch/types.js';
 import { createElement } from '@riadh-adrani/dom-utils';
-import { getCurrent } from '../../../core/Core.js';
+import { getCurrent } from '../../../core/core.js';
 
 createJsxElement;
 

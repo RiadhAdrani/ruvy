@@ -6,7 +6,7 @@ import {
   StateInitializer,
 } from '../../../store/types.js';
 import { HookDispatcher, HookType } from '../../types.js';
-import { Core } from '../../../core/Core.js';
+import { Core } from '../../../core/core.js';
 import { dispatchHook } from '../index.js';
 
 /**

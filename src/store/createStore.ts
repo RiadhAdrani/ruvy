@@ -1,6 +1,6 @@
 import { areEqual, copy, hasProperty } from '@riadh-adrani/obj-utils';
 import { StateGetter } from './types.js';
-import { Core } from '../core/Core.js';
+import { Core } from '../core/core.js';
 
 const globalStore: Record<string, unknown> = {};
 

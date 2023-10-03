@@ -39,7 +39,7 @@ import {
   setTextNodeData,
 } from '@riadh-adrani/dom-utils';
 import { DOMEventHandler } from '../../index.js';
-import { getCurrent } from '../../core/Core.js';
+import { getCurrent } from '../../core/core.js';
 import { msg } from '../../helpers/alert.js';
 
 /**

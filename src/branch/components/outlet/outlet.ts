@@ -1,4 +1,4 @@
-import { getCurrent } from '../../../core/Core.js';
+import { getCurrent } from '../../../core/core.js';
 import {
   Branch,
   BranchStatus,

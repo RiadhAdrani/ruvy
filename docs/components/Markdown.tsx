@@ -7,7 +7,7 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
 import { isBlank } from '@riadh-adrani/str-utils';
-import { getCurrent } from '../../src/core/Core.js';
+import { getCurrent } from '../../src/core/core.js';
 
 marked.use(gfmHeadingId());
 marked.use(mangle());
