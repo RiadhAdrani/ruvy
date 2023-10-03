@@ -193,58 +193,6 @@ Schema of the data needed for [`useEffect`](/docs/api/useEffect) hook.
 
 ---
 
-## `UsePromiseState`
-
-```ts
-type UsePromiseState = 'pending' | 'refreshing' | 'resolved' | 'rejected';
-```
-
-Describe state of the [`usePromise`](/docs/api/usePromise) hook.
-
----
-
-## `UsePromiseParams`
-
-```ts
-type UsePromiseParams<T = unknown> = Callback<Promise<T>>;
-```
-
-Schema of the data needed for the [`usePromise`](/docs/api/usePromise) hook.
-
----
-
-## `UsePromiseReturn`
-
-```ts
-type UsePromiseReturn<T = unknown> = [UsePromiseState, T | undefined, Callback];
-```
-
-Describe array returned by [`usePromise`](/docs/api/usePromise) hook.
-
-<br/>
-
-@see [`UsePromiseState`](#usepromisestate)
-
----
-
-## `UsePromiseReturn`
-
-```ts
-type UsePromiseData<T = unknown> = {
-  callback: Callback<Promise<T>>;
-  state: UsePromiseState;
-  value: T | undefined;
-};
-```
-
-Schema of the data store in the [`usePromise`](/docs/api/usePromise) hook.
-
-<br/>
-
-@see [`UsePromiseState`](#usepromisestate)
-
----
-
 ## `BranchProps`
 
 ```ts
