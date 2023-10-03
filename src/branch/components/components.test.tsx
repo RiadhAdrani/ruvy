@@ -1,7 +1,5 @@
-/** @jsx createJsxElement */
-/** @jsxFrag createFragmentTemplate */
+import '../../core/core.js';
 
-import { createFragmentTemplate, createJsxElement } from '../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import root from './root/root.js';
 import {
@@ -15,9 +13,6 @@ import { ActionType, Branch, BranchKey, BranchStatus, BranchTag } from '../types
 import { initBranch } from '../utils/index.js';
 import { Fragment } from './fragment/fragment.js';
 import { getCurrent } from '../../core/core.js';
-
-createFragmentTemplate;
-createJsxElement;
 
 describe('handleComponent', () => {
   const parent = initBranch();

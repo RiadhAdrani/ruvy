@@ -1,7 +1,6 @@
-/** @jsx createJsxElement */
-/** @jsxFrag createFragmentTemplate */
+import '../../core/core.js';
 
-import { createFragmentTemplate, createJsxElement } from '../create/index.js';
+import { createFragmentTemplate } from '../create/index.js';
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import {
@@ -50,9 +49,6 @@ import { Outlet, Portal } from '../index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { createRouter, mountApp } from '../../index.js';
 import { Core, getCurrent } from '../../core/core.js';
-
-createFragmentTemplate;
-createJsxElement;
 
 describe('utils', () => {
   beforeEach(() => {

@@ -1,11 +1,8 @@
-/** @jsxFrag createFragmentTemplate */
-/** @jsx createJsxElement */
+import '../../core/core.js';
 
 import { describe, expect, it } from 'vitest';
-import { createTemplate, createJsxElement, createFragmentTemplate } from './index.js';
+import { createTemplate, createFragmentTemplate } from './index.js';
 import { BranchSymbol, BranchTemplate } from '../types.js';
-
-createJsxElement;
 
 describe('createTemplate', () => {
   it('should add symbol', () => {

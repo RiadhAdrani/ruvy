@@ -1,7 +1,4 @@
-/** @jsx createJsxElement */
-/** @jsxFrag createFragmentTemplate */
-
-import { createJsxElement, createFragmentTemplate } from '../create/index.js';
+import '../../core/core.js';
 
 import { afterAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import { createElement, removeNode } from '@riadh-adrani/dom-utils';
@@ -25,9 +22,6 @@ import { cast } from '@riadh-adrani/type-utils';
 import { getCurrent } from '../../core/core.js';
 import { pick } from '@riadh-adrani/obj-utils';
 import { msg } from '../../helpers/alert.js';
-
-createJsxElement;
-createFragmentTemplate;
 
 describe('actions', () => {
   beforeEach(() => {

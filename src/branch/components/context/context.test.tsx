@@ -1,6 +1,5 @@
-/** @jsx createJsxElement */
+import '../../../core/core.js';
 
-import { createJsxElement } from '../../create/index.js';
 import { describe, expect, it } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { createContext } from '../../hooks/useContext/useContext.js';
@@ -8,8 +7,6 @@ import { BranchStatus, BranchSymbol, BranchTag, BranchTemplate } from '../../ind
 import { handleContextComponent } from './context.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { handleCallableComponent } from '../callable/callable.js';
-
-createJsxElement;
 
 describe('handleContextComponent', () => {
   const TestContext = createContext<{ value?: number }>({});

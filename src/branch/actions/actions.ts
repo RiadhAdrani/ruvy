@@ -49,7 +49,7 @@ import { msg } from '../../helpers/alert.js';
  * @param data additional data, optional
  */
 const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): BranchAction => {
-  let callback: Callback = () => 0;
+  let callback: Callback;
 
   switch (type) {
     case ActionType.Render: {

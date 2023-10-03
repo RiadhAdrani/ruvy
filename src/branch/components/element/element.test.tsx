@@ -1,6 +1,5 @@
-/** @jsx createJsxElement */
+import '../../../core/core.js';
 
-import { createJsxElement } from '../../create/index.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { diffElementProps, handleElementComponent } from './element.js';
 import { initBranch } from '../../utils/index.js';
@@ -8,8 +7,6 @@ import { ActionType, Branch, BranchStatus, BranchTag, BranchTemplate } from '../
 import { omit } from '@riadh-adrani/obj-utils';
 import { getCurrent } from '../../../core/core.js';
 import { createRoot } from '../components.js';
-
-createJsxElement;
 
 describe('handleElementComponent', () => {
   let root: Branch;

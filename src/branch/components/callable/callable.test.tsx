@@ -1,16 +1,12 @@
-/** @jsx createJsxElement */
-/** @jsxFrag createFragmentTemplate */
+import '../../../core/core.js';
 
-import { createFragmentTemplate, createJsxElement, createTemplate } from '../../create/index.js';
+import { createTemplate } from '../../create/index.js';
 import { describe, expect, it, vitest } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { handleCallableComponent } from './callable.js';
 import { BranchStatus, BranchTag, HookType } from '../../../branch/types.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { useState } from '../../index.js';
-
-createFragmentTemplate;
-createJsxElement;
 
 describe('handleCallable', () => {
   it('should create a branch from a function', () => {

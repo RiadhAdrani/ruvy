@@ -1,12 +1,10 @@
+import '../../../core/core.js';
+
 import { describe, expect, it } from 'vitest';
 import { createContext, useContext } from './useContext.js';
 import { BranchSymbol, BranchTag, BranchTemplate } from '../../types.js';
 import { handleComponent } from '../../index.js';
 import { initBranch } from '../../utils/index.js';
-import { createJsxElement, createFragmentTemplate } from '../../create/index.js';
-
-createFragmentTemplate;
-createJsxElement;
 
 describe('useContext', () => {
   const TestContext = createContext<{ hello?: string }>({});

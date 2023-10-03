@@ -647,7 +647,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
         return true;
       }
 
-      return !isLastIndex && !has;
+      return !has;
     });
 
     if (!caseDefaultOnlyAtEnd) {

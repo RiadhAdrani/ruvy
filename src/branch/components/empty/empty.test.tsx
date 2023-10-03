@@ -1,12 +1,9 @@
-/** @jsx createJsxElement */
+import '../../../core/core.js';
 
-import { createJsxElement } from '../../create/index.js';
 import { describe, expect, it } from 'vitest';
 import { initBranch } from '../../utils/index.js';
 import { Branch, BranchStatus, BranchTag } from '../../types.js';
 import { handleEmptyComponent } from './empty.js';
-
-createJsxElement;
 
 describe('handleEmptyComponent', () => {
   const parent = initBranch();
