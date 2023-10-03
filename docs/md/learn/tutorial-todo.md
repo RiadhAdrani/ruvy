@@ -131,7 +131,7 @@ Not the best, but that will do the job.
 
 ## `Adding a new Todo 📃`
 
-To create a new todo, we need a `state` where we will store the user input, another `state` for the todos. We have two options, <a href="/docs/api/useState" target="_blank">`useState`</a> and <a href="/docs/api/useState" target="_blank">`useReactive`</a>, they serve the same purpose, but with caveat for each one. But first, let's declare a new `interface` for our `Todo` object:
+To create a new todo, we need a `state` where we will store the user input, another `state` for the todos. We will use <a href="/docs/api/useState" target="_blank">`useState`</a>, now, let's declare a new `interface` for our `Todo` object:
 
 <br/>
 
@@ -143,13 +143,12 @@ export interface ITodo {
 }
 ```
 
-then, at the top of the `App` function, we will use both `useState` and `useReactive`:
+then, at the top of the `App` function, we will use `useState`:
 
 <br/>
 
 ```ts
-// ⛔ useReactive accepts objects only !
-const newTodoText = useReactive({ value: '' });
+const [newTodoText, setNewTodoText] = useState('');
 
 const [todos, setTodos] = useState<Array<ITodo>>([]);
 ```
@@ -161,7 +160,7 @@ Then we need a function to update the `newTodoText` value, and another one to cr
 ```ts
 // update the input field
 const updateNewTodoText = (value: string) => {
-  newTodoText.value = value;
+  setNewTodoText('');
 };
 
 const addNewTodo = () => {
@@ -175,11 +174,11 @@ const addNewTodo = () => {
   const newTodo: ITodo = {
     done: false,
     id: Date.now().toString(),
-    text: newTodoText.value,
+    text: newTodoText,
   };
 
   // reset the value of the newTodoText
-  newTodoText.value = '';
+  setNewTodoText('');
 
   // push it to the list of todos
   setTodos([...todos, newTodo]);
@@ -197,7 +196,7 @@ return (
     <div class="new-todo-wrapper">
       <input
         class="new-todo-input"
-        value={newTodoText.value}
+        value={newTodoText}
         onInput={e => updateNewTodoText(e.currentTarget.value)}
       />
       <button onClick={addNewTodo}>add</button>
@@ -335,7 +334,6 @@ Here's how it should look after all what we dicussed earlier:
 <br/>
 
 ```ts
-import { useReactive } from '@riadh-adrani/ruvy';
 import type { ITodo } from './App';
 
 // it is recommended to create a props type
@@ -351,17 +349,16 @@ export interface TodoProps {
 }
 
 const Todo = ({ it, onDelete, onUpdate }: TodoProps) => {
-  const editMode = useReactive({ is: false, text: it.text });
+  const [editMode, setEditMode] = useState({ is: false, text: it.text });
   // this 👆 will store the edit state and the draft text
 
   // toggle between edit and normal mode
   const toggleEditMode = (value: boolean) => {
     if (value) {
-      editMode.is = true;
       // initialize the text to the todo text value
-      editMode.text = it.text;
+      setEditMode({ ...editMode, is: true, text: it.text });
     } else {
-      editMode.is = false;
+      setEditMode({ ...editMode, is: false });
     }
   };
 
@@ -397,7 +394,7 @@ const Todo = ({ it, onDelete, onUpdate }: TodoProps) => {
               class="todo-item-input"
               value={editMode.text}
               //  also this 👆
-              onInput={e => (editMode.text = e.currentTarget.value)}
+              onInput={e => setEditMode({ ...editMode, text: currentTarget.value })}
               // this 👆 will update the draft text
             />
             <button onClick={() => onSave()}>save</button>
