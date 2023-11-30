@@ -126,7 +126,7 @@ export default class Router<T = unknown> {
       titlePrefix,
       titleSuffix,
       transformTitle,
-    }: RouterConstructorParams,
+    }: RouterConstructorParams
   ) {
     this.onStateChange = onStateChange;
     this.base = base ?? this.base;

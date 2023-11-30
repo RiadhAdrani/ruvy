@@ -57,7 +57,7 @@ describe('actions', () => {
 
     it('should throw when type is unknown', () => {
       expect(() => createAction('my-action' as ActionType, branch)).toThrow(
-        msg(`unknown action type "my-action"`),
+        msg(`unknown action type "my-action"`)
       );
     });
   });
@@ -142,7 +142,7 @@ describe('actions', () => {
         (<div class="test" id="test" />) as BranchTemplate<string>,
         undefined,
         root,
-        0,
+        0
       );
 
       createRenderAction(branch as Branch<string>)();
@@ -185,7 +185,7 @@ describe('actions', () => {
       const branch = handleComponent(<div />, undefined, root, 0);
 
       expect(() => createRenderInnerHTMLAction(branch, 'text')()).toThrow(
-        '[Ruvy] Unexpected State : cannot set innerHTML of a non-mounted or unmounted branch',
+        '[Ruvy] Unexpected State : cannot set innerHTML of a non-mounted or unmounted branch'
       );
     });
 

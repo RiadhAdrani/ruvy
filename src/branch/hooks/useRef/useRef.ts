@@ -12,7 +12,7 @@ export const useRef = <T = unknown>(value?: T): UseRefData<T | undefined> => {
 export const dispatchUseRef: HookDispatcher<unknown, UseRefData<unknown>> = (
   key,
   value,
-  current,
+  current
 ) => {
   if (!current.hooks[key]) {
     const ref: HookData<UseRefData<unknown>> = {

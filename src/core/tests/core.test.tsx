@@ -32,7 +32,7 @@ describe('Core', () => {
       core = new Core();
 
       expect(() => core.executeRoutine()).toThrow(
-        'Unexpected Type: app callback is not a function.',
+        'Unexpected Type: app callback is not a function.'
       );
     });
 
@@ -41,7 +41,7 @@ describe('Core', () => {
       core.fn = () => <div></div>;
 
       expect(() => core.executeRoutine()).toThrow(
-        'Unexpected Type: host element is not a Dom element.',
+        'Unexpected Type: host element is not a Dom element.'
       );
     });
 

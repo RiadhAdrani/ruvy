@@ -28,7 +28,7 @@ describe('handleElementComponent', () => {
       jsx as unknown as BranchTemplate<string>,
       undefined,
       parent,
-      0,
+      0
     ).branch;
 
     expect(omit(div, 'pendingActions')).toStrictEqual({
@@ -62,7 +62,7 @@ describe('handleElementComponent', () => {
         jsx as unknown as BranchTemplate<string>,
         undefined,
         parent,
-        0,
+        0
       ).branch;
 
       expect(omit(div, 'pendingActions')).toStrictEqual({
@@ -153,7 +153,7 @@ describe('handleElementComponent', () => {
       <div dom:innerHTML="test" />,
       root.children[0] as Branch<string>,
       initBranch(),
-      0,
+      0
     );
 
     const pending = getCurrent().pendingActions[ActionType.RenderInnerHTML];

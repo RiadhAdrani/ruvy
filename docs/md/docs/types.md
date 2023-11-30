@@ -445,7 +445,7 @@ type ComponentFunctionHandler<T = BranchTemplate, B = unknown, D = unknown> = (
   current: Branch<B> | undefined,
   parent: Branch,
   key: BranchKey,
-  data?: D,
+  data?: D
 ) => { branch: Branch<B>; unprocessedChildren: Array<unknown> };
 ```
 
@@ -835,7 +835,7 @@ type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event 
 
 ```ts
 type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
-  event: DOMEvent<E, T>,
+  event: DOMEvent<E, T>
 ) => void;
 ```
 

@@ -30,7 +30,7 @@ describe('handleComponent', () => {
         <div key={0} />
         <button key={1} />
         <input key={2} />
-      </div>,
+      </div>
     );
 
     getCurrent().commitActions();

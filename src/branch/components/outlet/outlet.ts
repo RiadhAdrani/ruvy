@@ -12,7 +12,7 @@ export const handleOutletComponent: ComponentFunctionHandler<BranchTemplateFunct
   template,
   current,
   parent,
-  key,
+  key
 ) => {
   const { props, type } = template;
 

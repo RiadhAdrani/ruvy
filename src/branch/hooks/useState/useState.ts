@@ -27,7 +27,7 @@ export const useState = <T>(initValue: T): StateArray<T> => {
 export const dispatchUseState: HookDispatcher<unknown, StateArray<unknown>> = (
   key,
   data,
-  current,
+  current
 ) => {
   if (!current.hooks[key]) {
     let value: unknown;

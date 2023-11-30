@@ -24,7 +24,7 @@ import { areEqual, forEachKey, hasProperty, getType } from '@riadh-adrani/obj-ut
  */
 export const diffElementProps = (
   oldProps: Record<string, unknown>,
-  newProps: Record<string, unknown>,
+  newProps: Record<string, unknown>
 ): Array<PropDiff> => {
   const out: Array<PropDiff> = [];
 
@@ -55,7 +55,7 @@ export const handleElementComponent: ComponentFunctionHandler<BranchTemplate<str
   template,
   current,
   parent,
-  key,
+  key
 ) => {
   const { type, props, children } = template;
 

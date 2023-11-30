@@ -39,7 +39,7 @@ export default <T>(path: string, record: Record<string, Route<T>>): Route<T> | u
         .find(route =>
           route.fragments.every((fragment, index) => {
             return fragment === fragments[index] || fragment[0] === ':';
-          }),
+          })
         );
 
       return first as Route<T>;

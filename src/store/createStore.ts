@@ -27,7 +27,7 @@ export const reset = () => {
  */
 export const createStore = <T>(
   key: string,
-  initialValue: T,
+  initialValue: T
 ): [StateGetter<T>, (value: T) => void] => {
   // check if key exists
   if (hasProperty(globalStore, key)) {

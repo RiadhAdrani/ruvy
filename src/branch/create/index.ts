@@ -10,7 +10,7 @@ import { getCorrectElementTag, getTag } from '../utils/index.js';
 export const createTemplate = <T = unknown>(
   type: T,
   props: Record<string, unknown>,
-  children: Array<unknown>,
+  children: Array<unknown>
 ): BranchTemplate<T> => {
   // flatten children
   children = children.flat();

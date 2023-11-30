@@ -57,7 +57,7 @@ describe('useContext', () => {
       </TestContext.Provider>,
       undefined,
       parent,
-      0,
+      0
     );
 
     expect(obj).toStrictEqual({});
@@ -96,7 +96,7 @@ describe('useContext', () => {
       </TestContext.Provider>,
       undefined,
       parent,
-      0,
+      0
     );
 
     expect(obj).toStrictEqual({ hello: 'world' });

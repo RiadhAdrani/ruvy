@@ -6,7 +6,7 @@ export const handleContextComponent: ComponentFunctionHandler = (
   template,
   current,
   parent,
-  key,
+  key
 ) => {
   const { props, children } = template;
 

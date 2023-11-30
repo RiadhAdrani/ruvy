@@ -413,7 +413,7 @@ describe('dispatchHook', () => {
 
   it('should throw when executed outside of the context', () => {
     expect(() => dispatchHook(HookType.State, 0)).toThrow(
-      '[Ruvy] Unexpected Hook Call : cannot use hooks outside of a functional component context.',
+      '[Ruvy] Unexpected Hook Call : cannot use hooks outside of a functional component context.'
     );
   });
 
@@ -426,7 +426,7 @@ describe('dispatchHook', () => {
       }, branch);
 
     expect(callback).toThrow(
-      `[Ruvy] Unexpected State: Unable to find hook with key (${HookType.State}@0)`,
+      `[Ruvy] Unexpected State: Unable to find hook with key (${HookType.State}@0)`
     );
   });
 
@@ -444,7 +444,7 @@ describe('dispatchHook', () => {
   it('should return the output', () => {
     const count = useHooksContext(
       () => dispatchHook<number, UseMemoParams>(HookType.Memo, { callback: () => 0 }),
-      branch,
+      branch
     );
 
     expect(count).toBe(0);

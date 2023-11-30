@@ -19,14 +19,14 @@ describe('handleContextComponent', () => {
       out.unprocessedChildren[0] as BranchTemplate,
       undefined,
       out.branch,
-      0,
+      0
     ).branch;
 
     const outUpdate = handleCallableComponent(
       <TestContext.Provider value={{ value: 5 }} />,
       out.branch,
       parent,
-      0,
+      0
     );
     handleContextComponent(outUpdate.unprocessedChildren[0] as BranchTemplate, ctx, out.branch, 0)
       .branch;
@@ -35,7 +35,7 @@ describe('handleContextComponent', () => {
       outUpdate.unprocessedChildren[0] as BranchTemplate,
       outUpdate.branch,
       parent,
-      0,
+      0
     );
 
     expect(ctx.props.value).toStrictEqual({ value: 5 });
@@ -48,14 +48,14 @@ describe('handleContextComponent', () => {
       out.unprocessedChildren[0] as BranchTemplate,
       undefined,
       out.branch,
-      0,
+      0
     ).branch;
 
     const outUpdate = handleCallableComponent(
       <OtherContext.Provider value={'other'} />,
       out.branch,
       parent,
-      0,
+      0
     );
     handleContextComponent(outUpdate.unprocessedChildren[0] as BranchTemplate, ctx, out.branch, 0)
       .branch;
@@ -64,7 +64,7 @@ describe('handleContextComponent', () => {
       outUpdate.unprocessedChildren[0] as BranchTemplate,
       outUpdate.branch,
       parent,
-      0,
+      0
     );
 
     expect(ctx.props.value).toStrictEqual('other');
@@ -78,7 +78,7 @@ describe('handleContextComponent', () => {
       out.unprocessedChildren[0] as BranchTemplate,
       undefined,
       out.branch,
-      0,
+      0
     );
 
     const div = ctx.branch;
@@ -104,7 +104,7 @@ describe('handleContextComponent', () => {
       </TestContext.Provider>,
       undefined,
       parent,
-      0,
+      0
     );
 
     expect(out.unprocessedChildren[0]).toStrictEqual<BranchTemplate<BranchTag.Context>>({

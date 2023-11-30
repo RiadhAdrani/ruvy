@@ -4,7 +4,7 @@ const useLocalStorage = <T>(key: string, initValue: T): StateArray<T> => {
   const [value, set, get] = useState<T>(
     localStorage.getItem(key) !== null
       ? (JSON.parse(localStorage.getItem(key) as string) as T)
-      : initValue,
+      : initValue
   );
 
   useEffect(() => {
