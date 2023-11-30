@@ -185,5 +185,5 @@ export type ComponentFunctionHandler<T = BranchTemplate, B = unknown, D = unknow
   current: Branch<B> | undefined,
   parent: Branch,
   key: BranchKey,
-  data?: D
+  data?: D,
 ) => { branch: Branch<B>; unprocessedChildren: Array<unknown>; skipChildrenProcessing?: boolean };

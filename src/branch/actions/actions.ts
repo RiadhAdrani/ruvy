@@ -102,7 +102,7 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     callback = () => 0;
 
     console.warn(
-      `Unexpected Input: The creation of an action of type ${type} failed to produce a callback.`
+      `Unexpected Input: The creation of an action of type ${type} failed to produce a callback.`,
     );
   }
 
@@ -123,7 +123,7 @@ export default createAction;
 
 export const createMountedCallbackAction = (
   branch: Branch<string>,
-  callback: (branch: Branch<string>) => void
+  callback: (branch: Branch<string>) => void,
 ) => {
   return () => callback(branch);
 };
@@ -270,7 +270,7 @@ export const createUnmountAction =
  */
 export const createElPropsUpdateAction = (
   branch: Branch<string>,
-  diffs: Array<PropDiff>
+  diffs: Array<PropDiff>,
 ): Callback => {
   return () => {
     diffs.forEach(diff => {

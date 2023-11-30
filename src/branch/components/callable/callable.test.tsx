@@ -18,7 +18,7 @@ describe('handleCallable', () => {
       createTemplate(fn, { text: 1 }, []),
       undefined,
       parent,
-      0
+      0,
     );
 
     expect(omit(branch.branch, 'children')).toStrictEqual({

@@ -46,7 +46,7 @@ export const createContextComponent = <T>({
   const template = createTemplate<BranchTag.Context>(
     BranchTag.Context,
     { value, initial, object },
-    children ?? []
+    children ?? [],
   );
 
   return template;
@@ -69,7 +69,7 @@ export const useContext = <T = unknown>(object: ContextObject<T>): T => {
 export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown> = (
   key,
   data,
-  current
+  current,
 ) => {
   if (!current.hooks[key]) {
     current.hooks[key] = {
@@ -99,10 +99,10 @@ export const dispatchUseContext: HookDispatcher<ContextObject<unknown>, unknown>
  */
 export const getClosestContextBranch = (
   branch: Branch,
-  object: ContextObject
+  object: ContextObject,
 ): Branch | undefined => {
   return findParentWith(
     branch,
-    it => it.type === BranchTag.Context && areEqual(it.props.object, object)
+    it => it.type === BranchTag.Context && areEqual(it.props.object, object),
   );
 };

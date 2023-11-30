@@ -270,7 +270,7 @@ export const initBranch = <T = unknown>(data?: Partial<Branch<T>>): Branch<T> =>
  * Webs Namespaces
  */
 export const Namespaces = Object.keys(Namespace).map(
-  key => (Namespace as Record<string, string>)[key]
+  key => (Namespace as Record<string, string>)[key],
 ) as Array<Namespace>;
 
 /**
@@ -377,7 +377,7 @@ export const getCorrectKey = (template: unknown, index: number): BranchKey => {
  */
 export const getBranchWithKey = <T = unknown>(
   parent: Branch,
-  key: BranchKey
+  key: BranchKey,
 ): Branch<T> | undefined => {
   return cast<Array<Branch<T>>>(parent.children).find(child => child.key === key);
 };
@@ -388,7 +388,7 @@ export const getBranchWithKey = <T = unknown>(
  */
 export const getHostBranchIndexFromHostParent = (
   branch: Branch,
-  parent?: Branch
+  parent?: Branch,
 ): { index: number; found: boolean } => {
   let idx = 0;
   let wasFound = false;
@@ -470,7 +470,7 @@ export const getOutletDepth = (branch: Branch): number => {
  */
 export const combineClasses = (
   current: Arrayable<string | undefined | boolean | null>,
-  className: string
+  className: string,
 ): string => {
   return joinClasses(current, className);
 };
@@ -478,7 +478,7 @@ export const combineClasses = (
 const CLASS_PREFIX = 'class:';
 
 export const batchedEvent = (
-  callback: CallbackWithArgs<[DomEvent], void>
+  callback: CallbackWithArgs<[DomEvent], void>,
 ): CallbackWithArgs<[DomEvent], void> => {
   if (!isFunction(callback)) {
     return callback;
@@ -551,7 +551,7 @@ export const preprocessProps = (initial: BranchProps): BranchProps => {
  */
 export const findParentWith = (
   branch: Branch,
-  checker: (branch: Branch) => boolean
+  checker: (branch: Branch) => boolean,
 ): Branch | undefined => {
   if (!branch.parent) {
     return undefined;
@@ -591,7 +591,7 @@ export const postprocessProps = (branch: Branch): void => {
  */
 export const getPropertyFromTemplate = <T = unknown>(
   template: unknown,
-  prop: string
+  prop: string,
 ): T | undefined => {
   if (!isValidTemplate(template)) {
     return undefined;
@@ -632,7 +632,7 @@ export const preprocessChildren = (children: Array<unknown>, branch: Branch): Ar
   // we need to check for a switch directive in the parent
   if (hasProperty(branch.props, 'switch')) {
     const allChildrenHaveCaseProp = $children.every(
-      it => templateHasProperty(it, 'case') || templateHasProperty(it, 'case:default')
+      it => templateHasProperty(it, 'case') || templateHasProperty(it, 'case:default'),
     );
 
     if (!allChildrenHaveCaseProp) {

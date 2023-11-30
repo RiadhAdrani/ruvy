@@ -41,7 +41,7 @@ import { handleEmptyComponent } from './empty/empty.js';
  */
 export const removeChildrenExcess = (current: Branch, newChildrenKeys: Array<BranchKey>): void => {
   current.unmountedChildren = current.children.filter(
-    child => !newChildrenKeys.includes(child.key)
+    child => !newChildrenKeys.includes(child.key),
   );
 
   current.unmountedChildren.forEach(unmountBranch);
@@ -107,7 +107,7 @@ export const handleComponentsWithDifferentTypes = (
   template: unknown,
   current: Branch,
   parent: Branch,
-  index: number
+  index: number,
 ): void => {
   // we move current to old,
   const old = current;
@@ -130,7 +130,7 @@ export const handleComponent = <T = unknown>(
   template: unknown,
   current: Branch | undefined,
   parent: Branch,
-  index: number
+  index: number,
 ): Branch<T> => {
   const key = getCorrectKey(template, index);
   const tag = getTag(template);
@@ -166,7 +166,7 @@ export const handleComponent = <T = unknown>(
         template as BranchTemplate<string>,
         current as Branch<string>,
         parent,
-        key
+        key,
       );
       break;
     }
@@ -175,7 +175,7 @@ export const handleComponent = <T = unknown>(
         template as BranchTemplateJsxFragment,
         current as Branch<JsxFragmentType>,
         parent,
-        key
+        key,
       );
       break;
     }
@@ -184,7 +184,7 @@ export const handleComponent = <T = unknown>(
         template as BranchTemplateFragment,
         current as Branch<FragmentType>,
         parent,
-        key
+        key,
       );
       break;
     }
@@ -205,7 +205,7 @@ export const handleComponent = <T = unknown>(
         template as BranchTemplate,
         current as Branch<BranchTag.Null>,
         parent,
-        key
+        key,
       );
       break;
     }
@@ -214,7 +214,7 @@ export const handleComponent = <T = unknown>(
         template as BranchTemplate<PortalBranchType>,
         current as Branch<PortalBranchType>,
         parent,
-        key
+        key,
       );
       break;
     }
@@ -230,7 +230,7 @@ export const handleComponent = <T = unknown>(
 
   if (!current) {
     branch.children = children.map((child, index) =>
-      handleComponent(child, undefined, branch, index)
+      handleComponent(child, undefined, branch, index),
     );
   } else {
     // perform old branches cleanup

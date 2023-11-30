@@ -5,7 +5,7 @@ export const handleEmptyComponent: ComponentFunctionHandler<unknown, BranchTag.N
   _,
   current,
   parent,
-  key
+  key,
 ) => {
   const branch =
     current ??

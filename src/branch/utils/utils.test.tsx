@@ -130,7 +130,7 @@ describe('utils', () => {
 
     it('should throw when host is not found', () => {
       expect(() => getParentHostBranch(initBranch())).toThrow(
-        'Unable to locate the hosting branch.'
+        'Unable to locate the hosting branch.',
       );
     });
 
@@ -191,7 +191,7 @@ describe('utils', () => {
         document.body,
         <Container>
           <button />
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[0];
@@ -210,7 +210,7 @@ describe('utils', () => {
         <Container>
           <button />
           <div />
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[0];
@@ -229,7 +229,7 @@ describe('utils', () => {
         <Container>
           <div />
           <button />
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[1];
@@ -254,7 +254,7 @@ describe('utils', () => {
             <div />
           </>
           <button />
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[2];
@@ -278,7 +278,7 @@ describe('utils', () => {
             </Container>
           </>
           <button />
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[2];
@@ -305,7 +305,7 @@ describe('utils', () => {
           <>
             <button />
           </>
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[2].children[0];
@@ -332,7 +332,7 @@ describe('utils', () => {
           <div>
             <button />
           </div>
-        </Container>
+        </Container>,
       );
 
       const branch = parent.children[0].children[0].children[2].children[0];
@@ -360,7 +360,7 @@ describe('utils', () => {
         document.body,
         <>
           <div key="div"></div>
-        </>
+        </>,
       );
 
       const branch = parent.children[0];
@@ -377,7 +377,7 @@ describe('utils', () => {
             <div key="div1" />
             <div key="div2" />
           </>
-        </>
+        </>,
       );
 
       const branch = parent.children[0];
@@ -406,7 +406,7 @@ describe('utils', () => {
               </div>
             </>
           </>
-        </>
+        </>,
       );
 
       const branch = parent.children[0];
@@ -528,7 +528,7 @@ describe('utils', () => {
 
     it('should combine classnames', () => {
       expect(
-        preprocessProps({ 'class:test': true, 'class:done': true, class: 'tester' })
+        preprocessProps({ 'class:test': true, 'class:done': true, class: 'tester' }),
       ).toStrictEqual({
         class: 'tester test done',
       });
@@ -598,20 +598,20 @@ describe('utils', () => {
       'should throw when template does not have an if prop',
       o => {
         expect(() => shouldTemplateWithIfDirectiveBeComputed(o as BranchTemplate)).toThrow(
-          '[Ruvy] the provided template does not contain an if directive'
+          '[Ruvy] the provided template does not contain an if directive',
         );
-      }
+      },
     );
 
     it('should return the correct value of if prop', () => {
       expect(
-        shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: false }, []))
+        shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: false }, [])),
       ).toBe(false);
       expect(shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: true }, []))).toBe(
-        true
+        true,
       );
       expect(shouldTemplateWithIfDirectiveBeComputed(createTemplate('div', { if: '' }, []))).toBe(
-        true
+        true,
       );
     });
   });
@@ -664,13 +664,13 @@ describe('utils', () => {
 
       it('should return null when previous if is true', () => {
         expect(
-          preprocessChildren([<div if={true} />, <div else-if={true} />], initBranch())
+          preprocessChildren([<div if={true} />, <div else-if={true} />], initBranch()),
         ).toStrictEqual([<div if={true} />, null]);
       });
 
       it('should return template when previous if is false', () => {
         expect(
-          preprocessChildren([<div if={false} />, <div else-if={true} />], initBranch())
+          preprocessChildren([<div if={false} />, <div else-if={true} />], initBranch()),
         ).toStrictEqual([null, <div else-if={true} />]);
       });
 
@@ -678,8 +678,8 @@ describe('utils', () => {
         expect(
           preprocessChildren(
             [<div if={false} />, <div else-if={true} />, <div else-if={true} />],
-            initBranch()
-          )
+            initBranch(),
+          ),
         ).toStrictEqual([null, <div else-if={true} />, null]);
       });
 
@@ -687,15 +687,15 @@ describe('utils', () => {
         expect(
           preprocessChildren(
             [<div if={true} />, <div else-if={true} />, <div else />],
-            initBranch()
-          )
+            initBranch(),
+          ),
         ).toStrictEqual([<div if={true} />, null, null]);
 
         expect(
           preprocessChildren(
             [<div if={false} />, <div else-if={true} />, <div else />],
-            initBranch()
-          )
+            initBranch(),
+          ),
         ).toStrictEqual([null, <div else-if={true} />, null]);
       });
 
@@ -703,8 +703,8 @@ describe('utils', () => {
         expect(
           preprocessChildren(
             [<div if={false} />, <div else-if={false} />, <div else />],
-            initBranch()
-          )
+            initBranch(),
+          ),
         ).toStrictEqual([null, null, <div else />]);
       });
 
@@ -717,7 +717,7 @@ describe('utils', () => {
           [<div if />, <div />, <div else />],
           [<div if />, <div />, <div else-if />],
           [<div else-if />, <div />, <div else-if />],
-        ].map(it => [it])
+        ].map(it => [it]),
       )('should throw : more cases', it => {
         expect(() => preprocessChildren(it, initBranch())).toThrow();
       });
@@ -1037,7 +1037,7 @@ describe('common', () => {
         const actions = getCurrent().pendingActions[ActionType.Unmount];
 
         expect(actions?.length).toBe(1);
-      }
+      },
     );
 
     it.each([[BranchTag.JsxFragment], [BranchTag.Function], [BranchTag.Null]])(
@@ -1050,7 +1050,7 @@ describe('common', () => {
         const actions = getCurrent().pendingActions[ActionType.Unmounted];
 
         expect(actions).toBe(undefined);
-      }
+      },
     );
 
     it('should unmount children recursively', () => {
@@ -1078,7 +1078,7 @@ describe('isValidEventKey', () => {
     'should refuse event (%s)',
     key => {
       expect(isValidEventKey(key)).toBe(false);
-    }
+    },
   );
 });
 

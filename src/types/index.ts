@@ -19,7 +19,7 @@ export type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> =
   };
 
 export type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
-  event: DOMEvent<E, T>
+  event: DOMEvent<E, T>,
 ) => void;
 
 export type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties[key]> } & Record<

@@ -46,7 +46,7 @@ describe('Router class', () => {
 
   it('should throw when base is invalid', () => {
     expect(() => new Router([], { onStateChange: () => 0, base: 'bad-base' })).toThrow(
-      '[Ruvy] Unexpected Input : invalid base (bad-base), should start with "/"'
+      '[Ruvy] Unexpected Input : invalid base (bad-base), should start with "/"',
     );
   });
 
@@ -277,13 +277,13 @@ describe('Router class', () => {
 
     it('should transform the named request with params', () => {
       expect(router.transformNavigationRequest({ name: 'UserId', params: { id: 1 } })).toBe(
-        '/user/1'
+        '/user/1',
       );
     });
 
     it('should transform the named request with search params', () => {
       expect(router.transformNavigationRequest({ name: 'User', search: { id: 1 } })).toBe(
-        '/user?id=1'
+        '/user?id=1',
       );
     });
 

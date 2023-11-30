@@ -42,7 +42,7 @@ describe('handlePortalComponent', () => {
       <Portal container={container}>Hello</Portal>,
       undefined,
       parent,
-      0
+      0,
     );
 
     expect(unprocessedChildren).toStrictEqual(['Hello']);
@@ -55,7 +55,7 @@ describe('handlePortalComponent', () => {
       <Portal container={container}>Hello</Portal>,
       undefined,
       parent,
-      0
+      0,
     );
 
     handlePortalComponent(<Portal container={document.body}>Hello</Portal>, branch, parent, 0);
@@ -71,7 +71,7 @@ describe('handlePortalComponent', () => {
       <Portal container={container}>Hello</Portal>,
       undefined,
       parent,
-      0
+      0,
     );
 
     getCurrent().commitActions();

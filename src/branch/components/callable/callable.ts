@@ -12,7 +12,7 @@ export const handleCallableComponent: ComponentFunctionHandler<BranchTemplateFun
   template,
   current,
   parent,
-  key
+  key,
 ) => {
   const { props, type } = template;
 

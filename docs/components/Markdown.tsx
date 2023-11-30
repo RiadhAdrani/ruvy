@@ -23,7 +23,7 @@ export default ({ content }: MarkdownProps) => {
 
   const sanitizedContent = useMemo(
     () => sanitizer.sanitize(marked.parse(content), { ADD_ATTR: ['target'] }),
-    content
+    content,
   );
 
   useEffect(() => {

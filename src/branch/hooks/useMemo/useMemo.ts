@@ -32,7 +32,7 @@ export const useCallback = <T>(callback: T, deps?: unknown): T => {
 export const dispatchUseMemo: HookDispatcher<UseMemoParams<unknown>, unknown> = (
   key,
   data,
-  current
+  current,
 ) => {
   const { callback, deps } = data;
 

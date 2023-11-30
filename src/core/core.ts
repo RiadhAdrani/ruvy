@@ -154,7 +154,7 @@ setEvent(
       }
     }
   },
-  document
+  document,
 );
 
 // ? make `createJsxElement` and `createFragmentTemplate` globally available

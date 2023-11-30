@@ -30,7 +30,7 @@ describe('Rendering', () => {
         <>
           <div if={true} />
           <div else />
-        </>
+        </>,
       );
 
       expect(document.body.innerHTML).toBe('<div></div>');
@@ -41,7 +41,7 @@ describe('Rendering', () => {
         <>
           <div if />
           <button else-if />
-        </>
+        </>,
       );
 
       expect(document.body.innerHTML).toBe('<div></div>');
@@ -53,7 +53,7 @@ describe('Rendering', () => {
           <div if={false} />
           <img else-if />
           <button else-if />
-        </>
+        </>,
       );
 
       expect(document.body.innerHTML).toBe('<img>');
@@ -65,7 +65,7 @@ describe('Rendering', () => {
           <div if={false} />
           <img else-if />
           <button else />
-        </>
+        </>,
       );
 
       expect(document.body.innerHTML).toBe('<img>');
@@ -79,7 +79,7 @@ describe('Rendering', () => {
           <p else-if={false} />
           <span else-if={false} />
           <button else />
-        </>
+        </>,
       );
 
       expect(document.body.innerHTML).toBe('<button></button>');
@@ -90,8 +90,8 @@ describe('Rendering', () => {
         mount(
           <>
             <div else />
-          </>
-        )
+          </>,
+        ),
       ).toThrow();
     });
 
@@ -100,8 +100,8 @@ describe('Rendering', () => {
         mount(
           <>
             <div else-if />
-          </>
-        )
+          </>,
+        ),
       ).toThrow();
     });
   });
@@ -458,7 +458,7 @@ describe('Rendering', () => {
       mount(<App />);
 
       expect(document.body.innerHTML).toBe(
-        '<div id="container"><button></button><img><span></span><button></button><img><span></span></div>'
+        '<div id="container"><button></button><img><span></span><button></button><img><span></span></div>',
       );
     });
   });

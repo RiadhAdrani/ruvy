@@ -31,7 +31,7 @@ describe('handleFragmentComponent', () => {
         <>hello {0}</>,
         undefined,
         parent,
-        0
+        0,
       );
 
       expect(unprocessedChildren).toStrictEqual(['hello ', 0]);
@@ -46,7 +46,7 @@ describe('handleFragmentComponent', () => {
         </>,
         branch,
         parent,
-        0
+        0,
       );
 
       expect(updated.branch).toStrictEqual(branch);
@@ -61,7 +61,7 @@ describe('handleFragmentComponent', () => {
         </>,
         branch,
         parent,
-        0
+        0,
       );
 
       expect(updated.unprocessedChildren).toStrictEqual([<div />]);
@@ -90,7 +90,7 @@ describe('handleFragmentComponent', () => {
         <Fragment>hello {0}</Fragment>,
         undefined,
         parent,
-        0
+        0,
       );
 
       expect(unprocessedChildren).toStrictEqual(['hello ', 0]);
@@ -105,7 +105,7 @@ describe('handleFragmentComponent', () => {
         </Fragment>,
         branch,
         parent,
-        0
+        0,
       );
 
       expect(updated.branch).toStrictEqual(branch);
@@ -120,7 +120,7 @@ describe('handleFragmentComponent', () => {
         </Fragment>,
         branch,
         parent,
-        0
+        0,
       );
 
       expect(updated.unprocessedChildren).toStrictEqual([<div />]);

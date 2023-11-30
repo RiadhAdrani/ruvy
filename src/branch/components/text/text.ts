@@ -7,7 +7,7 @@ export const handleTextComponent: ComponentFunctionHandler<string, BranchTag.Tex
   template,
   current,
   parent,
-  key
+  key,
 ) => {
   const branch: Branch<BranchTag.Text> =
     current ??
