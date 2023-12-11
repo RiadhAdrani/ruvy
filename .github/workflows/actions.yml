@@ -5,7 +5,7 @@ permissions:
   contents: write
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [18.x]
