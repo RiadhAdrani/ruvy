@@ -317,6 +317,17 @@ export type ComponentWithChildren =
   | FragmentComponent
   | ContextComponent;
 
+export type NonRootComponent =
+  | FunctionComponent
+  | ElementComponent
+  | TextComponent
+  | NullComponent
+  | OutletComponent
+  | PortalComponent
+  | JsxFragmentComponent
+  | FragmentComponent
+  | ContextComponent;
+
 export type Component =
   | FunctionComponent
   | ElementComponent
@@ -387,7 +398,7 @@ export enum MicroTaskType {
   UnmountedComponent = 'unmounted-component',
   RemoveComponent = 'remove-component',
   UpdatePortalChildren = 'update-portal-children',
-  MountedComponent = 'mounted-component',
+  SetComponentMounted = 'mounted-component',
   RefElement = 'ref-element',
   UnrefEelement = 'unref-element',
 }
@@ -404,7 +415,7 @@ export const MicroTaskSorted = [
   MicroTaskType.UpdatePortalChildren,
   MicroTaskType.UpdateProps,
   MicroTaskType.UpdateText,
-  MicroTaskType.MountedComponent,
+  MicroTaskType.SetComponentMounted,
   MicroTaskType.RunEffectCleanup,
   MicroTaskType.RunEffect,
 ];

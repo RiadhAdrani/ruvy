@@ -22,9 +22,10 @@ import {
   createInnerHTMLTask,
   createRefElementTask,
   createRenderTask,
+  createSetMountedTask,
   createUnrefElementTask,
 } from './task.js';
-import { RuvyError } from '@/helpers.js';
+import { RuvyError } from '@/helpers/helpers.js';
 
 export const RuvyAttributes = [
   'if',
@@ -50,6 +51,9 @@ export const RuvyAttributes = [
       ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝                                                             
  */
 
+/**
+ * handle element component processing
+ */
 export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> = (
   template,
   current,
@@ -94,28 +98,33 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
 
     if (ref && isRefValue(ref)) {
       const refTask = createRefElementTask(component, ref as RefValue);
-
       pushMicroTask(refTask, tasks);
     }
+
+    //  mounted
+    const setMountedTask = createSetMountedTask(component);
+    pushMicroTask(setMountedTask, tasks);
   } else {
     if (typeof innerHTML === 'string') {
       if (innerHTML !== component.props['innerHTML']) {
         const renderInnerHTML = createInnerHTMLTask(component, innerHTML);
 
         pushMicroTask(renderInnerHTML, tasks);
+
+        const unmountChildrenTasks = unmountComponentChildren(component);
+
+        for (const queue of Object.keys(unmountChildrenTasks) as Array<MicroTaskType>) {
+          tasks[queue].unshift(...unmountChildrenTasks[queue]);
+        }
+
+        children = [];
       }
 
-      const unmountTasks = unmountComponentChildren(component);
-
-      for (const queue of Object.keys(unmountTasks) as Array<MicroTaskType>) {
-        tasks[queue].unshift(...unmountTasks[queue]);
-      }
-
-      children = [];
+      // ? if innerHTML is the same, we do not unmount children, because obviously no children were processed
     }
 
     // perform diffing of props
-    const cmp = compareElementProps(component.props, current.props);
+    const cmp = compareElementProps(component.props, props);
 
     // if there is a difference, we schedule a micro-task
     if (cmp.length > 0) {
@@ -173,10 +182,10 @@ export const compareElementProps = (current: Props, newest: Props): Array<PropCo
   }, [] as Array<PropComparison>);
 };
 
-export const filterDomProps = (component: ElementComponent): Record<string, unknown> => {
-  return Object.keys(component.props).reduce((acc, prop) => {
+export const filterDomProps = (props: Props): Record<string, unknown> => {
+  return Object.keys(props).reduce((acc, prop) => {
     if (![...RuvyAttributes, 'tag'].includes(prop)) {
-      acc[prop] = component.props[prop];
+      acc[prop] = props[prop];
     }
 
     return acc;
@@ -215,8 +224,8 @@ export const createRoot = (instance: Element): RootComponent => {
 /**
  * create an empty record of tasks
  */
-const initComponentTasks = (): ComponentTasks => ({
-  [MicroTaskType.MountedComponent]: [],
+export const initComponentTasks = (): ComponentTasks => ({
+  [MicroTaskType.SetComponentMounted]: [],
   [MicroTaskType.RemoveComponent]: [],
   [MicroTaskType.RenderElement]: [],
   [MicroTaskType.RenderInnerHTML]: [],

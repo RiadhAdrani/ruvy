@@ -20,7 +20,15 @@
     "jsx": "react",
     "types": ["./src/types/global", "./docs/custom.d.ts"],
     "paths": {
-      "@/*": ["./lib/*"]
+      "@/*": ["./lib/*"],
+      "@component/*": ["./lib/component/*"],
+      "@scheduler/*": ["./lib/scheduler/*"],
+      "@composable/*": ["./lib/composable/*"],
+      "@context/*": ["./lib/context/*"],
+      "@core/*": ["./lib/core/*"],
+      "@helpers/*": ["./lib/helpers/*"],
+      "@router/*": ["./lib/router/*"],
+      "@utils/*": ["./lib/utils/*"]
     }
   },
   "include": ["./src", "./lib", "./docs"]
