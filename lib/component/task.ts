@@ -4,6 +4,7 @@ import {
   MicroTask,
   MicroTaskType,
   PropComparison,
+  RefValue,
 } from '@/types.js';
 import {
   element,
@@ -12,10 +13,10 @@ import {
   removeEventListener,
   setEventListener,
   setAttribute,
+  removeAttribute,
 } from '@riadh-adrani/domer';
 import { filterDomProps, getNodeIndex, getParentNode } from './index.js';
 import { RuvyError, generateId } from '@/helpers.js';
-import { removeAttribute } from '@riadh-adrani/dom-utils';
 
 export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type'>): MicroTask => {
   return {
@@ -106,4 +107,26 @@ export const createElementPropsUpdateTask = (
   };
 
   return createTask({ component, execute, type: MicroTaskType.UpdateProps });
+};
+
+export const createRefElementTask = (component: ElementComponent, ref: RefValue): MicroTask => {
+  const execute = () => {
+    const element = component.instance as Element;
+
+    if (!element) {
+      throw new RuvyError('unable to update element, component is not yet mounted.');
+    }
+
+    ref.value = element;
+  };
+
+  return createTask({ execute, component, type: MicroTaskType.RefElement });
+};
+
+export const createUnrefElementTask = (component: ElementComponent, ref: RefValue): MicroTask => {
+  const execute = () => {
+    ref.value = undefined;
+  };
+
+  return createTask({ execute, component, type: MicroTaskType.RefElement });
 };
