@@ -7,5 +7,6 @@ export default {
   },
   alias: {
     '@': path.resolve(__dirname, './lib'),
+    '@type': path.resolve(__dirname, './lib/types.ts'),
   },
 };
