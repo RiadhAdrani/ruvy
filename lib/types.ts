@@ -258,6 +258,7 @@ export interface RootComponent extends Pick<CommonComponent, 'children'> {
 
 export interface TextComponent extends Pick<CommonComponent, 'key' | 'old' | 'parent' | 'status'> {
   tag: ComponentTag.Text;
+  text: string;
   instance?: Text;
 }
 
@@ -300,10 +301,19 @@ export type HostComponent = RootComponent | ElementComponent | PortalComponent;
 
 export type NodeComponent = ElementComponent | TextComponent;
 
-export type SwitchableComponent =
+export type SwitchControllerComponent =
   | FunctionComponent
   | ElementComponent
   | PortalComponent
+  | FragmentComponent
+  | ContextComponent;
+
+export type ComponentWithChildren =
+  | FunctionComponent
+  | ElementComponent
+  | OutletComponent
+  | PortalComponent
+  | JsxFragmentComponent
   | FragmentComponent
   | ContextComponent;
 
@@ -343,9 +353,13 @@ export interface MemoHook<T = unknown> {
   value: T;
 }
 
+export interface RefValue<T = unknown> {
+  value: T;
+}
+
 export interface RefHook<T = unknown> {
   type: HookType.Ref;
-  value: T;
+  value: RefValue<T>;
 }
 
 export interface ContextHook<T = unknown> {
@@ -374,11 +388,15 @@ export enum MicroTaskType {
   RemoveComponent = 'remove-component',
   UpdatePortalChildren = 'update-portal-children',
   MountedComponent = 'mounted-component',
+  RefElement = 'ref-element',
+  UnrefEelement = 'unref-element',
 }
 
 export const MicroTaskSorted = [
   MicroTaskType.UnmountComponent,
   MicroTaskType.RenderElement,
+  MicroTaskType.UnrefEelement,
+  MicroTaskType.RefElement,
   MicroTaskType.RenderInnerHTML,
   MicroTaskType.UnmountedComponent,
   MicroTaskType.RemoveComponent,
@@ -404,10 +422,12 @@ export interface ExecutionContext {
   closestContexts: Record<string, unknown>;
 }
 
+export type ComponentTasks = Record<MicroTaskType, Array<MicroTask>>;
+
 export interface ComponentHandlerResult<C extends Component> {
   component: C;
   children: Array<unknown>;
-  tasks: Record<MicroTaskType, Array<MicroTask>>;
+  tasks: ComponentTasks;
   ctx: ExecutionContext;
 }
 

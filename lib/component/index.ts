@@ -4,6 +4,7 @@ import {
   ComponentHandler,
   ComponentStatus,
   ComponentTag,
+  ComponentTasks,
   ElementComponent,
   ElementTemplate,
   HostComponent,
@@ -12,10 +13,17 @@ import {
   NodeComponent,
   PropComparison,
   Props,
+  RefValue,
   RootComponent,
-  SwitchableComponent,
+  SwitchControllerComponent,
 } from '@type';
-import { createElementPropsUpdateTask, createInnerHTMLTask, createRenderTask } from './task.js';
+import {
+  createElementPropsUpdateTask,
+  createInnerHTMLTask,
+  createRefElementTask,
+  createRenderTask,
+  createUnrefElementTask,
+} from './task.js';
 import { RuvyError } from '@/helpers.js';
 
 export const RuvyAttributes = [
@@ -64,38 +72,43 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     unmountedChildren: [],
   };
 
-  const tasks = createTaskObj();
+  const tasks = initComponentTasks();
 
   const innerHTML = props.innerHTML;
-
-  /**
-   * should we assign to a new ref
-   */
-  const ref = false;
-
-  /**
-   * should we unref the old reference
-   */
-  const unref = false;
 
   if (!current) {
     const renderTask = createRenderTask(component);
 
-    tasks[MicroTaskType.RenderElement].push(renderTask);
+    pushMicroTask(renderTask, tasks);
 
     if (typeof innerHTML === 'string') {
       const renderInnerHTML = createInnerHTMLTask(component, innerHTML);
 
+      // skip children rendering
       children = [];
 
-      tasks[MicroTaskType.RenderInnerHTML].push(renderInnerHTML);
+      pushMicroTask(renderInnerHTML, tasks);
+    }
+
+    const ref = props.ref;
+
+    if (ref && isRefValue(ref)) {
+      const refTask = createRefElementTask(component, ref as RefValue);
+
+      pushMicroTask(refTask, tasks);
     }
   } else {
     if (typeof innerHTML === 'string') {
       if (innerHTML !== component.props['innerHTML']) {
         const renderInnerHTML = createInnerHTMLTask(component, innerHTML);
 
-        tasks[MicroTaskType.RenderInnerHTML].push(renderInnerHTML);
+        pushMicroTask(renderInnerHTML, tasks);
+      }
+
+      const unmountTasks = unmountComponentChildren(component);
+
+      for (const queue of Object.keys(unmountTasks) as Array<MicroTaskType>) {
+        tasks[queue].unshift(...unmountTasks[queue]);
       }
 
       children = [];
@@ -108,19 +121,30 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     if (cmp.length > 0) {
       const updateProps = createElementPropsUpdateTask(component, cmp);
 
-      tasks[MicroTaskType.UpdateProps].push(updateProps);
+      pushMicroTask(updateProps, tasks);
+    }
+
+    // check if there is a new reference
+    const oldRef = current.props.ref;
+    const newRef = props.ref;
+
+    // does not point to the same object
+    if (newRef !== oldRef) {
+      if (isRefValue(oldRef)) {
+        const unrefTask = createUnrefElementTask(component, oldRef as RefValue);
+
+        pushMicroTask(unrefTask, tasks);
+      }
+
+      if (isRefValue(newRef)) {
+        const refTask = createRefElementTask(component, newRef as RefValue);
+
+        pushMicroTask(refTask, tasks);
+      }
     }
 
     // override props
     component.props = props;
-  }
-
-  if (unref) {
-    // TODO: unref old reference
-  }
-
-  if (ref) {
-    // TODO: assign ref task
   }
 
   return { children, component, tasks, ctx };
@@ -188,7 +212,10 @@ export const createRoot = (instance: Element): RootComponent => {
       ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝                                                       
  */
 
-const createTaskObj = (): Record<MicroTaskType, Array<MicroTask>> => ({
+/**
+ * create an empty record of tasks
+ */
+const initComponentTasks = (): ComponentTasks => ({
   [MicroTaskType.MountedComponent]: [],
   [MicroTaskType.RemoveComponent]: [],
   [MicroTaskType.RenderElement]: [],
@@ -202,9 +229,18 @@ const createTaskObj = (): Record<MicroTaskType, Array<MicroTask>> => ({
   [MicroTaskType.UpdateProps]: [],
   [MicroTaskType.UpdateText]: [],
   [MicroTaskType.UnmountedComponent]: [],
+  [MicroTaskType.RefElement]: [],
+  [MicroTaskType.UnrefEelement]: [],
 });
 
-export const isSwitchComponent = (component: SwitchableComponent): { value: unknown } | false => {
+/**
+ * checks if the given component is a switch controller
+ * and the return the switch value within an object,
+ * otherwise, `false`.
+ */
+export const isSwitchController = (
+  component: SwitchControllerComponent
+): { value: unknown } | false => {
   if (!hasProperty(component.props, 'switch')) return false;
 
   const value = component.props['switch'];
@@ -258,4 +294,26 @@ export const getNodeIndex = (
   }
 
   return { index, found: wasFound };
+};
+
+export const isRefValue = (v: unknown): boolean => {
+  return hasProperty(v, 'value');
+};
+
+export const pushMicroTask = (task: MicroTask, target: ComponentTasks) => {
+  target[task.type].push(task);
+};
+
+export const unmountComponentChildren = (component: Component): ComponentTasks => {
+  const tasks = initComponentTasks();
+
+  if (ComponentTag.Null === component.tag || ComponentTag.Text === component.tag) {
+    return tasks;
+  }
+
+  for (const child of component.children) {
+    // TODO: unmount for each type of component
+  }
+
+  return tasks;
 };
