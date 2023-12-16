@@ -63,7 +63,7 @@ export interface Task {
   date: Date;
 }
 
-export enum ComponentType {
+export enum ComponentTag {
   Function = '#-function',
   Element = '#-element',
   Root = '#-root',
@@ -140,7 +140,15 @@ export interface UtilityProps {
   'case:default'?: unknown;
 }
 
-export type Props = Record<string, unknown>;
+export type Props = Record<string, unknown> & UtilityProps;
+
+export type PropComparison =
+  | {
+      key: string;
+      operation: 'create' | 'update';
+      value: unknown;
+    }
+  | { key: string; operation: 'remove' };
 
 export interface CommonTemplate {
   props: Record<string, unknown>;
@@ -164,7 +172,7 @@ export interface FunctionTemplate extends CommonTemplate {
 }
 
 export interface ContextTemplate<T = unknown> extends CommonTemplate {
-  type: ComponentType.Context;
+  type: ComponentTag.Context;
   props: ContextComponentProps<T>;
 }
 
@@ -212,6 +220,7 @@ export interface PortalComponentProps extends Record<string, unknown> {
 }
 
 export interface ContextObject<T = unknown> {
+  id: string;
   Provider: (props: ContextComponentProps<T>) => ContextTemplate<T>;
 }
 
@@ -231,59 +240,72 @@ export interface CommonComponent {
 }
 
 export interface FunctionComponent extends CommonComponent {
-  tag: ComponentType.Function;
+  tag: ComponentTag.Function;
   type: (props: Record<string, unknown>) => unknown;
   hooks: Record<string, Hook>;
 }
 
 export interface ElementComponent extends CommonComponent {
-  tag: ComponentType.Element;
+  tag: ComponentTag.Element;
   type: string;
   instance?: Node;
 }
 
 export interface RootComponent extends Pick<CommonComponent, 'children'> {
-  tag: ComponentType.Root;
+  tag: ComponentTag.Root;
   instance: Node;
 }
 
 export interface TextComponent extends Pick<CommonComponent, 'key' | 'old' | 'parent' | 'status'> {
-  tag: ComponentType.Text;
+  tag: ComponentTag.Text;
   instance?: Text;
 }
 
 export interface NullComponent extends Pick<CommonComponent, 'key' | 'old' | 'parent' | 'status'> {
-  tag: ComponentType.Null;
+  tag: ComponentTag.Null;
 }
 
 export interface OutletComponent extends CommonComponent {
-  tag: ComponentType.Outlet;
+  tag: ComponentTag.Outlet;
   type: typeof Outlet;
 }
 
 export interface PortalComponent extends CommonComponent {
-  tag: ComponentType.Portal;
+  tag: ComponentTag.Portal;
   props: PortalComponentProps;
+  instance?: Node;
   type: typeof Portal;
 }
 
 export interface JsxFragmentComponent extends CommonComponent {
-  tag: ComponentType.JsxFragment;
+  tag: ComponentTag.JsxFragment;
   props: PortalComponentProps;
   type: (props: Record<string, unknown>) => unknown;
 }
 
 export interface FragmentComponent extends CommonComponent {
-  tag: ComponentType.Fragment;
+  tag: ComponentTag.Fragment;
   props: PortalComponentProps;
   type: typeof Fragment;
 }
 
 export interface ContextComponent extends CommonComponent {
-  tag: ComponentType.Context;
+  tag: ComponentTag.Context;
   props: ContextComponentProps;
+  // TODO: context type
   type: typeof Fragment;
 }
+
+export type HostComponent = RootComponent | ElementComponent | PortalComponent;
+
+export type NodeComponent = ElementComponent | TextComponent;
+
+export type SwitchableComponent =
+  | FunctionComponent
+  | ElementComponent
+  | PortalComponent
+  | FragmentComponent
+  | ContextComponent;
 
 export type Component =
   | FunctionComponent
@@ -340,6 +362,7 @@ export type Hook<T = unknown> =
 
 export enum MicroTaskType {
   RenderElement = 'render-element',
+  RenderText = 'render-text',
   RenderInnerHTML = 'render-inner-html',
   ReorderElements = 'reorder-elements',
   RunEffectCleanup = 'run-cleanup',
@@ -347,7 +370,7 @@ export enum MicroTaskType {
   UnmountComponent = 'unmount-component',
   UpdateProps = 'update-props',
   UpdateText = 'update-text',
-  UnmountedComponent = 'update-text',
+  UnmountedComponent = 'unmounted-component',
   RemoveComponent = 'remove-component',
   UpdatePortalChildren = 'update-portal-children',
   MountedComponent = 'mounted-component',
@@ -376,10 +399,16 @@ export interface MicroTask {
   date: Date;
 }
 
+export interface ExecutionContext {
+  /** Store closest context values for easy of access */
+  closestContexts: Record<string, unknown>;
+}
+
 export interface ComponentHandlerResult<C extends Component> {
   component: C;
   children: Array<unknown>;
-  tasks: Array<MicroTask>;
+  tasks: Record<MicroTaskType, Array<MicroTask>>;
+  ctx: ExecutionContext;
 }
 
 export type ComponentHandler<T extends Template, C extends Component, D = unknown> = (
@@ -387,5 +416,6 @@ export type ComponentHandler<T extends Template, C extends Component, D = unknow
   component: C | undefined,
   parent: Component,
   key: Key,
+  ctx: ExecutionContext,
   data?: D
 ) => ComponentHandlerResult<C>;

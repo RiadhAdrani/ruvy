@@ -1527,6 +1527,8 @@ declare global {
   namespace JSX {
     type Element = BranchTemplate<Any>;
 
+    interface IntrinsicAttributes extends Partial<UtilityProps> {}
+
     interface IntrinsicElements extends Record<string, unknown> {
       a: HTMLElementProps<HTMLAnchorElement, AProps>;
       abbr: HTMLElementProps;

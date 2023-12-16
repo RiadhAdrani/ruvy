@@ -22,16 +22,13 @@ import {
 } from '../utils/index.js';
 import createAction from '../actions/actions.js';
 import { unmountBranch } from '../utils/index.js';
-import { handleContextComponent } from '../components/context/context.js';
-import { handleElementComponent } from '../components/element/element.js';
-import {
-  handleFragmentComponent,
-  handleJsxFragmentComponent,
-} from '../components/fragment/fragment.js';
-import { handleCallableComponent } from '../components/callable/callable.js';
-import { handleOutletComponent } from '../components/outlet/outlet.js';
-import { handlePortalComponent, type PortalBranchType } from '../components/portal/portal.js';
-import { handleTextComponent } from '../components/text/text.js';
+import { handleContextComponent } from './context/context.js';
+import { handleElementComponent } from './element/element.js';
+import { handleFragmentComponent, handleJsxFragmentComponent } from './fragment/fragment.js';
+import { handleCallableComponent } from './callable/callable.js';
+import { handleOutletComponent } from './outlet/outlet.js';
+import { handlePortalComponent, type PortalBranchType } from './portal/portal.js';
+import { handleTextComponent } from './text/text.js';
 import { handleEmptyComponent } from './empty/empty.js';
 
 /**

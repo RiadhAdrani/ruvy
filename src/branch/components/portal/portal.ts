@@ -5,8 +5,8 @@ import {
   BranchTag,
   BranchTemplate,
   ComponentFunctionHandler,
-} from '../../../branch/types.js';
-import { initBranch } from '../../../branch/utils/index.js';
+} from '../../types.js';
+import { initBranch } from '../../utils/index.js';
 import createAction from '../../actions/actions.js';
 
 export type PortalProps = PropsWithUtility<{ container: Element }>;

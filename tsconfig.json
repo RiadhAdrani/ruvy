@@ -20,7 +20,8 @@
     "jsx": "react",
     "types": ["./src/types/global", "./docs/custom.d.ts"],
     "paths": {
-      "@/*": ["./lib/*"]
+      "@/*": ["./lib/*"],
+      "@type": ["./lib/types.ts"]
     }
   },
   "include": ["./src", "./lib", "./docs"]
