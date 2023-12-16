@@ -16,7 +16,7 @@ import {
   RefValue,
   RootComponent,
   SwitchControllerComponent,
-} from '@type';
+} from '@/types.js';
 import {
   createElementPropsUpdateTask,
   createInnerHTMLTask,

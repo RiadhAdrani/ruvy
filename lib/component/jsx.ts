@@ -1,4 +1,4 @@
-import { ComponentSymbol } from '@type';
+import { ComponentSymbol } from '@/types.js';
 
 /**
  * creates a jsx element.

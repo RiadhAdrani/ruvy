@@ -5,8 +5,9 @@ export default {
   test: {
     environment: 'jsdom',
   },
-  alias: {
-    '@': path.resolve(__dirname, './lib'),
-    '@type': path.resolve(__dirname, './lib/types.ts'),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './lib'),
+    },
   },
 };
