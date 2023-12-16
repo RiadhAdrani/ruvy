@@ -3,6 +3,7 @@ import {
   ElementComponent,
   MicroTask,
   MicroTaskType,
+  NonRootComponent,
   PropComparison,
   RefValue,
 } from '@/types.js';
@@ -16,7 +17,7 @@ import {
   removeAttribute,
 } from '@riadh-adrani/domer';
 import { filterDomProps, getNodeIndex, getParentNode } from './index.js';
-import { RuvyError, generateId } from '@/helpers.js';
+import { RuvyError, generateId } from '@/helpers/helpers.js';
 
 export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type'>): MicroTask => {
   return {
@@ -28,7 +29,7 @@ export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type
 
 export const createRenderTask = (component: ElementComponent): MicroTask => {
   // filter events and attributes
-  const props = filterDomProps(component);
+  const props = filterDomProps(component.props);
 
   const execute = () => {
     const instance = element(component.type, props);
@@ -128,5 +129,13 @@ export const createUnrefElementTask = (component: ElementComponent, ref: RefValu
     ref.value = undefined;
   };
 
-  return createTask({ execute, component, type: MicroTaskType.RefElement });
+  return createTask({ execute, component, type: MicroTaskType.UnrefEelement });
+};
+
+export const createSetMountedTask = (component: NonRootComponent) => {
+  const execute = () => {
+    component.status = ComponentStatus.Mounted;
+  };
+
+  return createTask({ execute, component, type: MicroTaskType.SetComponentMounted });
 };

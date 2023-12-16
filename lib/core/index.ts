@@ -1,3 +1,4 @@
+import '@/component/jsx.js';
 import { setConfig } from '@riadh-adrani/domer';
 
 setConfig({

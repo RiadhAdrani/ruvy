@@ -10,7 +10,7 @@ export const createJsxElement = (
   type: unknown,
   props: Record<string, unknown>,
   ...children: Array<unknown>
-) => {
+): JSX.Element => {
   // flatten children
   children = children.flat();
 
@@ -22,7 +22,7 @@ export const createJsxElement = (
     key: (props?.key as string) ?? undefined,
   };
 
-  return template;
+  return template as JSX.Element;
 };
 
 /**
@@ -32,3 +32,6 @@ export const createJsxElement = (
 export const createFragmentTemplate = (children: Array<unknown>) => {
   return children;
 };
+
+window.createJsxElement = createJsxElement;
+window.createJsxFragmentElement = createFragmentTemplate;

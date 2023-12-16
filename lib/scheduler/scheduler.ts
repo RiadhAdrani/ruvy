@@ -1,5 +1,5 @@
 import { Task } from '@/types.js';
-import { generateId } from './helpers.js';
+import { generateId } from '../helpers/helpers.js';
 
 const stack: Array<Task> = [];
 
