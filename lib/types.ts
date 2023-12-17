@@ -1,3 +1,5 @@
+import { Namespace } from '@riadh-adrani/domer';
+
 export enum ContextType {
   Idle = 'idle',
   Diff = 'diffing',
@@ -190,8 +192,7 @@ export interface FragmentTemplate extends CommonTemplate {
 }
 
 export interface JsxFragmentTemplate extends CommonTemplate {
-  // TODO:
-  type: (props: Props) => unknown;
+  type: typeof createJsxFragmentElement;
 }
 
 export interface ElementTemplate extends CommonTemplate {
@@ -211,6 +212,15 @@ export type Template =
   | ElementTemplate
   | TextTemplate
   | NullTemplate
+  | ContextTemplate;
+
+export type JsxTemplate =
+  | FunctionTemplate
+  | OutletTemplate
+  | PortalTemplate
+  | FragmentTemplate
+  | JsxFragmentTemplate
+  | ElementTemplate
   | ContextTemplate;
 
 export type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
@@ -234,8 +244,8 @@ export interface CommonComponent {
   parent: Component;
   status: ComponentStatus;
   key: Key;
-  unmountedChildren: Array<Component>;
-  children: Array<Component>;
+  unmountedChildren: Array<NonRootComponent>;
+  children: Array<NonRootComponent>;
   old?: Component;
 }
 
@@ -430,14 +440,16 @@ export interface MicroTask {
 
 export interface ExecutionContext {
   /** Store closest context values for easy of access */
-  closestContexts: Record<string, unknown>;
+  contexts: Record<string, unknown>;
+  /** warn if there is a change of context */
+  ns?: Namespace;
 }
 
 export type ComponentTasks = Record<MicroTaskType, Array<MicroTask>>;
 
 export interface ComponentHandlerResult<C extends Component> {
   component: C;
-  children: Array<unknown>;
+  children: Array<Template>;
   tasks: ComponentTasks;
   ctx: ExecutionContext;
 }
@@ -450,3 +462,5 @@ export type ComponentHandler<T extends Template, C extends Component, D = unknow
   ctx: ExecutionContext,
   data?: D
 ) => ComponentHandlerResult<C>;
+
+export type ComputedChildrenMap = Record<Key, { component: NonRootComponent; index: number }>;
