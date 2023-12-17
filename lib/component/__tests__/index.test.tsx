@@ -33,7 +33,7 @@ describe('component', () => {
       root,
       0,
       {
-        closestContexts: {},
+        contexts: {},
       }
     );
 
@@ -48,7 +48,7 @@ describe('component', () => {
       root,
       0,
       {
-        closestContexts: {},
+        contexts: {},
       }
     );
 
@@ -116,7 +116,7 @@ describe('component', () => {
         newTemplate = <div></div>,
       }: SetupParams) => {
         const current = handleElement(template as unknown as ElementTemplate, undefined, root, 0, {
-          closestContexts: {},
+          contexts: {},
         });
 
         const result = handleElement(
@@ -125,7 +125,7 @@ describe('component', () => {
           root,
           0,
           {
-            closestContexts: {},
+            contexts: {},
           }
         );
 
