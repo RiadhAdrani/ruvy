@@ -6,6 +6,8 @@ import {
   NonRootComponent,
   PropComparison,
   RefValue,
+  UnmountComponentData,
+  NodeComponent,
 } from '@/types.js';
 import {
   element,
@@ -15,8 +17,16 @@ import {
   setEventListener,
   setAttribute,
   removeAttribute,
+  removeNode,
+  changeNodePosition,
 } from '@riadh-adrani/domer';
-import { filterDomProps, getNodeIndex, getParentNode } from './index.js';
+import {
+  filterDomProps,
+  getClosestNodeComponent,
+  getNodeIndex,
+  getParentNode,
+  isNodeComponent,
+} from './index.js';
 import { RuvyError, generateId } from '@/helpers/helpers.js';
 
 export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type'>): MicroTask => {
@@ -132,10 +142,57 @@ export const createUnrefElementTask = (component: ElementComponent, ref: RefValu
   return createTask({ execute, component, type: MicroTaskType.UnrefEelement });
 };
 
-export const createSetMountedTask = (component: NonRootComponent) => {
+export const createSetMountedTask = (component: NonRootComponent): MicroTask => {
   const execute = () => {
     component.status = ComponentStatus.Mounted;
   };
 
   return createTask({ execute, component, type: MicroTaskType.SetComponentMounted });
+};
+
+export const createUnmountComponentTask = (
+  component: NonRootComponent,
+  data: UnmountComponentData
+): MicroTask => {
+  const execute = () => {
+    if (isNodeComponent(component) && !data.isHostParentUnmounting) {
+      const element = (component as NodeComponent).instance as Element;
+
+      if (!element) {
+        throw new RuvyError('unable to unmount node, component instance does not exist.');
+      }
+
+      removeNode(element);
+    }
+
+    component.status = ComponentStatus.Unmounted;
+  };
+
+  return createTask({ execute, component, type: MicroTaskType.UnmountComponent });
+};
+
+export const createChangeElementTask = (component: NonRootComponent): MicroTask => {
+  const execute = () => {
+    const nodeComponents = getClosestNodeComponent(component);
+
+    nodeComponents.forEach(node => {
+      const element = node.instance as Element;
+
+      if (!element) {
+        throw new RuvyError(
+          'unable to change element position, component instance does not exist.'
+        );
+      }
+
+      const { index, found } = getNodeIndex(node);
+
+      if (!found) {
+        throw new RuvyError('unable to change element position, position computation failed');
+      }
+
+      changeNodePosition(element, index);
+    });
+  };
+
+  return createTask({ execute, component, type: MicroTaskType.ReorderElements });
 };
