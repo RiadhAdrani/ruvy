@@ -1,4 +1,4 @@
-import { isClassProp, resolveClassProps } from '@riadh-adrani/domer';
+import { Namespace, isClassProp, resolveClassProps } from '@riadh-adrani/domer';
 import { areEqual, hasProperty } from '@riadh-adrani/obj-utils';
 import {
   Component,
@@ -10,36 +10,54 @@ import {
   ComponentTasks,
   ComponentWithChildren,
   ComputedChildrenMap,
+  ContextComponent,
+  ContextTemplate,
   ElementComponent,
   ElementTemplate,
   ExecutionContext,
   Fragment,
+  FragmentComponent,
+  FragmentTemplate,
+  FunctionComponent,
   FunctionTemplate,
   HostComponent,
+  JsxFragmentComponent,
+  JsxFragmentTemplate,
   JsxTemplate,
   Key,
   MicroTask,
   MicroTaskType,
   NodeComponent,
   NonRootComponent,
+  NullComponent,
+  NullTemplate,
   Outlet,
+  OutletComponent,
+  OutletTemplate,
   Portal,
+  PortalComponent,
+  PortalTemplate,
   PropComparison,
   Props,
   RefValue,
   RootComponent,
   SwitchControllerComponent,
   Template,
+  TextComponent,
+  TextTemplate,
+  UnmountComponentData,
 } from '@/types.js';
 import {
+  createChangeElementTask,
   createElementPropsUpdateTask,
   createInnerHTMLTask,
   createRefElementTask,
   createRenderTask,
   createSetMountedTask,
+  createUnmountComponentTask,
   createUnrefElementTask,
 } from './task.js';
-import { RuvyError } from '@/helpers/helpers.js';
+import { RuvyError, moveElement } from '@/helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
 
 export const RuvyAttributes = [
@@ -70,33 +88,13 @@ export const handleComponent = (
 
   // we get the key when processing children
 
-  let res: ComponentHandlerResult<NonRootComponent>;
+  const handler = handlerMap[tag];
 
-  // TODO: if they do not have the same type or tag or namespace, we unmount and render the new template
+  const res = handler(template, current, parent, key, ctx);
 
-  if (tag === ComponentTag.Element) {
-    res = handleElement(template as ElementTemplate, current as ElementComponent, parent, key, ctx);
-  } else if (tag === ComponentTag.Context) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Fragment) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Function) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.JsxFragment) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Null) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Outlet) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Portal) {
-    // TODO: handleContext
-  } else if (tag === ComponentTag.Text) {
-    // TODO: handleContext
-  } else {
-    throw new RuvyError('unknown template tag type');
-  }
+  const component = res.component as ComponentWithChildren;
 
-  const switchControl = isSwitchController(res!.component as SwitchControllerComponent);
+  const switchControl = isSwitchController(res.component as SwitchControllerComponent);
 
   let switchFulfilled = switchControl === false;
 
@@ -107,8 +105,8 @@ export const handleComponent = (
 
   const childrenKeys = new Set<Key>([]);
 
-  for (let i = 0; i < res!.children.length; i++) {
-    const child = res!.children[i];
+  for (let i = 0; i < res.children.length; i++) {
+    const child = res.children[i];
 
     let nullify = false;
 
@@ -130,7 +128,7 @@ export const handleComponent = (
           switchFulfilled = doMatch;
         } else {
           // we should check if we are at the last element
-          const isLast = i === res!.children.length - 1;
+          const isLast = i === res.children.length - 1;
 
           if (!isLast) {
             throw new RuvyError('missing "case" prop within a switch control component.');
@@ -244,7 +242,7 @@ export const handleComponent = (
 
     // check if we have an element template, which needs some props processing
     if (childTag === ComponentTag.Element) {
-      processElementTemplateProps(template as ElementTemplate, res!.ctx);
+      processElementTemplateProps(template as ElementTemplate, res.ctx);
     }
 
     let childRes: ComponentHandlerResult<Component>;
@@ -252,17 +250,43 @@ export const handleComponent = (
     // try and find the corresponding component
     const old = childrenMap[key];
 
-    if (!current || !old || childTag !== old.component.tag) {
-      // TODO: new render and push it to the correct index
-      // TODO: unmount old component if existing
+    if (!current || !old || shouldRenderNewComponent(template, old.component)) {
+      childRes = handleComponent(template, undefined, component, i, res.ctx);
     } else {
-      // TODO: handle component with same tag
+      // mark the old component as mounted, so we don't unmount it
+      old.component.status = ComponentStatus.Mounted;
+
+      childRes = handleComponent(template, old.component, component, i, res.ctx);
+
+      if (i !== old.index) {
+        // need to change element position
+
+        const reorderTask = createChangeElementTask(old.component);
+
+        pushMicroTask(reorderTask, childRes.tasks);
+
+        moveElement(component.children, old.index, i);
+      }
     }
 
-    // if (childRes) {
-    //  // TODO: push tasks
-    // }
+    // push tasks
+    pushBlukMicroTasks(childRes.tasks, res.tasks);
   }
+
+  // remove unused from the array of children
+  component.children = component.children.filter(child => {
+    if (child.status === ComponentStatus.Unmounting) {
+      const unmountTasks = unmountComponent(child, {});
+
+      pushBlukMicroTasks(unmountTasks, res.tasks);
+
+      return false;
+    }
+
+    return true;
+  });
+
+  return res;
 };
 
 /**
@@ -334,12 +358,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
 
         pushMicroTask(renderInnerHTML, tasks);
 
-        const unmountChildrenTasks = unmountComponentChildren(component);
-
-        for (const queue of Object.keys(unmountChildrenTasks) as Array<MicroTaskType>) {
-          tasks[queue].unshift(...unmountChildrenTasks[queue]);
-        }
-
+        // ? children will be unmounted in handleComponent
         children = [];
       }
 
@@ -416,6 +435,114 @@ export const filterDomProps = (props: Props): Record<string, unknown> => {
 };
 
 /**
+       ██████╗ ██████╗ ███╗   ██╗████████╗███████╗██╗  ██╗████████╗
+      ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝
+      ██║     ██║   ██║██╔██╗ ██║   ██║   █████╗   ╚███╔╝    ██║   
+      ██║     ██║   ██║██║╚██╗██║   ██║   ██╔══╝   ██╔██╗    ██║   
+      ╚██████╗╚██████╔╝██║ ╚████║   ██║   ███████╗██╔╝ ██╗   ██║   
+       ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝                                                            
+ */
+
+export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
+      ███████╗██████╗  █████╗  ██████╗ ███╗   ███╗███████╗███╗   ██╗████████╗
+      ██╔════╝██╔══██╗██╔══██╗██╔════╝ ████╗ ████║██╔════╝████╗  ██║╚══██╔══╝
+      █████╗  ██████╔╝███████║██║  ███╗██╔████╔██║█████╗  ██╔██╗ ██║   ██║   
+      ██╔══╝  ██╔══██╗██╔══██║██║   ██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   
+      ██║     ██║  ██║██║  ██║╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   
+      ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝                                                                      
+ */
+export const handleFragment: ComponentHandler<FragmentTemplate, FragmentComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+export const handleJsxFragment: ComponentHandler<
+  JsxFragmentTemplate,
+  JsxFragmentComponent
+> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
+      ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗
+      ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║
+      █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║
+      ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║
+      ██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║
+      ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝                                                               
+ */
+
+export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
+      ███╗   ██╗██╗   ██╗██╗     ██╗     
+      ████╗  ██║██║   ██║██║     ██║     
+      ██╔██╗ ██║██║   ██║██║     ██║     
+      ██║╚██╗██║██║   ██║██║     ██║     
+      ██║ ╚████║╚██████╔╝███████╗███████╗
+      ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝                                   
+ */
+export const handleNull: ComponentHandler<NullTemplate, NullComponent> = (
+  _,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const tasks = initComponentTasks();
+
+  const component = current ?? {
+    key,
+    parent,
+    status: ComponentStatus.Mounted,
+    tag: ComponentTag.Null,
+  };
+
+  return { component, children: [], ctx, tasks };
+};
+
+/**
+       ██████╗ ██╗   ██╗████████╗██╗     ███████╗████████╗
+      ██╔═══██╗██║   ██║╚══██╔══╝██║     ██╔════╝╚══██╔══╝
+      ██║   ██║██║   ██║   ██║   ██║     █████╗     ██║   
+      ██║   ██║██║   ██║   ██║   ██║     ██╔══╝     ██║   
+      ╚██████╔╝╚██████╔╝   ██║   ███████╗███████╗   ██║   
+       ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝╚══════╝   ╚═╝                                                       
+ */
+export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
+      ██████╗  ██████╗ ██████╗ ████████╗ █████╗ ██╗     
+      ██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔══██╗██║     
+      ██████╔╝██║   ██║██████╔╝   ██║   ███████║██║     
+      ██╔═══╝ ██║   ██║██╔══██╗   ██║   ██╔══██║██║     
+      ██║     ╚██████╔╝██║  ██║   ██║   ██║  ██║███████╗
+      ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝                                            
+ */
+export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
+      ████████╗███████╗██╗  ██╗████████╗
+      ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝
+         ██║   █████╗   ╚███╔╝    ██║   
+         ██║   ██╔══╝   ██╔██╗    ██║   
+         ██║   ███████╗██╔╝ ██╗   ██║   
+         ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝                               
+ */
+export const handleText: ComponentHandler<TextTemplate, TextComponent> = () => {
+  throw new RuvyError('not implemented');
+};
+
+/**
       ██████╗  ██████╗  ██████╗ ████████╗
       ██╔══██╗██╔═══██╗██╔═══██╗╚══██╔══╝
       ██████╔╝██║   ██║██║   ██║   ██║   
@@ -443,6 +570,21 @@ export const createRoot = (instance: Element): RootComponent => {
       ██║  ██║███████╗███████╗██║     ███████╗██║  ██║███████║
       ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝                                                       
  */
+
+/**
+ * select component handler
+ */
+const handlerMap = {
+  [ComponentTag.Element]: handleElement,
+  [ComponentTag.Context]: handleContext,
+  [ComponentTag.Fragment]: handleFragment,
+  [ComponentTag.JsxFragment]: handleJsxFragment,
+  [ComponentTag.Function]: handleFunction,
+  [ComponentTag.Outlet]: handleOutlet,
+  [ComponentTag.Text]: handleText,
+  [ComponentTag.Null]: handleNull,
+  [ComponentTag.Portal]: handlePortal,
+} as Record<string, ComponentHandler<Template, Component>>;
 
 /**
  * create an empty record of tasks
@@ -480,7 +622,10 @@ export const isSwitchController = (
   return { value };
 };
 
-export const isHost = (component: Component): boolean =>
+export const isNodeComponent = (component: Component): boolean =>
+  [ComponentTag.Element, ComponentTag.Root].includes(component.tag);
+
+export const isHostComponent = (component: Component): boolean =>
   [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root].includes(component.tag);
 
 export const getParentNode = (component: Component): HostComponent => {
@@ -488,7 +633,7 @@ export const getParentNode = (component: Component): HostComponent => {
     throw new RuvyError('unable to locate the parent node.');
   }
 
-  if (isHost(component.parent)) return component.parent as HostComponent;
+  if (isHostComponent(component.parent)) return component.parent as HostComponent;
 
   return getParentNode(component.parent);
 };
@@ -510,7 +655,7 @@ export const getNodeIndex = (
       break;
     }
 
-    if (isHost(child)) {
+    if (isHostComponent(child)) {
       index++;
       continue;
     } else {
@@ -536,15 +681,38 @@ export const pushMicroTask = (task: MicroTask, target: ComponentTasks) => {
   target[task.type].push(task);
 };
 
-export const unmountComponentChildren = (component: Component): ComponentTasks => {
+export const pushBlukMicroTasks = (tasks: ComponentTasks, target: ComponentTasks) => {
+  for (const queue of Object.keys(tasks) as Array<MicroTaskType>) {
+    target[queue].push(...tasks[queue]);
+  }
+};
+
+export const unmountComponent = (
+  component: NonRootComponent,
+  data: UnmountComponentData
+): ComponentTasks => {
   const tasks = initComponentTasks();
 
-  if (ComponentTag.Null === component.tag || ComponentTag.Text === component.tag) {
-    return tasks;
+  const childrenData = { ...data };
+
+  component.status = ComponentStatus.Unmounting;
+
+  if (component.tag === ComponentTag.Function) {
+    // TODO: unmount effects and run cleanups
   }
 
-  for (const child of component.children) {
-    // TODO: unmount for each type of component
+  const unmountTask = createUnmountComponentTask(component, data);
+
+  pushMicroTask(unmountTask, tasks);
+
+  // unmount for children
+  if ((component as ComponentWithChildren).children) {
+    (component as ComponentWithChildren).children.forEach(child => {
+      const t = unmountComponent(child, childrenData);
+
+      // push them in tasks
+      pushBlukMicroTasks(t, tasks);
+    });
   }
 
   return tasks;
@@ -620,6 +788,9 @@ export const computeChildrenMap = (component: Component | undefined): ComputedCh
       index,
     };
 
+    // ! we need, later, to change this when component is used
+    component.status = ComponentStatus.Unmounting;
+
     return acc;
   }, {} as ComputedChildrenMap);
 };
@@ -634,14 +805,15 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
       classProps.push({ key, value });
 
       return acc;
-    }
-
-    if (template.type.toLowerCase() === 'a') {
+    } else if (template.type.toLowerCase() === 'a') {
       const href = getPropFromTemplate(template, 'href');
 
       if (href) {
         // TODO: process href and compute url and
       }
+    } else if (key === 'tag' && typeof value === 'string') {
+      // override template tag
+      template.type = value;
     }
 
     return acc;
@@ -653,9 +825,46 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
     props.class = className;
   }
 
-  if (ctx.ns) {
-    props.ns = ctx.ns;
-  }
+  // default namespace to HTML
+  props.ns = ctx.ns ?? props.ns ?? Namespace.HTML;
 
   template.props = props;
+};
+
+export const shouldRenderNewComponent = (template: Template, current: Component): boolean => {
+  const tag = getTagFromTemplate(template);
+
+  if (tag !== current.tag) {
+    return false;
+  }
+
+  if (tag === ComponentTag.Element) {
+    const { type, props } = template as ElementTemplate;
+
+    // compare types
+    if (type !== (current as ElementComponent).type) {
+      return false;
+    }
+
+    // compare namespaces
+    if (props.ns !== (current as ElementComponent).props.ns) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const getClosestNodeComponent = (component: NonRootComponent): Array<NodeComponent> => {
+  if (isNodeComponent(component)) return [component as NodeComponent];
+
+  if ((component as ComponentWithChildren).children) {
+    return (component as ComponentWithChildren).children.reduce((acc, child) => {
+      acc.push(...getClosestNodeComponent(child));
+
+      return acc;
+    }, [] as Array<NodeComponent>);
+  }
+
+  return [];
 };

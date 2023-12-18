@@ -464,3 +464,7 @@ export type ComponentHandler<T extends Template, C extends Component, D = unknow
 ) => ComponentHandlerResult<C>;
 
 export type ComputedChildrenMap = Record<Key, { component: NonRootComponent; index: number }>;
+
+export interface UnmountComponentData {
+  isHostParentUnmounting?: boolean;
+}
