@@ -8,6 +8,7 @@ import {
   RefValue,
   UnmountComponentData,
   NodeComponent,
+  TextComponent,
 } from '@/types.js';
 import {
   element,
@@ -19,6 +20,7 @@ import {
   removeAttribute,
   removeNode,
   changeNodePosition,
+  text,
 } from '@riadh-adrani/domer';
 import {
   filterDomProps,
@@ -195,4 +197,44 @@ export const createChangeElementTask = (component: NonRootComponent): MicroTask 
   };
 
   return createTask({ execute, component, type: MicroTaskType.ReorderElements });
+};
+
+export const createTextTask = (component: TextComponent): MicroTask => {
+  const execute = () => {
+    const instance = text(component.text);
+
+    const host = getParentNode(component);
+
+    if (!host.instance) {
+      throw new RuvyError('unable to find element hosting parent.');
+    }
+
+    const { found, index } = getNodeIndex(component, host);
+
+    if (!found) {
+      throw new RuvyError('unable to compute node index.');
+    }
+
+    insertNode(instance, host.instance, index);
+
+    component.instance = instance;
+
+    component.status = ComponentStatus.Mounted;
+  };
+
+  return createTask({ component, execute, type: MicroTaskType.RenderText });
+};
+
+export const createUpdateTextTask = (component: TextComponent, data: string): MicroTask => {
+  const execute = () => {
+    const node = component.instance;
+
+    if (!node) {
+      throw new RuvyError('unable to change element position, component instance does not exist.');
+    }
+
+    node.data = data;
+  };
+
+  return createTask({ component, execute, type: MicroTaskType.UpdateText });
 };

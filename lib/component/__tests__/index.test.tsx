@@ -13,6 +13,7 @@ import {
   filterDomProps,
   handleElement,
   handleNull,
+  handleText,
 } from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
@@ -230,7 +231,7 @@ describe('component', () => {
   describe('handleNull', () => {
     const res = handleNull(null, undefined, root, 0, { contexts: {} });
 
-    it('should create an element with null tag', () => {
+    it('should create a component with null tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Null);
     });
 
@@ -254,6 +255,58 @@ describe('component', () => {
       const up = handleNull(null, res.component, root, 0, { contexts: {} });
 
       expect(up.component).toStrictEqual(res.component);
+    });
+  });
+
+  describe('handleText', () => {
+    let res = handleText('test', undefined, root, 0, { contexts: {} });
+
+    describe('render', () => {
+      it('should create a component with text tag', () => {
+        expect(res.component.tag).toBe(ComponentTag.Text);
+      });
+
+      it('should add key', () => {
+        expect(res.component.key).toBe(0);
+      });
+
+      it('should set parent', () => {
+        expect(res.component.parent).toStrictEqual(root);
+      });
+
+      it('should set status', () => {
+        expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+      });
+
+      it('should set text', () => {
+        expect(res.component.text).toStrictEqual('test');
+      });
+
+      it('should create a render task', () => {
+        expect(res.tasks[MicroTaskType.RenderText].length).toBe(1);
+      });
+    });
+
+    describe('update', () => {
+      beforeEach(() => {
+        res = handleText('test', undefined, root, 0, { contexts: {} });
+      });
+
+      it('should not update text when text is the same', () => {
+        const upSame = handleText('test', res.component, root, 0, { contexts: {} });
+
+        expect(upSame.tasks[MicroTaskType.UpdateText].length).toBe(0);
+      });
+
+      it('should update text', () => {
+        const up = handleText('test-2', res.component, root, 0, { contexts: {} });
+
+        expect(up.component.text).toBe('test-2');
+
+        it('should create update task', () => {
+          expect(up.tasks[MicroTaskType.UpdateText].length).toBe(1);
+        });
+      });
     });
   });
 
