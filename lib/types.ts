@@ -125,11 +125,13 @@ export const ActionsSorted = [
   ActionType.Effect,
 ];
 
-export type Effect = Callback<Callback | void>;
+export type Effect = () => (() => void) | void;
 
 export type Key = string | number;
 
 export type RuvyNode = Template;
+
+export type FunctionTemplateCallback = (props: Props) => Template;
 
 export interface UtilityProps {
   children?: Array<RuvyNode>;
@@ -142,7 +144,7 @@ export interface UtilityProps {
   'case:default'?: unknown;
 }
 
-export type Props = Record<string, unknown> & UtilityProps;
+export type Props<T = object> = Record<string, unknown> & UtilityProps & T;
 
 export type PropComparison =
   | {
@@ -170,7 +172,7 @@ export const Portal = (props: PortalProps) => props as unknown as JSX.Element;
 export const Fragment = () => null as unknown as JSX.Element;
 
 export interface FunctionTemplate extends CommonTemplate {
-  type: (props: Props) => unknown;
+  type: FunctionTemplateCallback;
 }
 
 export interface ContextTemplate<T = unknown> extends CommonTemplate {
@@ -244,15 +246,13 @@ export interface CommonComponent {
   parent: Component;
   status: ComponentStatus;
   key: Key;
-  unmountedChildren: Array<NonRootComponent>;
   children: Array<NonRootComponent>;
-  old?: Component;
 }
 
 export interface FunctionComponent extends CommonComponent {
   tag: ComponentTag.Function;
-  type: (props: Record<string, unknown>) => unknown;
-  hooks: Record<string, Hook>;
+  type: FunctionTemplateCallback;
+  hooks: Array<Hook>;
 }
 
 export interface ElementComponent extends CommonComponent {
@@ -266,13 +266,13 @@ export interface RootComponent extends Pick<CommonComponent, 'children'> {
   instance: Node;
 }
 
-export interface TextComponent extends Pick<CommonComponent, 'key' | 'old' | 'parent' | 'status'> {
+export interface TextComponent extends Pick<CommonComponent, 'key' | 'parent' | 'status'> {
   tag: ComponentTag.Text;
   text: string;
   instance?: Text;
 }
 
-export interface NullComponent extends Pick<CommonComponent, 'key' | 'old' | 'parent' | 'status'> {
+export interface NullComponent extends Pick<CommonComponent, 'key' | 'parent' | 'status'> {
   tag: ComponentTag.Null;
 }
 
@@ -350,7 +350,13 @@ export type Component =
   | FragmentComponent
   | ContextComponent;
 
+export type CreateState<T = unknown> = T | (() => T);
+
 export type SetState<T = unknown> = (valueOrSetter: T | ((val: T) => T)) => void;
+
+export type GetState<T = unknown> = () => T;
+
+export type UseState<T = unknown> = [T, SetState<T>, GetState<T>];
 
 export interface StateHook<T = unknown> {
   type: HookType.State;
@@ -359,13 +365,16 @@ export interface StateHook<T = unknown> {
   getValue: () => T;
 }
 
+export interface HookCaller {
+  component: FunctionComponent;
+  tasks: ComponentTasks;
+}
+
 export interface EffectHook {
   type: HookType.Effect;
   deps: unknown;
   callback: Effect;
-  cleanup?: Effect;
-  pendingEffect?: Effect;
-  pendingCleanup?: Effect;
+  cleanup?: () => void;
 }
 
 export interface MemoHook<T = unknown> {

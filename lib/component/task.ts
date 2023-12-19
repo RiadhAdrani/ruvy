@@ -9,6 +9,8 @@ import {
   UnmountComponentData,
   NodeComponent,
   TextComponent,
+  FunctionComponent,
+  EffectHook,
 } from '@/types.js';
 import {
   element,
@@ -237,4 +239,31 @@ export const createUpdateTextTask = (component: TextComponent, data: string): Mi
   };
 
   return createTask({ component, execute, type: MicroTaskType.UpdateText });
+};
+
+export const createEffectTask = (component: FunctionComponent, hook: EffectHook): MicroTask => {
+  const execute = () => {
+    const cleanup = hook.callback();
+
+    if (typeof cleanup === 'function') {
+      hook.cleanup = cleanup;
+    }
+  };
+
+  return createTask({ component, execute, type: MicroTaskType.RunEffect });
+};
+
+export const createEffectCleanUpTask = (
+  component: FunctionComponent,
+  hook: EffectHook
+): MicroTask => {
+  const execute = () => {
+    const cleanup = hook.callback();
+
+    if (typeof cleanup === 'function') {
+      hook.cleanup = cleanup;
+    }
+  };
+
+  return createTask({ component, execute, type: MicroTaskType.RunEffectCleanup });
 };

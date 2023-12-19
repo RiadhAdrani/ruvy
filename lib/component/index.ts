@@ -20,6 +20,7 @@ import {
   FragmentTemplate,
   FunctionComponent,
   FunctionTemplate,
+  UseState,
   HostComponent,
   JsxFragmentComponent,
   JsxFragmentTemplate,
@@ -46,9 +47,18 @@ import {
   TextComponent,
   TextTemplate,
   UnmountComponentData,
+  StateHook,
+  HookType,
+  SetState,
+  CreateState,
+  EffectHook,
+  HookCaller,
+  Effect,
 } from '@/types.js';
 import {
   createChangeElementTask,
+  createEffectCleanUpTask,
+  createEffectTask,
   createElementPropsUpdateTask,
   createInnerHTMLTask,
   createRefElementTask,
@@ -143,7 +153,6 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Element,
     type,
-    unmountedChildren: [],
   };
 
   const tasks = initComponentTasks();
@@ -298,8 +307,40 @@ export const handleJsxFragment: ComponentHandler<
       ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝                                                               
  */
 
-export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponent> = () => {
-  throw new RuvyError('not implemented');
+export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const tasks = initComponentTasks();
+
+  const { props, type } = template;
+
+  const component = current ?? {
+    children: [],
+    hooks: [],
+    key,
+    parent,
+    props,
+    type,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Function,
+  };
+
+  if (!current) {
+    const mountedTask = createSetMountedTask(component);
+
+    pushMicroTask(mountedTask, tasks);
+  } else {
+    // override props
+    component.props = props;
+  }
+
+  const child = withHookContext({ component, tasks }, () => type(props));
+
+  return { children: [child], component, ctx, tasks };
 };
 
 /**
@@ -881,6 +922,8 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
     return false;
   }
 
+  // FIXME: function component will not rerender when callback changes !!!
+
   if (tag === ComponentTag.Element) {
     const { type, props } = template as ElementTemplate;
 
@@ -910,4 +953,130 @@ export const getClosestNodeComponent = (component: NonRootComponent): Array<Node
   }
 
   return [];
+};
+
+/**
+      ██╗  ██╗ ██████╗  ██████╗ ██╗  ██╗███████╗
+      ██║  ██║██╔═══██╗██╔═══██╗██║ ██╔╝██╔════╝
+      ███████║██║   ██║██║   ██║█████╔╝ ███████╗
+      ██╔══██║██║   ██║██║   ██║██╔═██╗ ╚════██║
+      ██║  ██║╚██████╔╝╚██████╔╝██║  ██╗███████║
+      ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝                                          
+ */
+
+/**
+ * current hook index
+ */
+let hookIndex = -1;
+
+/**
+ *
+ */
+let isHookContext = false;
+let caller: HookCaller | undefined;
+
+export const withHookContext = (hookCaller: HookCaller, callback: () => Template): Template => {
+  isHookContext = true;
+  caller = hookCaller;
+
+  const out = callback();
+
+  caller = undefined;
+  isHookContext = false;
+  hookIndex = 0;
+
+  return out;
+};
+
+export const useState = <T>(create: CreateState<T>): UseState<T> => {
+  if (!isHookContext || !caller) {
+    throw new RuvyError('cannot call "useState" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: StateHook;
+
+  // if component is not mounted, this is the first time
+  if (caller.component.status === ComponentStatus.Mounting) {
+    const value = typeof create === 'function' ? (create as () => unknown)() : create;
+
+    hook = {
+      type: HookType.State,
+      value,
+      getValue: () => hook.value,
+      setValue: setter => {
+        let newValue: unknown;
+
+        if (typeof setter === 'function') {
+          newValue = (setter as (v: unknown) => unknown)(hook.value);
+        } else {
+          newValue = setter;
+        }
+
+        if (!areEqual(hook.value, newValue)) {
+          // TODO: schedule UI update
+          hook.value = newValue;
+        }
+      },
+    };
+
+    caller.component.hooks.push(hook);
+  } else {
+    hook = caller.component.hooks[hookIndex] as StateHook;
+  }
+
+  if (hook.type !== HookType.State) {
+    throw new RuvyError('unexpected hook type : expected state but got something else.');
+  }
+
+  return [hook.value, hook.setValue, hook.getValue] as UseState<T>;
+};
+
+export const useEffect = (callback: Effect, deps: unknown): void => {
+  if (!isHookContext || !caller) {
+    throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: EffectHook;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    hook = {
+      callback,
+      deps,
+      type: HookType.Effect,
+    };
+
+    // schedule
+    const effectTask = createEffectTask(caller.component, hook);
+
+    pushMicroTask(effectTask, caller.tasks);
+  } else {
+    // check if deps changed
+    hook = caller.component.hooks[hookIndex] as EffectHook;
+
+    if (hook.type !== HookType.Effect) {
+      throw new RuvyError('unexpected hook type : expected effect but got something else.');
+    }
+
+    // compare deps
+    if (!areEqual(deps, hook.deps)) {
+      if (typeof hook.cleanup === 'function') {
+        const cleanupTask = createEffectCleanUpTask(caller.component, hook);
+
+        pushMicroTask(cleanupTask, caller.tasks);
+      }
+
+      hook.callback = callback;
+
+      // schedule
+      const effectTask = createEffectTask(caller.component, hook);
+
+      pushMicroTask(effectTask, caller.tasks);
+    }
+  }
 };
