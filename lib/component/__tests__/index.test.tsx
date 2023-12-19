@@ -7,7 +7,13 @@ import {
   RootComponent,
 } from '@/types.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { compareElementProps, createRoot, filterDomProps, handleElement } from '../index.js';
+import {
+  compareElementProps,
+  createRoot,
+  filterDomProps,
+  handleElement,
+  handleNull,
+} from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 
@@ -218,6 +224,36 @@ describe('component', () => {
 
         expect(result.tasks[MicroTaskType.RefElement].length).toBe(1);
       });
+    });
+  });
+
+  describe('handleNull', () => {
+    const res = handleNull(null, undefined, root, 0, { contexts: {} });
+
+    it('should create an element with null tag', () => {
+      expect(res.component.tag).toBe(ComponentTag.Null);
+    });
+
+    it('should add key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
+    it('should add correct status', () => {
+      expect(res.component.status).toBe(ComponentStatus.Mounted);
+    });
+
+    it('should add correct status', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should return empty children', () => {
+      expect(res.children).toStrictEqual([]);
+    });
+
+    it('should return the same component upon update', () => {
+      const up = handleNull(null, res.component, root, 0, { contexts: {} });
+
+      expect(up.component).toStrictEqual(res.component);
     });
   });
 
