@@ -177,7 +177,7 @@ export interface FunctionTemplate extends CommonTemplate {
 
 export interface ContextTemplate<T = unknown> extends CommonTemplate {
   type: ComponentTag.Context;
-  props: ContextComponentProps<T>;
+  props: Props<{ value: T; ctx: ContextObject<T> }>;
 }
 
 export interface OutletTemplate extends CommonTemplate {
@@ -233,11 +233,13 @@ export interface PortalComponentProps extends Record<string, unknown> {
 
 export interface ContextObject<T = unknown> {
   id: string;
-  Provider: (props: ContextComponentProps<T>) => ContextTemplate<T>;
+  Provider: (props: ContextComponentProviderProps<T>) => JSX.Element;
+  use: () => T;
 }
 
-export interface ContextComponentProps<T = unknown> extends Record<string, unknown> {
+export interface ContextComponentProviderProps<T = unknown> extends Record<string, unknown> {
   value: T;
+  ctx: ContextObject<T>;
   children?: Array<unknown>;
 }
 
@@ -302,9 +304,8 @@ export interface FragmentComponent extends CommonComponent {
 
 export interface ContextComponent extends CommonComponent {
   tag: ComponentTag.Context;
-  props: ContextComponentProps;
-  // TODO: context type
-  type: typeof Fragment;
+  props: Props<{ value: unknown; ctx: ContextObject }>;
+  type: ComponentTag.Context;
 }
 
 export type HostComponent = RootComponent | ElementComponent | PortalComponent;
@@ -368,6 +369,7 @@ export interface StateHook<T = unknown> {
 export interface HookCaller {
   component: FunctionComponent;
   tasks: ComponentTasks;
+  ctx: ExecutionContext;
 }
 
 export interface EffectHook {
@@ -384,7 +386,7 @@ export interface MemoHook<T = unknown> {
 }
 
 export interface RefValue<T = unknown> {
-  value: T;
+  value: T | undefined;
 }
 
 export interface RefHook<T = unknown> {
@@ -394,7 +396,7 @@ export interface RefHook<T = unknown> {
 
 export interface ContextHook<T = unknown> {
   type: HookType.Context;
-  value: T;
+  value: ContextObject<T>;
 }
 
 export type Hook<T = unknown> =
@@ -463,13 +465,12 @@ export interface ComponentHandlerResult<C extends Component> {
   ctx: ExecutionContext;
 }
 
-export type ComponentHandler<T extends Template, C extends Component, D = unknown> = (
+export type ComponentHandler<T extends Template, C extends Component> = (
   template: T,
   component: C | undefined,
   parent: Component,
   key: Key,
-  ctx: ExecutionContext,
-  data?: D
+  ctx: ExecutionContext
 ) => ComponentHandlerResult<C>;
 
 export type ComputedChildrenMap = Record<Key, { component: NonRootComponent; index: number }>;
