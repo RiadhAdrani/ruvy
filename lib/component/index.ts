@@ -108,6 +108,10 @@ export const handleComponent = (
 
   const component = res.component as ComponentWithChildren;
 
+  const mountedTask = createSetMountedTask(component);
+
+  pushMicroTask(mountedTask, res.tasks);
+
   processChildren(res);
 
   // remove unused from the array of children
@@ -183,10 +187,6 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
       const refTask = createRefElementTask(component, ref);
       pushMicroTask(refTask, tasks);
     }
-
-    //  mounted
-    const setMountedTask = createSetMountedTask(component);
-    pushMicroTask(setMountedTask, tasks);
   } else {
     if (typeof innerHTML === 'string') {
       if (innerHTML !== component.props['innerHTML']) {
@@ -361,11 +361,7 @@ export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponen
     tag: ComponentTag.Function,
   };
 
-  if (!current) {
-    const mountedTask = createSetMountedTask(component);
-
-    pushMicroTask(mountedTask, tasks);
-  } else {
+  if (current) {
     // override props
     component.props = props;
   }
@@ -1016,7 +1012,7 @@ export const withHookContext = (hookCaller: HookCaller, callback: () => Template
 
   caller = undefined;
   isHookContext = false;
-  hookIndex = 0;
+  hookIndex = -1;
 
   return out;
 };
@@ -1230,11 +1226,12 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
   return ctx[obj.id] as T;
 };
 
-export const createContext = <T = unknown>(init?: T): ContextObject<T> => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
   const ctx: ContextObject = {
     id: generateId(),
     Provider: ({ value, children }) => {
-      return createContextProviderComponent({ value: value ?? init, children, ctx });
+      return createContextProviderComponent({ value, children, ctx });
     },
     use: () => {
       return useContext(ctx);

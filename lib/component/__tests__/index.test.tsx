@@ -2,23 +2,36 @@ import {
   ComponentStatus,
   ComponentTag,
   ElementTemplate,
+  ExecutionContext,
+  FunctionComponent,
+  FunctionTemplate,
+  HookType,
   MicroTaskType,
   Props,
   RootComponent,
 } from '@/types.js';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import * as MOD from '@component/index.js';
 import {
   compareElementProps,
+  createContext,
   createRoot,
   filterDomProps,
   handleElement,
+  handleFunction,
   handleNull,
   handleText,
+  initComponentTasks,
+  withHookContext,
 } from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 
 describe('component', () => {
+  const ctx: ExecutionContext = {
+    contexts: {},
+  };
+
   let root: RootComponent = createRoot(document.body);
 
   beforeEach(() => {
@@ -104,10 +117,6 @@ describe('component', () => {
 
       it('should create a set ref task', () => {
         expect(example.tasks[MicroTaskType.RefElement].length).toBe(1);
-      });
-
-      it('should create a set mounted task', () => {
-        expect(example.tasks[MicroTaskType.SetComponentMounted].length).toBe(1);
       });
 
       it('should skip rendering children when innerHTML is a valid string', () => {
@@ -229,7 +238,7 @@ describe('component', () => {
   });
 
   describe('handleNull', () => {
-    const res = handleNull(null, undefined, root, 0, { contexts: {} });
+    const res = handleNull(null, undefined, root, 0, ctx);
 
     it('should create a component with null tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Null);
@@ -252,14 +261,14 @@ describe('component', () => {
     });
 
     it('should return the same component upon update', () => {
-      const up = handleNull(null, res.component, root, 0, { contexts: {} });
+      const up = handleNull(null, res.component, root, 0, ctx);
 
       expect(up.component).toStrictEqual(res.component);
     });
   });
 
   describe('handleText', () => {
-    let res = handleText('test', undefined, root, 0, { contexts: {} });
+    let res = handleText('test', undefined, root, 0, ctx);
 
     describe('render', () => {
       it('should create a component with text tag', () => {
@@ -289,17 +298,17 @@ describe('component', () => {
 
     describe('update', () => {
       beforeEach(() => {
-        res = handleText('test', undefined, root, 0, { contexts: {} });
+        res = handleText('test', undefined, root, 0, ctx);
       });
 
       it('should not update text when text is the same', () => {
-        const upSame = handleText('test', res.component, root, 0, { contexts: {} });
+        const upSame = handleText('test', res.component, root, 0, ctx);
 
         expect(upSame.tasks[MicroTaskType.UpdateText].length).toBe(0);
       });
 
       it('should update text', () => {
-        const up = handleText('test-2', res.component, root, 0, { contexts: {} });
+        const up = handleText('test-2', res.component, root, 0, ctx);
 
         expect(up.component.text).toBe('test-2');
 
@@ -375,6 +384,94 @@ describe('component', () => {
       } as unknown as Props;
 
       expect(filterDomProps(props)).toStrictEqual({ class: 1 });
+    });
+  });
+
+  describe('createContext', () => {
+    const ctx = createContext<number>();
+
+    it('should set a unique id', () => {
+      expect(ctx.id).toBeTypeOf('string');
+    });
+
+    it('should create a provider function', () => {
+      expect(ctx.Provider).toBeTypeOf('function');
+    });
+
+    it('should create a quick use function', () => {
+      expect(ctx.use).toBeTypeOf('function');
+    });
+
+    it('should return the value of the context', () => {
+      const value = withHookContext(
+        {
+          component: {
+            hooks: [{ type: HookType.Context, value: ctx }],
+          } as unknown as FunctionComponent,
+          ctx: {
+            contexts: {
+              [ctx.id]: 10,
+            },
+          },
+          tasks: initComponentTasks(),
+        },
+        () => ctx.use()
+      );
+
+      expect(value).toBe(10);
+    });
+  });
+
+  describe('handleFunction', () => {
+    const Fn = vitest.fn(() => 0);
+
+    const withHookContext = vitest.spyOn(MOD, 'withHookContext');
+
+    const res = handleFunction((<Fn if />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+
+    it('should set key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(Fn);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toStrictEqual({ children: [], if: true });
+    });
+
+    it('should set type', () => {
+      expect(res.component.tag).toBe(ComponentTag.Function);
+    });
+
+    it('should set hooks', () => {
+      expect(res.component.hooks).toStrictEqual([]);
+    });
+
+    it('should call the function', () => {
+      expect(Fn).toHaveBeenCalledOnce();
+    });
+
+    it('should return single child', () => {
+      expect(res.children).toStrictEqual([0]);
+    });
+
+    it('should call the function within hook context', () => {
+      expect(withHookContext).toHaveBeenCalledOnce();
+    });
+
+    it('should update props', () => {
+      handleFunction((<Fn else />) as unknown as FunctionTemplate, res.component, root, 0, ctx);
+
+      expect(res.component.props).toStrictEqual({
+        else: true,
+        children: [],
+      });
     });
   });
 });
