@@ -1,5 +1,5 @@
 import { Context, ContextType } from '@/types.js';
-import { RuvyError } from '../helpers/helpers.js';
+import { RuvyError } from '@helpers/helpers.js';
 
 const stack: Array<Context> = [];
 

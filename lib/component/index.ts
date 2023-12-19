@@ -86,192 +86,13 @@ export const handleComponent = (
 
   const key = computeKey(template, index);
 
-  // we get the key when processing children
-
   const handler = handlerMap[tag];
 
   const res = handler(template, current, parent, key, ctx);
 
   const component = res.component as ComponentWithChildren;
 
-  const switchControl = isSwitchController(res.component as SwitchControllerComponent);
-
-  let switchFulfilled = switchControl === false;
-
-  let ifSequence: { sequence: Array<'if' | 'else-if' | 'else'>; fulfilled: boolean } | false =
-    false;
-
-  const childrenMap = computeChildrenMap(current);
-
-  const childrenKeys = new Set<Key>([]);
-
-  for (let i = 0; i < res.children.length; i++) {
-    const child = res.children[i];
-
-    let nullify = false;
-
-    // ? switch directive
-    if (switchControl) {
-      // we are inside a switch control
-
-      // check if switch is already fullfilled
-      if (switchFulfilled) {
-        nullify = true;
-      } else {
-        // check if there is a "case" prop
-        const caseValue = getPropFromTemplate(child, 'case');
-
-        if (caseValue) {
-          const doMatch = caseValue.value === switchControl.value;
-
-          nullify = !doMatch;
-          switchFulfilled = doMatch;
-        } else {
-          // we should check if we are at the last element
-          const isLast = i === res.children.length - 1;
-
-          if (!isLast) {
-            throw new RuvyError('missing "case" prop within a switch control component.');
-          }
-
-          // we are at the last element and we don't have a "case" prop
-          // check for "case:default"
-          const caseValue = getPropFromTemplate(child, 'case:default');
-
-          // if we don't have a value, we throw
-          if (!caseValue) {
-            throw new RuvyError(
-              'missing "case" or "case:default" prop in the last element of a switch control component.'
-            );
-          }
-
-          // nullify is false, we don't need to set it
-        }
-      }
-    }
-
-    const key = computeKey(child, i);
-
-    if (childrenKeys.has(key)) {
-      throw new RuvyError(
-        `duplicate key "${key}" detected. make sure to assign unique keys for each child. if key is not defined, the framework will use the component index as a key instead.`
-      );
-    }
-
-    let template = nullify ? null : child;
-
-    // ? if directives
-    const ifValue = getPropFromTemplate(child, 'if');
-    const elseIfValue = getPropFromTemplate(child, 'else-if');
-    const elseValue = getPropFromTemplate(child, 'else');
-
-    // cannot have a switch "case" and an "else" or "else-if" directives
-    if ((switchControl && elseIfValue) || (switchControl && elseValue)) {
-      throw new RuvyError(
-        'cannot have an "else" or "else-if" directive within a "switch" control component'
-      );
-    }
-
-    // cannot have multiple if directives
-    const ifDirectiveCount = (ifValue ? 1 : 0) + (elseIfValue ? 1 : 0) + (elseValue ? 1 : 0);
-
-    if (ifDirectiveCount > 1) {
-      throw new RuvyError(
-        'cannot have more than one conditional directive : "if" | "else" | "else-if"'
-      );
-    }
-
-    // we have an if directive
-    if (ifValue) {
-      // start an if sequence
-      const fulfilled = Boolean(ifValue.value);
-
-      ifSequence = { fulfilled, sequence: ['if'] };
-    }
-    // check for else-if
-    else if (elseIfValue) {
-      // check if we have a sequence
-
-      if (!ifSequence) {
-        throw new RuvyError(
-          'cannot use "else-if" outside a conditional sequence, which should start with "if"'
-        );
-      }
-      // if fullfilled we nullify
-      else if (ifSequence.fulfilled) {
-        nullify = true;
-      } else {
-        // check the last value of the sequence
-        const last = ifSequence.sequence.at(-1);
-
-        if (last === 'else') {
-          throw new RuvyError('cannot use "else-if" after a component with "else" directive');
-        }
-
-        // check if it can be fulfilled
-        if (elseIfValue.value) {
-          ifSequence.fulfilled = true;
-        } else {
-          nullify = true;
-        }
-      }
-    } else if (elseValue) {
-      if (!ifSequence) {
-        throw new RuvyError(
-          'cannot use "else" outside a conditional sequence, which should start with "if"'
-        );
-      }
-      // check if fulfilled
-      if (ifSequence.fulfilled) {
-        nullify = true;
-      } else {
-        // this the last element of the conditional sequence
-        // we fulfill by not nullifying, and reset the sequence
-        ifSequence = false;
-      }
-    }
-    // no condition sequence, reset
-    else if (ifSequence) {
-      ifSequence = false;
-    }
-
-    // re-evaluate the template
-    template = nullify ? null : template;
-
-    const childTag = getTagFromTemplate(template);
-
-    // check if we have an element template, which needs some props processing
-    if (childTag === ComponentTag.Element) {
-      processElementTemplateProps(template as ElementTemplate, res.ctx);
-    }
-
-    let childRes: ComponentHandlerResult<Component>;
-
-    // try and find the corresponding component
-    const old = childrenMap[key];
-
-    if (!current || !old || shouldRenderNewComponent(template, old.component)) {
-      childRes = handleComponent(template, undefined, component, i, res.ctx);
-    } else {
-      // mark the old component as mounted, so we don't unmount it
-      old.component.status = ComponentStatus.Mounted;
-
-      childRes = handleComponent(template, old.component, component, i, res.ctx);
-
-      if (i !== old.index) {
-        // need to change element position
-
-        const reorderTask = createChangeElementTask(old.component);
-
-        pushMicroTask(reorderTask, childRes.tasks);
-
-        moveElement(component.children, old.index, i);
-      }
-    }
-
-    // push tasks
-    pushBlukMicroTasks(childRes.tasks, res.tasks);
-  }
+  processChildren(res);
 
   // remove unused from the array of children
   component.children = component.children.filter(child => {
@@ -788,7 +609,7 @@ export const computeChildrenMap = (component: Component | undefined): ComputedCh
       index,
     };
 
-    // ! we need, later, to change this when component is used
+    // ! we need to set it now, later, we change this if component is reused
     component.status = ComponentStatus.Unmounting;
 
     return acc;
@@ -829,6 +650,189 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
   props.ns = ctx.ns ?? props.ns ?? Namespace.HTML;
 
   template.props = props;
+};
+
+export const processChildren = (res: ComponentHandlerResult<Component>) => {
+  const parent = res.component as ComponentWithChildren;
+
+  const switchControl = isSwitchController(parent as SwitchControllerComponent);
+
+  let switchFulfilled = switchControl === false;
+
+  let ifSequence: { sequence: Array<'if' | 'else-if' | 'else'>; fulfilled: boolean } | false =
+    false;
+
+  const childrenMap = computeChildrenMap(parent);
+
+  const childrenKeys = new Set<Key>([]);
+
+  for (let i = 0; i < res.children.length; i++) {
+    const child = res.children[i];
+
+    let nullify = false;
+
+    // ? switch directive
+    if (switchControl) {
+      // we are inside a switch control
+
+      // check if switch is already fullfilled
+      if (switchFulfilled) {
+        nullify = true;
+      } else {
+        // check if there is a "case" prop
+        const caseValue = getPropFromTemplate(child, 'case');
+
+        if (caseValue) {
+          const doMatch = caseValue.value === switchControl.value;
+
+          nullify = !doMatch;
+          switchFulfilled = doMatch;
+        } else {
+          // we should check if we are at the last element
+          const isLast = i === res.children.length - 1;
+
+          if (!isLast) {
+            throw new RuvyError('missing "case" prop within a switch control component.');
+          }
+
+          // we are at the last element and we don't have a "case" prop
+          // check for "case:default"
+          const caseValue = getPropFromTemplate(child, 'case:default');
+
+          // if we don't have a value, we throw
+          if (!caseValue) {
+            throw new RuvyError(
+              'missing "case" or "case:default" prop in the last element of a switch control component.'
+            );
+          }
+
+          // nullify is false, we don't need to set it
+        }
+      }
+    }
+
+    const key = computeKey(child, i);
+
+    if (childrenKeys.has(key)) {
+      throw new RuvyError(
+        `duplicate key "${key}" detected. make sure to assign unique keys for each child. if key is not defined, the framework will use the component index as a key instead.`
+      );
+    }
+
+    let template = nullify ? null : child;
+
+    // ? if directives
+    const ifValue = getPropFromTemplate(child, 'if');
+    const elseIfValue = getPropFromTemplate(child, 'else-if');
+    const elseValue = getPropFromTemplate(child, 'else');
+
+    // cannot have a switch "case" and an "else" or "else-if" directives
+    if ((switchControl && elseIfValue) || (switchControl && elseValue)) {
+      throw new RuvyError(
+        'cannot have an "else" or "else-if" directive within a "switch" control component'
+      );
+    }
+
+    // cannot have multiple if directives
+    const ifDirectiveCount = (ifValue ? 1 : 0) + (elseIfValue ? 1 : 0) + (elseValue ? 1 : 0);
+
+    if (ifDirectiveCount > 1) {
+      throw new RuvyError(
+        'cannot have more than one conditional directive : "if" | "else" | "else-if"'
+      );
+    }
+
+    // we have an if directive
+    if (ifValue) {
+      // start an if sequence
+      const fulfilled = Boolean(ifValue.value);
+
+      ifSequence = { fulfilled, sequence: ['if'] };
+    }
+    // check for else-if
+    else if (elseIfValue) {
+      // check if we have a sequence
+
+      if (!ifSequence) {
+        throw new RuvyError(
+          'cannot use "else-if" outside a conditional sequence, which should start with "if"'
+        );
+      }
+      // if fullfilled we nullify
+      else if (ifSequence.fulfilled) {
+        nullify = true;
+      } else {
+        // check the last value of the sequence
+        const last = ifSequence.sequence.at(-1);
+
+        if (last === 'else') {
+          throw new RuvyError('cannot use "else-if" after a component with "else" directive');
+        }
+
+        // check if it can be fulfilled
+        if (elseIfValue.value) {
+          ifSequence.fulfilled = true;
+        } else {
+          nullify = true;
+        }
+      }
+    } else if (elseValue) {
+      if (!ifSequence) {
+        throw new RuvyError(
+          'cannot use "else" outside a conditional sequence, which should start with "if"'
+        );
+      }
+      // check if fulfilled
+      if (ifSequence.fulfilled) {
+        nullify = true;
+      } else {
+        // this the last element of the conditional sequence
+        // we fulfill by not nullifying, and reset the sequence
+        ifSequence = false;
+      }
+    }
+    // no condition sequence, reset
+    else if (ifSequence) {
+      ifSequence = false;
+    }
+
+    // re-evaluate the template
+    template = nullify ? null : template;
+
+    const childTag = getTagFromTemplate(template);
+
+    // check if we have an element template, which needs some props processing
+    if (childTag === ComponentTag.Element) {
+      processElementTemplateProps(template as ElementTemplate, res.ctx);
+    }
+
+    let childRes: ComponentHandlerResult<Component>;
+
+    // try and find the corresponding component
+    const old = childrenMap[key];
+
+    if (!parent || !old || shouldRenderNewComponent(template, old.component)) {
+      childRes = handleComponent(template, undefined, parent, i, res.ctx);
+    } else {
+      // mark the old component as mounted, so we don't unmount it
+      old.component.status = ComponentStatus.Mounted;
+
+      childRes = handleComponent(template, old.component, parent, i, res.ctx);
+
+      if (i !== old.index) {
+        // need to change element position
+
+        const reorderTask = createChangeElementTask(old.component);
+
+        pushMicroTask(reorderTask, childRes.tasks);
+
+        parent.children = moveElement(parent.children, old.index, i);
+      }
+    }
+
+    // push tasks
+    pushBlukMicroTasks(childRes.tasks, res.tasks);
+  }
 };
 
 export const shouldRenderNewComponent = (template: Template, current: Component): boolean => {
