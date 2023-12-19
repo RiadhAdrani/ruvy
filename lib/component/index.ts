@@ -54,8 +54,10 @@ import {
   createRefElementTask,
   createRenderTask,
   createSetMountedTask,
+  createTextTask,
   createUnmountComponentTask,
   createUnrefElementTask,
+  createUpdateTextTask,
 } from './task.js';
 import { RuvyError, moveElement } from '@/helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
@@ -359,8 +361,45 @@ export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
          ██║   ███████╗██╔╝ ██╗   ██║   
          ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝                               
  */
-export const handleText: ComponentHandler<TextTemplate, TextComponent> = () => {
-  throw new RuvyError('not implemented');
+
+/**
+ * handle text component creation and update
+ */
+export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const text = `${template}`;
+
+  const tasks = initComponentTasks();
+
+  const component = current ?? {
+    key,
+    parent,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Text,
+    text,
+  };
+
+  if (!current) {
+    const renderTask = createTextTask(component);
+
+    pushMicroTask(renderTask, tasks);
+  } else {
+    // check data is different
+    if (text !== component.text) {
+      component.text = text;
+
+      const updateTask = createUpdateTextTask(component, text);
+
+      pushMicroTask(updateTask, tasks);
+    }
+  }
+
+  return { component, ctx, children: [], tasks };
 };
 
 /**
