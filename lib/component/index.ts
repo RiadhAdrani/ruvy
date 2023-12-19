@@ -1,5 +1,5 @@
 import { Namespace, isClassProp, resolveClassProps } from '@riadh-adrani/domer';
-import { areEqual, hasProperty } from '@riadh-adrani/obj-utils';
+import { areEqual, copy, hasProperty } from '@riadh-adrani/obj-utils';
 import {
   Component,
   ComponentHandler,
@@ -49,11 +49,15 @@ import {
   UnmountComponentData,
   StateHook,
   HookType,
-  SetState,
   CreateState,
   EffectHook,
   HookCaller,
   Effect,
+  MemoHook,
+  RefHook,
+  ContextObject,
+  ContextComponentProviderProps,
+  ContextHook,
 } from '@/types.js';
 import {
   createChangeElementTask,
@@ -69,7 +73,7 @@ import {
   createUnrefElementTask,
   createUpdateTextTask,
 } from './task.js';
-import { RuvyError, moveElement } from '@/helpers/helpers.js';
+import { RuvyError, generateId, moveElement } from '@/helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
 
 export const RuvyAttributes = [
@@ -175,8 +179,8 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
 
     const ref = props.ref;
 
-    if (ref && isRefValue(ref)) {
-      const refTask = createRefElementTask(component, ref as RefValue);
+    if (isRefValue(ref)) {
+      const refTask = createRefElementTask(component, ref);
       pushMicroTask(refTask, tasks);
     }
 
@@ -275,8 +279,36 @@ export const filterDomProps = (props: Props): Record<string, unknown> => {
        ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝                                                            
  */
 
-export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> = () => {
-  throw new RuvyError('not implemented');
+export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  _ctx
+) => {
+  const { props, type } = template;
+
+  const children = template.children as Array<Template>;
+
+  const tasks = initComponentTasks();
+
+  const component = current ?? {
+    children: [],
+    key,
+    parent,
+    props,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Context,
+    type,
+  };
+
+  const id = props.ctx.id;
+
+  const ctx = copy(_ctx);
+
+  ctx.contexts[id] = props.values;
+
+  return { children, component, ctx, tasks };
 };
 
 /**
@@ -338,7 +370,7 @@ export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponen
     component.props = props;
   }
 
-  const child = withHookContext({ component, tasks }, () => type(props));
+  const child = withHookContext({ component, tasks, ctx }, () => type(props));
 
   return { children: [child], component, ctx, tasks };
 };
@@ -523,10 +555,10 @@ export const isSwitchController = (
   return { value };
 };
 
-export const isNodeComponent = (component: Component): boolean =>
+export const isNodeComponent = (component: Component): component is NodeComponent =>
   [ComponentTag.Element, ComponentTag.Root].includes(component.tag);
 
-export const isHostComponent = (component: Component): boolean =>
+export const isHostComponent = (component: Component): component is HostComponent =>
   [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root].includes(component.tag);
 
 export const getParentNode = (component: Component): HostComponent => {
@@ -534,7 +566,7 @@ export const getParentNode = (component: Component): HostComponent => {
     throw new RuvyError('unable to locate the parent node.');
   }
 
-  if (isHostComponent(component.parent)) return component.parent as HostComponent;
+  if (isHostComponent(component.parent)) return component.parent;
 
   return getParentNode(component.parent);
 };
@@ -560,7 +592,7 @@ export const getNodeIndex = (
       index++;
       continue;
     } else {
-      const { found, index: i } = getNodeIndex(component, child as HostComponent);
+      const { found, index: i } = getNodeIndex(component, child as unknown as HostComponent);
 
       index += i;
 
@@ -574,7 +606,7 @@ export const getNodeIndex = (
   return { index, found: wasFound };
 };
 
-export const isRefValue = (v: unknown): boolean => {
+export const isRefValue = (v: unknown): v is RefValue => {
   return hasProperty(v, 'value');
 };
 
@@ -599,7 +631,14 @@ export const unmountComponent = (
   component.status = ComponentStatus.Unmounting;
 
   if (component.tag === ComponentTag.Function) {
-    // TODO: unmount effects and run cleanups
+    component.hooks.forEach(it => {
+      if (it.type === HookType.Effect) {
+        // cleanup effect
+        const cleanupTask = createEffectCleanUpTask(component, it);
+
+        pushMicroTask(cleanupTask, tasks);
+      }
+    });
   }
 
   const unmountTask = createUnmountComponentTask(component, data);
@@ -619,7 +658,7 @@ export const unmountComponent = (
   return tasks;
 };
 
-export const isJsxTemplate = (template: Template): boolean => {
+export const isJsxTemplate = (template: Template): template is JsxTemplate => {
   return (
     template !== null &&
     typeof template === 'object' &&
@@ -636,21 +675,19 @@ export const isJsxTemplate = (template: Template): boolean => {
 
 export const getTagFromTemplate = (template: Template): ComponentTag => {
   if (isJsxTemplate(template)) {
-    const temp = template as JsxTemplate;
+    if (template.type === Portal) return ComponentTag.Portal;
 
-    if (temp.type === Portal) return ComponentTag.Portal;
+    if (template.type === ComponentTag.Context) return ComponentTag.Context;
 
-    if (temp.type === ComponentTag.Context) return ComponentTag.Context;
+    if (template.type === Outlet) return ComponentTag.Outlet;
 
-    if (temp.type === Outlet) return ComponentTag.Outlet;
+    if (template.type === Fragment) return ComponentTag.Fragment;
 
-    if (temp.type === Fragment) return ComponentTag.Fragment;
+    if (template.type === createFragmentTemplate) return ComponentTag.JsxFragment;
 
-    if (temp.type === createFragmentTemplate) return ComponentTag.JsxFragment;
+    if (typeof template.type === 'function') return ComponentTag.Function;
 
-    if (typeof temp.type === 'function') return ComponentTag.Function;
-
-    if (typeof temp.type === 'string') return ComponentTag.Element;
+    if (typeof template.type === 'string') return ComponentTag.Element;
   }
 
   if (template === false || template === null) return ComponentTag.Null;
@@ -922,18 +959,14 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
     return false;
   }
 
-  // FIXME: function component will not rerender when callback changes !!!
+  if (isJsxTemplate(template)) {
+    const c = current as ElementComponent;
 
-  if (tag === ComponentTag.Element) {
-    const { type, props } = template as ElementTemplate;
-
-    // compare types
-    if (type !== (current as ElementComponent).type) {
+    if (template.type !== c.type) {
       return false;
     }
 
-    // compare namespaces
-    if (props.ns !== (current as ElementComponent).props.ns) {
+    if (c.tag === ComponentTag.Element && (template.props.ns ?? Namespace.HTML) !== c.props.ns) {
       return false;
     }
   }
@@ -988,7 +1021,7 @@ export const withHookContext = (hookCaller: HookCaller, callback: () => Template
   return out;
 };
 
-export const useState = <T>(create: CreateState<T>): UseState<T> => {
+export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useState" outisde of a functional component body.');
   }
@@ -1034,7 +1067,7 @@ export const useState = <T>(create: CreateState<T>): UseState<T> => {
   return [hook.value, hook.setValue, hook.getValue] as UseState<T>;
 };
 
-export const useEffect = (callback: Effect, deps: unknown): void => {
+export const useEffect = (callback: Effect, deps?: unknown): void => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
   }
@@ -1050,6 +1083,8 @@ export const useEffect = (callback: Effect, deps: unknown): void => {
       deps,
       type: HookType.Effect,
     };
+
+    caller.component.hooks.push(hook);
 
     // schedule
     const effectTask = createEffectTask(caller.component, hook);
@@ -1072,6 +1107,7 @@ export const useEffect = (callback: Effect, deps: unknown): void => {
       }
 
       hook.callback = callback;
+      hook.deps = deps;
 
       // schedule
       const effectTask = createEffectTask(caller.component, hook);
@@ -1079,4 +1115,131 @@ export const useEffect = (callback: Effect, deps: unknown): void => {
       pushMicroTask(effectTask, caller.tasks);
     }
   }
+};
+
+export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
+  if (!isHookContext || !caller) {
+    throw new RuvyError('cannot call "useMemo" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: MemoHook;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    const value = callback();
+
+    hook = {
+      type: HookType.Memo,
+      deps,
+      value,
+    };
+
+    caller.component.hooks.push(hook);
+  } else {
+    // check if deps changed
+    hook = caller.component.hooks[hookIndex] as MemoHook;
+
+    if (hook.type !== HookType.Memo) {
+      throw new RuvyError('unexpected hook type : expected memo but got something else.');
+    }
+
+    if (!areEqual(hook.deps, deps)) {
+      hook.value = callback();
+      hook.deps = deps;
+    }
+  }
+
+  return hook.value as T;
+};
+
+export const useCallback = <T = () => void>(callback: T, deps?: unknown): T => {
+  return useMemo(() => callback, deps);
+};
+
+export const useRef = <T = unknown>(value: T | undefined): RefValue<T> => {
+  if (!isHookContext || !caller) {
+    throw new RuvyError('cannot call "useRef" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: RefHook;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    hook = {
+      type: HookType.Ref,
+      value: { value },
+    };
+
+    caller.component.hooks.push(hook);
+  } else {
+    // check if deps changed
+    hook = caller.component.hooks[hookIndex] as RefHook;
+
+    if (hook.type !== HookType.Ref) {
+      throw new RuvyError('unexpected hook type : expected ref but got something else.');
+    }
+  }
+
+  return hook.value as RefValue<T>;
+};
+
+export const createContextProviderComponent = <T>({
+  value,
+  children,
+  ctx,
+}: ContextComponentProviderProps<T>) => {
+  return createJsxElement(ComponentTag.Context, { value, ctx }, ...(children ?? []));
+};
+
+export const useContext = <T>(obj: ContextObject<T>): T => {
+  // find the context in the execution context
+  if (!isHookContext || !caller) {
+    throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: ContextHook;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    hook = {
+      type: HookType.Context,
+      value: obj as ContextObject,
+    };
+
+    caller.component.hooks.push(hook);
+  } else {
+    hook = caller.component.hooks[hookIndex] as ContextHook;
+
+    if (hook.type !== HookType.Context) {
+      throw new RuvyError('unexpected hook type : expected context but got something else.');
+    }
+  }
+
+  const ctx = caller.ctx.contexts;
+
+  if (!hasProperty(ctx, obj.id)) {
+    throw new RuvyError('unable to find context');
+  }
+
+  return ctx[obj.id] as T;
+};
+
+export const createContext = <T = unknown>(init?: T): ContextObject<T> => {
+  const ctx: ContextObject = {
+    id: generateId(),
+    Provider: ({ value, children }) => {
+      return createContextProviderComponent({ value: value ?? init, children, ctx });
+    },
+    use: () => {
+      return useContext(ctx);
+    },
+  };
+
+  return ctx as ContextObject<T>;
 };

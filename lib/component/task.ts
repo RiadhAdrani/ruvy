@@ -7,7 +7,6 @@ import {
   PropComparison,
   RefValue,
   UnmountComponentData,
-  NodeComponent,
   TextComponent,
   FunctionComponent,
   EffectHook,
@@ -160,7 +159,7 @@ export const createUnmountComponentTask = (
 ): MicroTask => {
   const execute = () => {
     if (isNodeComponent(component) && !data.isHostParentUnmounting) {
-      const element = (component as NodeComponent).instance as Element;
+      const element = component.instance as Element;
 
       if (!element) {
         throw new RuvyError('unable to unmount node, component instance does not exist.');
@@ -258,11 +257,9 @@ export const createEffectCleanUpTask = (
   hook: EffectHook
 ): MicroTask => {
   const execute = () => {
-    const cleanup = hook.callback();
+    hook.cleanup?.();
 
-    if (typeof cleanup === 'function') {
-      hook.cleanup = cleanup;
-    }
+    hook.cleanup = undefined;
   };
 
   return createTask({ component, execute, type: MicroTaskType.RunEffectCleanup });
