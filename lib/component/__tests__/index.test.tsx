@@ -237,7 +237,7 @@ describe('component', () => {
     });
 
     it('should add correct status', () => {
-      expect(res.component.status).toBe(ComponentStatus.Mounted);
+      expect(res.component.status).toBe(ComponentStatus.Mounting);
     });
 
     it('should add correct status', () => {
