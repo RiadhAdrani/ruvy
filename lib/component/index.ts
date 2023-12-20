@@ -302,6 +302,10 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
     type,
   };
 
+  if (current) {
+    component.props = props;
+  }
+
   const id = props.ctx.id;
 
   const ctx = copy(_ctx);
@@ -379,6 +383,10 @@ export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponen
       ██║ ╚████║╚██████╔╝███████╗███████╗
       ╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝                                   
  */
+
+/**
+ * handle nullish components
+ */
 export const handleNull: ComponentHandler<NullTemplate, NullComponent> = (
   _,
   current,
@@ -391,7 +399,7 @@ export const handleNull: ComponentHandler<NullTemplate, NullComponent> = (
   const component = current ?? {
     key,
     parent,
-    status: ComponentStatus.Mounted,
+    status: ComponentStatus.Mounting,
     tag: ComponentTag.Null,
   };
 
@@ -616,6 +624,7 @@ export const pushBlukMicroTasks = (tasks: ComponentTasks, target: ComponentTasks
   }
 };
 
+// FIXME: not tested
 export const unmountComponent = (
   component: NonRootComponent,
   data: UnmountComponentData
@@ -642,8 +651,8 @@ export const unmountComponent = (
   pushMicroTask(unmountTask, tasks);
 
   // unmount for children
-  if ((component as ComponentWithChildren).children) {
-    (component as ComponentWithChildren).children.forEach(child => {
+  if (isParentComponent(component)) {
+    component.children.forEach(child => {
       const t = unmountComponent(child, childrenData);
 
       // push them in tasks
@@ -654,6 +663,7 @@ export const unmountComponent = (
   return tasks;
 };
 
+// FIXME: not tested
 export const isJsxTemplate = (template: Template): template is JsxTemplate => {
   return (
     template !== null &&
@@ -663,12 +673,13 @@ export const isJsxTemplate = (template: Template): template is JsxTemplate => {
     hasProperty(template, 'props') &&
     hasProperty(template, 'children') &&
     hasProperty(template, 'symbol') &&
-    (template as FunctionTemplate).symbol === ComponentSymbol &&
-    typeof (template as FunctionTemplate).props === 'object' &&
-    Array.isArray((template as FunctionTemplate).children)
+    (template as JsxTemplate).symbol === ComponentSymbol &&
+    typeof (template as JsxTemplate).props === 'object' &&
+    Array.isArray((template as JsxTemplate).children)
   );
 };
 
+// FIXME: not tested
 export const getTagFromTemplate = (template: Template): ComponentTag => {
   if (isJsxTemplate(template)) {
     if (template.type === Portal) return ComponentTag.Portal;
@@ -691,10 +702,24 @@ export const getTagFromTemplate = (template: Template): ComponentTag => {
   return ComponentTag.Text;
 };
 
+export const isParentComponent = (component: Component): component is ComponentWithChildren => {
+  return [
+    ComponentTag.Fragment,
+    ComponentTag.JsxFragment,
+    ComponentTag.Element,
+    ComponentTag.Function,
+    ComponentTag.Context,
+    ComponentTag.Function,
+    ComponentTag.Portal,
+  ].includes(component.tag);
+};
+
+// FIXME: not tested
 export const computeKey = (template: Template, index: number): Key => {
   return isJsxTemplate(template) ? (template as JsxTemplate).key ?? index : index;
 };
 
+// FIXME: not tested
 export const getPropFromTemplate = <T = unknown>(
   template: Template,
   prop: string
@@ -729,6 +754,7 @@ export const computeChildrenMap = (component: Component | undefined): ComputedCh
   }, {} as ComputedChildrenMap);
 };
 
+// FIXME: not tested
 export const processElementTemplateProps = (template: ElementTemplate, ctx: ExecutionContext) => {
   const classProps: Array<{ value: unknown; key: string }> = [];
 
@@ -765,6 +791,7 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
   template.props = props;
 };
 
+// FIXME: not tested
 export const processChildren = (res: ComponentHandlerResult<Component>) => {
   const parent = res.component as ComponentWithChildren;
 
@@ -948,6 +975,7 @@ export const processChildren = (res: ComponentHandlerResult<Component>) => {
   }
 };
 
+// FIXME: not tested
 export const shouldRenderNewComponent = (template: Template, current: Component): boolean => {
   const tag = getTagFromTemplate(template);
 
@@ -970,6 +998,7 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
   return true;
 };
 
+// FIXME: not tested
 export const getClosestNodeComponent = (component: NonRootComponent): Array<NodeComponent> => {
   if (isNodeComponent(component)) return [component as NodeComponent];
 
@@ -997,13 +1026,10 @@ export const getClosestNodeComponent = (component: NonRootComponent): Array<Node
  * current hook index
  */
 let hookIndex = -1;
-
-/**
- *
- */
 let isHookContext = false;
 let caller: HookCaller | undefined;
 
+// FIXME: not tested
 export const withHookContext = (hookCaller: HookCaller, callback: () => Template): Template => {
   isHookContext = true;
   caller = hookCaller;
@@ -1017,6 +1043,7 @@ export const withHookContext = (hookCaller: HookCaller, callback: () => Template
   return out;
 };
 
+// FIXME: not tested
 export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useState" outisde of a functional component body.');
@@ -1063,6 +1090,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   return [hook.value, hook.setValue, hook.getValue] as UseState<T>;
 };
 
+// FIXME: not tested
 export const useEffect = (callback: Effect, deps?: unknown): void => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
@@ -1113,6 +1141,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
   }
 };
 
+// FIXME: not tested
 export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useMemo" outisde of a functional component body.');
@@ -1154,6 +1183,7 @@ export const useCallback = <T = () => void>(callback: T, deps?: unknown): T => {
   return useMemo(() => callback, deps);
 };
 
+// FIXME: not tested
 export const useRef = <T = unknown>(value: T | undefined): RefValue<T> => {
   if (!isHookContext || !caller) {
     throw new RuvyError('cannot call "useRef" outisde of a functional component body.');
