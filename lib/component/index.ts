@@ -194,7 +194,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
 
         pushMicroTask(renderInnerHTML, tasks);
 
-        // ? children will be unmounted in handleComponent
+        // ? set empty array, children will be unmounted in handleComponent
         children = [];
       }
 
@@ -306,7 +306,7 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
 
   const ctx = copy(_ctx);
 
-  ctx.contexts[id] = props.values;
+  ctx.contexts[id] = props.value;
 
   return { children, component, ctx, tasks };
 };

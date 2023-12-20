@@ -1,6 +1,7 @@
 import {
   ComponentStatus,
   ComponentTag,
+  ContextTemplate,
   ElementTemplate,
   ExecutionContext,
   FunctionComponent,
@@ -152,19 +153,6 @@ describe('component', () => {
         const result = setupDiffTest({
           template: <div innerHTML="test-1" />,
           newTemplate: <div innerHTML="test-2" />,
-        });
-
-        expect(result.tasks[MicroTaskType.RenderInnerHTML].length).toBe(1);
-      });
-
-      it.todo('should add unmount children when innerHTML prop is added', () => {
-        const result = setupDiffTest({
-          template: (
-            <div>
-              <img /> <button />
-            </div>
-          ),
-          newTemplate: <div innerHTML="test" />,
         });
 
         expect(result.tasks[MicroTaskType.RenderInnerHTML].length).toBe(1);
@@ -471,6 +459,64 @@ describe('component', () => {
       expect(res.component.props).toStrictEqual({
         else: true,
         children: [],
+      });
+    });
+  });
+
+  describe('handleContext', () => {
+    const value = {
+      age: 100,
+      name: 'test',
+    };
+
+    const obj = createContext();
+
+    const template = createJsxElement(
+      ComponentTag.Context,
+      {
+        value,
+        ctx: obj,
+      },
+      [1, 2, 3]
+    ) as unknown as ContextTemplate;
+
+    const res = MOD.handleContext(template, undefined, root, 0, ctx);
+
+    it('should set tag', () => {
+      expect(res.component.tag).toBe(ComponentTag.Context);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toBe(ComponentTag.Context);
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toBe(ComponentStatus.Mounting);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toStrictEqual({ value, ctx: obj, children: [1, 2, 3] });
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set key', () => {
+      expect(res.component.key).toStrictEqual(0);
+    });
+
+    it('should set children', () => {
+      expect(res.component.children).toStrictEqual([]);
+    });
+
+    it('should return children', () => {
+      expect(res.children).toStrictEqual([1, 2, 3]);
+    });
+
+    it('should add context to record with id', () => {
+      expect(res.ctx.contexts).toStrictEqual({
+        [obj.id]: value,
       });
     });
   });
