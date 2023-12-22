@@ -11,6 +11,7 @@ import {
   FunctionTemplate,
   HookType,
   MicroTaskType,
+  NullComponent,
   Props,
   RootComponent,
   StateHook,
@@ -1006,6 +1007,47 @@ describe('component', () => {
 
     it.each(hostComponents)('should return true for host components', tag => {
       expect(MOD.isHostComponent({ tag } as Component)).toBe(true);
+    });
+  });
+
+  describe('getHostingComponent', () => {
+    it('should throw when component is root', () => {
+      expect(() => MOD.getHostingNode(root)).toThrow(
+        new RuvyError('unable to locate the parent node.')
+      );
+    });
+
+    it('should return hosting parent', () => {
+      const component: NullComponent = {
+        tag: ComponentTag.Null,
+        key: 0,
+        parent: root,
+        status: ComponentStatus.Mounted,
+      };
+
+      expect(MOD.getHostingNode(component)).toStrictEqual(root);
+    });
+
+    it('should return hosting parent (deep)', () => {
+      const parent: FunctionComponent = {
+        children: [],
+        hooks: [],
+        key: 0,
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounted,
+        tag: ComponentTag.Function,
+        type: vitest.fn(),
+      };
+
+      const component: NullComponent = {
+        tag: ComponentTag.Null,
+        key: 0,
+        parent,
+        status: ComponentStatus.Mounted,
+      };
+
+      expect(MOD.getHostingNode(component)).toStrictEqual(root);
     });
   });
 });
