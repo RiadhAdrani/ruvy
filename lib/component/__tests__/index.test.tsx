@@ -1332,4 +1332,63 @@ describe('component', () => {
       expect(MOD.getPropFromTemplate(<div key={0} />, 'key')).toStrictEqual({ value: 0 });
     });
   });
+
+  describe('computeChildrenMap', () => {
+    it('should return an empty record when component is undefined', () => {
+      expect(MOD.computeChildrenMap(undefined)).toStrictEqual({});
+    });
+
+    it('should return empty record with null component', () => {
+      expect(
+        MOD.computeChildrenMap({
+          tag: ComponentTag.Null,
+          key: 0,
+          parent: root,
+          status: ComponentStatus.Mounted,
+        })
+      ).toStrictEqual({});
+    });
+
+    it('should return empty record with text component', () => {
+      expect(
+        MOD.computeChildrenMap({
+          tag: ComponentTag.Text,
+          text: 'test',
+          key: 0,
+          parent: root,
+          status: ComponentStatus.Mounted,
+        })
+      ).toStrictEqual({});
+    });
+
+    const component = handleElement(
+      (<div></div>) as unknown as ElementTemplate,
+      undefined,
+      root,
+      0,
+      ctx
+    );
+
+    const child0 = handleNull(null, undefined, component.component, 11, ctx);
+    const child1 = handleNull(null, undefined, component.component, 22, ctx);
+    const child2 = handleNull(null, undefined, component.component, 33, ctx);
+
+    component.component.children = [child0.component, child1.component, child2.component];
+
+    const map = MOD.computeChildrenMap(component.component);
+
+    it('should return a Map<Key,Child>', () => {
+      expect(map).toStrictEqual({
+        11: { component: child0.component, index: 0 },
+        22: { component: child1.component, index: 1 },
+        33: { component: child2.component, index: 2 },
+      });
+    });
+
+    it('should set every child to unmounting', () => {
+      Object.keys(map).forEach(key => {
+        expect(map[key].component.status).toBe(ComponentStatus.Unmounting);
+      });
+    });
+  });
 });
