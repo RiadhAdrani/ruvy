@@ -1462,4 +1462,104 @@ describe('component', () => {
       expect(MOD.shouldRenderNewComponent(<a ns={Namespace.SVG} />, a)).toBe(true);
     });
   });
+
+  describe('getClosestNodeComponent', () => {
+    const anchor: ElementComponent = {
+      children: [],
+      key: 0,
+      parent: root,
+      props: { ns: Namespace.HTML },
+      status: ComponentStatus.Mounted,
+      tag: ComponentTag.Element,
+      type: 'a',
+    };
+
+    const txt: TextComponent = {
+      key: 0,
+      parent: root,
+      status: ComponentStatus.Mounted,
+      tag: ComponentTag.Text,
+      text: 'hello',
+    };
+
+    const parent: FunctionComponent = {
+      hooks: [],
+      key: 0,
+      parent: root,
+      props: {},
+      status: ComponentStatus.Mounting,
+      tag: ComponentTag.Function,
+      type: vitest.fn(),
+      children: [
+        {
+          hooks: [],
+          key: 0,
+          parent: root,
+          props: {},
+          status: ComponentStatus.Mounting,
+          tag: ComponentTag.Function,
+          type: vitest.fn(),
+          children: [anchor],
+        },
+        anchor,
+        {
+          hooks: [],
+          key: 0,
+          parent: root,
+          props: {},
+          status: ComponentStatus.Mounting,
+          tag: ComponentTag.Function,
+          type: vitest.fn(),
+          children: [],
+        },
+        txt,
+        {
+          hooks: [],
+          key: 0,
+          parent: root,
+          props: {},
+          status: ComponentStatus.Mounting,
+          tag: ComponentTag.Function,
+          type: vitest.fn(),
+          children: [
+            {
+              hooks: [],
+              key: 0,
+              parent: root,
+              props: {},
+              status: ComponentStatus.Mounting,
+              tag: ComponentTag.Function,
+              type: vitest.fn(),
+              children: [txt, anchor],
+            },
+          ],
+        },
+      ],
+    };
+
+    it('should return the component itself when it is a node component', () => {
+      expect(MOD.getClosestNodeComponents(anchor)).toStrictEqual([anchor]);
+    });
+
+    it('should return an empty array directly when component is not a parent', () => {
+      const nil: NullComponent = {
+        tag: ComponentTag.Null,
+        parent: root,
+        key: 0,
+        status: ComponentStatus.Mounted,
+      };
+
+      expect(MOD.getClosestNodeComponents(nil)).toStrictEqual([]);
+    });
+
+    it('should return closest children from each child', () => {
+      expect(MOD.getClosestNodeComponents(parent)).toStrictEqual([
+        anchor,
+        anchor,
+        txt,
+        txt,
+        anchor,
+      ]);
+    });
+  });
 });

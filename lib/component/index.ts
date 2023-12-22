@@ -1132,12 +1132,13 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
   return true;
 };
 
-// FIXME: not tested
 export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
   if (isNodeComponent(component)) return [component as NodeComponent];
 
-  if ((component as ParentComponent).children) {
-    return (component as ParentComponent).children.reduce((acc, child) => {
+  if (!isParentComponent(component)) return [];
+
+  if (component.children) {
+    return component.children.reduce((acc, child) => {
       acc.push(...getClosestNodeComponents(child));
 
       return acc;
