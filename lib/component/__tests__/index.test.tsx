@@ -14,7 +14,7 @@ import {
   RootComponent,
   StateHook,
 } from '@/types.js';
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
 import {
   compareElementProps,
@@ -38,7 +38,7 @@ import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
 
 describe('component', () => {
-  const ctx: ExecutionContext = {
+  let ctx: ExecutionContext = {
     contexts: {},
   };
 
@@ -877,6 +877,68 @@ describe('component', () => {
             useRef();
           })
         ).toThrow(new RuvyError('unexpected hook type : expected ref but got something else.'));
+      });
+    });
+
+    describe('useContext', () => {
+      const ctxObj = createContext();
+      const noCtx = createContext();
+
+      beforeAll(() => {
+        ctx = {
+          contexts: {
+            [ctxObj.id]: 0,
+          },
+        };
+      });
+
+      afterAll(() => {
+        ctx = {
+          contexts: {},
+        };
+      });
+
+      it('should throw when called outside the hook context', () => {
+        expect(() => useContext(ctxObj)).toThrow(
+          new RuvyError('cannot call "useContext" outisde of a functional component body.')
+        );
+      });
+
+      it('should throw when target ctx is not found in execution context', () => {
+        expect(() => {
+          withCtx(() => {
+            useContext(noCtx);
+          });
+        }).toThrow(new RuvyError('unable to find a context with the given object'));
+      });
+
+      it('should add a new hook entry', () => {
+        withCtx(() => {
+          useContext(ctxObj);
+        });
+
+        expect(res.component.hooks[0]).toStrictEqual({
+          type: HookType.Context,
+          value: ctxObj,
+        });
+      });
+
+      it('should return the ctx value', () => {
+        withCtx(() => {
+          const v = useContext(ctxObj);
+
+          expect(v).toStrictEqual(0);
+        });
+      });
+
+      it('should throw when component is already mounted and hook is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        expect(() =>
+          withCtx(() => {
+            useContext(ctxObj);
+          })
+        ).toThrow(new RuvyError('unexpected hook type : expected context but got something else.'));
       });
     });
   });
