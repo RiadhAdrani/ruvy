@@ -864,8 +864,9 @@ export const getPropFromTemplate = <T = unknown>(
 export const computeChildrenMap = (component: Component | undefined): ComputedChildrenMap => {
   if (!component) return {};
 
-  if (ComponentTag.Text === component.tag) return {};
-  if (ComponentTag.Null === component.tag) return {};
+  if (!isParentComponent(component)) {
+    return {};
+  }
 
   return component.children.reduce((acc, component, index) => {
     const key = component.key;
