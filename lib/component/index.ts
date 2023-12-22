@@ -690,7 +690,7 @@ export const isSwitchController = (component: Component): { value: unknown } | f
 };
 
 export const isNodeComponent = (component: Component): component is NodeComponent =>
-  [ComponentTag.Element, ComponentTag.Root].includes(component.tag);
+  [ComponentTag.Element, ComponentTag.Text].includes(component.tag);
 
 export const isHostComponent = (component: Component): component is HostComponent =>
   [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root].includes(component.tag);

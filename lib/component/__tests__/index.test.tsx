@@ -41,6 +41,9 @@ import { RuvyError } from '@/helpers/helpers.js';
 const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
 const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
 
+const nodeComponents = [ComponentTag.Element, ComponentTag.Text];
+const nonNodeComponents = Object.values(ComponentTag).filter(it => !nodeComponents.includes(it));
+
 describe('component', () => {
   let ctx: ExecutionContext = {
     contexts: {},
@@ -981,5 +984,15 @@ describe('component', () => {
         ).toStrictEqual({ value: 'test' });
       }
     );
+  });
+
+  describe('isNodeComponent', () => {
+    it.each(nonNodeComponents)('should return false for non-node components', tag => {
+      expect(MOD.isNodeComponent({ tag } as Component)).toBe(false);
+    });
+
+    it.each(nodeComponents)('should return true for node components', tag => {
+      expect(MOD.isNodeComponent({ tag } as Component)).toBe(true);
+    });
   });
 });
