@@ -8,7 +8,7 @@ import {
   ComponentSymbol,
   ComponentTag,
   ComponentTasks,
-  ComponentWithChildren,
+  ParentComponent,
   ComputedChildrenMap,
   ContextComponent,
   ContextTemplate,
@@ -96,7 +96,7 @@ export const RuvyAttributes = [
 export const handleComponent = (
   template: Template,
   current: NonRootComponent | undefined,
-  parent: ComponentWithChildren,
+  parent: ParentComponent,
   index: number,
   ctx: ExecutionContext
 ): ComponentHandlerResult<NonRootComponent> => {
@@ -108,7 +108,7 @@ export const handleComponent = (
 
   const res = handler(template, current, parent, key, ctx);
 
-  const component = res.component as ComponentWithChildren;
+  const component = res.component as ParentComponent;
 
   if (!current) {
     const mountedTask = createSetMountedTask(component);
@@ -117,7 +117,7 @@ export const handleComponent = (
   }
 
   if (isParentComponent(res.component)) {
-    const reorder = processChildren(res as ComponentHandlerResult<ComponentWithChildren>);
+    const reorder = processChildren(res as ComponentHandlerResult<ParentComponent>);
 
     if (reorder) {
       const reorderTask = createChangeElementPositionTask(res.component);
@@ -695,40 +695,43 @@ export const isNodeComponent = (component: Component): component is NodeComponen
 export const isHostComponent = (component: Component): component is HostComponent =>
   [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root].includes(component.tag);
 
-export const getHostingNode = (component: Component): HostComponent => {
+export const getHostingComponent = (component: Component): HostComponent => {
   if (component.tag === ComponentTag.Root) {
     throw new RuvyError('unable to locate the parent node.');
   }
 
   if (isHostComponent(component.parent)) return component.parent;
 
-  return getHostingNode(component.parent);
+  return getHostingComponent(component.parent);
 };
 
 export const getNodeIndex = (
   component: NodeComponent,
-  parent?: HostComponent
+  parent?: ParentComponent
 ): { index: number; found: boolean } => {
-  let index = 0;
+  let index = -1;
   let wasFound = false;
 
-  const host = parent ?? getHostingNode(component);
+  const host = parent ?? getHostingComponent(component);
 
   for (const child of host.children) {
     if (wasFound) break;
 
     if (child === component) {
+      index++;
       wasFound = true;
       break;
     }
 
-    if (isHostComponent(child)) {
+    if (isNodeComponent(child)) {
       index++;
       continue;
-    } else {
-      const { found, index: i } = getNodeIndex(component, child as unknown as HostComponent);
+    }
+    // ! we skip portal
+    else if (isParentComponent(child) && child.tag !== ComponentTag.Portal) {
+      const { found, index: i } = getNodeIndex(component, child);
 
-      index += i;
+      index += i === -1 ? 0 : i;
 
       if (found) {
         wasFound = true;
@@ -832,7 +835,7 @@ export const getTagFromTemplate = (template: Template): ComponentTag => {
   return ComponentTag.Text;
 };
 
-export const isParentComponent = (component: Component): component is ComponentWithChildren => {
+export const isParentComponent = (component: Component): component is ParentComponent => {
   return [
     ComponentTag.Fragment,
     ComponentTag.JsxFragment,
@@ -922,8 +925,8 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
 };
 
 // FIXME: not tested
-export const processChildren = (res: ComponentHandlerResult<ComponentWithChildren>): boolean => {
-  const parent = res.component as ComponentWithChildren;
+export const processChildren = (res: ComponentHandlerResult<ParentComponent>): boolean => {
+  const parent = res.component as ParentComponent;
 
   const switchControl = isSwitchController(parent as SwitchControllerComponent);
 
@@ -1138,8 +1141,8 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
 export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
   if (isNodeComponent(component)) return [component as NodeComponent];
 
-  if ((component as ComponentWithChildren).children) {
-    return (component as ComponentWithChildren).children.reduce((acc, child) => {
+  if ((component as ParentComponent).children) {
+    return (component as ParentComponent).children.reduce((acc, child) => {
       acc.push(...getClosestNodeComponents(child));
 
       return acc;

@@ -5,16 +5,19 @@ import {
   ComponentTag,
   ContextTemplate,
   EffectHook,
+  ElementComponent,
   ElementTemplate,
   ExecutionContext,
   FunctionComponent,
   FunctionTemplate,
   HookType,
   MicroTaskType,
+  NodeComponent,
   NullComponent,
   Props,
   RootComponent,
   StateHook,
+  TextComponent,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -1012,7 +1015,7 @@ describe('component', () => {
 
   describe('getHostingComponent', () => {
     it('should throw when component is root', () => {
-      expect(() => MOD.getHostingNode(root)).toThrow(
+      expect(() => MOD.getHostingComponent(root)).toThrow(
         new RuvyError('unable to locate the parent node.')
       );
     });
@@ -1025,7 +1028,7 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
       };
 
-      expect(MOD.getHostingNode(component)).toStrictEqual(root);
+      expect(MOD.getHostingComponent(component)).toStrictEqual(root);
     });
 
     it('should return hosting parent (deep)', () => {
@@ -1047,7 +1050,110 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
       };
 
-      expect(MOD.getHostingNode(component)).toStrictEqual(root);
+      expect(MOD.getHostingComponent(component)).toStrictEqual(root);
+    });
+  });
+
+  describe('getNodeIndex', () => {
+    let node: NodeComponent;
+
+    beforeEach(() => {
+      node = {
+        type: 'div',
+        tag: ComponentTag.Element,
+        children: [],
+        key: 0,
+        // ? but parent does not have children
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounting,
+      };
+    });
+
+    it('should return not found when component not found', () => {
+      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: false, index: -1 });
+    });
+
+    it('should return found (true) and index', () => {
+      root.children.push(node);
+
+      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 0 });
+    });
+
+    it('should return correct index', () => {
+      const sibling0 = {
+        key: 0,
+        parent: root,
+        tag: ComponentTag.Text,
+      } as TextComponent;
+
+      const sibling2 = {
+        tag: ComponentTag.Null,
+        parent: root,
+      } as NullComponent;
+
+      const sibling1 = {
+        tag: ComponentTag.Function,
+        children: [node],
+        parent: root,
+      } as FunctionComponent;
+
+      node.parent = sibling1;
+
+      root.children = [sibling0, sibling1, sibling2];
+
+      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 0 });
+    });
+
+    it('should return correct index (deep)', () => {
+      const sibling0 = {
+        key: 0,
+        parent: root,
+        tag: ComponentTag.Element,
+        props: {},
+        type: 'div',
+        status: ComponentStatus.Mounted,
+        children: [],
+      } as ElementComponent;
+
+      const child0 = {
+        key: 0,
+        parent: sibling0,
+        tag: ComponentTag.Text,
+      } as TextComponent;
+
+      // will be skipped
+      sibling0.children = [child0];
+
+      const sibling2 = {
+        tag: ComponentTag.Null,
+        parent: root,
+      } as NullComponent;
+
+      const sibling1 = {
+        tag: ComponentTag.Function,
+        children: [],
+        parent: root,
+        props: {},
+        hooks: [],
+        key: 0,
+        status: ComponentStatus.Mounted,
+        type: vitest.fn(),
+      } as FunctionComponent;
+
+      const child1 = {
+        key: 0,
+        parent: sibling1,
+        tag: ComponentTag.Text,
+      } as TextComponent;
+
+      node.parent = sibling1;
+
+      sibling1.children = [child1, node];
+
+      root.children = [sibling0, sibling1, sibling2];
+
+      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 1 });
     });
   });
 });
