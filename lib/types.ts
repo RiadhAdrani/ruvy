@@ -327,7 +327,7 @@ export type SwitchControllerComponent =
   | FragmentComponent
   | ContextComponent;
 
-export type ComponentWithChildren =
+export type ParentComponent =
   | FunctionComponent
   | ElementComponent
   | OutletComponent
