@@ -1311,8 +1311,7 @@ export const useCallback = <T = () => void>(callback: T, deps?: unknown): T => {
   return useMemo(() => callback, deps);
 };
 
-// FIXME: not tested
-export const useRef = <T = unknown>(value: T | undefined): RefValue<T> => {
+export const useRef = <T = unknown>(value?: T): RefValue<T> => {
   if (!caller) {
     throw new RuvyError('cannot call "useRef" outisde of a functional component body.');
   }

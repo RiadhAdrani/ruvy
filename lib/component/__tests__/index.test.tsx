@@ -31,7 +31,6 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useCallback,
   useContext,
 } from '../index.js';
 import '@core/index.js';
@@ -837,6 +836,47 @@ describe('component', () => {
         });
 
         expect(memoization).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('useRef', () => {
+      const value = { age: 10, name: 'test' };
+
+      it('should throw when called outside the hook context', () => {
+        expect(() => useRef(value)).toThrow(
+          new RuvyError('cannot call "useRef" outisde of a functional component body.')
+        );
+      });
+
+      it('should add a new hook entry', () => {
+        withCtx(() => {
+          useRef(value);
+        });
+
+        expect(res.component.hooks[0]).toStrictEqual({
+          type: HookType.Ref,
+          value: {
+            value: value,
+          },
+        });
+      });
+
+      it('should return the object as ref', () => {
+        withCtx(() => {
+          const ref = useRef(value);
+
+          expect(ref).toStrictEqual({ value });
+        });
+      });
+
+      it('should throw when component is already mounted and hook is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        expect(() =>
+          withCtx(() => {
+            useRef();
+          })
+        ).toThrow(new RuvyError('unexpected hook type : expected ref but got something else.'));
       });
     });
   });
