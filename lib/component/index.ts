@@ -883,32 +883,32 @@ export const computeChildrenMap = (component: Component | undefined): ComputedCh
   }, {} as ComputedChildrenMap);
 };
 
-// FIXME: not tested
 export const processElementTemplateProps = (template: ElementTemplate, ctx: ExecutionContext) => {
   const classProps: Array<{ value: unknown; key: string }> = [];
 
+  if (typeof template.props.tag === 'string') {
+    template.type = template.props.tag;
+  }
+
   const props = Object.keys(template.props).reduce((acc, key) => {
-    const value = props[key];
+    const value = template.props[key];
 
     if (isClassProp(key)) {
       classProps.push({ key, value });
-
-      return acc;
-    } else if (template.type.toLowerCase() === 'a') {
+    } else if (key === 'href' && template.type.toLowerCase() === 'a') {
       const href = getPropFromTemplate(template, 'href');
 
       if (href) {
         // TODO: process href and compute url and
       }
-    } else if (key === 'tag' && typeof value === 'string') {
-      // override template tag
-      template.type = value;
+    } else {
+      acc[key] = value;
     }
 
     return acc;
   }, {} as Props);
 
-  if (classProps.length < 0) {
+  if (classProps.length > 0) {
     const className = resolveClassProps(classProps);
 
     props.class = className;

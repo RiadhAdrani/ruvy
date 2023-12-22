@@ -1391,4 +1391,31 @@ describe('component', () => {
       });
     });
   });
+
+  describe('processElementTemplateProps', () => {
+    const fn = vitest.fn();
+
+    const el = (
+      <div tag="a" className="cls" class="c" class:on class:off={false} onClick={fn} href="/home" />
+    ) as unknown as ElementTemplate;
+
+    MOD.processElementTemplateProps(el, ctx);
+
+    it('should override tag', () => {
+      expect(el.type).toBe('a');
+    });
+
+    it('should transform class props', () => {
+      expect(el.props.class).toBe('c cls on');
+    });
+
+    it('should keep other props untouched', () => {
+      expect(el.props.onClick).toStrictEqual(fn);
+    });
+
+    // TODO:
+    it.todo('should transform "href" with <a> element', () => {
+      expect(el.props.href).toBe('/home');
+    });
+  });
 });
