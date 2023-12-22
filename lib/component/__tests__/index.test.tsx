@@ -1304,4 +1304,18 @@ describe('component', () => {
       expect(MOD.getTagFromTemplate(temp)).toBe(tag);
     });
   });
+
+  describe('computeKey', () => {
+    it('should return index when not a jsx template', () => {
+      expect(MOD.computeKey(null, 10)).toBe(10);
+    });
+
+    it('should return index when no key in jsx template', () => {
+      expect(MOD.computeKey(<div />, 5)).toBe(5);
+    });
+
+    it('should return key of the jsx template', () => {
+      expect(MOD.computeKey(<div key={3} />, 5)).toBe(3);
+    });
+  });
 });

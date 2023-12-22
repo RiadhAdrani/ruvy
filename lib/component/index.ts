@@ -844,9 +844,8 @@ export const isParentComponent = (component: Component): component is ParentComp
   ].includes(component.tag);
 };
 
-// FIXME: not tested
 export const computeKey = (template: Template, index: number): Key => {
-  return isJsxTemplate(template) ? (template as JsxTemplate).key ?? index : index;
+  return isJsxTemplate(template) ? template.key ?? index : index;
 };
 
 // FIXME: not tested
