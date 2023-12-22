@@ -60,11 +60,12 @@ import {
   ContextHook,
 } from '@/types.js';
 import {
-  createChangeElementTask,
+  createChangeElementPositionTask,
   createEffectCleanUpTask,
   createEffectTask,
   createElementPropsUpdateTask,
   createInnerHTMLTask,
+  createMovePortalChildren,
   createRefElementTask,
   createRenderTask,
   createSetMountedTask,
@@ -93,11 +94,11 @@ export const RuvyAttributes = [
 
 export const handleComponent = (
   template: Template,
-  current: Component | undefined,
+  current: NonRootComponent | undefined,
   parent: ComponentWithChildren,
   index: number,
   ctx: ExecutionContext
-): ComponentHandlerResult<Component> => {
+): ComponentHandlerResult<NonRootComponent> => {
   const tag = getTagFromTemplate(template);
 
   const key = computeKey(template, index);
@@ -108,11 +109,21 @@ export const handleComponent = (
 
   const component = res.component as ComponentWithChildren;
 
-  const mountedTask = createSetMountedTask(component);
+  if (!current) {
+    const mountedTask = createSetMountedTask(component);
 
-  pushMicroTask(mountedTask, res.tasks);
+    pushMicroTask(mountedTask, res.tasks);
+  }
 
-  processChildren(res);
+  if (isParentComponent(res.component)) {
+    const reorder = processChildren(res as ComponentHandlerResult<ComponentWithChildren>);
+
+    if (reorder) {
+      const reorderTask = createChangeElementPositionTask(res.component);
+
+      pushMicroTask(reorderTask, res.tasks);
+    }
+  }
 
   // remove unused from the array of children
   component.children = component.children.filter(child => {
@@ -323,15 +334,60 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
       ██║     ██║  ██║██║  ██║╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   
       ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝                                                                      
  */
-export const handleFragment: ComponentHandler<FragmentTemplate, FragmentComponent> = () => {
-  throw new RuvyError('not implemented');
+export const handleFragment: ComponentHandler<FragmentTemplate, FragmentComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const { props, type } = template;
+
+  const children = template.children as Array<Template>;
+
+  const tasks = initComponentTasks();
+
+  const component: FragmentComponent = current ?? {
+    children: [],
+    key,
+    parent,
+    type,
+    props,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Fragment,
+  };
+
+  if (current) {
+    component.props = props;
+  }
+
+  return { children, component, ctx, tasks };
 };
 
-export const handleJsxFragment: ComponentHandler<
-  JsxFragmentTemplate,
-  JsxFragmentComponent
-> = () => {
-  throw new RuvyError('not implemented');
+export const handleJsxFragment: ComponentHandler<JsxFragmentTemplate, JsxFragmentComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const { props, type } = template;
+
+  const children = template.children as Array<Template>;
+
+  const tasks = initComponentTasks();
+
+  const component: JsxFragmentComponent = current ?? {
+    children: [],
+    key,
+    props,
+    parent,
+    type,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.JsxFragment,
+  };
+
+  return { children, component, ctx, tasks };
 };
 
 /**
@@ -414,8 +470,32 @@ export const handleNull: ComponentHandler<NullTemplate, NullComponent> = (
       ╚██████╔╝╚██████╔╝   ██║   ███████╗███████╗   ██║   
        ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝╚══════╝   ╚═╝                                                       
  */
-export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = () => {
-  throw new RuvyError('not implemented');
+export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const tasks = initComponentTasks();
+
+  const { props, type } = template;
+
+  const component = current ?? {
+    children: [],
+    key,
+    parent,
+    props,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Outlet,
+    type,
+  };
+
+  const children: Array<Template> = [];
+
+  // TODO: setup router and get children by depth
+
+  return { children, ctx, component, tasks };
 };
 
 /**
@@ -426,8 +506,46 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
       ██║     ╚██████╔╝██║  ██║   ██║   ██║  ██║███████╗
       ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝                                            
  */
-export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = () => {
-  throw new RuvyError('not implemented');
+export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
+  template,
+  current,
+  parent,
+  key,
+  ctx
+) => {
+  const { type, props } = template;
+
+  const { children, container } = props;
+
+  const tasks = initComponentTasks();
+
+  const component: PortalComponent = current ?? {
+    children: [],
+    key,
+    parent,
+    props,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.Portal,
+    instance: container,
+    type,
+  };
+
+  if (current) {
+    const newContainer = props.container;
+    const currentContainer = component.props.container;
+
+    if (newContainer !== currentContainer) {
+      component.instance = newContainer;
+
+      const movePortal = createMovePortalChildren(component);
+
+      pushMicroTask(movePortal, tasks);
+    }
+
+    component.props = props;
+  }
+
+  return { component, children, ctx, tasks };
 };
 
 /**
@@ -521,7 +639,7 @@ const handlerMap = {
   [ComponentTag.Text]: handleText,
   [ComponentTag.Null]: handleNull,
   [ComponentTag.Portal]: handlePortal,
-} as Record<string, ComponentHandler<Template, Component>>;
+} as Record<string, ComponentHandler<Template, NonRootComponent>>;
 
 /**
  * create an empty record of tasks
@@ -792,7 +910,7 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
 };
 
 // FIXME: not tested
-export const processChildren = (res: ComponentHandlerResult<Component>) => {
+export const processChildren = (res: ComponentHandlerResult<ComponentWithChildren>): boolean => {
   const parent = res.component as ComponentWithChildren;
 
   const switchControl = isSwitchController(parent as SwitchControllerComponent);
@@ -805,6 +923,8 @@ export const processChildren = (res: ComponentHandlerResult<Component>) => {
   const childrenMap = computeChildrenMap(parent);
 
   const childrenKeys = new Set<Key>([]);
+
+  let shouldReorder = false;
 
   for (let i = 0; i < res.children.length; i++) {
     const child = res.children[i];
@@ -953,6 +1073,10 @@ export const processChildren = (res: ComponentHandlerResult<Component>) => {
 
     if (!parent || !old || shouldRenderNewComponent(template, old.component)) {
       childRes = handleComponent(template, undefined, parent, i, res.ctx);
+
+      shouldReorder = true;
+
+      parent.children.push(childRes.component as NonRootComponent);
     } else {
       // mark the old component as mounted, so we don't unmount it
       old.component.status = ComponentStatus.Mounted;
@@ -962,9 +1086,7 @@ export const processChildren = (res: ComponentHandlerResult<Component>) => {
       if (i !== old.index) {
         // need to change element position
 
-        const reorderTask = createChangeElementTask(old.component);
-
-        pushMicroTask(reorderTask, childRes.tasks);
+        shouldReorder = true;
 
         parent.children = moveElement(parent.children, old.index, i);
       }
@@ -973,6 +1095,8 @@ export const processChildren = (res: ComponentHandlerResult<Component>) => {
     // push tasks
     pushBlukMicroTasks(childRes.tasks, res.tasks);
   }
+
+  return shouldReorder;
 };
 
 // FIXME: not tested
@@ -999,12 +1123,12 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
 };
 
 // FIXME: not tested
-export const getClosestNodeComponent = (component: NonRootComponent): Array<NodeComponent> => {
+export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
   if (isNodeComponent(component)) return [component as NodeComponent];
 
   if ((component as ComponentWithChildren).children) {
     return (component as ComponentWithChildren).children.reduce((acc, child) => {
-      acc.push(...getClosestNodeComponent(child));
+      acc.push(...getClosestNodeComponents(child));
 
       return acc;
     }, [] as Array<NodeComponent>);
@@ -1026,26 +1150,21 @@ export const getClosestNodeComponent = (component: NonRootComponent): Array<Node
  * current hook index
  */
 let hookIndex = -1;
-let isHookContext = false;
 let caller: HookCaller | undefined;
 
-// FIXME: not tested
 export const withHookContext = (hookCaller: HookCaller, callback: () => Template): Template => {
-  isHookContext = true;
   caller = hookCaller;
 
   const out = callback();
 
   caller = undefined;
-  isHookContext = false;
   hookIndex = -1;
 
   return out;
 };
 
-// FIXME: not tested
 export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
-  if (!isHookContext || !caller) {
+  if (!caller) {
     throw new RuvyError('cannot call "useState" outisde of a functional component body.');
   }
 
@@ -1092,7 +1211,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
 
 // FIXME: not tested
 export const useEffect = (callback: Effect, deps?: unknown): void => {
-  if (!isHookContext || !caller) {
+  if (!caller) {
     throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
   }
 
@@ -1143,7 +1262,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
 
 // FIXME: not tested
 export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
-  if (!isHookContext || !caller) {
+  if (!caller) {
     throw new RuvyError('cannot call "useMemo" outisde of a functional component body.');
   }
 
@@ -1185,7 +1304,7 @@ export const useCallback = <T = () => void>(callback: T, deps?: unknown): T => {
 
 // FIXME: not tested
 export const useRef = <T = unknown>(value: T | undefined): RefValue<T> => {
-  if (!isHookContext || !caller) {
+  if (!caller) {
     throw new RuvyError('cannot call "useRef" outisde of a functional component body.');
   }
 
@@ -1223,7 +1342,7 @@ export const createContextProviderComponent = <T>({
 
 export const useContext = <T>(obj: ContextObject<T>): T => {
   // find the context in the execution context
-  if (!isHookContext || !caller) {
+  if (!caller) {
     throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
   }
 
