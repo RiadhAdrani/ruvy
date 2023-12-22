@@ -763,5 +763,81 @@ describe('component', () => {
         expect(res.tasks[MicroTaskType.RunEffectCleanup].length).toBe(1);
       });
     });
+
+    describe('useMemo | useCallback', () => {
+      let memoization = vitest.fn(() => 0);
+
+      beforeEach(() => {
+        memoization = vitest.fn(() => 0);
+      });
+
+      it('should throw when called outside the hook context', () => {
+        expect(() => useMemo(memoization)).toThrow(
+          new RuvyError('cannot call "useMemo" outisde of a functional component body.')
+        );
+      });
+
+      it('should create a memo hook entry', () => {
+        withCtx(() => {
+          useMemo(memoization);
+        });
+
+        expect(res.component.hooks[0]).toStrictEqual({
+          type: HookType.Memo,
+          deps: undefined,
+          value: 0,
+        });
+      });
+
+      it('should run the callback', () => {
+        withCtx(() => {
+          useMemo(memoization);
+        });
+
+        expect(memoization).toHaveBeenCalledOnce();
+      });
+
+      it('should throw when component is already mounted and hook is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        expect(() =>
+          withCtx(() => {
+            useMemo(memoization);
+          })
+        ).toThrow(new RuvyError('unexpected hook type : expected memo but got something else.'));
+      });
+
+      it('should not recompute when dependencies does not change', () => {
+        withCtx(() => {
+          useMemo(memoization);
+        });
+
+        // ? simulate component mounted
+        res.component.status = ComponentStatus.Mounted;
+        res.tasks = initComponentTasks();
+
+        withCtx(() => {
+          useMemo(memoization);
+        });
+
+        expect(memoization).toHaveBeenCalledTimes(1);
+      });
+
+      it('should recompute when dependencies change', () => {
+        withCtx(() => {
+          useMemo(memoization);
+        });
+
+        // ? simulate component mounted
+        res.component.status = ComponentStatus.Mounted;
+        res.tasks = initComponentTasks();
+
+        withCtx(() => {
+          useMemo(memoization, []);
+        });
+
+        expect(memoization).toHaveBeenCalledTimes(2);
+      });
+    });
   });
 });
