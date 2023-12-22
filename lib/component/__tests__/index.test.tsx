@@ -1318,4 +1318,18 @@ describe('component', () => {
       expect(MOD.computeKey(<div key={3} />, 5)).toBe(3);
     });
   });
+
+  describe('getPropFromTemplate', () => {
+    it('should return false with no jsx template', () => {
+      expect(MOD.getPropFromTemplate(null, 'key')).toBe(false);
+    });
+
+    it('should return false property is missing', () => {
+      expect(MOD.getPropFromTemplate(<div />, 'key')).toBe(false);
+    });
+
+    it('should return value of prop', () => {
+      expect(MOD.getPropFromTemplate(<div key={0} />, 'key')).toStrictEqual({ value: 0 });
+    });
+  });
 });
