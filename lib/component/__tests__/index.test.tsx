@@ -9,12 +9,14 @@ import {
   ElementComponent,
   ElementTemplate,
   ExecutionContext,
+  Fragment,
   FunctionComponent,
   FunctionTemplate,
   HookType,
   MicroTaskType,
   NodeComponent,
   NullComponent,
+  Outlet,
   Props,
   RootComponent,
   StateHook,
@@ -1274,6 +1276,32 @@ describe('component', () => {
       expect(
         MOD.isJsxTemplate({ type: 'div', props: {}, children: [], symbol: ComponentSymbol })
       ).toBe(true);
+    });
+  });
+
+  describe('getTagFromTemplate', () => {
+    const Fn = vitest.fn();
+
+    const el = <div></div>;
+    const fn = <Fn />;
+    const ctx = createJsxElement(ComponentTag.Context, {}, []);
+    const outlet = <Outlet />;
+    const frg = <Fragment />;
+    const jsxFrg = <></>;
+
+    it.each([
+      [el, ComponentTag.Element],
+      [fn, ComponentTag.Function],
+      [ctx, ComponentTag.Context],
+      [outlet, ComponentTag.Outlet],
+      [frg, ComponentTag.Fragment],
+      [jsxFrg, ComponentTag.JsxFragment],
+      [null, ComponentTag.Null],
+      [undefined, ComponentTag.Null],
+      ['txt', ComponentTag.Text],
+      [2, ComponentTag.Text],
+    ])('should return correct tag', (temp, tag) => {
+      expect(MOD.getTagFromTemplate(temp)).toBe(tag);
     });
   });
 });

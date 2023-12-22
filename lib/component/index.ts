@@ -56,7 +56,7 @@ import {
   MemoHook,
   RefHook,
   ContextObject,
-  ContextComponentProviderProps,
+  CreateContextComponentProviderProps,
   ContextHook,
   JsxComponent,
 } from '@/types.js';
@@ -810,7 +810,6 @@ export const isJsxTemplate = (template: unknown): template is JsxTemplate => {
   );
 };
 
-// FIXME: not tested
 export const getTagFromTemplate = (template: Template): ComponentTag => {
   if (isJsxTemplate(template)) {
     if (template.type === Portal) return ComponentTag.Portal;
@@ -828,7 +827,7 @@ export const getTagFromTemplate = (template: Template): ComponentTag => {
     if (typeof template.type === 'string') return ComponentTag.Element;
   }
 
-  if (template === false || template === null) return ComponentTag.Null;
+  if ([null, false, undefined].includes(template as NullTemplate)) return ComponentTag.Null;
 
   return ComponentTag.Text;
 };
@@ -1356,7 +1355,7 @@ export const createContextProviderComponent = <T>({
   value,
   children,
   ctx,
-}: ContextComponentProviderProps<T>) => {
+}: CreateContextComponentProviderProps<T>) => {
   return createJsxElement(ComponentTag.Context, { value, ctx }, ...(children ?? []));
 };
 
