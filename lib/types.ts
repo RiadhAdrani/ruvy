@@ -234,14 +234,17 @@ export interface PortalComponentProps extends Record<string, unknown> {
 
 export interface ContextObject<T = unknown> {
   id: string;
-  Provider: (props: ContextComponentProviderProps<T>) => JSX.Element;
+  Provider: (props: ContextProviderProps<T>) => JSX.Element;
   use: () => T;
 }
 
-export interface ContextComponentProviderProps<T = unknown> extends Record<string, unknown> {
+export interface ContextProviderProps<T = unknown> extends Record<string, unknown> {
   value: T;
-  ctx: ContextObject<T>;
   children?: Array<unknown>;
+}
+
+export interface CreateContextComponentProviderProps<T = unknown> extends ContextProviderProps<T> {
+  ctx: ContextObject<T>;
 }
 
 export interface CommonComponent {
