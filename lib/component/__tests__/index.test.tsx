@@ -2,6 +2,7 @@ import {
   Component,
   ComponentHandlerResult,
   ComponentStatus,
+  ComponentSymbol,
   ComponentTag,
   ContextTemplate,
   EffectHook,
@@ -17,6 +18,7 @@ import {
   Props,
   RootComponent,
   StateHook,
+  Template,
   TextComponent,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
@@ -1228,6 +1230,50 @@ describe('component', () => {
       const tasks = MOD.unmountComponent(elRes.component, {});
 
       expect(tasks[MicroTaskType.UnmountComponent].length).toBe(2);
+    });
+  });
+
+  describe('isJsxTemplate', () => {
+    it.each([null, undefined, 0, 'txt', false])('should false for primitive value "%s"', v => {
+      expect(MOD.isJsxTemplate(v as Template)).toBe(false);
+    });
+
+    it('should return false for an array', () => {
+      expect(MOD.isJsxTemplate([])).toBe(false);
+    });
+
+    it('should return false with missing "type"', () => {
+      expect(MOD.isJsxTemplate({ props: {}, children: [], symbol: ComponentSymbol })).toBe(false);
+    });
+
+    it('should return false with missing "props"', () => {
+      expect(MOD.isJsxTemplate({ type: 'div', children: [], symbol: ComponentSymbol })).toBe(false);
+    });
+
+    it('should return false with non-object "props"', () => {
+      expect(
+        MOD.isJsxTemplate({ type: 'div', props: 0, children: [], symbol: ComponentSymbol })
+      ).toBe(false);
+    });
+
+    it('should return false with missing "children"', () => {
+      expect(MOD.isJsxTemplate({ type: 'div', props: {}, symbol: ComponentSymbol })).toBe(false);
+    });
+
+    it('should return false with non-array "children"', () => {
+      expect(
+        MOD.isJsxTemplate({ type: 'div', props: {}, children: 0, symbol: ComponentSymbol })
+      ).toBe(false);
+    });
+
+    it('should return false with missing "symbol"', () => {
+      expect(MOD.isJsxTemplate({ type: 'div', props: {}, children: [] })).toBe(false);
+    });
+
+    it('should return true', () => {
+      expect(
+        MOD.isJsxTemplate({ type: 'div', props: {}, children: [], symbol: ComponentSymbol })
+      ).toBe(true);
     });
   });
 });

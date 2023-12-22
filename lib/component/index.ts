@@ -795,8 +795,7 @@ export const unmountComponent = (
   return tasks;
 };
 
-// FIXME: not tested
-export const isJsxTemplate = (template: Template): template is JsxTemplate => {
+export const isJsxTemplate = (template: unknown): template is JsxTemplate => {
   return (
     template !== null &&
     typeof template === 'object' &&
