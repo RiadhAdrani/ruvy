@@ -1,4 +1,5 @@
 import {
+  Component,
   ComponentHandlerResult,
   ComponentStatus,
   ComponentTag,
@@ -940,6 +941,24 @@ describe('component', () => {
           })
         ).toThrow(new RuvyError('unexpected hook type : expected context but got something else.'));
       });
+    });
+  });
+
+  describe('isJsxComponent', () => {
+    const nonJsx = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
+
+    const jsx = Object.values(ComponentTag).filter(it => !nonJsx.includes(it));
+
+    it.each(nonJsx)('should return false for non-jsx component', tag => {
+      const comp = { tag } as Component;
+
+      expect(MOD.isJsxComponent(comp)).toBe(false);
+    });
+
+    it.each(jsx)('should return true for jsx component "%s"', tag => {
+      const comp = { tag } as Component;
+
+      expect(MOD.isJsxComponent(comp)).toBe(true);
     });
   });
 });

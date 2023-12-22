@@ -311,6 +311,15 @@ export type HostComponent = RootComponent | ElementComponent | PortalComponent;
 
 export type NodeComponent = ElementComponent | TextComponent;
 
+export type JsxComponent =
+  | FunctionComponent
+  | ElementComponent
+  | PortalComponent
+  | FragmentComponent
+  | JsxFragmentComponent
+  | ContextComponent
+  | OutletComponent;
+
 export type SwitchControllerComponent =
   | FunctionComponent
   | ElementComponent
@@ -338,17 +347,7 @@ export type NonRootComponent =
   | FragmentComponent
   | ContextComponent;
 
-export type Component =
-  | FunctionComponent
-  | ElementComponent
-  | RootComponent
-  | TextComponent
-  | NullComponent
-  | OutletComponent
-  | PortalComponent
-  | JsxFragmentComponent
-  | FragmentComponent
-  | ContextComponent;
+export type Component = NonRootComponent | RootComponent;
 
 export type CreateState<T = unknown> = T | (() => T);
 
