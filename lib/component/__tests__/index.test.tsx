@@ -1156,4 +1156,78 @@ describe('component', () => {
       expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 1 });
     });
   });
+
+  describe('unmount component', () => {
+    it('should add unmount task', () => {
+      const nil: NullComponent = {
+        tag: ComponentTag.Null,
+        parent: root,
+        key: 0,
+        status: ComponentStatus.Mounted,
+      };
+
+      const tasks = MOD.unmountComponent(nil, {});
+
+      expect(tasks[MicroTaskType.UnmountComponent].length).toBe(1);
+    });
+
+    it('should unmount function component effects', () => {
+      const cleanup = vitest.fn();
+      const effect = vitest.fn(() => cleanup);
+
+      const Fn = () => {
+        useEffect(effect);
+
+        return <div></div>;
+      };
+
+      const res = handleFunction((<Fn />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+
+      (res.component.hooks[0] as EffectHook).cleanup = cleanup;
+
+      const unmount = MOD.unmountComponent(res.component, {});
+
+      expect(unmount[MicroTaskType.RunEffectCleanup].length).toBe(1);
+    });
+
+    it('should not add effect task with no cleanup', () => {
+      const cleanup = vitest.fn();
+      const effect = vitest.fn(() => cleanup);
+
+      const Fn = () => {
+        useEffect(effect);
+
+        return <div></div>;
+      };
+
+      const res = handleFunction((<Fn />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+
+      const unmount = MOD.unmountComponent(res.component, {});
+
+      expect(unmount[MicroTaskType.RunEffectCleanup].length).toBe(0);
+    });
+
+    it('should unmount children recursively', () => {
+      const elRes = handleElement(
+        (<div></div>) as unknown as ElementTemplate,
+        undefined,
+        root,
+        0,
+        ctx
+      );
+      const childRes = handleElement(
+        (<img></img>) as unknown as ElementTemplate,
+        undefined,
+        root,
+        0,
+        ctx
+      );
+
+      elRes.component.children = [childRes.component];
+
+      const tasks = MOD.unmountComponent(elRes.component, {});
+
+      expect(tasks[MicroTaskType.UnmountComponent].length).toBe(2);
+    });
+  });
 });

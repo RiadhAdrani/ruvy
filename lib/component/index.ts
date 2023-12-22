@@ -757,7 +757,6 @@ export const pushBlukMicroTasks = (tasks: ComponentTasks, target: ComponentTasks
   }
 };
 
-// FIXME: not tested
 export const unmountComponent = (
   component: NonRootComponent,
   data: UnmountComponentData
@@ -770,7 +769,7 @@ export const unmountComponent = (
 
   if (component.tag === ComponentTag.Function) {
     component.hooks.forEach(it => {
-      if (it.type === HookType.Effect) {
+      if (it.type === HookType.Effect && typeof it.cleanup === 'function') {
         // cleanup effect
         const cleanupTask = createEffectCleanUpTask(component, it);
 
