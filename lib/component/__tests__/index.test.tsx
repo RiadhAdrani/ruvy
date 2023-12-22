@@ -3,6 +3,7 @@ import {
   ComponentStatus,
   ComponentTag,
   ContextTemplate,
+  EffectHook,
   ElementTemplate,
   ExecutionContext,
   FunctionComponent,
@@ -27,6 +28,11 @@ import {
   initComponentTasks,
   withHookContext,
   useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+  useContext,
 } from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
@@ -534,6 +540,14 @@ describe('component', () => {
       res = handleFunction((<Comp />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
     });
 
+    const withCtx = (callback: () => void) => {
+      return withHookContext(res, () => {
+        callback();
+
+        return null;
+      });
+    };
+
     describe('useState', () => {
       it('should throw when called outside of context', () => {
         expect(() => useState(0)).toThrow();
@@ -664,6 +678,89 @@ describe('component', () => {
 
           return null;
         });
+      });
+    });
+
+    describe('useEffect', () => {
+      let cleanup = vitest.fn();
+      let effect = vitest.fn(() => cleanup);
+
+      beforeEach(() => {
+        cleanup = vitest.fn();
+        effect = vitest.fn(() => cleanup);
+      });
+
+      it('should throw when called outside the hook context', () => {
+        expect(() => useEffect(effect)).toThrow(
+          new RuvyError('cannot call "useEffect" outisde of a functional component body.')
+        );
+      });
+
+      it('should create a hook effect entry', () => {
+        withCtx(() => {
+          useEffect(effect);
+        });
+
+        expect(res.component.hooks[0]).toStrictEqual({
+          type: HookType.Effect,
+          deps: undefined,
+          callback: effect,
+        });
+      });
+
+      it('should push an effect task', () => {
+        withCtx(() => {
+          useEffect(effect);
+        });
+
+        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(1);
+      });
+
+      it('should throw when component is already mounted and hook is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        expect(() =>
+          withCtx(() => {
+            useEffect(effect);
+          })
+        ).toThrow(new RuvyError('unexpected hook type : expected effect but got something else.'));
+      });
+
+      it('should not add effect task when dependencies does not change', () => {
+        withCtx(() => {
+          useEffect(effect);
+        });
+
+        // ? simulate component mounted
+        res.component.status = ComponentStatus.Mounted;
+        res.tasks = initComponentTasks();
+
+        withCtx(() => {
+          useEffect(effect);
+        });
+
+        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(0);
+        expect(res.tasks[MicroTaskType.RunEffectCleanup].length).toBe(0);
+      });
+
+      it('should add effect task and cleanup when dependencies change', () => {
+        withCtx(() => {
+          useEffect(effect);
+        });
+
+        // ? simulate component mounted
+        res.component.status = ComponentStatus.Mounted;
+        res.tasks = initComponentTasks();
+
+        // ? simulate that the effect ran
+        (res.component.hooks[0] as EffectHook).cleanup = cleanup;
+
+        withCtx(() => {
+          useEffect(effect, []);
+        });
+
+        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(1);
+        expect(res.tasks[MicroTaskType.RunEffectCleanup].length).toBe(1);
       });
     });
   });

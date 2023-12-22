@@ -1219,7 +1219,6 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   return [hook.value, hook.setValue, hook.getValue] as UseState<T>;
 };
 
-// FIXME: not tested
 export const useEffect = (callback: Effect, deps?: unknown): void => {
   if (!caller) {
     throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
