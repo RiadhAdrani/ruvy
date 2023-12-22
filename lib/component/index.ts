@@ -493,7 +493,7 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   const children: Array<Template> = [];
 
-  // TODO: setup router and get children by depth
+  // TODO: setup router and get child by depth
 
   return { children, ctx, component, tasks };
 };
@@ -1269,7 +1269,6 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
   }
 };
 
-// FIXME: not tested
 export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
   if (!caller) {
     throw new RuvyError('cannot call "useMemo" outisde of a functional component body.');
