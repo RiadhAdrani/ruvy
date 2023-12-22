@@ -11,6 +11,7 @@ import {
   FunctionComponent,
   EffectHook,
   PortalComponent,
+  ParentComponent,
 } from '@/types.js';
 import {
   element,
@@ -54,7 +55,7 @@ export const createRenderTask = (component: ElementComponent): MicroTask => {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    const { found, index } = getNodeIndex(component, host);
+    const { found, index } = getNodeIndex(component, host as ParentComponent);
 
     if (!found) {
       throw new RuvyError('unable to compute node index.');
@@ -211,7 +212,7 @@ export const createTextTask = (component: TextComponent): MicroTask => {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    const { found, index } = getNodeIndex(component, host);
+    const { found, index } = getNodeIndex(component, host as ParentComponent);
 
     if (!found) {
       throw new RuvyError('unable to compute node index.');
