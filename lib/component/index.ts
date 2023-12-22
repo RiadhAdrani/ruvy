@@ -848,7 +848,6 @@ export const computeKey = (template: Template, index: number): Key => {
   return isJsxTemplate(template) ? template.key ?? index : index;
 };
 
-// FIXME: not tested
 export const getPropFromTemplate = <T = unknown>(
   template: Template,
   prop: string
