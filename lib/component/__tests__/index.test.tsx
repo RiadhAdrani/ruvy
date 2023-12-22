@@ -45,6 +45,7 @@ import {
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
+import { Namespace } from '@riadh-adrani/domer';
 
 const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
 const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
@@ -1413,9 +1414,52 @@ describe('component', () => {
       expect(el.props.onClick).toStrictEqual(fn);
     });
 
+    it('should default namespace to HTML', () => {
+      expect(el.props.ns).toStrictEqual(Namespace.HTML);
+    });
+
+    it('should set namespace according to execution context', () => {
+      const el = (<div />) as unknown as ElementTemplate;
+
+      MOD.processElementTemplateProps(el, { contexts: {}, ns: Namespace.SVG });
+
+      expect(el.props.ns).toStrictEqual(Namespace.SVG);
+    });
+
     // TODO:
     it.todo('should transform "href" with <a> element', () => {
       expect(el.props.href).toBe('/home');
+    });
+  });
+
+  describe('shouldRenderNewComponent', () => {
+    const nil: NullComponent = {
+      tag: ComponentTag.Null,
+      parent: root,
+      key: 0,
+      status: ComponentStatus.Mounted,
+    };
+
+    const a: ElementComponent = {
+      children: [],
+      key: 0,
+      parent: root,
+      props: { ns: Namespace.HTML },
+      status: ComponentStatus.Mounted,
+      tag: ComponentTag.Element,
+      type: 'a',
+    };
+
+    it('should return true when tags are different', () => {
+      expect(MOD.shouldRenderNewComponent('txt', nil)).toBe(true);
+    });
+
+    it('should return false with same jsx type', () => {
+      expect(MOD.shouldRenderNewComponent(<a />, a)).toBe(false);
+    });
+
+    it('should return true same jsx element type but different namespace', () => {
+      expect(MOD.shouldRenderNewComponent(<a ns={Namespace.SVG} />, a)).toBe(true);
     });
   });
 });

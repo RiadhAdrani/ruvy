@@ -1110,23 +1110,22 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   return shouldReorder;
 };
 
-// FIXME: not tested
 export const shouldRenderNewComponent = (template: Template, current: Component): boolean => {
   const tag = getTagFromTemplate(template);
 
   if (tag !== current.tag) {
-    return false;
+    return true;
   }
 
   if (isJsxTemplate(template)) {
     const c = current as ElementComponent;
 
-    if (template.type !== c.type) {
-      return false;
-    }
-
-    if (c.tag === ComponentTag.Element && (template.props.ns ?? Namespace.HTML) !== c.props.ns) {
-      return false;
+    if (template.type === c.type) {
+      if (c.tag === ComponentTag.Element && (template.props.ns ?? Namespace.HTML) !== c.props.ns) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
