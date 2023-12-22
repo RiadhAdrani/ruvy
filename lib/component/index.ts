@@ -58,6 +58,7 @@ import {
   ContextObject,
   ContextComponentProviderProps,
   ContextHook,
+  JsxComponent,
 } from '@/types.js';
 import {
   createChangeElementPositionTask,
@@ -662,15 +663,26 @@ export const initComponentTasks = (): ComponentTasks => ({
   [MicroTaskType.UnrefEelement]: [],
 });
 
+export const isJsxComponent = (component: Component): component is JsxComponent => {
+  return [
+    ComponentTag.Function,
+    ComponentTag.Element,
+    ComponentTag.Portal,
+    ComponentTag.Portal,
+    ComponentTag.Fragment,
+    ComponentTag.JsxFragment,
+    ComponentTag.Context,
+    ComponentTag.Outlet,
+  ].includes(component.tag);
+};
+
 /**
  * checks if the given component is a switch controller
  * and the return the switch value within an object,
  * otherwise, `false`.
  */
-export const isSwitchController = (
-  component: SwitchControllerComponent
-): { value: unknown } | false => {
-  if (!component.props || !hasProperty(component.props, 'switch')) return false;
+export const isSwitchController = (component: Component): { value: unknown } | false => {
+  if (!isJsxComponent(component) || !hasProperty(component.props, 'switch')) return false;
 
   const value = component.props['switch'];
 
