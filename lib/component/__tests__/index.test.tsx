@@ -44,6 +44,9 @@ const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents
 const nodeComponents = [ComponentTag.Element, ComponentTag.Text];
 const nonNodeComponents = Object.values(ComponentTag).filter(it => !nodeComponents.includes(it));
 
+const hostComponents = [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root];
+const nonHostComponents = Object.values(ComponentTag).filter(it => !hostComponents.includes(it));
+
 describe('component', () => {
   let ctx: ExecutionContext = {
     contexts: {},
@@ -993,6 +996,16 @@ describe('component', () => {
 
     it.each(nodeComponents)('should return true for node components', tag => {
       expect(MOD.isNodeComponent({ tag } as Component)).toBe(true);
+    });
+  });
+
+  describe('iHostComponent', () => {
+    it.each(nonHostComponents)('should return false for non-host components', tag => {
+      expect(MOD.isHostComponent({ tag } as Component)).toBe(false);
+    });
+
+    it.each(hostComponents)('should return true for host components', tag => {
+      expect(MOD.isHostComponent({ tag } as Component)).toBe(true);
     });
   });
 });

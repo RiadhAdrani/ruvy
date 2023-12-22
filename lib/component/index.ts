@@ -695,14 +695,14 @@ export const isNodeComponent = (component: Component): component is NodeComponen
 export const isHostComponent = (component: Component): component is HostComponent =>
   [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root].includes(component.tag);
 
-export const getParentNode = (component: Component): HostComponent => {
+export const getHostingNode = (component: Component): HostComponent => {
   if (component.tag === ComponentTag.Root) {
     throw new RuvyError('unable to locate the parent node.');
   }
 
   if (isHostComponent(component.parent)) return component.parent;
 
-  return getParentNode(component.parent);
+  return getHostingNode(component.parent);
 };
 
 export const getNodeIndex = (
@@ -712,7 +712,7 @@ export const getNodeIndex = (
   let index = 0;
   let wasFound = false;
 
-  const host = parent ?? getParentNode(component);
+  const host = parent ?? getHostingNode(component);
 
   for (const child of host.children) {
     if (wasFound) break;

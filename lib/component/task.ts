@@ -28,7 +28,7 @@ import {
   filterDomProps,
   getClosestNodeComponents,
   getNodeIndex,
-  getParentNode,
+  getHostingNode,
   isNodeComponent,
 } from './index.js';
 import { RuvyError, generateId } from '@/helpers/helpers.js';
@@ -48,7 +48,7 @@ export const createRenderTask = (component: ElementComponent): MicroTask => {
   const execute = () => {
     const instance = element(component.type, props);
 
-    const host = getParentNode(component);
+    const host = getHostingNode(component);
 
     if (!host.instance) {
       throw new RuvyError('unable to find element hosting parent.');
@@ -205,7 +205,7 @@ export const createTextTask = (component: TextComponent): MicroTask => {
   const execute = () => {
     const instance = text(component.text);
 
-    const host = getParentNode(component);
+    const host = getHostingNode(component);
 
     if (!host.instance) {
       throw new RuvyError('unable to find element hosting parent.');
