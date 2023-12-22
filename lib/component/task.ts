@@ -10,6 +10,7 @@ import {
   TextComponent,
   FunctionComponent,
   EffectHook,
+  PortalComponent,
 } from '@/types.js';
 import {
   element,
@@ -25,7 +26,7 @@ import {
 } from '@riadh-adrani/domer';
 import {
   filterDomProps,
-  getClosestNodeComponent,
+  getClosestNodeComponents,
   getNodeIndex,
   getParentNode,
   isNodeComponent,
@@ -174,9 +175,9 @@ export const createUnmountComponentTask = (
   return createTask({ execute, component, type: MicroTaskType.UnmountComponent });
 };
 
-export const createChangeElementTask = (component: NonRootComponent): MicroTask => {
+export const createChangeElementPositionTask = (component: NonRootComponent): MicroTask => {
   const execute = () => {
-    const nodeComponents = getClosestNodeComponent(component);
+    const nodeComponents = getClosestNodeComponents(component);
 
     nodeComponents.forEach(node => {
       const element = node.instance as Element;
@@ -263,4 +264,30 @@ export const createEffectCleanUpTask = (
   };
 
   return createTask({ component, execute, type: MicroTaskType.RunEffectCleanup });
+};
+
+export const createMovePortalChildren = (component: PortalComponent): MicroTask => {
+  const execute = () => {
+    const element = component.instance;
+
+    if (!element) {
+      throw new RuvyError('unable to change portal, component instance does not exist.');
+    }
+
+    component.children.forEach(child => {
+      getClosestNodeComponents(child).forEach(node => {
+        const inst = node.instance;
+
+        if (!inst) {
+          throw new RuvyError(
+            'unable to move element to new portal, component instance does not exist.'
+          );
+        }
+
+        insertNode(inst, element);
+      });
+    });
+  };
+
+  return createTask({ component, execute, type: MicroTaskType.UpdatePortalChildren });
 };

@@ -229,6 +229,7 @@ export type PropsWithUtility<T extends object = object> = Partial<UtilityProps> 
 
 export interface PortalComponentProps extends Record<string, unknown> {
   container: Element;
+  children: Array<Template>;
 }
 
 export interface ContextObject<T = unknown> {
@@ -292,13 +293,11 @@ export interface PortalComponent extends CommonComponent {
 
 export interface JsxFragmentComponent extends CommonComponent {
   tag: ComponentTag.JsxFragment;
-  props: PortalComponentProps;
   type: (props: Record<string, unknown>) => unknown;
 }
 
 export interface FragmentComponent extends CommonComponent {
   tag: ComponentTag.Fragment;
-  props: PortalComponentProps;
   type: typeof Fragment;
 }
 

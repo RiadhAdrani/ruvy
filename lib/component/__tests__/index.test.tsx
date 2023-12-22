@@ -1,4 +1,5 @@
 import {
+  ComponentHandlerResult,
   ComponentStatus,
   ComponentTag,
   ContextTemplate,
@@ -10,6 +11,7 @@ import {
   MicroTaskType,
   Props,
   RootComponent,
+  StateHook,
 } from '@/types.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -24,6 +26,7 @@ import {
   handleText,
   initComponentTasks,
   withHookContext,
+  useState,
 } from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
@@ -517,6 +520,80 @@ describe('component', () => {
     it('should add context to record with id', () => {
       expect(res.ctx.contexts).toStrictEqual({
         [obj.id]: value,
+      });
+    });
+  });
+
+  describe('hooks', () => {
+    let res: ComponentHandlerResult<FunctionComponent>;
+
+    beforeEach(() => {
+      const Comp = vitest.fn();
+
+      res = handleFunction((<Comp />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+    });
+
+    describe('useState', () => {
+      it('should throw when called outside of context', () => {
+        expect(() => useState(0)).toThrow();
+      });
+
+      it('should create a hook entry', () => {
+        withHookContext(res, () => {
+          useState(0);
+
+          return 0;
+        });
+
+        const hook = res.component.hooks[0] as StateHook;
+
+        expect(hook.type).toBe(HookType.State);
+        expect(hook.value).toBe(0);
+        expect(typeof hook.getValue).toBe('function');
+        expect(typeof hook.setValue).toBe('function');
+      });
+
+      it('should return an array of [value,setter,getter]', () => {
+        withHookContext(res, () => {
+          const [value, , get] = useState(0);
+
+          expect(value).toBe(0);
+          expect(get()).toBe(0);
+
+          return 0;
+        });
+      });
+
+      it('should return updated state', () => {
+        withHookContext(res, () => {
+          return useState(0);
+        });
+
+        res.component.status = ComponentStatus.Mounted;
+
+        const hook = res.component.hooks[0] as StateHook;
+
+        hook.value = 10;
+
+        withHookContext(res, () => {
+          const [value] = useState(0);
+
+          expect(value).toBe(10);
+
+          return 0;
+        });
+      });
+
+      it('should update state', () => {
+        withHookContext(res, () => {
+          const [, set, get] = useState(0);
+
+          set(10);
+
+          expect(get()).toBe(10);
+
+          return null;
+        });
       });
     });
   });
