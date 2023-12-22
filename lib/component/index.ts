@@ -1377,7 +1377,7 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
   const ctx = caller.ctx.contexts;
 
   if (!hasProperty(ctx, obj.id)) {
-    throw new RuvyError('unable to find context');
+    throw new RuvyError('unable to find a context with the given object');
   }
 
   return ctx[obj.id] as T;
