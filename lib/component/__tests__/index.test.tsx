@@ -38,6 +38,9 @@ import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
 
+const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
+const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
+
 describe('component', () => {
   let ctx: ExecutionContext = {
     contexts: {},
@@ -945,20 +948,38 @@ describe('component', () => {
   });
 
   describe('isJsxComponent', () => {
-    const nonJsx = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
-
-    const jsx = Object.values(ComponentTag).filter(it => !nonJsx.includes(it));
-
-    it.each(nonJsx)('should return false for non-jsx component', tag => {
+    it.each(nonJsxComponents)('should return false for non-jsx component', tag => {
       const comp = { tag } as Component;
 
       expect(MOD.isJsxComponent(comp)).toBe(false);
     });
 
-    it.each(jsx)('should return true for jsx component "%s"', tag => {
+    it.each(jsxComponents)('should return true for jsx component "%s"', tag => {
       const comp = { tag } as Component;
 
       expect(MOD.isJsxComponent(comp)).toBe(true);
     });
+  });
+
+  describe('isSwitchController', () => {
+    it.each(nonJsxComponents)('should return false when component is not jsx', tag => {
+      expect(MOD.isSwitchController({ tag } as Component)).toBe(false);
+    });
+
+    it.each(jsxComponents)(
+      'should return false when jsx component does not contain switch property',
+      tag => {
+        expect(MOD.isSwitchController({ tag, props: {} } as Component)).toBe(false);
+      }
+    );
+
+    it.each(jsxComponents)(
+      'should return switch value when jsx component contains switch property',
+      tag => {
+        expect(
+          MOD.isSwitchController({ tag, props: { switch: 'test' } } as Component)
+        ).toStrictEqual({ value: 'test' });
+      }
+    );
   });
 });
