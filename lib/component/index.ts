@@ -1168,6 +1168,8 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
     throw new RuvyError('cannot call "useState" outisde of a functional component body.');
   }
 
+  const component = caller.component;
+
   // increment hook index
   hookIndex++;
 
@@ -1182,6 +1184,14 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
       value,
       getValue: () => hook.value,
       setValue: setter => {
+        if (
+          component.status === ComponentStatus.Unmounting ||
+          component.status === ComponentStatus.Unmounted
+        ) {
+          // ? useless to update state
+          return;
+        }
+
         let newValue: unknown;
 
         if (typeof setter === 'function') {
@@ -1202,7 +1212,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
     hook = caller.component.hooks[hookIndex] as StateHook;
   }
 
-  if (hook.type !== HookType.State) {
+  if (!hook || hook.type !== HookType.State) {
     throw new RuvyError('unexpected hook type : expected state but got something else.');
   }
 
@@ -1237,7 +1247,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
     // check if deps changed
     hook = caller.component.hooks[hookIndex] as EffectHook;
 
-    if (hook.type !== HookType.Effect) {
+    if (!hook || hook.type !== HookType.Effect) {
       throw new RuvyError('unexpected hook type : expected effect but got something else.');
     }
 
@@ -1285,7 +1295,7 @@ export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
     // check if deps changed
     hook = caller.component.hooks[hookIndex] as MemoHook;
 
-    if (hook.type !== HookType.Memo) {
+    if (!hook || hook.type !== HookType.Memo) {
       throw new RuvyError('unexpected hook type : expected memo but got something else.');
     }
 
@@ -1324,7 +1334,7 @@ export const useRef = <T = unknown>(value: T | undefined): RefValue<T> => {
     // check if deps changed
     hook = caller.component.hooks[hookIndex] as RefHook;
 
-    if (hook.type !== HookType.Ref) {
+    if (!hook || hook.type !== HookType.Ref) {
       throw new RuvyError('unexpected hook type : expected ref but got something else.');
     }
   }
@@ -1361,7 +1371,7 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
   } else {
     hook = caller.component.hooks[hookIndex] as ContextHook;
 
-    if (hook.type !== HookType.Context) {
+    if (!hook || hook.type !== HookType.Context) {
       throw new RuvyError('unexpected hook type : expected context but got something else.');
     }
   }

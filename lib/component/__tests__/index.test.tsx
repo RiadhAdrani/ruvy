@@ -30,6 +30,7 @@ import {
 } from '../index.js';
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
+import { RuvyError } from '@/helpers/helpers.js';
 
 describe('component', () => {
   const ctx: ExecutionContext = {
@@ -564,6 +565,31 @@ describe('component', () => {
         });
       });
 
+      it('should create a state with a callback', () => {
+        withHookContext(res, () => {
+          const [value] = useState(() => 0);
+
+          expect(value).toBe(0);
+
+          return 0;
+        });
+      });
+
+      it('should throw when hook (@ index) is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        const callback = () =>
+          withHookContext(res, () => {
+            useState(() => 0);
+
+            return 0;
+          });
+
+        expect(callback).toThrow(
+          new RuvyError('unexpected hook type : expected state but got something else.')
+        );
+      });
+
       it('should return updated state', () => {
         withHookContext(res, () => {
           return useState(0);
@@ -591,6 +617,50 @@ describe('component', () => {
           set(10);
 
           expect(get()).toBe(10);
+
+          return null;
+        });
+      });
+
+      it('should update state with a callback', () => {
+        withHookContext(res, () => {
+          const [, set, get] = useState(0);
+
+          set(v => {
+            return v + 5;
+          });
+
+          expect(get()).toBe(5);
+
+          return null;
+        });
+      });
+
+      it('should not update state when component is unmounted', () => {
+        withHookContext(res, () => {
+          const [, set, get] = useState(0);
+
+          // simulate component unmounted
+          res.component.status = ComponentStatus.Unmounted;
+
+          set(10);
+
+          expect(get()).toBe(0);
+
+          return null;
+        });
+      });
+
+      it('should not update state when component is unmounting', () => {
+        withHookContext(res, () => {
+          const [, set, get] = useState(0);
+
+          // simulate component unmounting
+          res.component.status = ComponentStatus.Unmounting;
+
+          set(10);
+
+          expect(get()).toBe(0);
 
           return null;
         });
