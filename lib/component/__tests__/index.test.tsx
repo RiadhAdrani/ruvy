@@ -436,10 +436,12 @@ describe('component', () => {
         const up = handleText('test-2', res.component, root, 0, ctx);
 
         expect(up.component.text).toBe('test-2');
+      });
 
-        it('should create update task', () => {
-          expect(up.tasks[TaskType.UpdateText].length).toBe(1);
-        });
+      it('should create update task', () => {
+        const up = handleText('test-3', res.component, root, 0, ctx);
+
+        expect(up.tasks[TaskType.UpdateText].length).toBe(1);
       });
     });
   });

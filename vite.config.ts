@@ -4,6 +4,9 @@ export default {
   plugins: [],
   test: {
     environment: 'jsdom',
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
   },
   resolve: {
     alias: {
