@@ -27,6 +27,7 @@ import {
   JsxFragmentTemplate,
   Portal,
   PortalTemplate,
+  OutletTemplate,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -705,6 +706,56 @@ describe('component', () => {
         children: [],
       });
     });
+  });
+
+  describe('handleOutlet', () => {
+    const outlet = (<Outlet key={10} />) as unknown as OutletTemplate;
+
+    const res = MOD.handleOutlet(outlet, undefined, root, 0, ctx);
+
+    it('should set key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+    });
+
+    it('should set tag', () => {
+      expect(res.component.tag).toStrictEqual(ComponentTag.Outlet);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(Outlet);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toStrictEqual({
+        key: 10,
+        children: [],
+      });
+    });
+
+    it('should update outlet depth in ctx', () => {
+      expect(res.ctx.outletDepth).toBe(0);
+    });
+
+    it('should update props', () => {
+      const portal = (<Outlet key={20} />) as unknown as OutletTemplate;
+
+      MOD.handleOutlet(portal, res.component, root, 0, ctx);
+
+      expect(res.component.props).toStrictEqual({
+        key: 20,
+        children: [],
+      });
+    });
+
+    it.todo('should get correct outlet component');
   });
 
   describe('hooks', () => {

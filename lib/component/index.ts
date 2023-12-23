@@ -455,7 +455,7 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
   current,
   parent,
   key,
-  ctx
+  _ctx
 ) => {
   const tasks = initComponentTasks();
 
@@ -471,9 +471,19 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     type,
   };
 
+  if (current) {
+    component.props = props;
+  }
+
   const children: Array<Template> = [];
 
-  // TODO: setup router and get child by depth
+  const depth = (_ctx.outletDepth ?? -1) + 1;
+
+  // TODO: setup router and get child by depth, if no router return null
+
+  const ctx = copy(_ctx);
+
+  ctx.outletDepth = depth;
 
   return { children, ctx, component, tasks };
 };
