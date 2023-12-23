@@ -26,8 +26,8 @@ import {
   JsxFragmentTemplate,
   JsxTemplate,
   Key,
-  MicroTask,
-  MicroTaskType,
+  Task,
+  TaskType,
   NodeComponent,
   NonRootComponent,
   NullComponent,
@@ -108,36 +108,15 @@ export const handleComponent = (
 
   const res = handler(template, current, parent, key, ctx);
 
-  const component = res.component as ParentComponent;
-
   if (!current) {
-    const mountedTask = createSetMountedTask(component);
+    const mountedTask = createSetMountedTask(res.component);
 
-    pushMicroTask(mountedTask, res.tasks);
+    pushTask(mountedTask, res.tasks);
   }
 
   if (isParentComponent(res.component)) {
-    const reorder = processChildren(res as ComponentHandlerResult<ParentComponent>);
-
-    if (reorder) {
-      const reorderTask = createChangeElementPositionTask(res.component);
-
-      pushMicroTask(reorderTask, res.tasks);
-    }
+    processChildren(res as ComponentHandlerResult<ParentComponent>);
   }
-
-  // remove unused from the array of children
-  component.children = component.children.filter(child => {
-    if (child.status === ComponentStatus.Unmounting) {
-      const unmountTasks = unmountComponent(child, {});
-
-      pushBlukMicroTasks(unmountTasks, res.tasks);
-
-      return false;
-    }
-
-    return true;
-  });
 
   return res;
 };
@@ -182,7 +161,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
   if (!current) {
     const renderTask = createRenderTask(component);
 
-    pushMicroTask(renderTask, tasks);
+    pushTask(renderTask, tasks);
 
     if (typeof innerHTML === 'string') {
       const renderInnerHTML = createInnerHTMLTask(component, innerHTML);
@@ -190,21 +169,21 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
       // skip children rendering
       children = [];
 
-      pushMicroTask(renderInnerHTML, tasks);
+      pushTask(renderInnerHTML, tasks);
     }
 
     const ref = props.ref;
 
     if (isRefValue(ref)) {
       const refTask = createRefElementTask(component, ref);
-      pushMicroTask(refTask, tasks);
+      pushTask(refTask, tasks);
     }
   } else {
     if (typeof innerHTML === 'string') {
       if (innerHTML !== component.props['innerHTML']) {
         const renderInnerHTML = createInnerHTMLTask(component, innerHTML);
 
-        pushMicroTask(renderInnerHTML, tasks);
+        pushTask(renderInnerHTML, tasks);
 
         // ? set empty array, children will be unmounted in handleComponent
         children = [];
@@ -220,7 +199,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     if (cmp.length > 0) {
       const updateProps = createElementPropsUpdateTask(component, cmp);
 
-      pushMicroTask(updateProps, tasks);
+      pushTask(updateProps, tasks);
     }
 
     // check if there is a new reference
@@ -232,13 +211,13 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
       if (isRefValue(oldRef)) {
         const unrefTask = createUnrefElementTask(component, oldRef as RefValue);
 
-        pushMicroTask(unrefTask, tasks);
+        pushTask(unrefTask, tasks);
       }
 
       if (isRefValue(newRef)) {
         const refTask = createRefElementTask(component, newRef as RefValue);
 
-        pushMicroTask(refTask, tasks);
+        pushTask(refTask, tasks);
       }
     }
 
@@ -540,7 +519,7 @@ export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
 
       const movePortal = createMovePortalChildren(component);
 
-      pushMicroTask(movePortal, tasks);
+      pushTask(movePortal, tasks);
     }
 
     component.props = props;
@@ -583,7 +562,7 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
   if (!current) {
     const renderTask = createTextTask(component);
 
-    pushMicroTask(renderTask, tasks);
+    pushTask(renderTask, tasks);
   } else {
     // check data is different
     if (text !== component.text) {
@@ -591,7 +570,7 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
 
       const updateTask = createUpdateTextTask(component, text);
 
-      pushMicroTask(updateTask, tasks);
+      pushTask(updateTask, tasks);
     }
   }
 
@@ -646,21 +625,21 @@ const handlerMap = {
  * create an empty record of tasks
  */
 export const initComponentTasks = (): ComponentTasks => ({
-  [MicroTaskType.SetComponentMounted]: [],
-  [MicroTaskType.RemoveComponent]: [],
-  [MicroTaskType.RenderElement]: [],
-  [MicroTaskType.RenderInnerHTML]: [],
-  [MicroTaskType.RenderText]: [],
-  [MicroTaskType.ReorderElements]: [],
-  [MicroTaskType.RunEffect]: [],
-  [MicroTaskType.RunEffectCleanup]: [],
-  [MicroTaskType.UnmountComponent]: [],
-  [MicroTaskType.UpdatePortalChildren]: [],
-  [MicroTaskType.UpdateProps]: [],
-  [MicroTaskType.UpdateText]: [],
-  [MicroTaskType.UnmountedComponent]: [],
-  [MicroTaskType.RefElement]: [],
-  [MicroTaskType.UnrefEelement]: [],
+  [TaskType.SetComponentMounted]: [],
+  [TaskType.RemoveComponent]: [],
+  [TaskType.RenderElement]: [],
+  [TaskType.RenderInnerHTML]: [],
+  [TaskType.RenderText]: [],
+  [TaskType.ReorderElements]: [],
+  [TaskType.RunEffect]: [],
+  [TaskType.RunEffectCleanup]: [],
+  [TaskType.UnmountComponent]: [],
+  [TaskType.UpdatePortalChildren]: [],
+  [TaskType.UpdateProps]: [],
+  [TaskType.UpdateText]: [],
+  [TaskType.UnmountedComponent]: [],
+  [TaskType.RefElement]: [],
+  [TaskType.UnrefEelement]: [],
 });
 
 export const isJsxComponent = (component: Component): component is JsxComponent => {
@@ -747,12 +726,12 @@ export const isRefValue = (v: unknown): v is RefValue => {
   return hasProperty(v, 'value');
 };
 
-export const pushMicroTask = (task: MicroTask, target: ComponentTasks) => {
+export const pushTask = (task: Task, target: ComponentTasks) => {
   target[task.type].push(task);
 };
 
-export const pushBlukMicroTasks = (tasks: ComponentTasks, target: ComponentTasks) => {
-  for (const queue of Object.keys(tasks) as Array<MicroTaskType>) {
+export const pushBlukTasks = (tasks: ComponentTasks, target: ComponentTasks) => {
+  for (const queue of Object.keys(tasks) as Array<TaskType>) {
     target[queue].push(...tasks[queue]);
   }
 };
@@ -773,14 +752,14 @@ export const unmountComponent = (
         // cleanup effect
         const cleanupTask = createEffectCleanUpTask(component, it);
 
-        pushMicroTask(cleanupTask, tasks);
+        pushTask(cleanupTask, tasks);
       }
     });
   }
 
   const unmountTask = createUnmountComponentTask(component, data);
 
-  pushMicroTask(unmountTask, tasks);
+  pushTask(unmountTask, tasks);
 
   // unmount for children
   if (isParentComponent(component)) {
@@ -788,7 +767,7 @@ export const unmountComponent = (
       const t = unmountComponent(child, childrenData);
 
       // push them in tasks
-      pushBlukMicroTasks(t, tasks);
+      pushBlukTasks(t, tasks);
     });
   }
 
@@ -861,9 +840,7 @@ export const getPropFromTemplate = <T = unknown>(
   return { value: props[prop] as T };
 };
 
-export const computeChildrenMap = (component: Component | undefined): ComputedChildrenMap => {
-  if (!component) return {};
-
+export const computeChildrenMap = (component: Component): ComputedChildrenMap => {
   if (!isParentComponent(component)) {
     return {};
   }
@@ -920,7 +897,6 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
   template.props = props;
 };
 
-// FIXME: not tested
 export const processChildren = (res: ComponentHandlerResult<ParentComponent>): boolean => {
   const parent = res.component as ParentComponent;
 
@@ -990,6 +966,8 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       );
     }
 
+    childrenKeys.add(key);
+
     let template = nullify ? null : child;
 
     // ? if directives
@@ -1013,12 +991,18 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       );
     }
 
+    // check if we are still in a conditional sequence and if it is already fulfilled
+    if (ifDirectiveCount > 0 && typeof ifSequence === 'object' && ifSequence.fulfilled) {
+      nullify = true;
+    }
     // we have an if directive
-    if (ifValue) {
+    else if (ifValue) {
       // start an if sequence
       const fulfilled = Boolean(ifValue.value);
 
       ifSequence = { fulfilled, sequence: ['if'] };
+
+      nullify = !fulfilled;
     }
     // check for else-if
     else if (elseIfValue) {
@@ -1037,6 +1021,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
         const last = ifSequence.sequence.at(-1);
 
         if (last === 'else') {
+          // !!! should be unreachable !!!
           throw new RuvyError('cannot use "else-if" after a component with "else" directive');
         }
 
@@ -1080,32 +1065,57 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
     let childRes: ComponentHandlerResult<Component>;
 
     // try and find the corresponding component
-    const old = childrenMap[key];
+    const oldComponent = childrenMap[key];
 
-    if (!parent || !old || shouldRenderNewComponent(template, old.component)) {
+    if (!oldComponent || shouldRenderNewComponent(template, oldComponent.component)) {
       childRes = handleComponent(template, undefined, parent, i, res.ctx);
 
       shouldReorder = true;
 
+      const insertedAt = parent.children.length;
+
       parent.children.push(childRes.component as NonRootComponent);
+
+      // ! we need to insert the component at the correct position
+      if (i !== insertedAt) {
+        parent.children = moveElement(parent.children, insertedAt, i);
+      }
     } else {
       // mark the old component as mounted, so we don't unmount it
-      old.component.status = ComponentStatus.Mounted;
+      oldComponent.component.status = ComponentStatus.Mounted;
 
-      childRes = handleComponent(template, old.component, parent, i, res.ctx);
+      childRes = handleComponent(template, oldComponent.component, parent, i, res.ctx);
 
-      if (i !== old.index) {
+      if (parent.children.indexOf(oldComponent.component) !== i) {
         // need to change element position
-
         shouldReorder = true;
 
-        parent.children = moveElement(parent.children, old.index, i);
+        parent.children = moveElement(parent.children, oldComponent.index, i);
       }
     }
 
     // push tasks
-    pushBlukMicroTasks(childRes.tasks, res.tasks);
+    pushBlukTasks(childRes.tasks, res.tasks);
   }
+
+  if (shouldReorder) {
+    const reorderTask = createChangeElementPositionTask(res.component);
+
+    pushTask(reorderTask, res.tasks);
+  }
+
+  // remove unused from the array of children
+  res.component.children = res.component.children.filter(child => {
+    if (child.status === ComponentStatus.Unmounting) {
+      const unmountTasks = unmountComponent(child, {});
+
+      pushBlukTasks(unmountTasks, res.tasks);
+
+      return false;
+    }
+
+    return true;
+  });
 
   return shouldReorder;
 };
@@ -1117,15 +1127,17 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
     return true;
   }
 
-  if (isJsxTemplate(template)) {
-    const c = current as ElementComponent;
+  if (!isJsxTemplate(template)) {
+    return false;
+  }
 
-    if (template.type === c.type) {
-      if (c.tag === ComponentTag.Element && (template.props.ns ?? Namespace.HTML) !== c.props.ns) {
-        return true;
-      } else {
-        return false;
-      }
+  const c = current as JsxComponent;
+
+  if (template.type === c.type) {
+    if (c.tag === ComponentTag.Element && (template.props.ns ?? Namespace.HTML) !== c.props.ns) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -1133,7 +1145,7 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
 };
 
 export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
-  if (isNodeComponent(component)) return [component as NodeComponent];
+  if (isNodeComponent(component)) return [component];
 
   if (!isParentComponent(component)) return [];
 
@@ -1252,7 +1264,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
     // schedule
     const effectTask = createEffectTask(caller.component, hook);
 
-    pushMicroTask(effectTask, caller.tasks);
+    pushTask(effectTask, caller.tasks);
   } else {
     // check if deps changed
     hook = caller.component.hooks[hookIndex] as EffectHook;
@@ -1266,7 +1278,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
       if (typeof hook.cleanup === 'function') {
         const cleanupTask = createEffectCleanUpTask(caller.component, hook);
 
-        pushMicroTask(cleanupTask, caller.tasks);
+        pushTask(cleanupTask, caller.tasks);
       }
 
       hook.callback = callback;
@@ -1275,7 +1287,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
       // schedule
       const effectTask = createEffectTask(caller.component, hook);
 
-      pushMicroTask(effectTask, caller.tasks);
+      pushTask(effectTask, caller.tasks);
     }
   }
 };
