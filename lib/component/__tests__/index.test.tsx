@@ -25,6 +25,8 @@ import {
   TextComponent,
   FragmentTemplate,
   JsxFragmentTemplate,
+  Portal,
+  PortalTemplate,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -48,7 +50,7 @@ import {
 import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
-import { Namespace } from '@riadh-adrani/domer';
+import { Namespace, element } from '@riadh-adrani/domer';
 
 const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
 const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
@@ -636,6 +638,72 @@ describe('component', () => {
 
     it('should return children as they are', () => {
       expect(res.children).toStrictEqual([null, 0, 1]);
+    });
+  });
+
+  describe('handlePortal', () => {
+    const portal = (<Portal container={document.body} />) as unknown as PortalTemplate;
+
+    const res = MOD.handlePortal(portal, undefined, root, 0, ctx);
+
+    it('should set key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+    });
+
+    it('should set tag', () => {
+      expect(res.component.tag).toStrictEqual(ComponentTag.Portal);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(Portal);
+    });
+
+    it('should set instance', () => {
+      expect(res.component.instance).toStrictEqual(document.body);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toStrictEqual({
+        container: document.body,
+        children: [],
+      });
+    });
+
+    it('should not update the same container', () => {
+      const up = MOD.handlePortal(portal, res.component, root, 0, ctx);
+
+      expect(up.tasks[TaskType.UpdatePortalChildren].length).toBe(0);
+    });
+
+    it('should create a move children task when container changes', () => {
+      const container = element('div');
+      document.body.append(container);
+
+      const portal = (<Portal container={container} />) as unknown as PortalTemplate;
+
+      const up = MOD.handlePortal(portal, res.component, root, 0, ctx);
+
+      expect(up.tasks[TaskType.UpdatePortalChildren].length).toBe(1);
+    });
+
+    it('should update props', () => {
+      const portal = (<Portal container={document.body} key={20} />) as unknown as PortalTemplate;
+
+      MOD.handlePortal(portal, res.component, root, 0, ctx);
+
+      expect(res.component.props).toStrictEqual({
+        key: 20,
+        container: document.body,
+        children: [],
+      });
     });
   });
 
