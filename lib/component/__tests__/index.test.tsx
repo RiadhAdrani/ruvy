@@ -461,6 +461,10 @@ describe('component', () => {
       expect(res.component.parent).toStrictEqual(root);
     });
 
+    it('should set ctx', () => {
+      expect(res.component.ctx).toStrictEqual(ctx);
+    });
+
     it('should set type', () => {
       expect(res.component.type).toStrictEqual(Fn);
     });
@@ -496,6 +500,20 @@ describe('component', () => {
         else: true,
         children: [],
       });
+    });
+
+    it('should update context', () => {
+      const obj = createContext();
+
+      const newCtx: ExecutionContext = {
+        contexts: {
+          [obj.id]: 0,
+        },
+      };
+
+      handleFunction((<Fn else />) as unknown as FunctionTemplate, res.component, root, 0, newCtx);
+
+      expect(res.component.ctx).toStrictEqual(newCtx);
     });
   });
 
@@ -1373,6 +1391,7 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
         tag: ComponentTag.Function,
         type: vitest.fn(),
+        ctx,
       };
 
       const component: NullComponent = {
@@ -1471,6 +1490,7 @@ describe('component', () => {
         key: 0,
         status: ComponentStatus.Mounted,
         type: vitest.fn(),
+        ctx,
       } as FunctionComponent;
 
       const child1 = {
@@ -1813,6 +1833,7 @@ describe('component', () => {
       status: ComponentStatus.Mounting,
       tag: ComponentTag.Function,
       type: vitest.fn(),
+      ctx,
       children: [
         {
           hooks: [],
@@ -1823,6 +1844,7 @@ describe('component', () => {
           tag: ComponentTag.Function,
           type: vitest.fn(),
           children: [anchor],
+          ctx,
         },
         anchor,
         {
@@ -1834,6 +1856,7 @@ describe('component', () => {
           tag: ComponentTag.Function,
           type: vitest.fn(),
           children: [],
+          ctx,
         },
         txt,
         {
@@ -1844,6 +1867,7 @@ describe('component', () => {
           status: ComponentStatus.Mounting,
           tag: ComponentTag.Function,
           type: vitest.fn(),
+          ctx,
           children: [
             {
               hooks: [],
@@ -1854,6 +1878,7 @@ describe('component', () => {
               tag: ComponentTag.Function,
               type: vitest.fn(),
               children: [txt, anchor],
+              ctx,
             },
           ],
         },
@@ -1901,6 +1926,7 @@ describe('component', () => {
           parent: root,
           props: {},
           status: ComponentStatus.Mounting,
+          ctx,
         },
         ctx,
         tasks: initComponentTasks(),

@@ -259,6 +259,7 @@ export interface FunctionComponent extends CommonComponent {
   tag: ComponentTag.Function;
   type: FunctionTemplateCallback;
   hooks: Array<Hook>;
+  ctx: ExecutionContext;
 }
 
 export interface ElementComponent extends CommonComponent {
