@@ -399,11 +399,15 @@ export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponen
     type,
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Function,
+    ctx,
   };
 
   if (current) {
     // override props
     component.props = props;
+
+    // update context
+    component.ctx = ctx;
   }
 
   const child = withHookContext({ component, tasks, ctx }, () => type(props));
