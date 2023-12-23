@@ -24,6 +24,7 @@ import {
   Template,
   TextComponent,
   FragmentTemplate,
+  JsxFragmentTemplate,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -574,6 +575,10 @@ describe('component', () => {
       expect(res.component.type).toStrictEqual(Fragment);
     });
 
+    it('should set key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
     it('should set props', () => {
       expect(res.component.props).toHaveProperty('key');
     });
@@ -595,6 +600,42 @@ describe('component', () => {
         children: [],
         key: 80,
       });
+    });
+  });
+
+  describe('handleJsxFragment', () => {
+    const frg = (
+      <>
+        {null}
+        {0}
+        {1}
+      </>
+    ) as unknown as JsxFragmentTemplate;
+
+    const res = MOD.handleJsxFragment(frg, undefined, root, 0, ctx);
+
+    it('should set tag', () => {
+      expect(res.component.tag).toBe(ComponentTag.JsxFragment);
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(createJsxFragmentElement);
+    });
+
+    it('should set key', () => {
+      expect(res.component.key).toBe(0);
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+    });
+
+    it('should return children as they are', () => {
+      expect(res.children).toStrictEqual([null, 0, 1]);
     });
   });
 
@@ -1057,7 +1098,7 @@ describe('component', () => {
     });
   });
 
-  describe('iHostComponent', () => {
+  describe('isHostComponent', () => {
     it.each(nonHostComponents)('should return false for non-host components', tag => {
       expect(MOD.isHostComponent({ tag } as Component)).toBe(false);
     });
