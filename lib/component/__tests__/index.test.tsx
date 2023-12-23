@@ -758,6 +758,122 @@ describe('component', () => {
     it.todo('should get correct outlet component');
   });
 
+  describe('handleComponent', () => {
+    it('should use correct handler (element)', () => {
+      const res = MOD.handleComponent(
+        <div />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Element);
+    });
+
+    it('should use correct handler (function)', () => {
+      const Fn = () => <div />;
+
+      const res = MOD.handleComponent(
+        <Fn />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Function);
+    });
+
+    it('should use correct handler (context)', () => {
+      const value = {
+        age: 100,
+        name: 'test',
+      };
+
+      const obj = createContext();
+
+      const template = createJsxElement(
+        ComponentTag.Context,
+        {
+          value,
+          ctx: obj,
+        },
+        [1, 2, 3]
+      ) as unknown as ContextTemplate;
+
+      const res = MOD.handleComponent(
+        template,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Context);
+    });
+
+    it('should use correct handler (null)', () => {
+      const res = MOD.handleComponent(null, undefined, root as unknown as ParentComponent, 0, ctx);
+
+      expect(res.component.tag).toBe(ComponentTag.Null);
+    });
+
+    it('should use correct handler (text)', () => {
+      const res = MOD.handleComponent(
+        'null',
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Text);
+    });
+
+    it('should use correct handler (portal)', () => {
+      const res = MOD.handleComponent(
+        <Portal container={document.body} />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Portal);
+    });
+
+    it('should use correct handler (fragment)', () => {
+      const res = MOD.handleComponent(
+        <Fragment />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Fragment);
+    });
+
+    it('should use correct handler (jsx fragment)', () => {
+      const res = MOD.handleComponent(<></>, undefined, root as unknown as ParentComponent, 0, ctx);
+
+      expect(res.component.tag).toBe(ComponentTag.JsxFragment);
+    });
+
+    it('should use correct handler (outlet)', () => {
+      const res = MOD.handleComponent(
+        <Outlet />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      expect(res.component.tag).toBe(ComponentTag.Outlet);
+    });
+  });
+
   describe('hooks', () => {
     let res: ComponentHandlerResult<FunctionComponent>;
 
