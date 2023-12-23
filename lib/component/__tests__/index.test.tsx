@@ -13,10 +13,11 @@ import {
   FunctionComponent,
   FunctionTemplate,
   HookType,
-  MicroTaskType,
+  TaskType,
   NodeComponent,
   NullComponent,
   Outlet,
+  ParentComponent,
   Props,
   RootComponent,
   StateHook,
@@ -137,15 +138,15 @@ describe('component', () => {
       });
 
       it('should add render task', () => {
-        expect(example.tasks[MicroTaskType.RenderElement].length).toBe(1);
+        expect(example.tasks[TaskType.RenderElement].length).toBe(1);
       });
 
       it('should add render innerHTML task', () => {
-        expect(innerHtmlExample.tasks[MicroTaskType.RenderInnerHTML].length).toBe(1);
+        expect(innerHtmlExample.tasks[TaskType.RenderInnerHTML].length).toBe(1);
       });
 
       it('should create a set ref task', () => {
-        expect(example.tasks[MicroTaskType.RefElement].length).toBe(1);
+        expect(example.tasks[TaskType.RefElement].length).toBe(1);
       });
 
       it('should skip rendering children when innerHTML is a valid string', () => {
@@ -183,7 +184,7 @@ describe('component', () => {
           newTemplate: <div innerHTML="test-2" />,
         });
 
-        expect(result.tasks[MicroTaskType.RenderInnerHTML].length).toBe(1);
+        expect(result.tasks[TaskType.RenderInnerHTML].length).toBe(1);
       });
 
       it('should not add an innerHTML update task when innerHTML is the same', () => {
@@ -192,7 +193,7 @@ describe('component', () => {
           newTemplate: <div innerHTML="test" />,
         });
 
-        expect(result.tasks[MicroTaskType.RenderInnerHTML].length).toBe(0);
+        expect(result.tasks[TaskType.RenderInnerHTML].length).toBe(0);
       });
 
       it('should override props with new ones', () => {
@@ -210,7 +211,7 @@ describe('component', () => {
           newTemplate: <div class="world" />,
         });
 
-        expect(result.tasks[MicroTaskType.UpdateProps].length).toBe(1);
+        expect(result.tasks[TaskType.UpdateProps].length).toBe(1);
       });
 
       it('should not add a prop-update-task when there is no diff', () => {
@@ -219,7 +220,7 @@ describe('component', () => {
           newTemplate: <div class="hello" />,
         });
 
-        expect(result.tasks[MicroTaskType.UpdateProps].length).toBe(0);
+        expect(result.tasks[TaskType.UpdateProps].length).toBe(0);
       });
 
       it('should create unref-task', () => {
@@ -228,7 +229,7 @@ describe('component', () => {
           newTemplate: <div />,
         });
 
-        expect(result.tasks[MicroTaskType.UnrefEelement].length).toBe(1);
+        expect(result.tasks[TaskType.UnrefEelement].length).toBe(1);
       });
 
       it('should not create unref-task when ref object is the same', () => {
@@ -237,7 +238,7 @@ describe('component', () => {
           newTemplate: <div ref={ref} />,
         });
 
-        expect(result.tasks[MicroTaskType.UnrefEelement].length).toBe(0);
+        expect(result.tasks[TaskType.UnrefEelement].length).toBe(0);
       });
 
       it('should create ref-task with new reference object', () => {
@@ -248,7 +249,7 @@ describe('component', () => {
           newTemplate: <div ref={newRef} />,
         });
 
-        expect(result.tasks[MicroTaskType.RefElement].length).toBe(1);
+        expect(result.tasks[TaskType.RefElement].length).toBe(1);
       });
     });
   });
@@ -308,7 +309,7 @@ describe('component', () => {
       });
 
       it('should create a render task', () => {
-        expect(res.tasks[MicroTaskType.RenderText].length).toBe(1);
+        expect(res.tasks[TaskType.RenderText].length).toBe(1);
       });
     });
 
@@ -320,7 +321,7 @@ describe('component', () => {
       it('should not update text when text is the same', () => {
         const upSame = handleText('test', res.component, root, 0, ctx);
 
-        expect(upSame.tasks[MicroTaskType.UpdateText].length).toBe(0);
+        expect(upSame.tasks[TaskType.UpdateText].length).toBe(0);
       });
 
       it('should update text', () => {
@@ -329,7 +330,7 @@ describe('component', () => {
         expect(up.component.text).toBe('test-2');
 
         it('should create update task', () => {
-          expect(up.tasks[MicroTaskType.UpdateText].length).toBe(1);
+          expect(up.tasks[TaskType.UpdateText].length).toBe(1);
         });
       });
     });
@@ -731,7 +732,7 @@ describe('component', () => {
           useEffect(effect);
         });
 
-        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(1);
+        expect(res.tasks[TaskType.RunEffect].length).toBe(1);
       });
 
       it('should throw when component is already mounted and hook is not found', () => {
@@ -757,8 +758,8 @@ describe('component', () => {
           useEffect(effect);
         });
 
-        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(0);
-        expect(res.tasks[MicroTaskType.RunEffectCleanup].length).toBe(0);
+        expect(res.tasks[TaskType.RunEffect].length).toBe(0);
+        expect(res.tasks[TaskType.RunEffectCleanup].length).toBe(0);
       });
 
       it('should add effect task and cleanup when dependencies change', () => {
@@ -777,8 +778,8 @@ describe('component', () => {
           useEffect(effect, []);
         });
 
-        expect(res.tasks[MicroTaskType.RunEffect].length).toBe(1);
-        expect(res.tasks[MicroTaskType.RunEffectCleanup].length).toBe(1);
+        expect(res.tasks[TaskType.RunEffect].length).toBe(1);
+        expect(res.tasks[TaskType.RunEffectCleanup].length).toBe(1);
       });
     });
 
@@ -1173,7 +1174,7 @@ describe('component', () => {
 
       const tasks = MOD.unmountComponent(nil, {});
 
-      expect(tasks[MicroTaskType.UnmountComponent].length).toBe(1);
+      expect(tasks[TaskType.UnmountComponent].length).toBe(1);
     });
 
     it('should unmount function component effects', () => {
@@ -1192,7 +1193,7 @@ describe('component', () => {
 
       const unmount = MOD.unmountComponent(res.component, {});
 
-      expect(unmount[MicroTaskType.RunEffectCleanup].length).toBe(1);
+      expect(unmount[TaskType.RunEffectCleanup].length).toBe(1);
     });
 
     it('should not add effect task with no cleanup', () => {
@@ -1209,7 +1210,7 @@ describe('component', () => {
 
       const unmount = MOD.unmountComponent(res.component, {});
 
-      expect(unmount[MicroTaskType.RunEffectCleanup].length).toBe(0);
+      expect(unmount[TaskType.RunEffectCleanup].length).toBe(0);
     });
 
     it('should unmount children recursively', () => {
@@ -1232,7 +1233,7 @@ describe('component', () => {
 
       const tasks = MOD.unmountComponent(elRes.component, {});
 
-      expect(tasks[MicroTaskType.UnmountComponent].length).toBe(2);
+      expect(tasks[TaskType.UnmountComponent].length).toBe(2);
     });
   });
 
@@ -1335,10 +1336,6 @@ describe('component', () => {
   });
 
   describe('computeChildrenMap', () => {
-    it('should return an empty record when component is undefined', () => {
-      expect(MOD.computeChildrenMap(undefined)).toStrictEqual({});
-    });
-
     it('should return empty record with null component', () => {
       expect(
         MOD.computeChildrenMap({
@@ -1560,6 +1557,377 @@ describe('component', () => {
         txt,
         anchor,
       ]);
+    });
+  });
+
+  describe('processChildren', () => {
+    let res: ComponentHandlerResult<ParentComponent>;
+
+    beforeEach(() => {
+      res = {
+        children: [],
+        component: {
+          tag: ComponentTag.Function,
+          type: vitest.fn(),
+          children: [],
+          hooks: [],
+          key: 0,
+          parent: root,
+          props: {},
+          status: ComponentStatus.Mounting,
+        },
+        ctx,
+        tasks: initComponentTasks(),
+      };
+    });
+
+    describe('switch directive', () => {
+      it('should throw when at least one child does not have a case/case:default prop', () => {
+        const children = [null] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'missing "case" or "case:default" prop in the last element of a switch control component.'
+          )
+        );
+      });
+
+      it('should throw when case:default is not at the end', () => {
+        const children = [
+          <div case={'hello'} />,
+          <div case:default />,
+          <div case={'yes'} />,
+        ] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError('missing "case" prop within a switch control component.')
+        );
+      });
+
+      it('should throw when else co-exist with case', () => {
+        const children = [<div case={'hello'} else />] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot have an "else" or "else-if" directive within a "switch" control component'
+          )
+        );
+      });
+
+      it('should throw when else-if co-exist with case', () => {
+        const children = [<div case={'hello'} else-if />] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot have an "else" or "else-if" directive within a "switch" control component'
+          )
+        );
+      });
+
+      it('should nullify non-matched children', () => {
+        const children = [
+          <div case={'hello'} />,
+          <div case />,
+          <div case={'hey'} />,
+          <div case:default />,
+        ] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Null,
+        ]);
+      });
+
+      it('should default to case:default', () => {
+        const children = [
+          <div case={'hello'} />,
+          <div case={'world'} />,
+          <div case={'test'} />,
+          <div case:default />,
+        ] as Array<Template>;
+
+        res.component.props = { switch: true };
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Element,
+        ]);
+      });
+    });
+
+    describe('if directive', () => {
+      it('should throw when there is more than one conditional directive', () => {
+        const children = [<div if else else-if />] as Array<Template>;
+
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot have more than one conditional directive : "if" | "else" | "else-if"'
+          )
+        );
+      });
+
+      it('should throw when conditional sequence starts with else', () => {
+        const children = [<div else />] as Array<Template>;
+
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot use "else" outside a conditional sequence, which should start with "if"'
+          )
+        );
+      });
+
+      it('should throw when conditional sequence starts with else-if', () => {
+        const children = [<div else-if />] as Array<Template>;
+
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot use "else-if" outside a conditional sequence, which should start with "if"'
+          )
+        );
+      });
+
+      it('should throw when else-if come after an else', () => {
+        const children = [<div if={false} />, <div else />, <div else-if />] as Array<Template>;
+
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            'cannot use "else-if" outside a conditional sequence, which should start with "if"'
+          )
+        );
+      });
+
+      it('should nullify other component in sequence when condition is fulfilled (if)', () => {
+        const children = [
+          <div if />,
+          <div else-if />,
+          <div else-if />,
+          <div else />,
+        ] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Null,
+        ]);
+      });
+
+      it('should nullify other component in sequence when condition is fulfilled (else-if)', () => {
+        const children = [
+          <div if={false} />,
+          <div else-if />,
+          <div else-if />,
+          <div else />,
+        ] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Null,
+        ]);
+      });
+
+      it('should nullify other component in sequence when condition is fulfilled (else)', () => {
+        const children = [
+          <div if={false} />,
+          <div else-if={false} />,
+          <div else-if={false} />,
+          <div else />,
+        ] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Element,
+        ]);
+      });
+
+      it('should handle multiple if sequences', () => {
+        const children = [
+          <div />,
+          <div if={false} />,
+          <div else />,
+          <div if={false} />,
+          <div else-if={false} />,
+          <div else />,
+          <div />,
+          <div if={false} />,
+          <div else-if />,
+          <div else />,
+        ] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const cmpTags = res.component.children.map(it => it.tag);
+
+        expect(cmpTags).toStrictEqual([
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Null,
+        ]);
+      });
+    });
+
+    describe('children diffing', () => {
+      it('should mount new children (first render)', () => {
+        const children = [<div />, null, 'hello'] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        expect(res.tasks[TaskType.SetComponentMounted].map(it => it.component.tag)).toStrictEqual([
+          ComponentTag.Element,
+          ComponentTag.Null,
+          ComponentTag.Text,
+        ]);
+      });
+
+      it('should throw when duplicate key is detected', () => {
+        const children = [<div />, null, <img key={0} />] as Array<Template>;
+
+        res.children = children;
+
+        expect(() => MOD.processChildren(res)).toThrow(
+          new RuvyError(
+            `duplicate key "${0}" detected. make sure to assign unique keys for each child. if key is not defined, the framework will use the component index as a key instead.`
+          )
+        );
+      });
+
+      it('should not reorder when order did not change', () => {
+        const children = [<div key={0} />, null, 'hello'] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const reorder = MOD.processChildren(res);
+
+        expect(reorder).toBe(false);
+      });
+
+      it('should reorder when component position changed', () => {
+        const children = [<div key={'id'} />, null, 'hello'] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const newChildren = [null, <div key={'id'} />, 'hello'] as Array<Template>;
+
+        res.tasks = initComponentTasks();
+
+        res.children = newChildren;
+
+        const reorder = MOD.processChildren(res);
+
+        expect(reorder).toBe(true);
+      });
+
+      it('should change order in the parent component array', () => {
+        const children = [<div key={'id'} />, null, 'hello'] as Array<Template>;
+
+        res.children = children;
+
+        MOD.processChildren(res);
+
+        const newChildren = [null, <div key={'id'} />, 'hello'] as Array<Template>;
+
+        res.tasks = initComponentTasks();
+        res.children = newChildren;
+
+        MOD.processChildren(res);
+
+        expect(res.component.children.map(it => it.tag)).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Element,
+          ComponentTag.Text,
+        ]);
+      });
+
+      it('should remove excess children', () => {
+        const children = [<div key={'id'} />, null, <span />, 'hello', <img />] as Array<Template>;
+
+        res.children = children;
+        MOD.processChildren(res);
+
+        const newChildren = [null, 'hello', <div key={'id'} />] as Array<Template>;
+
+        res.children = newChildren;
+        MOD.processChildren(res);
+
+        expect(res.component.children.map(it => it.tag)).toStrictEqual([
+          ComponentTag.Null,
+          ComponentTag.Text,
+          ComponentTag.Element,
+        ]);
+      });
     });
   });
 });

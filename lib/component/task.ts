@@ -1,8 +1,8 @@
 import {
   ComponentStatus,
   ElementComponent,
-  MicroTask,
-  MicroTaskType,
+  Task,
+  TaskType,
   NonRootComponent,
   PropComparison,
   RefValue,
@@ -34,7 +34,7 @@ import {
 } from './index.js';
 import { RuvyError, generateId } from '@/helpers/helpers.js';
 
-export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type'>): MicroTask => {
+export const createTask = (data: Pick<Task, 'execute' | 'component' | 'type'>): Task => {
   return {
     date: new Date(),
     id: generateId(),
@@ -42,7 +42,7 @@ export const createTask = (data: Pick<MicroTask, 'execute' | 'component' | 'type
   };
 };
 
-export const createRenderTask = (component: ElementComponent): MicroTask => {
+export const createRenderTask = (component: ElementComponent): Task => {
   // filter events and attributes
   const props = filterDomProps(component.props);
 
@@ -68,10 +68,10 @@ export const createRenderTask = (component: ElementComponent): MicroTask => {
     component.status = ComponentStatus.Mounted;
   };
 
-  return createTask({ component, execute, type: MicroTaskType.RenderElement });
+  return createTask({ component, execute, type: TaskType.RenderElement });
 };
 
-export const createInnerHTMLTask = (component: ElementComponent, innerHTML: string): MicroTask => {
+export const createInnerHTMLTask = (component: ElementComponent, innerHTML: string): Task => {
   const execute = () => {
     const element = component.instance as Element;
 
@@ -82,13 +82,13 @@ export const createInnerHTMLTask = (component: ElementComponent, innerHTML: stri
     element.innerHTML = innerHTML;
   };
 
-  return createTask({ component, execute, type: MicroTaskType.RenderInnerHTML });
+  return createTask({ component, execute, type: TaskType.RenderInnerHTML });
 };
 
 export const createElementPropsUpdateTask = (
   component: ElementComponent,
   comparison: Array<PropComparison>
-): MicroTask => {
+): Task => {
   const execute = () => {
     const element = component.instance as Element;
 
@@ -122,10 +122,10 @@ export const createElementPropsUpdateTask = (
     }
   };
 
-  return createTask({ component, execute, type: MicroTaskType.UpdateProps });
+  return createTask({ component, execute, type: TaskType.UpdateProps });
 };
 
-export const createRefElementTask = (component: ElementComponent, ref: RefValue): MicroTask => {
+export const createRefElementTask = (component: ElementComponent, ref: RefValue): Task => {
   const execute = () => {
     const element = component.instance as Element;
 
@@ -136,29 +136,29 @@ export const createRefElementTask = (component: ElementComponent, ref: RefValue)
     ref.value = element;
   };
 
-  return createTask({ execute, component, type: MicroTaskType.RefElement });
+  return createTask({ execute, component, type: TaskType.RefElement });
 };
 
-export const createUnrefElementTask = (component: ElementComponent, ref: RefValue): MicroTask => {
+export const createUnrefElementTask = (component: ElementComponent, ref: RefValue): Task => {
   const execute = () => {
     ref.value = undefined;
   };
 
-  return createTask({ execute, component, type: MicroTaskType.UnrefEelement });
+  return createTask({ execute, component, type: TaskType.UnrefEelement });
 };
 
-export const createSetMountedTask = (component: NonRootComponent): MicroTask => {
+export const createSetMountedTask = (component: NonRootComponent): Task => {
   const execute = () => {
     component.status = ComponentStatus.Mounted;
   };
 
-  return createTask({ execute, component, type: MicroTaskType.SetComponentMounted });
+  return createTask({ execute, component, type: TaskType.SetComponentMounted });
 };
 
 export const createUnmountComponentTask = (
   component: NonRootComponent,
   data: UnmountComponentData
-): MicroTask => {
+): Task => {
   const execute = () => {
     if (isNodeComponent(component) && !data.isHostParentUnmounting) {
       const element = component.instance as Element;
@@ -173,10 +173,10 @@ export const createUnmountComponentTask = (
     component.status = ComponentStatus.Unmounted;
   };
 
-  return createTask({ execute, component, type: MicroTaskType.UnmountComponent });
+  return createTask({ execute, component, type: TaskType.UnmountComponent });
 };
 
-export const createChangeElementPositionTask = (component: NonRootComponent): MicroTask => {
+export const createChangeElementPositionTask = (component: NonRootComponent): Task => {
   const execute = () => {
     const nodeComponents = getClosestNodeComponents(component);
 
@@ -199,10 +199,10 @@ export const createChangeElementPositionTask = (component: NonRootComponent): Mi
     });
   };
 
-  return createTask({ execute, component, type: MicroTaskType.ReorderElements });
+  return createTask({ execute, component, type: TaskType.ReorderElements });
 };
 
-export const createTextTask = (component: TextComponent): MicroTask => {
+export const createTextTask = (component: TextComponent): Task => {
   const execute = () => {
     const instance = text(component.text);
 
@@ -225,10 +225,10 @@ export const createTextTask = (component: TextComponent): MicroTask => {
     component.status = ComponentStatus.Mounted;
   };
 
-  return createTask({ component, execute, type: MicroTaskType.RenderText });
+  return createTask({ component, execute, type: TaskType.RenderText });
 };
 
-export const createUpdateTextTask = (component: TextComponent, data: string): MicroTask => {
+export const createUpdateTextTask = (component: TextComponent, data: string): Task => {
   const execute = () => {
     const node = component.instance;
 
@@ -239,10 +239,10 @@ export const createUpdateTextTask = (component: TextComponent, data: string): Mi
     node.data = data;
   };
 
-  return createTask({ component, execute, type: MicroTaskType.UpdateText });
+  return createTask({ component, execute, type: TaskType.UpdateText });
 };
 
-export const createEffectTask = (component: FunctionComponent, hook: EffectHook): MicroTask => {
+export const createEffectTask = (component: FunctionComponent, hook: EffectHook): Task => {
   const execute = () => {
     const cleanup = hook.callback();
 
@@ -251,23 +251,20 @@ export const createEffectTask = (component: FunctionComponent, hook: EffectHook)
     }
   };
 
-  return createTask({ component, execute, type: MicroTaskType.RunEffect });
+  return createTask({ component, execute, type: TaskType.RunEffect });
 };
 
-export const createEffectCleanUpTask = (
-  component: FunctionComponent,
-  hook: EffectHook
-): MicroTask => {
+export const createEffectCleanUpTask = (component: FunctionComponent, hook: EffectHook): Task => {
   const execute = () => {
     hook.cleanup?.();
 
     hook.cleanup = undefined;
   };
 
-  return createTask({ component, execute, type: MicroTaskType.RunEffectCleanup });
+  return createTask({ component, execute, type: TaskType.RunEffectCleanup });
 };
 
-export const createMovePortalChildren = (component: PortalComponent): MicroTask => {
+export const createMovePortalChildren = (component: PortalComponent): Task => {
   const execute = () => {
     const element = component.instance;
 
@@ -290,5 +287,5 @@ export const createMovePortalChildren = (component: PortalComponent): MicroTask 
     });
   };
 
-  return createTask({ component, execute, type: MicroTaskType.UpdatePortalChildren });
+  return createTask({ component, execute, type: TaskType.UpdatePortalChildren });
 };

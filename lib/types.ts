@@ -407,7 +407,7 @@ export type Hook<T = unknown> =
   | RefHook<T>
   | ContextHook<T>;
 
-export enum MicroTaskType {
+export enum TaskType {
   RenderElement = 'render-element',
   RenderText = 'render-text',
   RenderInnerHTML = 'render-inner-html',
@@ -426,27 +426,27 @@ export enum MicroTaskType {
 }
 
 export const MicroTaskSorted = [
-  MicroTaskType.UnmountComponent,
-  MicroTaskType.RenderElement,
-  MicroTaskType.UnrefEelement,
-  MicroTaskType.RefElement,
-  MicroTaskType.RenderInnerHTML,
-  MicroTaskType.UnmountedComponent,
-  MicroTaskType.RemoveComponent,
-  MicroTaskType.ReorderElements,
-  MicroTaskType.UpdatePortalChildren,
-  MicroTaskType.UpdateProps,
-  MicroTaskType.UpdateText,
-  MicroTaskType.SetComponentMounted,
-  MicroTaskType.RunEffectCleanup,
-  MicroTaskType.RunEffect,
+  TaskType.UnmountComponent,
+  TaskType.RenderElement,
+  TaskType.UnrefEelement,
+  TaskType.RefElement,
+  TaskType.RenderInnerHTML,
+  TaskType.UnmountedComponent,
+  TaskType.RemoveComponent,
+  TaskType.ReorderElements,
+  TaskType.UpdatePortalChildren,
+  TaskType.UpdateProps,
+  TaskType.UpdateText,
+  TaskType.SetComponentMounted,
+  TaskType.RunEffectCleanup,
+  TaskType.RunEffect,
 ];
 
-export interface MicroTask {
+export interface Task {
   execute: () => void;
   component: Component;
   id: string;
-  type: MicroTaskType;
+  type: TaskType;
   date: Date;
 }
 
@@ -457,7 +457,7 @@ export interface ExecutionContext {
   ns?: Namespace;
 }
 
-export type ComponentTasks = Record<MicroTaskType, Array<MicroTask>>;
+export type ComponentTasks = Record<TaskType, Array<Task>>;
 
 export interface ComponentHandlerResult<C extends Component> {
   component: C;
