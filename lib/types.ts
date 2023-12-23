@@ -455,6 +455,7 @@ export interface ExecutionContext {
   contexts: Record<string, unknown>;
   /** warn if there is a change of context */
   ns?: Namespace;
+  outletDepth?: number;
 }
 
 export type ComponentTasks = Record<TaskType, Array<Task>>;
