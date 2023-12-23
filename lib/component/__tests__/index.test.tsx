@@ -23,6 +23,7 @@ import {
   StateHook,
   Template,
   TextComponent,
+  FragmentTemplate,
 } from '@/types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -68,6 +69,109 @@ describe('component', () => {
     document.body.innerHTML = '';
 
     root = createRoot(document.body);
+  });
+
+  describe('compareElementProps', () => {
+    it('should not add any operation with no difference', () => {
+      const oldProp = { class: '' };
+      const newProp = { class: '' };
+
+      expect(compareElementProps(oldProp, newProp)).toStrictEqual([]);
+    });
+
+    it('should add a "remove" operation', () => {
+      const oldProp = { class: '' };
+      const newProp = {};
+
+      const expected = {
+        key: 'class',
+        operation: 'remove',
+      };
+
+      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
+    });
+
+    it('should add an "update" operation', () => {
+      const oldProp = { class: '' };
+      const newProp = { class: 'test' };
+
+      const expected = {
+        key: 'class',
+        operation: 'update',
+        value: 'test',
+      };
+
+      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
+    });
+
+    it('should add a "create" operation', () => {
+      const oldProp = {};
+      const newProp = { class: 'test' };
+
+      const expected = {
+        key: 'class',
+        operation: 'create',
+        value: 'test',
+      };
+
+      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
+    });
+  });
+
+  describe('filterDomProps', () => {
+    it('should filter framework specific attributes', () => {
+      const props = {
+        if: 1,
+        else: 1,
+        'else-if': 1,
+        switch: 1,
+        case: 1,
+        'case:default': 1,
+        innerHTML: 1,
+        ns: 1,
+        children: 1,
+        key: 1,
+        ref: 1,
+        class: 1,
+      } as unknown as Props;
+
+      expect(filterDomProps(props)).toStrictEqual({ class: 1 });
+    });
+  });
+
+  describe('createContext', () => {
+    const ctx = createContext<number>();
+
+    it('should set a unique id', () => {
+      expect(ctx.id).toBeTypeOf('string');
+    });
+
+    it('should create a provider function', () => {
+      expect(ctx.Provider).toBeTypeOf('function');
+    });
+
+    it('should create a quick use function', () => {
+      expect(ctx.use).toBeTypeOf('function');
+    });
+
+    it('should return the value of the context', () => {
+      const value = withHookContext(
+        {
+          component: {
+            hooks: [{ type: HookType.Context, value: ctx }],
+          } as unknown as FunctionComponent,
+          ctx: {
+            contexts: {
+              [ctx.id]: 10,
+            },
+          },
+          tasks: initComponentTasks(),
+        },
+        () => ctx.use()
+      );
+
+      expect(value).toBe(10);
+    });
   });
 
   describe('handleElement', () => {
@@ -336,109 +440,6 @@ describe('component', () => {
     });
   });
 
-  describe('compareElementProps', () => {
-    it('should not add any operation with no difference', () => {
-      const oldProp = { class: '' };
-      const newProp = { class: '' };
-
-      expect(compareElementProps(oldProp, newProp)).toStrictEqual([]);
-    });
-
-    it('should add a "remove" operation', () => {
-      const oldProp = { class: '' };
-      const newProp = {};
-
-      const expected = {
-        key: 'class',
-        operation: 'remove',
-      };
-
-      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
-    });
-
-    it('should add an "update" operation', () => {
-      const oldProp = { class: '' };
-      const newProp = { class: 'test' };
-
-      const expected = {
-        key: 'class',
-        operation: 'update',
-        value: 'test',
-      };
-
-      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
-    });
-
-    it('should add a "create" operation', () => {
-      const oldProp = {};
-      const newProp = { class: 'test' };
-
-      const expected = {
-        key: 'class',
-        operation: 'create',
-        value: 'test',
-      };
-
-      expect(compareElementProps(oldProp, newProp)).toStrictEqual([expected]);
-    });
-  });
-
-  describe('filterDomProps', () => {
-    it('should filter framework specific attributes', () => {
-      const props = {
-        if: 1,
-        else: 1,
-        'else-if': 1,
-        switch: 1,
-        case: 1,
-        'case:default': 1,
-        innerHTML: 1,
-        ns: 1,
-        children: 1,
-        key: 1,
-        ref: 1,
-        class: 1,
-      } as unknown as Props;
-
-      expect(filterDomProps(props)).toStrictEqual({ class: 1 });
-    });
-  });
-
-  describe('createContext', () => {
-    const ctx = createContext<number>();
-
-    it('should set a unique id', () => {
-      expect(ctx.id).toBeTypeOf('string');
-    });
-
-    it('should create a provider function', () => {
-      expect(ctx.Provider).toBeTypeOf('function');
-    });
-
-    it('should create a quick use function', () => {
-      expect(ctx.use).toBeTypeOf('function');
-    });
-
-    it('should return the value of the context', () => {
-      const value = withHookContext(
-        {
-          component: {
-            hooks: [{ type: HookType.Context, value: ctx }],
-          } as unknown as FunctionComponent,
-          ctx: {
-            contexts: {
-              [ctx.id]: 10,
-            },
-          },
-          tasks: initComponentTasks(),
-        },
-        () => ctx.use()
-      );
-
-      expect(value).toBe(10);
-    });
-  });
-
   describe('handleFunction', () => {
     const Fn = vitest.fn(() => 0);
 
@@ -546,6 +547,53 @@ describe('component', () => {
     it('should add context to record with id', () => {
       expect(res.ctx.contexts).toStrictEqual({
         [obj.id]: value,
+      });
+    });
+  });
+
+  describe('handleFragment', () => {
+    const frg = (
+      <Fragment key={10}>
+        {null}
+        {0}
+        {1}
+      </Fragment>
+    ) as unknown as FragmentTemplate;
+
+    const res = MOD.handleFragment(frg, undefined, root, 0, ctx);
+
+    it('should set tag', () => {
+      expect(res.component.tag).toBe(ComponentTag.Fragment);
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(Fragment);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toHaveProperty('key');
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+    });
+
+    it('should return children as they are', () => {
+      expect(res.children).toStrictEqual([null, 0, 1]);
+    });
+
+    it('should update and override old props', () => {
+      const up = (<Fragment key={80} />) as unknown as FragmentTemplate;
+
+      MOD.handleFragment(up, res.component, root, 0, ctx);
+
+      expect(res.component.props).toStrictEqual({
+        children: [],
+        key: 80,
       });
     });
   });
