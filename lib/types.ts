@@ -59,12 +59,6 @@ export type Callback<Return = void, Args extends Array<unknown> = Array<unknown>
 
 export type Arrayable<T> = T | Array<T>;
 
-export interface Task {
-  callback: () => void;
-  id: string;
-  date: Date;
-}
-
 export enum ComponentTag {
   Function = '#-function',
   Element = '#-element',

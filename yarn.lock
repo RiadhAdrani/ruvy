@@ -343,10 +343,10 @@
     "@riadh-adrani/type-utils" "^1.0.2"
     camelcase "^7.0.1"
 
-"@riadh-adrani/domer@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.1.tgz#f7392bbf2dc3e840b4447b3b79667cce6cda4f9b"
-  integrity sha512-iCAF8waxrxTBS/2cILxeViKCyqKQWkiQrsasBVOAIj9zweos2GJniMBl7fxW4sYksPcR3UQg0dNk5lfEYvcCWQ==
+"@riadh-adrani/domer@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.2.tgz#78271b9b53a163717e846c6619a676c9a5823701"
+  integrity sha512-QU82rBduHThRZewNpeD+5Wei8ofnCEAb4vui1gqBxuL8RoQmjmsvM7Ca/DU8aPkNbpegFZzQFd2selEXXMxzzg==
   dependencies:
     "@riadh-adrani/obj-utils" "^1.0.2"
     camelcase "^7.0.1"

@@ -130,7 +130,7 @@ export const createRefElementTask = (component: ElementComponent, ref: RefValue)
     const element = component.instance as Element;
 
     if (!element) {
-      throw new RuvyError('unable to update element, component is not yet mounted.');
+      throw new RuvyError('unable to set reference, component is not yet mounted.');
     }
 
     ref.value = element;
@@ -176,7 +176,7 @@ export const createUnmountComponentTask = (
   return createTask({ execute, component, type: TaskType.UnmountComponent });
 };
 
-export const createChangeElementPositionTask = (component: NonRootComponent): Task => {
+export const createReorderChildrenTask = (component: NonRootComponent): Task => {
   const execute = () => {
     const nodeComponents = getClosestNodeComponents(component);
 

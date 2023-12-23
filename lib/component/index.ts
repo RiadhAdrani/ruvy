@@ -61,7 +61,7 @@ import {
   JsxComponent,
 } from '@/types.js';
 import {
-  createChangeElementPositionTask,
+  createReorderChildrenTask,
   createEffectCleanUpTask,
   createEffectTask,
   createElementPropsUpdateTask,
@@ -702,7 +702,7 @@ export const getNodeIndex = (
   component: NodeComponent,
   parent?: ParentComponent
 ): { index: number; found: boolean } => {
-  let index = -1;
+  let index = 0;
   let wasFound = false;
 
   const host = parent ?? getHostingComponent(component);
@@ -724,7 +724,7 @@ export const getNodeIndex = (
     else if (isParentComponent(child) && child.tag !== ComponentTag.Portal) {
       const { found, index: i } = getNodeIndex(component, child);
 
-      index += i === -1 ? 0 : i;
+      index += i;
 
       if (found) {
         wasFound = true;
@@ -1113,7 +1113,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   }
 
   if (shouldReorder) {
-    const reorderTask = createChangeElementPositionTask(res.component);
+    const reorderTask = createReorderChildrenTask(res.component);
 
     pushTask(reorderTask, res.tasks);
   }
@@ -1159,12 +1159,14 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
 };
 
 export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
-  if (isNodeComponent(component)) return [component];
-
   if (!isParentComponent(component)) return [];
 
   if (component.children) {
     return component.children.reduce((acc, child) => {
+      if (isNodeComponent(child)) {
+        acc.push(child);
+      }
+
       acc.push(...getClosestNodeComponents(child));
 
       return acc;
