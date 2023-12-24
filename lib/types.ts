@@ -210,6 +210,8 @@ export type Template =
   | NullTemplate
   | ContextTemplate;
 
+export type NodeTemplate = TextTemplate | ElementTemplate;
+
 export type JsxTemplate =
   | FunctionTemplate
   | OutletTemplate
@@ -451,6 +453,11 @@ export interface ExecutionContext {
   /** warn if there is a change of context */
   ns?: Namespace;
   outletDepth?: number;
+  dom: {
+    parent: HostComponent;
+    nextIndex: number;
+    nextSiblingIndex: number;
+  };
 }
 
 export type ComponentTasks = Record<TaskType, Array<Task>>;
@@ -474,4 +481,13 @@ export type ComputedChildrenMap = Record<Key, { component: NonRootComponent; ind
 
 export interface UnmountComponentData {
   isHostParentUnmounting?: boolean;
+}
+
+export type ValueOrFalse<T = unknown> = { value: T } | false;
+
+export type IfDirectiveSequence = { fullfilled: boolean; last: 'if' | 'else-if' | 'else' } | false;
+
+export interface IfDirectiveProcessResult {
+  sequence: IfDirectiveSequence;
+  nullify: boolean;
 }
