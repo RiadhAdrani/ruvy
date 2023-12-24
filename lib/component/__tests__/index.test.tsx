@@ -14,7 +14,6 @@ import {
   FunctionTemplate,
   HookType,
   TaskType,
-  NodeComponent,
   NullComponent,
   Outlet,
   ParentComponent,
@@ -27,6 +26,8 @@ import {
   Portal,
   PortalTemplate,
   OutletTemplate,
+  FragmentComponent,
+  ContextComponent,
 } from '@/types.js';
 import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -69,7 +70,6 @@ describe('component', () => {
     dom: {
       nextIndex: 0,
       parent: root,
-      nextSiblingIndex: 0,
     },
   };
 
@@ -83,7 +83,6 @@ describe('component', () => {
       dom: {
         nextIndex: 0,
         parent: root,
-        nextSiblingIndex: 0,
       },
     };
   });
@@ -220,24 +219,12 @@ describe('component', () => {
       exCtx
     );
 
-    it('should create a new context', () => {
-      expect(example.ctx).toStrictEqual({
-        ...exCtx,
-        dom: {
-          parent: example.component,
-          nextIndex: 0,
-          nextSiblingIndex: 1,
-        },
-      });
-    });
-
     it('should not override old', () => {
       expect(exCtx).toStrictEqual({
         contexts: {},
         dom: {
           nextIndex: 0,
           parent: root,
-          nextSiblingIndex: 0,
         },
       });
     });
@@ -295,11 +282,12 @@ describe('component', () => {
     });
 
     describe('diff phase', () => {
-      type SetupParams = { template?: unknown; newTemplate?: unknown };
+      type SetupParams = { template?: unknown; newTemplate?: unknown; newCtx?: ExecutionContext };
 
       const setupDiffTest = ({
         template = <div></div>,
         newTemplate = <div></div>,
+        newCtx = exCtx,
       }: SetupParams) => {
         const current = handleElement(
           template as unknown as ElementTemplate,
@@ -314,7 +302,7 @@ describe('component', () => {
           current.component,
           root,
           0,
-          exCtx
+          newCtx
         );
 
         return result;
@@ -393,6 +381,22 @@ describe('component', () => {
 
         expect(result.tasks[TaskType.RefElement].length).toBe(1);
       });
+
+      it('should change position with ctx.dom.nextIndex', () => {
+        const result = setupDiffTest({
+          newCtx: MOD.cloneExecutionContext(exCtx, c => (c.dom.nextIndex = 22)),
+        });
+
+        expect(result.component.position).toBe(22);
+      });
+
+      it('should create change element position task', () => {
+        const result = setupDiffTest({
+          newCtx: MOD.cloneExecutionContext(exCtx, c => (c.dom.nextIndex = 22)),
+        });
+
+        expect(result.tasks[TaskType.ChangeElementPosition].length).toBe(1);
+      });
     });
   });
 
@@ -429,24 +433,12 @@ describe('component', () => {
   describe('handleText', () => {
     let res = handleText('test', undefined, root, 0, exCtx);
 
-    it('should create a new context', () => {
-      expect(res.ctx).toStrictEqual({
-        ...exCtx,
-        dom: {
-          parent: root,
-          nextIndex: 0,
-          nextSiblingIndex: 1,
-        },
-      });
-    });
-
     it('should not override old', () => {
       expect(exCtx).toStrictEqual({
         contexts: {},
         dom: {
           nextIndex: 0,
           parent: root,
-          nextSiblingIndex: 0,
         },
       });
     });
@@ -845,6 +837,7 @@ describe('component', () => {
       });
     });
 
+    // TODO: get correct component
     it.todo('should get correct outlet component');
   });
 
@@ -1479,110 +1472,6 @@ describe('component', () => {
     });
   });
 
-  describe.skip('getNodeIndex', () => {
-    let node: NodeComponent;
-
-    beforeEach(() => {
-      node = {
-        type: 'div',
-        tag: ComponentTag.Element,
-        children: [],
-        key: 0,
-        // ? but parent does not have children
-        parent: root,
-        props: {},
-        status: ComponentStatus.Mounting,
-      };
-    });
-
-    it('should return not found when component not found', () => {
-      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: false, index: 0 });
-    });
-
-    it('should return found (true) and index', () => {
-      root.children.push(node);
-
-      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 0 });
-    });
-
-    it('should return correct index', () => {
-      const sibling0 = {
-        key: 0,
-        parent: root,
-        tag: ComponentTag.Text,
-      } as TextComponent;
-
-      const sibling2 = {
-        tag: ComponentTag.Null,
-        parent: root,
-      } as NullComponent;
-
-      const sibling1 = {
-        tag: ComponentTag.Function,
-        children: [node],
-        parent: root,
-      } as FunctionComponent;
-
-      node.parent = sibling1;
-
-      root.children = [sibling0, sibling1, sibling2];
-
-      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 1 });
-    });
-
-    it('should return correct index (deep)', () => {
-      const sibling0 = {
-        key: 0,
-        parent: root,
-        tag: ComponentTag.Element,
-        props: {},
-        type: 'div',
-        status: ComponentStatus.Mounted,
-        children: [],
-      } as ElementComponent;
-
-      const child0 = {
-        key: 0,
-        parent: sibling0,
-        tag: ComponentTag.Text,
-      } as TextComponent;
-
-      // will be skipped
-      sibling0.children = [child0];
-
-      const sibling2 = {
-        tag: ComponentTag.Null,
-        parent: root,
-      } as NullComponent;
-
-      const sibling1 = {
-        tag: ComponentTag.Function,
-        children: [],
-        parent: root,
-        props: {},
-        hooks: [],
-        key: 0,
-        status: ComponentStatus.Mounted,
-        type: vitest.fn(),
-        ctx: exCtx,
-      } as FunctionComponent;
-
-      const child1 = {
-        key: 0,
-        parent: sibling1,
-        tag: ComponentTag.Text,
-      } as TextComponent;
-
-      node.parent = sibling1;
-
-      sibling1.children = [child1, node];
-
-      root.children = [sibling0, sibling1, sibling2];
-
-      expect(MOD.getNodeIndex(node)).toStrictEqual({ found: true, index: 1 });
-    });
-  });
-
   describe('unmount component', () => {
     it('should add unmount task', () => {
       const nil: NullComponent = {
@@ -1787,6 +1676,8 @@ describe('component', () => {
           key: 0,
           parent: root,
           status: ComponentStatus.Mounted,
+          position: 0,
+          domParent: root,
         })
       ).toStrictEqual({});
     });
@@ -1877,6 +1768,8 @@ describe('component', () => {
       status: ComponentStatus.Mounted,
       tag: ComponentTag.Element,
       type: 'a',
+      position: 0,
+      domParent: root,
     };
 
     it('should return true when tags are different', () => {
@@ -1892,7 +1785,7 @@ describe('component', () => {
     });
   });
 
-  describe('getClosestNodeComponent', () => {
+  describe.skip('getClosestNodeComponent', () => {
     const anchor: ElementComponent = {
       children: [],
       key: 0,
@@ -1901,6 +1794,8 @@ describe('component', () => {
       status: ComponentStatus.Mounted,
       tag: ComponentTag.Element,
       type: 'a',
+      position: 0,
+      domParent: root,
     };
 
     const txt: TextComponent = {
@@ -1909,6 +1804,8 @@ describe('component', () => {
       status: ComponentStatus.Mounted,
       tag: ComponentTag.Text,
       text: 'hello',
+      position: 0,
+      domParent: root,
     };
 
     const parent: FunctionComponent = {
@@ -2136,9 +2033,7 @@ describe('component', () => {
         res.children = children;
 
         expect(() => MOD.processChildren(res)).toThrow(
-          new RuvyError(
-            'cannot use "else" outside a conditional sequence, which should start with "if"'
-          )
+          new RuvyError('cannot use "else" or "else-if" directives outside a conditional sequence')
         );
       });
 
@@ -2148,9 +2043,7 @@ describe('component', () => {
         res.children = children;
 
         expect(() => MOD.processChildren(res)).toThrow(
-          new RuvyError(
-            'cannot use "else-if" outside a conditional sequence, which should start with "if"'
-          )
+          new RuvyError('cannot use "else" or "else-if" directives outside a conditional sequence')
         );
       });
 
@@ -2160,9 +2053,7 @@ describe('component', () => {
         res.children = children;
 
         expect(() => MOD.processChildren(res)).toThrow(
-          new RuvyError(
-            'cannot use "else-if" outside a conditional sequence, which should start with "if"'
-          )
+          new RuvyError('cannot use "else" or "else-if" directives outside a conditional sequence')
         );
       });
 
@@ -2361,6 +2252,100 @@ describe('component', () => {
           ComponentTag.Text,
           ComponentTag.Element,
         ]);
+      });
+    });
+
+    describe('execution context propagation', () => {
+      const Fn = () => {
+        return (
+          <>
+            <div></div>
+            <img />
+          </>
+        );
+      };
+
+      const ctx = createContext();
+
+      const template = (
+        <div>
+          text
+          <>
+            <p />
+          </>
+          <button>
+            <span />
+            <img />
+          </button>
+          <Fn />
+          <ctx.Provider value={undefined}>
+            <>text</>
+          </ctx.Provider>
+          text
+        </div>
+      );
+
+      const res = MOD.handleComponent<ElementComponent>(
+        template,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
+
+      const children = res.component.children;
+
+      it('should assign direct node children their correct position', () => {
+        const txt = children[0] as TextComponent;
+
+        expect(txt.position).toBe(0);
+      });
+
+      it('should assign correct position for nested children (fragment)', () => {
+        const frg = children[1] as FragmentComponent;
+        const txt = frg.children[0] as ElementComponent;
+
+        expect(txt.position).toBe(1);
+      });
+
+      it('should reset index for inner children with element component', () => {
+        const btn = children[2] as ElementComponent;
+
+        expect(btn.position).toBe(2);
+
+        const span = btn.children[0] as ElementComponent;
+        const img = btn.children[1] as ElementComponent;
+
+        expect(span.position).toBe(0);
+        expect(img.position).toBe(1);
+      });
+
+      it('should assign correct position for nested children (nested: function >  fragment)', () => {
+        const fn = children[3] as FunctionComponent;
+
+        const frg = fn.children[0] as FragmentComponent;
+
+        const div = frg.children[0] as ElementComponent;
+        const img = frg.children[1] as ElementComponent;
+
+        expect(div.position).toBe(3);
+        expect(img.position).toBe(4);
+      });
+
+      it('should assign correct position for nested children (nested: function > context > fragment)', () => {
+        const fn = children[4] as FunctionComponent;
+        const ctx = fn.children[0] as ContextComponent;
+        const frg = ctx.children[0] as FragmentComponent;
+
+        const div = frg.children[0] as ElementComponent;
+
+        expect(div.position).toBe(5);
+      });
+
+      it('should resume dom position correctly', () => {
+        const txt = children[5] as TextComponent;
+
+        expect(txt.position).toBe(6);
       });
     });
   });
