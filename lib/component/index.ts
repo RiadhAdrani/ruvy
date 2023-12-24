@@ -62,6 +62,7 @@ import {
   NodeTemplate,
   IfDirectiveSequence,
   IfDirectiveProcessResult,
+  ValueOrFalse,
 } from '@/types.js';
 import {
   createReorderChildrenTask,
@@ -712,7 +713,7 @@ export const isNodeTemplate = (template: Template): template is NodeTemplate =>
  * and the return the switch value within an object,
  * otherwise, `false`.
  */
-export const isSwitchController = (component: Component): { value: unknown } | false => {
+export const isSwitchController = (component: Component): ValueOrFalse => {
   if (!isJsxComponent(component) || !hasProperty(component.props, 'switch')) return false;
 
   const value = component.props['switch'];
@@ -1138,22 +1139,24 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
     const childTag = getTagFromTemplate(template);
 
-    if (isNodeTemplate(template)) {
-      domIndex++;
-
-      // check if we have an element template, which needs some props processing
-      if (childTag === ComponentTag.Element) {
-        processElementTemplateProps(template as ElementTemplate, res.ctx);
-      }
+    // check if we have an element template, which needs some props processing
+    if (childTag === ComponentTag.Element) {
+      processElementTemplateProps(template as ElementTemplate, res.ctx);
     }
 
     let childRes: ComponentHandlerResult<Component>;
+
+    const ctx = mutateContext(res.ctx, ctx => (ctx.dom.nextSiblingIndex = domIndex));
+
+    if (isNodeTemplate(template)) {
+      domIndex++;
+    }
 
     // try and find the corresponding component
     const oldComponent = childrenMap[key];
 
     if (!oldComponent || shouldRenderNewComponent(template, oldComponent.component)) {
-      childRes = handleComponent(template, undefined, parent, i, res.ctx);
+      childRes = handleComponent(template, undefined, parent, i, ctx);
 
       shouldReorder = true;
 
@@ -1179,7 +1182,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       }
     }
 
-    res.ctx.dom.nextSiblingIndex = childRes.ctx.dom.nextSiblingIndex;
+    domIndex = isNodeComponent(childRes.component) ? domIndex : childRes.ctx.dom.nextSiblingIndex;
 
     // push tasks
     pushBlukTasks(childRes.tasks, res.tasks);
@@ -1209,6 +1212,25 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   }
 
   return shouldReorder;
+};
+
+export const mutateContext = (
+  current: ExecutionContext,
+  then?: (ctx: ExecutionContext) => void
+) => {
+  const ctx: ExecutionContext = {
+    ...current,
+    contexts: {
+      ...current.contexts,
+    },
+    dom: {
+      ...current.dom,
+    },
+  };
+
+  then?.(ctx);
+
+  return ctx;
 };
 
 export const shouldRenderNewComponent = (template: Template, current: Component): boolean => {
