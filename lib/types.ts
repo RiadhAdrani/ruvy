@@ -258,10 +258,15 @@ export interface FunctionComponent extends CommonComponent {
   ctx: ExecutionContext;
 }
 
-export interface ElementComponent extends CommonComponent {
+export interface NodeComponentBase<T = Node> {
+  position: number;
+  domParent: HostComponent;
+  instance?: T;
+}
+
+export interface ElementComponent extends CommonComponent, NodeComponentBase<Element> {
   tag: ComponentTag.Element;
   type: string;
-  instance?: Node;
 }
 
 export interface RootComponent extends Pick<CommonComponent, 'children'> {
@@ -269,10 +274,12 @@ export interface RootComponent extends Pick<CommonComponent, 'children'> {
   instance: Node;
 }
 
-export interface TextComponent extends Pick<CommonComponent, 'key' | 'parent' | 'status'> {
+export interface TextComponent
+  extends Pick<CommonComponent, 'key' | 'parent' | 'status'>,
+    NodeComponentBase<Text> {
   tag: ComponentTag.Text;
   text: string;
-  instance?: Text;
+  position: number;
 }
 
 export interface NullComponent extends Pick<CommonComponent, 'key' | 'parent' | 'status'> {
@@ -409,6 +416,7 @@ export enum TaskType {
   RenderText = 'render-text',
   RenderInnerHTML = 'render-inner-html',
   ReorderElements = 'reorder-elements',
+  ChangeElementPosition = 'change-element-position',
   RunEffectCleanup = 'run-cleanup',
   RunEffect = 'run-effect',
   UnmountComponent = 'unmount-component',
@@ -430,6 +438,7 @@ export const MicroTaskSorted = [
   TaskType.RenderInnerHTML,
   TaskType.UnmountedComponent,
   TaskType.RemoveComponent,
+  TaskType.ChangeElementPosition,
   TaskType.ReorderElements,
   TaskType.UpdatePortalChildren,
   TaskType.UpdateProps,
@@ -456,7 +465,6 @@ export interface ExecutionContext {
   dom: {
     parent: HostComponent;
     nextIndex: number;
-    nextSiblingIndex: number;
   };
 }
 

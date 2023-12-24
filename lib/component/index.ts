@@ -65,7 +65,6 @@ import {
   ValueOrFalse,
 } from '@/types.js';
 import {
-  createReorderChildrenTask,
   createEffectCleanUpTask,
   createEffectTask,
   createElementPropsUpdateTask,
@@ -78,6 +77,7 @@ import {
   createUnmountComponentTask,
   createUnrefElementTask,
   createUpdateTextTask,
+  createChangeElementPosition,
 } from './task.js';
 import { RuvyError, generateId, moveElement } from '@/helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
@@ -97,13 +97,13 @@ export const RuvyAttributes = [
   'ref',
 ];
 
-export const handleComponent = (
+export const handleComponent = <T extends NonRootComponent = NonRootComponent>(
   template: Template,
   current: NonRootComponent | undefined,
   parent: ParentComponent,
   index: number,
   ctx: ExecutionContext
-): ComponentHandlerResult<NonRootComponent> => {
+): ComponentHandlerResult<T> => {
   const tag = getTagFromTemplate(template);
 
   const key = computeKey(template, index);
@@ -122,7 +122,7 @@ export const handleComponent = (
     processChildren(res as ComponentHandlerResult<ParentComponent>);
   }
 
-  return res;
+  return res as ComponentHandlerResult<T>;
 };
 
 /**
@@ -156,6 +156,8 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Element,
     type,
+    position: _ctx.dom.nextIndex,
+    domParent: _ctx.dom.parent,
   };
 
   const tasks = initComponentTasks();
@@ -227,17 +229,26 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
 
     // override props
     component.props = props;
+
+    // check position
+    if (component.position !== _ctx.dom.nextIndex) {
+      const changePositionTask = createChangeElementPosition(component, _ctx.dom.nextIndex);
+
+      pushTask(changePositionTask, tasks);
+
+      component.position = _ctx.dom.nextIndex;
+    }
   }
 
   // create a new ctx
-  const ctx = {
-    ..._ctx,
-    dom: {
-      nextIndex: 0,
-      nextSiblingIndex: _ctx.dom.nextSiblingIndex + 1,
-      parent: component,
-    },
-  };
+  const ctx = cloneExecutionContext(
+    _ctx,
+    ctx =>
+      (ctx.dom = {
+        nextIndex: 0,
+        parent: component,
+      })
+  );
 
   return { children, component, tasks, ctx };
 };
@@ -313,13 +324,10 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
 
   const id = props.ctx.id;
 
-  const ctx: ExecutionContext = {
-    ..._ctx,
-    contexts: {
-      ..._ctx.contexts,
-      [id]: props.value,
-    },
-  };
+  const ctx: ExecutionContext = cloneExecutionContext(
+    _ctx,
+    ctx => (ctx.contexts[id] = props.value)
+  );
 
   return { children, component, ctx, tasks };
 };
@@ -417,7 +425,7 @@ export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponen
     type,
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Function,
-    ctx,
+    ctx: cloneExecutionContext(ctx),
   };
 
   if (current) {
@@ -586,7 +594,7 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
   current,
   parent,
   key,
-  _ctx
+  ctx
 ) => {
   const text = `${template}`;
 
@@ -598,6 +606,8 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Text,
     text,
+    position: ctx.dom.nextIndex,
+    domParent: ctx.dom.parent,
   };
 
   if (!current) {
@@ -613,16 +623,15 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
 
       pushTask(updateTask, tasks);
     }
-  }
 
-  const ctx: ExecutionContext = {
-    ..._ctx,
-    contexts: {},
-    dom: {
-      ..._ctx.dom,
-      nextSiblingIndex: _ctx.dom.nextSiblingIndex + 1,
-    },
-  };
+    if (ctx.dom.nextIndex !== component.position) {
+      const changePositionTask = createChangeElementPosition(component, ctx.dom.nextIndex);
+
+      pushTask(changePositionTask, tasks);
+
+      component.position = ctx.dom.nextIndex;
+    }
+  }
 
   return { component, ctx, children: [], tasks };
 };
@@ -690,6 +699,7 @@ export const initComponentTasks = (): ComponentTasks => ({
   [TaskType.UnmountedComponent]: [],
   [TaskType.RefElement]: [],
   [TaskType.UnrefEelement]: [],
+  [TaskType.ChangeElementPosition]: [],
 });
 
 export const isJsxComponent = (component: Component): component is JsxComponent => {
@@ -735,44 +745,6 @@ export const getHostingComponent = (component: Component): HostComponent => {
   if (isHostComponent(component.parent)) return component.parent;
 
   return getHostingComponent(component.parent);
-};
-
-export const getNodeIndex = (
-  component: NodeComponent,
-  parent?: ParentComponent
-): { index: number; found: boolean } => {
-  let index = 0;
-  let wasFound = false;
-
-  const host = parent ?? getHostingComponent(component);
-
-  for (const child of host.children) {
-    if (wasFound) break;
-
-    if (child === component) {
-      index++;
-      wasFound = true;
-      break;
-    }
-
-    if (isNodeComponent(child)) {
-      index++;
-      continue;
-    }
-    // ! we skip portal
-    else if (isParentComponent(child) && child.tag !== ComponentTag.Portal) {
-      const { found, index: i } = getNodeIndex(component, child);
-
-      index += i;
-
-      if (found) {
-        wasFound = true;
-        break;
-      }
-    }
-  }
-
-  return { index, found: wasFound };
 };
 
 export const isRefValue = (v: unknown): v is RefValue => {
@@ -1067,7 +1039,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
   let shouldReorder = false;
 
-  let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextSiblingIndex;
+  let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextIndex;
 
   for (let i = 0; i < childrenCount; i++) {
     const child = res.children[i];
@@ -1146,7 +1118,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
     let childRes: ComponentHandlerResult<Component>;
 
-    const ctx = mutateContext(res.ctx, ctx => (ctx.dom.nextSiblingIndex = domIndex));
+    const ctx = cloneExecutionContext(res.ctx, ctx => (ctx.dom.nextIndex = domIndex));
 
     if (isNodeTemplate(template)) {
       domIndex++;
@@ -1182,16 +1154,10 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       }
     }
 
-    domIndex = isNodeComponent(childRes.component) ? domIndex : childRes.ctx.dom.nextSiblingIndex;
+    domIndex = isNodeComponent(childRes.component) ? domIndex : childRes.ctx.dom.nextIndex;
 
     // push tasks
     pushBlukTasks(childRes.tasks, res.tasks);
-  }
-
-  if (shouldReorder) {
-    const reorderTask = createReorderChildrenTask(res.component);
-
-    pushTask(reorderTask, res.tasks);
   }
 
   // remove unused from the array of children
@@ -1208,13 +1174,13 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   });
 
   if (!isNodeComponent(res.component)) {
-    res.ctx.dom.nextSiblingIndex = domIndex;
+    res.ctx.dom.nextIndex = domIndex;
   }
 
   return shouldReorder;
 };
 
-export const mutateContext = (
+export const cloneExecutionContext = (
   current: ExecutionContext,
   then?: (ctx: ExecutionContext) => void
 ) => {

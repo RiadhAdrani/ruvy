@@ -11,7 +11,7 @@ import {
   FunctionComponent,
   EffectHook,
   PortalComponent,
-  ParentComponent,
+  NodeComponent,
 } from '@/types.js';
 import {
   element,
@@ -28,7 +28,6 @@ import {
 import {
   filterDomProps,
   getClosestNodeComponents,
-  getNodeIndex,
   getHostingComponent,
   isNodeComponent,
 } from './index.js';
@@ -55,13 +54,7 @@ export const createRenderTask = (component: ElementComponent): Task => {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    const { found, index } = getNodeIndex(component, host as ParentComponent);
-
-    if (!found) {
-      throw new RuvyError('unable to compute node index.');
-    }
-
-    insertNode(instance, host.instance, index);
+    insertNode(instance, host.instance, component.position);
 
     component.instance = instance;
 
@@ -161,7 +154,7 @@ export const createUnmountComponentTask = (
 ): Task => {
   const execute = () => {
     if (isNodeComponent(component) && !data.isHostParentUnmounting) {
-      const element = component.instance as Element;
+      const element = component.instance;
 
       if (!element) {
         throw new RuvyError('unable to unmount node, component instance does not exist.');
@@ -189,13 +182,7 @@ export const createReorderChildrenTask = (component: NonRootComponent): Task => 
         );
       }
 
-      const { index, found } = getNodeIndex(node);
-
-      if (!found) {
-        throw new RuvyError('unable to change element position, position computation failed');
-      }
-
-      changeNodePosition(element, index);
+      changeNodePosition(element, node.position);
     });
   };
 
@@ -206,23 +193,15 @@ export const createTextTask = (component: TextComponent): Task => {
   const execute = () => {
     const instance = text(component.text);
 
-    const host = getHostingComponent(component);
+    const host = component.domParent;
 
     if (!host.instance) {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    const { found, index } = getNodeIndex(component, host as ParentComponent);
-
-    if (!found) {
-      throw new RuvyError('unable to compute node index.');
-    }
-
-    insertNode(instance, host.instance, index);
+    insertNode(instance, host.instance, component.position);
 
     component.instance = instance;
-
-    component.status = ComponentStatus.Mounted;
   };
 
   return createTask({ component, execute, type: TaskType.RenderText });
@@ -272,20 +251,32 @@ export const createMovePortalChildren = (component: PortalComponent): Task => {
       throw new RuvyError('unable to change portal, component instance does not exist.');
     }
 
-    component.children.forEach(child => {
-      getClosestNodeComponents(child).forEach(node => {
-        const inst = node.instance;
+    getClosestNodeComponents(component).forEach(node => {
+      const inst = node.instance;
 
-        if (!inst) {
-          throw new RuvyError(
-            'unable to move element to new portal, component instance does not exist.'
-          );
-        }
+      if (!inst) {
+        throw new RuvyError(
+          'unable to move element to new portal, component instance does not exist.'
+        );
+      }
 
-        insertNode(inst, element);
-      });
+      insertNode(inst, element);
     });
   };
 
   return createTask({ component, execute, type: TaskType.UpdatePortalChildren });
+};
+
+export const createChangeElementPosition = (component: NodeComponent, position: number): Task => {
+  const execute = () => {
+    const element = component.instance;
+
+    if (!element) {
+      throw new RuvyError('unable to change element position, component instance does not exist.');
+    }
+
+    changeNodePosition(element, position);
+  };
+
+  return createTask({ component, execute, type: TaskType.ChangeElementPosition });
 };

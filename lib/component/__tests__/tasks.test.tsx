@@ -3,24 +3,39 @@ import { createRoot, handleComponent, handleElement } from '../index.js';
 import {
   ComponentHandlerResult,
   ComponentStatus,
+  ComponentTag,
+  EffectHook,
   ElementComponent,
   ElementTemplate,
   ExecutionContext,
+  FragmentComponent,
   FunctionComponent,
   FunctionTemplate,
+  HookType,
   ParentComponent,
+  Portal,
+  PortalComponent,
+  Task,
   TaskType,
+  TextComponent,
 } from '@/types.js';
 import {
+  createChangeElementPosition,
+  createEffectCleanUpTask,
+  createEffectTask,
   createElementPropsUpdateTask,
   createInnerHTMLTask,
+  createMovePortalChildren,
   createRefElementTask,
   createRenderTask,
   createReorderChildrenTask,
+  createTextTask,
   createUnmountComponentTask,
   createUnrefElementTask,
+  createUpdateTextTask,
 } from '../task.js';
 import { RuvyError } from '@/helpers/helpers.js';
+import { element } from '@riadh-adrani/domer';
 
 describe('tasks', () => {
   let root = createRoot(document.body);
@@ -28,9 +43,8 @@ describe('tasks', () => {
   let ctx: ExecutionContext = {
     contexts: {},
     dom: {
-      nextIndex: 0,
       parent: root,
-      nextSiblingIndex: 0,
+      nextIndex: 0,
     },
   };
 
@@ -44,7 +58,6 @@ describe('tasks', () => {
       dom: {
         nextIndex: 0,
         parent: root,
-        nextSiblingIndex: 0,
       },
     };
   });
@@ -54,12 +67,6 @@ describe('tasks', () => {
 
     beforeEach(() => {
       el = handleElement((<div />) as unknown as ElementTemplate, undefined, root, 0, ctx);
-    });
-
-    it('should throw when position computation fail', () => {
-      const task = createRenderTask(el.component);
-
-      expect(() => task.execute()).toThrow(new RuvyError('unable to compute node index.'));
     });
 
     it('should insert element in dom', () => {
@@ -341,19 +348,194 @@ describe('tasks', () => {
       el.tasks[TaskType.RenderElement].forEach(it => it.execute());
     });
 
-    it.todo('should reorder components', () => {
+    it('should reorder components', () => {
       const div = el.component.children[0] as ElementComponent;
 
-      const img = div.children[0];
-      const btn = div.children[1];
-      const spn = div.children[2];
+      const fr1 = div.children[0] as FragmentComponent;
+      const fr2 = div.children[1] as FragmentComponent;
 
-      div.children = [btn, spn, img];
+      const spn = div.children[2] as ElementComponent;
+
+      ((fr2.children[0] as FragmentComponent).children[0] as ElementComponent).position = 0;
+      (fr1.children[0] as ElementComponent).position = 2;
+      spn.position = 1;
 
       const task = createReorderChildrenTask(div);
       task.execute();
 
       expect(document.body.innerHTML).toBe('<div><button></button><span></span><img></div>');
+    });
+  });
+
+  describe('createTextTask', () => {
+    let component: TextComponent;
+
+    let task: Task;
+
+    beforeEach(() => {
+      component = {
+        domParent: root,
+        key: 0,
+        parent: root,
+        position: 0,
+        status: ComponentStatus.Mounting,
+        tag: ComponentTag.Text,
+        text: 'test',
+      };
+
+      task = createTextTask(component);
+
+      task.execute();
+    });
+
+    it('should set instance', () => {
+      expect(component.instance instanceof Text).toBe(true);
+    });
+
+    it('should insert text', () => {
+      expect(document.body.innerHTML).toBe('test');
+    });
+
+    describe('createUpdateTextNode', () => {
+      it('should update text data', () => {
+        const task = createUpdateTextTask(component, 'test-2');
+
+        task.execute();
+
+        expect(document.body.innerHTML).toBe('test-2');
+      });
+    });
+  });
+
+  describe('createEffectTask', () => {
+    let component: FunctionComponent;
+    let hook: EffectHook;
+
+    let cleanup = vitest.fn();
+    let callback = vitest.fn(() => cleanup);
+
+    let task: Task;
+
+    beforeEach(() => {
+      component = {
+        children: [],
+        ctx,
+        hooks: [],
+        key: 0,
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounted,
+        tag: ComponentTag.Function,
+        type: vitest.fn(),
+      };
+
+      cleanup = vitest.fn();
+      callback = vitest.fn(() => cleanup);
+
+      hook = {
+        callback,
+        deps: [],
+        type: HookType.Effect,
+      };
+
+      component.hooks = [hook];
+
+      task = createEffectTask(component, hook);
+
+      task.execute();
+    });
+
+    it('should run callback', () => {
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('should store cleanup in the hook', () => {
+      expect(hook.cleanup).toStrictEqual(cleanup);
+    });
+
+    describe('createEffectCleanupTask', () => {
+      it('should run cleanup effect', () => {
+        const clnTask = createEffectCleanUpTask(component, hook);
+
+        clnTask.execute();
+
+        expect(cleanup).toHaveBeenCalledOnce();
+      });
+    });
+  });
+
+  describe('createMovePortalChildren', () => {
+    let cntnr: HTMLDivElement;
+    let cntnr2: HTMLDivElement;
+
+    let component: PortalComponent;
+
+    beforeEach(() => {
+      cntnr = element<HTMLDivElement>('div');
+      cntnr2 = element<HTMLDivElement>('div');
+
+      document.body.append(cntnr, cntnr2);
+
+      const res = handleComponent<PortalComponent>(
+        <Portal container={cntnr}>
+          <p />
+          <img />
+        </Portal>,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      // mount
+      res.tasks[TaskType.RenderElement].forEach(it => it.execute());
+
+      component = res.component;
+    });
+
+    it('should move element from old portal instance to the new one', () => {
+      component.instance = cntnr2;
+
+      const task = createMovePortalChildren(component);
+
+      task.execute();
+
+      expect(document.body.innerHTML).toBe('<div></div><div><p></p><img></div>');
+    });
+  });
+
+  describe('createChangeElementPosition', () => {
+    let parent: ElementComponent;
+
+    let child0: ElementComponent;
+
+    beforeEach(() => {
+      const res = handleComponent<ElementComponent>(
+        <div>
+          <p />
+          <img />
+          <button />
+        </div>,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        ctx
+      );
+
+      // mount
+      res.tasks[TaskType.RenderElement].forEach(it => it.execute());
+
+      parent = res.component;
+
+      child0 = parent.children[0] as ElementComponent;
+    });
+
+    it('should change element position', () => {
+      const task = createChangeElementPosition(child0, 3);
+
+      task.execute();
+
+      expect(document.body.innerHTML).toBe('<div><img><button></button><p></p></div>');
     });
   });
 });
