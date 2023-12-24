@@ -1,5 +1,5 @@
 import { Namespace, isClassProp, resolveClassProps } from '@riadh-adrani/domer';
-import { areEqual, copy, hasProperty } from '@riadh-adrani/obj-utils';
+import { areEqual, hasProperty } from '@riadh-adrani/obj-utils';
 import {
   Component,
   ComponentHandler,
@@ -59,6 +59,9 @@ import {
   CreateContextComponentProviderProps,
   ContextHook,
   JsxComponent,
+  NodeTemplate,
+  IfDirectiveSequence,
+  IfDirectiveProcessResult,
 } from '@/types.js';
 import {
   createReorderChildrenTask,
@@ -138,7 +141,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
   current,
   parent,
   key,
-  ctx
+  _ctx
 ) => {
   const { type, props } = template;
 
@@ -225,6 +228,16 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     component.props = props;
   }
 
+  // create a new ctx
+  const ctx = {
+    ..._ctx,
+    dom: {
+      nextIndex: 0,
+      nextSiblingIndex: _ctx.dom.nextSiblingIndex + 1,
+      parent: component,
+    },
+  };
+
   return { children, component, tasks, ctx };
 };
 
@@ -299,9 +312,13 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
 
   const id = props.ctx.id;
 
-  const ctx = copy(_ctx);
-
-  ctx.contexts[id] = props.value;
+  const ctx: ExecutionContext = {
+    ..._ctx,
+    contexts: {
+      ..._ctx.contexts,
+      [id]: props.value,
+    },
+  };
 
   return { children, component, ctx, tasks };
 };
@@ -485,9 +502,10 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   // TODO: setup router and get child by depth, if no router return null
 
-  const ctx = copy(_ctx);
-
-  ctx.outletDepth = depth;
+  const ctx: ExecutionContext = {
+    ..._ctx,
+    outletDepth: depth,
+  };
 
   return { children, ctx, component, tasks };
 };
@@ -505,7 +523,7 @@ export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
   current,
   parent,
   key,
-  ctx
+  _ctx
 ) => {
   const { type, props } = template;
 
@@ -539,6 +557,14 @@ export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
     component.props = props;
   }
 
+  const ctx: ExecutionContext = {
+    ..._ctx,
+    dom: {
+      ..._ctx.dom,
+      parent: component,
+    },
+  };
+
   return { component, children, ctx, tasks };
 };
 
@@ -559,7 +585,7 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
   current,
   parent,
   key,
-  ctx
+  _ctx
 ) => {
   const text = `${template}`;
 
@@ -587,6 +613,15 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
       pushTask(updateTask, tasks);
     }
   }
+
+  const ctx: ExecutionContext = {
+    ..._ctx,
+    contexts: {},
+    dom: {
+      ..._ctx.dom,
+      nextSiblingIndex: _ctx.dom.nextSiblingIndex + 1,
+    },
+  };
 
   return { component, ctx, children: [], tasks };
 };
@@ -668,6 +703,9 @@ export const isJsxComponent = (component: Component): component is JsxComponent 
     ComponentTag.Outlet,
   ].includes(component.tag);
 };
+
+export const isNodeTemplate = (template: Template): template is NodeTemplate =>
+  [ComponentTag.Text, ComponentTag.Element].includes(getTagFromTemplate(template));
 
 /**
  * checks if the given component is a switch controller
@@ -911,6 +949,106 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
   template.props = props;
 };
 
+export const processSwitchDirective = (
+  child: Template,
+  index: number,
+  siblingsCount: number,
+  switchValue: unknown,
+  switchFulfilled: boolean
+): boolean => {
+  // we are inside a switch control
+
+  // check if switch is already fullfilled
+  if (switchFulfilled) {
+    return true;
+  } else {
+    // check if there is a "case" prop
+    const caseValue = getPropFromTemplate(child, 'case');
+
+    if (caseValue) {
+      const doMatch = caseValue.value === switchValue;
+
+      return !doMatch;
+    } else {
+      // we should check if we are at the last element
+      const isLast = index === siblingsCount - 1;
+
+      if (!isLast) {
+        throw new RuvyError('missing "case" prop within a switch control component.');
+      }
+
+      // we are at the last element and we don't have a "case" prop
+      // check for "case:default"
+      const caseValue = getPropFromTemplate(child, 'case:default');
+
+      // if we don't have a value, we throw
+      if (!caseValue) {
+        throw new RuvyError(
+          'missing "case" or "case:default" prop in the last element of a switch control component.'
+        );
+      }
+
+      // nullify is false
+      return false;
+    }
+  }
+};
+
+export const processIfDirective = (
+  keyword: 'if' | 'else-if' | 'else',
+  value: unknown,
+  sequence: IfDirectiveSequence
+): IfDirectiveProcessResult => {
+  const fullfilled = Boolean(value);
+
+  if (keyword === 'if') {
+    return {
+      nullify: !fullfilled,
+      sequence: {
+        fullfilled,
+        last: 'if',
+      },
+    };
+  } else {
+    if (sequence === false) {
+      throw new RuvyError(
+        'cannot use "else" or "else-if" directives outside a conditional sequence'
+      );
+    }
+
+    if (keyword === 'else-if' && sequence.last === 'else') {
+      throw new RuvyError('cannot use "else-if" directive after "else" directive');
+    }
+
+    // already fullfilled
+    if (sequence.fullfilled) {
+      return {
+        nullify: true,
+        sequence: {
+          fullfilled: true,
+          last: keyword,
+        },
+      };
+    }
+
+    if (keyword === 'else-if') {
+      return {
+        nullify: !fullfilled,
+        sequence: {
+          fullfilled,
+          last: 'else-if',
+        },
+      };
+    }
+
+    // else
+    return {
+      nullify: !fullfilled,
+      sequence: false,
+    };
+  }
+};
+
 export const processChildren = (res: ComponentHandlerResult<ParentComponent>): boolean => {
   const parent = res.component as ParentComponent;
 
@@ -918,57 +1056,35 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
   let switchFulfilled = switchControl === false;
 
-  let ifSequence: { sequence: Array<'if' | 'else-if' | 'else'>; fulfilled: boolean } | false =
-    false;
+  let ifSequence: IfDirectiveSequence = false;
 
   const childrenMap = computeChildrenMap(parent);
 
   const childrenKeys = new Set<Key>([]);
 
+  const childrenCount = res.children.length;
+
   let shouldReorder = false;
 
-  for (let i = 0; i < res.children.length; i++) {
+  let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextSiblingIndex;
+
+  for (let i = 0; i < childrenCount; i++) {
     const child = res.children[i];
 
     let nullify = false;
 
     // ? switch directive
     if (switchControl) {
-      // we are inside a switch control
+      nullify = processSwitchDirective(
+        child,
+        i,
+        childrenCount,
+        switchControl.value,
+        switchFulfilled
+      );
 
-      // check if switch is already fullfilled
-      if (switchFulfilled) {
-        nullify = true;
-      } else {
-        // check if there is a "case" prop
-        const caseValue = getPropFromTemplate(child, 'case');
-
-        if (caseValue) {
-          const doMatch = caseValue.value === switchControl.value;
-
-          nullify = !doMatch;
-          switchFulfilled = doMatch;
-        } else {
-          // we should check if we are at the last element
-          const isLast = i === res.children.length - 1;
-
-          if (!isLast) {
-            throw new RuvyError('missing "case" prop within a switch control component.');
-          }
-
-          // we are at the last element and we don't have a "case" prop
-          // check for "case:default"
-          const caseValue = getPropFromTemplate(child, 'case:default');
-
-          // if we don't have a value, we throw
-          if (!caseValue) {
-            throw new RuvyError(
-              'missing "case" or "case:default" prop in the last element of a switch control component.'
-            );
-          }
-
-          // nullify is false, we don't need to set it
-        }
+      if (!nullify) {
+        switchFulfilled = true;
       }
     }
 
@@ -1005,64 +1121,15 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       );
     }
 
-    // check if we are still in a conditional sequence and if it is already fulfilled
-    if (ifDirectiveCount > 0 && typeof ifSequence === 'object' && ifSequence.fulfilled) {
-      nullify = true;
-    }
-    // we have an if directive
-    else if (ifValue) {
-      // start an if sequence
-      const fulfilled = Boolean(ifValue.value);
+    if (ifDirectiveCount === 1) {
+      const keyword = ifValue ? 'if' : elseIfValue ? 'else-if' : 'else';
+      const value = ifValue ? ifValue.value : elseIfValue ? elseIfValue.value : true;
 
-      ifSequence = { fulfilled, sequence: ['if'] };
+      const ifDir = processIfDirective(keyword, value, ifSequence);
 
-      nullify = !fulfilled;
-    }
-    // check for else-if
-    else if (elseIfValue) {
-      // check if we have a sequence
-
-      if (!ifSequence) {
-        throw new RuvyError(
-          'cannot use "else-if" outside a conditional sequence, which should start with "if"'
-        );
-      }
-      // if fullfilled we nullify
-      else if (ifSequence.fulfilled) {
-        nullify = true;
-      } else {
-        // check the last value of the sequence
-        const last = ifSequence.sequence.at(-1);
-
-        if (last === 'else') {
-          // !!! should be unreachable !!!
-          throw new RuvyError('cannot use "else-if" after a component with "else" directive');
-        }
-
-        // check if it can be fulfilled
-        if (elseIfValue.value) {
-          ifSequence.fulfilled = true;
-        } else {
-          nullify = true;
-        }
-      }
-    } else if (elseValue) {
-      if (!ifSequence) {
-        throw new RuvyError(
-          'cannot use "else" outside a conditional sequence, which should start with "if"'
-        );
-      }
-      // check if fulfilled
-      if (ifSequence.fulfilled) {
-        nullify = true;
-      } else {
-        // this the last element of the conditional sequence
-        // we fulfill by not nullifying, and reset the sequence
-        ifSequence = false;
-      }
-    }
-    // no condition sequence, reset
-    else if (ifSequence) {
+      ifSequence = ifDir.sequence;
+      nullify = ifDir.nullify;
+    } else {
       ifSequence = false;
     }
 
@@ -1071,9 +1138,13 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
     const childTag = getTagFromTemplate(template);
 
-    // check if we have an element template, which needs some props processing
-    if (childTag === ComponentTag.Element) {
-      processElementTemplateProps(template as ElementTemplate, res.ctx);
+    if (isNodeTemplate(template)) {
+      domIndex++;
+
+      // check if we have an element template, which needs some props processing
+      if (childTag === ComponentTag.Element) {
+        processElementTemplateProps(template as ElementTemplate, res.ctx);
+      }
     }
 
     let childRes: ComponentHandlerResult<Component>;
@@ -1108,6 +1179,8 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
       }
     }
 
+    res.ctx.dom.nextSiblingIndex = childRes.ctx.dom.nextSiblingIndex;
+
     // push tasks
     pushBlukTasks(childRes.tasks, res.tasks);
   }
@@ -1130,6 +1203,10 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
     return true;
   });
+
+  if (!isNodeComponent(res.component)) {
+    res.ctx.dom.nextSiblingIndex = domIndex;
+  }
 
   return shouldReorder;
 };

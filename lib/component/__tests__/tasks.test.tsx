@@ -23,16 +23,30 @@ import {
 import { RuvyError } from '@/helpers/helpers.js';
 
 describe('tasks', () => {
-  const ctx: ExecutionContext = {
-    contexts: {},
-  };
-
   let root = createRoot(document.body);
+
+  let ctx: ExecutionContext = {
+    contexts: {},
+    dom: {
+      nextIndex: 0,
+      parent: root,
+      nextSiblingIndex: 0,
+    },
+  };
 
   beforeEach(() => {
     document.body.innerHTML = '';
 
     root = createRoot(document.body);
+
+    ctx = {
+      contexts: {},
+      dom: {
+        nextIndex: 0,
+        parent: root,
+        nextSiblingIndex: 0,
+      },
+    };
   });
 
   describe('createRenderTask', () => {

@@ -28,7 +28,7 @@ import {
   PortalTemplate,
   OutletTemplate,
 } from '@/types.js';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
+import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
 import {
   compareElementProps,
@@ -62,16 +62,30 @@ const hostComponents = [ComponentTag.Element, ComponentTag.Portal, ComponentTag.
 const nonHostComponents = Object.values(ComponentTag).filter(it => !hostComponents.includes(it));
 
 describe('component', () => {
-  let ctx: ExecutionContext = {
-    contexts: {},
-  };
-
   let root = createRoot(document.body);
+
+  let exCtx: ExecutionContext = {
+    contexts: {},
+    dom: {
+      nextIndex: 0,
+      parent: root,
+      nextSiblingIndex: 0,
+    },
+  };
 
   beforeEach(() => {
     document.body.innerHTML = '';
 
     root = createRoot(document.body);
+
+    exCtx = {
+      contexts: {},
+      dom: {
+        nextIndex: 0,
+        parent: root,
+        nextSiblingIndex: 0,
+      },
+    };
   });
 
   describe('compareElementProps', () => {
@@ -164,6 +178,7 @@ describe('component', () => {
             hooks: [{ type: HookType.Context, value: ctx }],
           } as unknown as FunctionComponent,
           ctx: {
+            ...exCtx,
             contexts: {
               [ctx.id]: 10,
             },
@@ -189,9 +204,7 @@ describe('component', () => {
       undefined,
       root,
       0,
-      {
-        contexts: {},
-      }
+      exCtx
     );
 
     const innerHtmlExample = handleElement(
@@ -204,10 +217,30 @@ describe('component', () => {
       undefined,
       root,
       0,
-      {
-        contexts: {},
-      }
+      exCtx
     );
+
+    it('should create a new context', () => {
+      expect(example.ctx).toStrictEqual({
+        ...exCtx,
+        dom: {
+          parent: example.component,
+          nextIndex: 0,
+          nextSiblingIndex: 1,
+        },
+      });
+    });
+
+    it('should not override old', () => {
+      expect(exCtx).toStrictEqual({
+        contexts: {},
+        dom: {
+          nextIndex: 0,
+          parent: root,
+          nextSiblingIndex: 0,
+        },
+      });
+    });
 
     describe('render phase', () => {
       it('should create element with type', () => {
@@ -268,18 +301,20 @@ describe('component', () => {
         template = <div></div>,
         newTemplate = <div></div>,
       }: SetupParams) => {
-        const current = handleElement(template as unknown as ElementTemplate, undefined, root, 0, {
-          contexts: {},
-        });
+        const current = handleElement(
+          template as unknown as ElementTemplate,
+          undefined,
+          root,
+          0,
+          exCtx
+        );
 
         const result = handleElement(
           newTemplate as unknown as ElementTemplate,
           current.component,
           root,
           0,
-          {
-            contexts: {},
-          }
+          exCtx
         );
 
         return result;
@@ -362,7 +397,7 @@ describe('component', () => {
   });
 
   describe('handleNull', () => {
-    const res = handleNull(null, undefined, root, 0, ctx);
+    const res = handleNull(null, undefined, root, 0, exCtx);
 
     it('should create a component with null tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Null);
@@ -385,14 +420,36 @@ describe('component', () => {
     });
 
     it('should return the same component upon update', () => {
-      const up = handleNull(null, res.component, root, 0, ctx);
+      const up = handleNull(null, res.component, root, 0, exCtx);
 
       expect(up.component).toStrictEqual(res.component);
     });
   });
 
   describe('handleText', () => {
-    let res = handleText('test', undefined, root, 0, ctx);
+    let res = handleText('test', undefined, root, 0, exCtx);
+
+    it('should create a new context', () => {
+      expect(res.ctx).toStrictEqual({
+        ...exCtx,
+        dom: {
+          parent: root,
+          nextIndex: 0,
+          nextSiblingIndex: 1,
+        },
+      });
+    });
+
+    it('should not override old', () => {
+      expect(exCtx).toStrictEqual({
+        contexts: {},
+        dom: {
+          nextIndex: 0,
+          parent: root,
+          nextSiblingIndex: 0,
+        },
+      });
+    });
 
     describe('render', () => {
       it('should create a component with text tag', () => {
@@ -422,23 +479,23 @@ describe('component', () => {
 
     describe('update', () => {
       beforeEach(() => {
-        res = handleText('test', undefined, root, 0, ctx);
+        res = handleText('test', undefined, root, 0, exCtx);
       });
 
       it('should not update text when text is the same', () => {
-        const upSame = handleText('test', res.component, root, 0, ctx);
+        const upSame = handleText('test', res.component, root, 0, exCtx);
 
         expect(upSame.tasks[TaskType.UpdateText].length).toBe(0);
       });
 
       it('should update text', () => {
-        const up = handleText('test-2', res.component, root, 0, ctx);
+        const up = handleText('test-2', res.component, root, 0, exCtx);
 
         expect(up.component.text).toBe('test-2');
       });
 
       it('should create update task', () => {
-        const up = handleText('test-3', res.component, root, 0, ctx);
+        const up = handleText('test-3', res.component, root, 0, exCtx);
 
         expect(up.tasks[TaskType.UpdateText].length).toBe(1);
       });
@@ -450,7 +507,13 @@ describe('component', () => {
 
     const withHookContext = vitest.spyOn(MOD, 'withHookContext');
 
-    const res = handleFunction((<Fn if />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+    const res = handleFunction(
+      (<Fn if />) as unknown as FunctionTemplate,
+      undefined,
+      root,
+      0,
+      exCtx
+    );
 
     it('should set key', () => {
       expect(res.component.key).toBe(0);
@@ -461,7 +524,7 @@ describe('component', () => {
     });
 
     it('should set ctx', () => {
-      expect(res.component.ctx).toStrictEqual(ctx);
+      expect(res.component.ctx).toStrictEqual(exCtx);
     });
 
     it('should set type', () => {
@@ -493,7 +556,7 @@ describe('component', () => {
     });
 
     it('should update props', () => {
-      handleFunction((<Fn else />) as unknown as FunctionTemplate, res.component, root, 0, ctx);
+      handleFunction((<Fn else />) as unknown as FunctionTemplate, res.component, root, 0, exCtx);
 
       expect(res.component.props).toStrictEqual({
         else: true,
@@ -505,6 +568,7 @@ describe('component', () => {
       const obj = createContext();
 
       const newCtx: ExecutionContext = {
+        ...exCtx,
         contexts: {
           [obj.id]: 0,
         },
@@ -533,7 +597,14 @@ describe('component', () => {
       [1, 2, 3]
     ) as unknown as ContextTemplate;
 
-    const res = MOD.handleContext(template, undefined, root, 0, ctx);
+    const _exCtx = {
+      ...exCtx,
+      contexts: {
+        [obj.id]: value,
+      },
+    };
+
+    const res = MOD.handleContext(template, undefined, root, 0, _exCtx);
 
     it('should set tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Context);
@@ -583,7 +654,7 @@ describe('component', () => {
       </Fragment>
     ) as unknown as FragmentTemplate;
 
-    const res = MOD.handleFragment(frg, undefined, root, 0, ctx);
+    const res = MOD.handleFragment(frg, undefined, root, 0, exCtx);
 
     it('should set tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Fragment);
@@ -616,7 +687,7 @@ describe('component', () => {
     it('should update and override old props', () => {
       const up = (<Fragment key={80} />) as unknown as FragmentTemplate;
 
-      MOD.handleFragment(up, res.component, root, 0, ctx);
+      MOD.handleFragment(up, res.component, root, 0, exCtx);
 
       expect(res.component.props).toStrictEqual({
         children: [],
@@ -634,7 +705,7 @@ describe('component', () => {
       </>
     ) as unknown as JsxFragmentTemplate;
 
-    const res = MOD.handleJsxFragment(frg, undefined, root, 0, ctx);
+    const res = MOD.handleJsxFragment(frg, undefined, root, 0, exCtx);
 
     it('should set tag', () => {
       expect(res.component.tag).toBe(ComponentTag.JsxFragment);
@@ -664,7 +735,7 @@ describe('component', () => {
   describe('handlePortal', () => {
     const portal = (<Portal container={document.body} />) as unknown as PortalTemplate;
 
-    const res = MOD.handlePortal(portal, undefined, root, 0, ctx);
+    const res = MOD.handlePortal(portal, undefined, root, 0, exCtx);
 
     it('should set key', () => {
       expect(res.component.key).toBe(0);
@@ -698,7 +769,7 @@ describe('component', () => {
     });
 
     it('should not update the same container', () => {
-      const up = MOD.handlePortal(portal, res.component, root, 0, ctx);
+      const up = MOD.handlePortal(portal, res.component, root, 0, exCtx);
 
       expect(up.tasks[TaskType.UpdatePortalChildren].length).toBe(0);
     });
@@ -709,7 +780,7 @@ describe('component', () => {
 
       const portal = (<Portal container={container} />) as unknown as PortalTemplate;
 
-      const up = MOD.handlePortal(portal, res.component, root, 0, ctx);
+      const up = MOD.handlePortal(portal, res.component, root, 0, exCtx);
 
       expect(up.tasks[TaskType.UpdatePortalChildren].length).toBe(1);
     });
@@ -717,7 +788,7 @@ describe('component', () => {
     it('should update props', () => {
       const portal = (<Portal container={document.body} key={20} />) as unknown as PortalTemplate;
 
-      MOD.handlePortal(portal, res.component, root, 0, ctx);
+      MOD.handlePortal(portal, res.component, root, 0, exCtx);
 
       expect(res.component.props).toStrictEqual({
         key: 20,
@@ -730,7 +801,7 @@ describe('component', () => {
   describe('handleOutlet', () => {
     const outlet = (<Outlet key={10} />) as unknown as OutletTemplate;
 
-    const res = MOD.handleOutlet(outlet, undefined, root, 0, ctx);
+    const res = MOD.handleOutlet(outlet, undefined, root, 0, exCtx);
 
     it('should set key', () => {
       expect(res.component.key).toBe(0);
@@ -766,7 +837,7 @@ describe('component', () => {
     it('should update props', () => {
       const portal = (<Outlet key={20} />) as unknown as OutletTemplate;
 
-      MOD.handleOutlet(portal, res.component, root, 0, ctx);
+      MOD.handleOutlet(portal, res.component, root, 0, exCtx);
 
       expect(res.component.props).toStrictEqual({
         key: 20,
@@ -784,7 +855,7 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Element);
@@ -798,7 +869,7 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Function);
@@ -826,14 +897,20 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Context);
     });
 
     it('should use correct handler (null)', () => {
-      const res = MOD.handleComponent(null, undefined, root as unknown as ParentComponent, 0, ctx);
+      const res = MOD.handleComponent(
+        null,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
 
       expect(res.component.tag).toBe(ComponentTag.Null);
     });
@@ -844,7 +921,7 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Text);
@@ -856,7 +933,7 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Portal);
@@ -868,14 +945,20 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Fragment);
     });
 
     it('should use correct handler (jsx fragment)', () => {
-      const res = MOD.handleComponent(<></>, undefined, root as unknown as ParentComponent, 0, ctx);
+      const res = MOD.handleComponent(
+        <></>,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
 
       expect(res.component.tag).toBe(ComponentTag.JsxFragment);
     });
@@ -886,7 +969,7 @@ describe('component', () => {
         undefined,
         root as unknown as ParentComponent,
         0,
-        ctx
+        exCtx
       );
 
       expect(res.component.tag).toBe(ComponentTag.Outlet);
@@ -899,7 +982,7 @@ describe('component', () => {
     beforeEach(() => {
       const Comp = vitest.fn();
 
-      res = handleFunction((<Comp />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+      res = handleFunction((<Comp />) as unknown as FunctionTemplate, undefined, root, 0, exCtx);
     });
 
     const withCtx = (callback: () => void) => {
@@ -1247,17 +1330,9 @@ describe('component', () => {
       const ctxObj = createContext();
       const noCtx = createContext();
 
-      beforeAll(() => {
-        ctx = {
-          contexts: {
-            [ctxObj.id]: 0,
-          },
-        };
-      });
-
-      afterAll(() => {
-        ctx = {
-          contexts: {},
+      beforeEach(() => {
+        exCtx.contexts = {
+          [ctxObj.id]: 0,
         };
       });
 
@@ -1390,7 +1465,7 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
         tag: ComponentTag.Function,
         type: vitest.fn(),
-        ctx,
+        ctx: exCtx,
       };
 
       const component: NullComponent = {
@@ -1489,7 +1564,7 @@ describe('component', () => {
         key: 0,
         status: ComponentStatus.Mounted,
         type: vitest.fn(),
-        ctx,
+        ctx: exCtx,
       } as FunctionComponent;
 
       const child1 = {
@@ -1532,7 +1607,13 @@ describe('component', () => {
         return <div></div>;
       };
 
-      const res = handleFunction((<Fn />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+      const res = handleFunction(
+        (<Fn />) as unknown as FunctionTemplate,
+        undefined,
+        root,
+        0,
+        exCtx
+      );
 
       (res.component.hooks[0] as EffectHook).cleanup = cleanup;
 
@@ -1551,7 +1632,13 @@ describe('component', () => {
         return <div></div>;
       };
 
-      const res = handleFunction((<Fn />) as unknown as FunctionTemplate, undefined, root, 0, ctx);
+      const res = handleFunction(
+        (<Fn />) as unknown as FunctionTemplate,
+        undefined,
+        root,
+        0,
+        exCtx
+      );
 
       const unmount = MOD.unmountComponent(res.component, {});
 
@@ -1564,14 +1651,14 @@ describe('component', () => {
         undefined,
         root,
         0,
-        ctx
+        exCtx
       );
       const childRes = handleElement(
         (<img></img>) as unknown as ElementTemplate,
         undefined,
         root,
         0,
-        ctx
+        exCtx
       );
 
       elRes.component.children = [childRes.component];
@@ -1709,12 +1796,12 @@ describe('component', () => {
       undefined,
       root,
       0,
-      ctx
+      exCtx
     );
 
-    const child0 = handleNull(null, undefined, component.component, 11, ctx);
-    const child1 = handleNull(null, undefined, component.component, 22, ctx);
-    const child2 = handleNull(null, undefined, component.component, 33, ctx);
+    const child0 = handleNull(null, undefined, component.component, 11, exCtx);
+    const child1 = handleNull(null, undefined, component.component, 22, exCtx);
+    const child2 = handleNull(null, undefined, component.component, 33, exCtx);
 
     component.component.children = [child0.component, child1.component, child2.component];
 
@@ -1742,7 +1829,7 @@ describe('component', () => {
       <div tag="a" className="cls" class="c" class:on class:off={false} onClick={fn} href="/home" />
     ) as unknown as ElementTemplate;
 
-    MOD.processElementTemplateProps(el, ctx);
+    MOD.processElementTemplateProps(el, exCtx);
 
     it('should override tag', () => {
       expect(el.type).toBe('a');
@@ -1763,7 +1850,7 @@ describe('component', () => {
     it('should set namespace according to execution context', () => {
       const el = (<div />) as unknown as ElementTemplate;
 
-      MOD.processElementTemplateProps(el, { contexts: {}, ns: Namespace.SVG });
+      MOD.processElementTemplateProps(el, { ...exCtx, ns: Namespace.SVG });
 
       expect(el.props.ns).toStrictEqual(Namespace.SVG);
     });
@@ -1832,7 +1919,7 @@ describe('component', () => {
       status: ComponentStatus.Mounting,
       tag: ComponentTag.Function,
       type: vitest.fn(),
-      ctx,
+      ctx: exCtx,
       children: [
         {
           hooks: [],
@@ -1843,7 +1930,7 @@ describe('component', () => {
           tag: ComponentTag.Function,
           type: vitest.fn(),
           children: [anchor],
-          ctx,
+          ctx: exCtx,
         },
         anchor,
         {
@@ -1855,7 +1942,7 @@ describe('component', () => {
           tag: ComponentTag.Function,
           type: vitest.fn(),
           children: [],
-          ctx,
+          ctx: exCtx,
         },
         txt,
         {
@@ -1866,7 +1953,7 @@ describe('component', () => {
           status: ComponentStatus.Mounting,
           tag: ComponentTag.Function,
           type: vitest.fn(),
-          ctx,
+          ctx: exCtx,
           children: [
             {
               hooks: [],
@@ -1877,7 +1964,7 @@ describe('component', () => {
               tag: ComponentTag.Function,
               type: vitest.fn(),
               children: [txt, anchor],
-              ctx,
+              ctx: exCtx,
             },
           ],
         },
@@ -1921,9 +2008,9 @@ describe('component', () => {
           parent: root,
           props: {},
           status: ComponentStatus.Mounting,
-          ctx,
+          ctx: exCtx,
         },
-        ctx,
+        ctx: exCtx,
         tasks: initComponentTasks(),
       };
     });
