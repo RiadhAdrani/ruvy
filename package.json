@@ -74,6 +74,7 @@
   "dependencies": {
     "@riadh-adrani/array-utils": "1.0.2",
     "@riadh-adrani/async-utils": "1.0.2",
+    "@riadh-adrani/dom-router": "^0.0.1",
     "@riadh-adrani/dom-utils": "1.3.2",
     "@riadh-adrani/domer": "^0.0.2",
     "@riadh-adrani/obj-utils": "1.0.2",

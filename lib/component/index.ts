@@ -81,6 +81,8 @@ import {
 } from './task.js';
 import { RuvyError, generateId, moveElement } from '@/helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
+import { createDestination, getTemplateByDepth } from '@/router/router.js';
+import { DestinationRequest } from '@riadh-adrani/dom-router';
 
 export const RuvyAttributes = [
   'if',
@@ -505,18 +507,16 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     component.props = props;
   }
 
-  const children: Array<Template> = [];
-
   const depth = (_ctx.outletDepth ?? -1) + 1;
 
-  // TODO: setup router and get child by depth, if no router return null
+  const child = getTemplateByDepth(depth);
 
   const ctx: ExecutionContext = {
     ..._ctx,
     outletDepth: depth,
   };
 
-  return { children, ctx, component, tasks };
+  return { children: [child], ctx, component, tasks };
 };
 
 /**
@@ -845,6 +845,7 @@ export const isParentComponent = (component: Component): component is ParentComp
     ComponentTag.Context,
     ComponentTag.Function,
     ComponentTag.Portal,
+    ComponentTag.Outlet,
   ].includes(component.tag);
 };
 
@@ -901,7 +902,7 @@ export const processElementTemplateProps = (template: ElementTemplate, ctx: Exec
       const href = getPropFromTemplate(template, 'href');
 
       if (href) {
-        // TODO: process href and compute url and
+        acc[key] = createDestination(href.value as DestinationRequest);
       }
     } else {
       acc[key] = value;
