@@ -333,6 +333,11 @@
   resolved "https://registry.yarnpkg.com/@riadh-adrani/async-utils/-/async-utils-1.0.2.tgz#bc0903271454ec2ea8c156ae9af3c11013e6a0de"
   integrity sha512-HphQxPIkusvDpOzo6I75dEuFdWszWaAOcmG1bGI2WRiFG/nDPk393aaLRVlKgVDP6vqmk0GHbsmkuzR9qWJYbQ==
 
+"@riadh-adrani/dom-router@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.1.tgz#006ac449ee83f51f95c4a995bec37eb9e6bad94a"
+  integrity sha512-XOKIhKnlJ9IzmaDv5FpSCbikNV3kDOJIFVGZ5ReaHilofB/VnFL6yP9wZa35NKNSbSvhJVVypCH82eXQXhi+kg==
+
 "@riadh-adrani/dom-utils@1.3.2":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-utils/-/dom-utils-1.3.2.tgz#54bafc8ee276d30da17c721c72dfbdb5896f888e"

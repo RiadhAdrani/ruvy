@@ -1,3 +1,4 @@
+import { RouterConfig } from '@riadh-adrani/dom-router';
 import { Namespace } from '@riadh-adrani/domer';
 
 export enum ContextType {
@@ -499,3 +500,8 @@ export interface IfDirectiveProcessResult {
   sequence: IfDirectiveSequence;
   nullify: boolean;
 }
+
+export type RouterOptions = Pick<
+  RouterConfig<Template>,
+  'base' | 'catchAllElement' | 'correctScrolling' | 'routes' | 'transformTitle' | 'type'
+>;

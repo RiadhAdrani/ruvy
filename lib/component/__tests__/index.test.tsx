@@ -29,7 +29,7 @@ import {
   FragmentComponent,
   ContextComponent,
 } from '@/types.js';
-import { beforeEach, describe, expect, it, vitest } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
 import {
   compareElementProps,
@@ -52,6 +52,7 @@ import '@core/index.js';
 import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
 import { Namespace, element } from '@riadh-adrani/domer';
+import { createRouter, navigate, unmountRouter } from '@/router/router.js';
 
 const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
 const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
@@ -63,6 +64,34 @@ const hostComponents = [ComponentTag.Element, ComponentTag.Portal, ComponentTag.
 const nonHostComponents = Object.values(ComponentTag).filter(it => !hostComponents.includes(it));
 
 describe('component', () => {
+  unmountRouter();
+
+  createRouter({
+    catchAllElement: 'not found',
+    routes: [
+      {
+        element: <Outlet />,
+        children: [
+          { path: '/', element: 'home', name: 'Home' },
+          {
+            path: '/users',
+            name: 'Users',
+            element: (
+              <>
+                <Outlet />
+              </>
+            ),
+            children: [{ path: '/:id', name: 'User', element: <div /> }],
+          },
+        ],
+      },
+    ],
+  });
+
+  afterAll(() => {
+    unmountRouter();
+  });
+
   let root = createRoot(document.body);
 
   let exCtx: ExecutionContext = {
@@ -75,6 +104,8 @@ describe('component', () => {
 
   beforeEach(() => {
     document.body.innerHTML = '';
+
+    navigate('/');
 
     root = createRoot(document.body);
 
@@ -827,9 +858,9 @@ describe('component', () => {
     });
 
     it('should update props', () => {
-      const portal = (<Outlet key={20} />) as unknown as OutletTemplate;
+      const outlet = (<Outlet key={20} />) as unknown as OutletTemplate;
 
-      MOD.handleOutlet(portal, res.component, root, 0, exCtx);
+      MOD.handleOutlet(outlet, res.component, root, 0, exCtx);
 
       expect(res.component.props).toStrictEqual({
         key: 20,
@@ -837,8 +868,27 @@ describe('component', () => {
       });
     });
 
-    // TODO: get correct component
-    it.todo('should get correct outlet component');
+    it('should get correct outlet component', () => {
+      expect(res.children).toStrictEqual([<Outlet />]);
+    });
+
+    it('should get correct outlet component depth', () => {
+      navigate('/users/123');
+
+      const res = MOD.handleComponent(
+        <Outlet />,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
+
+      res.tasks[TaskType.RenderElement].forEach(it => {
+        it.execute();
+      });
+
+      expect(document.body.innerHTML).toBe('<div></div>');
+    });
   });
 
   describe('handleComponent', () => {
@@ -1717,7 +1767,15 @@ describe('component', () => {
     const fn = vitest.fn();
 
     const el = (
-      <div tag="a" className="cls" class="c" class:on class:off={false} onClick={fn} href="/home" />
+      <div
+        tag="a"
+        className="cls"
+        class="c"
+        class:on
+        class:off={false}
+        onClick={fn}
+        href={{ name: 'User', params: { id: '123' } }}
+      />
     ) as unknown as ElementTemplate;
 
     MOD.processElementTemplateProps(el, exCtx);
@@ -1746,9 +1804,8 @@ describe('component', () => {
       expect(el.props.ns).toStrictEqual(Namespace.SVG);
     });
 
-    // TODO:
-    it.todo('should transform "href" with <a> element', () => {
-      expect(el.props.href).toBe('/home');
+    it('should transform "href" with <a> element', () => {
+      expect(el.props.href).toBe('/users/123');
     });
   });
 
@@ -1785,7 +1842,7 @@ describe('component', () => {
     });
   });
 
-  describe.skip('getClosestNodeComponent', () => {
+  describe('getClosestNodeComponent', () => {
     const anchor: ElementComponent = {
       children: [],
       key: 0,
