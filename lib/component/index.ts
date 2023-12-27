@@ -63,7 +63,7 @@ import {
   IfDirectiveSequence,
   IfDirectiveProcessResult,
   ValueOrFalse,
-} from '@/types.js';
+} from '../types.js';
 import {
   createEffectCleanUpTask,
   createEffectTask,
@@ -79,9 +79,15 @@ import {
   createUpdateTextTask,
   createChangeElementPosition,
 } from './task.js';
-import { RuvyError, generateId, moveElement } from '@/helpers/helpers.js';
+import { RuvyError, generateId, moveElement } from '../helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
-import { createDestination, getTemplateByDepth } from '@/router/router.js';
+import {
+  addRootOutlet,
+  createDestination,
+  getTemplateByDepth,
+  isRootOutlet,
+  removeRootOutlet,
+} from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
 
 export const RuvyAttributes = [
@@ -501,6 +507,7 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Outlet,
     type,
+    ctx: _ctx,
   };
 
   if (current) {
@@ -511,10 +518,13 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   const child = getTemplateByDepth(depth);
 
-  const ctx: ExecutionContext = {
-    ..._ctx,
-    outletDepth: depth,
-  };
+  if (depth === 0) {
+    addRootOutlet(component);
+  }
+
+  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
+    ctx.outletDepth = depth;
+  });
 
   return { children: [child], ctx, component, tasks };
 };
@@ -780,6 +790,10 @@ export const unmountComponent = (
         pushTask(cleanupTask, tasks);
       }
     });
+  }
+
+  if (component.tag === ComponentTag.Outlet && isRootOutlet(component)) {
+    removeRootOutlet(component);
   }
 
   const unmountTask = createUnmountComponentTask(component, data);
@@ -1119,7 +1133,12 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
     let childRes: ComponentHandlerResult<Component>;
 
-    const ctx = cloneExecutionContext(res.ctx, ctx => (ctx.dom.nextIndex = domIndex));
+    const ctx = cloneExecutionContext(res.ctx, ctx => {
+      ctx.dom.nextIndex = domIndex;
+      ctx.index = i;
+      ctx.key = key;
+      ctx.parent = res.component;
+    });
 
     if (isNodeTemplate(template)) {
       domIndex++;

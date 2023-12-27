@@ -290,6 +290,7 @@ export interface NullComponent extends Pick<CommonComponent, 'key' | 'parent' | 
 export interface OutletComponent extends CommonComponent {
   tag: ComponentTag.Outlet;
   type: typeof Outlet;
+  ctx: ExecutionContext;
 }
 
 export interface PortalComponent extends CommonComponent {
@@ -431,9 +432,10 @@ export enum TaskType {
   UnrefEelement = 'unref-element',
 }
 
-export const MicroTaskSorted = [
+export const TasksSorted = [
   TaskType.UnmountComponent,
   TaskType.RenderElement,
+  TaskType.RenderText,
   TaskType.UnrefEelement,
   TaskType.RefElement,
   TaskType.RenderInnerHTML,
@@ -462,9 +464,19 @@ export interface ExecutionContext {
   contexts: Record<string, unknown>;
   /** warn if there is a change of context */
   ns?: Namespace;
+  /** current outlet depth */
   outletDepth?: number;
+  /** component index in the parent */
+  index: number;
+  /** component key in the parent */
+  key: Key;
+  /** direct parent component */
+  parent: ParentComponent;
+  /** DOM specific data */
   dom: {
+    /** parent in the DOM */
     parent: HostComponent;
+    /** next element (sibling) index in the DOM */
     nextIndex: number;
   };
 }
@@ -505,3 +517,8 @@ export type RouterOptions = Pick<
   RouterConfig<Template>,
   'base' | 'catchAllElement' | 'correctScrolling' | 'routes' | 'transformTitle' | 'type'
 >;
+
+export interface MountAppConfig {
+  app: RuvyNode;
+  host: Element;
+}
