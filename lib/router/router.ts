@@ -67,7 +67,7 @@ export const createDestination = (destination: DestinationRequest): string | und
   return withRouter(router => router.createPathFromNamedDestination(destination));
 };
 
-export const getPath = (): string => withRouter(router => router.getPath());
+export const getPathname = (): string => withRouter(router => router.getPath());
 
 export const getSearchParams = (): Record<string, string | undefined> =>
   withRouter(router => router.getSearchParams());

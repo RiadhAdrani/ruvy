@@ -31,5 +31,5 @@
       "@utils/*": ["./lib/utils/*"]
     }
   },
-  "include": ["./src", "./lib", "./docs"]
+  "include": ["./src", "./lib", "./docs", "./playground"]
 }

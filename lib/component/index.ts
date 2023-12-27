@@ -89,6 +89,7 @@ import {
   removeRootOutlet,
 } from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
+import { queueRequest } from '../scheduler/scheduler.js';
 
 export const RuvyAttributes = [
   'if',
@@ -253,6 +254,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     _ctx,
     ctx =>
       (ctx.dom = {
+        firstIndex: 0,
         nextIndex: 0,
         parent: component,
       })
@@ -1056,6 +1058,8 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
   let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextIndex;
 
+  res.ctx.dom.firstIndex = domIndex;
+
   for (let i = 0; i < childrenCount; i++) {
     const child = res.children[i];
 
@@ -1325,8 +1329,9 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
         }
 
         if (!areEqual(hook.value, newValue)) {
-          // TODO: schedule UI update
           hook.value = newValue;
+
+          queueRequest({ component });
         }
       },
     };
