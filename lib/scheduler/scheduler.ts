@@ -1,4 +1,4 @@
-import { handleComponent } from '../component/index.js';
+import { cloneExecutionContext, handleComponent } from '../component/index.js';
 import { executeTasks } from '../core/index.js';
 import { generateId } from '../helpers/helpers.js';
 import { Component, ComponentTag, FunctionComponent, Outlet, OutletComponent } from '../types.js';
@@ -69,8 +69,6 @@ export const queueRequest = (data: UpdateRequestData) => {
     id: generateId(),
   };
 
-  stack.push(request);
-
   if (state === 'processing') {
     buffer.push(request);
     return;
@@ -103,13 +101,12 @@ export const queueRequest = (data: UpdateRequestData) => {
 
       const template = createJsxElement(type, props, ...children);
 
-      const { tasks } = handleComponent(
-        template,
-        component,
-        component.ctx.parent,
-        index,
-        component.ctx
+      const ctx = cloneExecutionContext(
+        component.ctx,
+        ctx => (ctx.dom.nextIndex = component.ctx.dom.firstIndex)
       );
+
+      const { tasks } = handleComponent(template, component, component.ctx.parent, index, ctx);
 
       executeTasks(tasks);
     });

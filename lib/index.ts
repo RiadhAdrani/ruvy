@@ -13,7 +13,7 @@ export { Outlet, Portal, Fragment } from './types.js';
 export { mountApp } from './core/index.js';
 
 export {
-  getPath,
+  getPathname,
   createRouter,
   createDestination,
   navigate,

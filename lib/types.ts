@@ -478,6 +478,8 @@ export interface ExecutionContext {
     parent: HostComponent;
     /** next element (sibling) index in the DOM */
     nextIndex: number;
+    /** needed for recomputation */
+    firstIndex: number;
   };
 }
 
