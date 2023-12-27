@@ -12,7 +12,7 @@ import {
   EffectHook,
   PortalComponent,
   NodeComponent,
-} from '@/types.js';
+} from '../types.js';
 import {
   element,
   insertNode,
@@ -31,7 +31,7 @@ import {
   getHostingComponent,
   isNodeComponent,
 } from './index.js';
-import { RuvyError, generateId } from '@/helpers/helpers.js';
+import { RuvyError, generateId } from '../helpers/helpers.js';
 
 export const createTask = (data: Pick<Task, 'execute' | 'component' | 'type'>): Task => {
   return {

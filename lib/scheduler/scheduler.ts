@@ -1,21 +1,129 @@
-import { Task } from '@/types.js';
+import { handleComponent } from '../component/index.js';
+import { executeTasks } from '../core/index.js';
 import { generateId } from '../helpers/helpers.js';
+import { Component, ComponentTag, FunctionComponent, Outlet, OutletComponent } from '../types.js';
 
-const stack: Array<Task> = [];
+export interface UpdateRequest {
+  id: string;
+  date: Date;
+  fulfilled: boolean;
+  component: FunctionComponent | OutletComponent;
+}
 
-const iteration = 0;
+export type SchedulerState = 'idle' | 'batching' | 'processing';
 
-export const schedule = (callback: () => void) => {
-  const task: Task = {
+export type UpdateRequestData = Pick<UpdateRequest, 'component'>;
+
+let buffer: Array<UpdateRequest> = [];
+
+let stack: Array<UpdateRequest> = [];
+
+let state: SchedulerState = 'idle';
+
+const batchDelay = 5;
+
+export const isAncestorComponent = (
+  component: Component,
+  parent: FunctionComponent | OutletComponent
+): boolean => {
+  if (component.tag === ComponentTag.Root) return false;
+
+  if (component.parent === parent) return true;
+
+  return isAncestorComponent(component.parent, parent);
+};
+
+export const optimizeComponentsToHandle = (
+  requests: Array<UpdateRequest>
+): Array<UpdateRequest> => {
+  const components: Array<UpdateRequest['component']> = [];
+
+  return requests.reduce((acc, it, index) => {
+    if (components.includes(it.component)) {
+      return acc;
+    }
+
+    // check if component is already includes in the rest of the requesters
+    let found = false;
+
+    for (let i = index + 1; i < requests.length; i++) {
+      if (isAncestorComponent(it.component, requests[i].component)) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      acc.push(it);
+    }
+
+    return acc;
+  }, [] as Array<UpdateRequest>);
+};
+
+export const queueRequest = (data: UpdateRequestData) => {
+  const request: UpdateRequest = {
+    ...data,
     date: new Date(),
+    fulfilled: false,
     id: generateId(),
-    callback,
   };
 
-  // if there is already a task in the stack,
-  // we do not need to add a new one
-  // because state is updated immediately
-  if (stack.length > 0) {
+  stack.push(request);
+
+  if (state === 'processing') {
+    buffer.push(request);
     return;
   }
+
+  stack.push(request);
+
+  if (state === 'batching') {
+    return;
+  }
+
+  state = 'batching';
+
+  setTimeout(() => {
+    state = 'processing';
+
+    // empty the stack
+    const optimized = optimizeComponentsToHandle(stack);
+
+    stack = [];
+
+    optimized.forEach(it => {
+      const component = it.component;
+
+      const props = component.props;
+      const type = component.tag === ComponentTag.Outlet ? Outlet : component.type;
+      const children = component.props.children as Array<unknown>;
+
+      const index = component.ctx.index;
+
+      const template = createJsxElement(type, props, ...children);
+
+      const { tasks } = handleComponent(
+        template,
+        component,
+        component.ctx.parent,
+        index,
+        component.ctx
+      );
+
+      executeTasks(tasks);
+    });
+
+    if (buffer.length === 0) {
+      // it is over
+      state = 'idle';
+      return;
+    }
+
+    // we have pending requests
+    stack = buffer;
+    buffer = [];
+
+    queueRequest(stack[0]);
+  }, batchDelay);
 };

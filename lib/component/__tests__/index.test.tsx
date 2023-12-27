@@ -96,6 +96,9 @@ describe('component', () => {
 
   let exCtx: ExecutionContext = {
     contexts: {},
+    index: 0,
+    key: 0,
+    parent: root as unknown as ParentComponent,
     dom: {
       nextIndex: 0,
       parent: root,
@@ -111,6 +114,9 @@ describe('component', () => {
 
     exCtx = {
       contexts: {},
+      index: 0,
+      key: 0,
+      parent: root as unknown as ParentComponent,
       dom: {
         nextIndex: 0,
         parent: root,
@@ -253,6 +259,9 @@ describe('component', () => {
     it('should not override old', () => {
       expect(exCtx).toStrictEqual({
         contexts: {},
+        index: 0,
+        key: 0,
+        parent: root,
         dom: {
           nextIndex: 0,
           parent: root,
@@ -467,6 +476,9 @@ describe('component', () => {
     it('should not override old', () => {
       expect(exCtx).toStrictEqual({
         contexts: {},
+        index: 0,
+        key: 0,
+        parent: root as unknown as ParentComponent,
         dom: {
           nextIndex: 0,
           parent: root,
@@ -850,6 +862,19 @@ describe('component', () => {
       expect(res.component.props).toStrictEqual({
         key: 10,
         children: [],
+      });
+    });
+
+    it('should set execution context', () => {
+      expect(res.component.ctx).toStrictEqual({
+        contexts: {},
+        index: 0,
+        key: 0,
+        parent: root as unknown as ParentComponent,
+        dom: {
+          nextIndex: 0,
+          parent: root,
+        },
       });
     });
 

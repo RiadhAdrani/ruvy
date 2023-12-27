@@ -1,8 +1,25 @@
-import { RuvyError } from '@/helpers/helpers.js';
-import { RouterOptions, Template } from '@/types.js';
+import { RuvyError } from '../helpers/helpers.js';
+import { queueRequest } from '../scheduler/scheduler.js';
+import { OutletComponent, RouterOptions, Template } from '../types.js';
 import { DestinationRequest, RouterInstance } from '@riadh-adrani/dom-router';
 
 let router: RouterInstance<Template> | undefined;
+
+let rootOutlets: Array<OutletComponent> = [];
+
+export const addRootOutlet = (outlet: OutletComponent) => {
+  if (isRootOutlet(outlet)) return;
+
+  rootOutlets.push(outlet);
+};
+
+export const removeRootOutlet = (outlet: OutletComponent) => {
+  rootOutlets = rootOutlets.filter(it => it !== outlet);
+};
+
+export const isRootOutlet = (outlet: OutletComponent): boolean => {
+  return rootOutlets.includes(outlet);
+};
 
 export const createRouter = (options: RouterOptions) => {
   if (router) {
@@ -10,7 +27,7 @@ export const createRouter = (options: RouterOptions) => {
   }
 
   const onChanged = () => {
-    // TODO: request update
+    rootOutlets.forEach(component => queueRequest({ component }));
   };
 
   router = new RouterInstance({ ...options, onChanged });
