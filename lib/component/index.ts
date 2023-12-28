@@ -78,6 +78,7 @@ import {
   createUnrefElementTask,
   createUpdateTextTask,
   createChangeElementPosition,
+  createReorderChildrenTask,
 } from './task.js';
 import { RuvyError, generateId, moveElement } from '../helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
@@ -165,7 +166,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Element,
     type,
-    position: _ctx.dom.nextIndex,
+    position: 0,
     domParent: _ctx.dom.parent,
   };
 
@@ -236,17 +237,7 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
       }
     }
 
-    // override props
     component.props = props;
-
-    // check position
-    if (component.position !== _ctx.dom.nextIndex) {
-      const changePositionTask = createChangeElementPosition(component, _ctx.dom.nextIndex);
-
-      pushTask(changePositionTask, tasks);
-
-      component.position = _ctx.dom.nextIndex;
-    }
   }
 
   // create a new ctx
@@ -1039,7 +1030,7 @@ export const processIfDirective = (
   }
 };
 
-export const processChildren = (res: ComponentHandlerResult<ParentComponent>): boolean => {
+export const processChildren = (res: ComponentHandlerResult<ParentComponent>): void => {
   const parent = res.component as ParentComponent;
 
   const switchControl = isSwitchController(parent as SwitchControllerComponent);
@@ -1053,8 +1044,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   const childrenKeys = new Set<Key>([]);
 
   const childrenCount = res.children.length;
-
-  let shouldReorder = false;
 
   let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextIndex;
 
@@ -1154,8 +1143,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
     if (!oldComponent || shouldRenderNewComponent(template, oldComponent.component)) {
       childRes = handleComponent(template, undefined, parent, i, ctx);
 
-      shouldReorder = true;
-
       const insertedAt = parent.children.length;
 
       parent.children.push(childRes.component as NonRootComponent);
@@ -1172,9 +1159,12 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
 
       if (parent.children.indexOf(oldComponent.component) !== i) {
         // need to change element position
-        shouldReorder = true;
-
         parent.children = moveElement(parent.children, oldComponent.index, i);
+
+        // update children position
+        const reorderTask = createReorderChildrenTask(oldComponent.component);
+
+        pushTask(reorderTask, childRes.tasks);
       }
     }
 
@@ -1200,8 +1190,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): b
   if (!isNodeComponent(res.component)) {
     res.ctx.dom.nextIndex = domIndex;
   }
-
-  return shouldReorder;
 };
 
 export const cloneExecutionContext = (
@@ -1248,6 +1236,10 @@ export const shouldRenderNewComponent = (template: Template, current: Component)
 };
 
 export const getClosestNodeComponents = (component: NonRootComponent): Array<NodeComponent> => {
+  if (isNodeComponent(component)) {
+    return [component];
+  }
+
   if (!isParentComponent(component)) return [];
 
   if (component.children) {
@@ -1263,6 +1255,50 @@ export const getClosestNodeComponents = (component: NonRootComponent): Array<Nod
   }
 
   return [];
+};
+
+export const computeNodeComponentIndexInDOM = (
+  component: NodeComponent,
+  parent?: ParentComponent
+): { index: number; found: boolean } => {
+  let index = 0;
+  let found = false;
+
+  parent ??= getHostingComponent(component) as ParentComponent;
+
+  for (const child of parent.children) {
+    if (found) break;
+
+    if (child === component) {
+      found = true;
+      break;
+    }
+
+    if (child.status === ComponentStatus.Unmounting) {
+      continue;
+    }
+
+    if (child.tag === ComponentTag.Portal) {
+      continue;
+    }
+
+    if (isNodeComponent(child)) {
+      index++;
+      continue;
+    }
+
+    if (isParentComponent(child)) {
+      const { found: wasFound, index: idx } = computeNodeComponentIndexInDOM(component, child);
+
+      index += idx;
+
+      if (wasFound) {
+        found = true;
+      }
+    }
+  }
+
+  return { index, found };
 };
 
 /**

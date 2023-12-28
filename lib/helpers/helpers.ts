@@ -24,7 +24,7 @@ export const generateId = (): string => {
 
   const rnd10 = Math.floor(Math.random() * 10) + 10;
   const rnd100 = Math.floor(Math.random() * 100) + 100;
-  const rnd1000 = Math.floor(Math.random() * 1000) + 1000;
+  const rnd1000 = Math.floor(Math.random() * 10) + 10;
 
   id = `${ms}-${counter}-${rnd10}-${rnd100}-${rnd1000}`;
 

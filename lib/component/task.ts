@@ -26,6 +26,7 @@ import {
   text,
 } from '@riadh-adrani/domer';
 import {
+  computeNodeComponentIndexInDOM,
   filterDomProps,
   getClosestNodeComponents,
   getHostingComponent,
@@ -54,7 +55,9 @@ export const createRenderTask = (component: ElementComponent): Task => {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    insertNode(instance, host.instance, component.position);
+    const { index } = computeNodeComponentIndexInDOM(component);
+
+    insertNode(instance, host.instance, index);
 
     component.instance = instance;
 
@@ -182,7 +185,13 @@ export const createReorderChildrenTask = (component: NonRootComponent): Task => 
         );
       }
 
-      changeNodePosition(element, node.position);
+      const { index, found } = computeNodeComponentIndexInDOM(node);
+
+      if (!found) {
+        throw new RuvyError('unable to compute node index in dom');
+      }
+
+      changeNodePosition(element, index);
     });
   };
 
