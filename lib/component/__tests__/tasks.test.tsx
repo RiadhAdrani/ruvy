@@ -356,9 +356,7 @@ describe('tasks', () => {
 
       const spn = div.children[2] as ElementComponent;
 
-      ((fr2.children[0] as FragmentComponent).children[0] as ElementComponent).position = 0;
-      (fr1.children[0] as ElementComponent).position = 2;
-      spn.position = 1;
+      div.children = [fr2, spn, fr1];
 
       const task = createReorderChildrenTask(div);
       task.execute();

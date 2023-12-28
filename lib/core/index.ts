@@ -33,6 +33,7 @@ export const mountApp = ({ app, host }: MountAppConfig) => {
   const ctx: ExecutionContext = {
     contexts: {},
     dom: {
+      firstIndex: 0,
       nextIndex: 0,
       parent: root,
     },

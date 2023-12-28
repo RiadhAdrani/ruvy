@@ -102,6 +102,7 @@ describe('component', () => {
     dom: {
       nextIndex: 0,
       parent: root,
+      firstIndex: 0,
     },
   };
 
@@ -120,6 +121,7 @@ describe('component', () => {
       dom: {
         nextIndex: 0,
         parent: root,
+        firstIndex: 0,
       },
     };
   });
@@ -265,6 +267,7 @@ describe('component', () => {
         dom: {
           nextIndex: 0,
           parent: root,
+          firstIndex: 0,
         },
       });
     });
@@ -421,22 +424,6 @@ describe('component', () => {
 
         expect(result.tasks[TaskType.RefElement].length).toBe(1);
       });
-
-      it('should change position with ctx.dom.nextIndex', () => {
-        const result = setupDiffTest({
-          newCtx: MOD.cloneExecutionContext(exCtx, c => (c.dom.nextIndex = 22)),
-        });
-
-        expect(result.component.position).toBe(22);
-      });
-
-      it('should create change element position task', () => {
-        const result = setupDiffTest({
-          newCtx: MOD.cloneExecutionContext(exCtx, c => (c.dom.nextIndex = 22)),
-        });
-
-        expect(result.tasks[TaskType.ChangeElementPosition].length).toBe(1);
-      });
     });
   });
 
@@ -482,6 +469,7 @@ describe('component', () => {
         dom: {
           nextIndex: 0,
           parent: root,
+          firstIndex: 0,
         },
       });
     });
@@ -874,6 +862,7 @@ describe('component', () => {
         dom: {
           nextIndex: 0,
           parent: root,
+          firstIndex: 0,
         },
       });
     });
@@ -2274,9 +2263,9 @@ describe('component', () => {
 
         MOD.processChildren(res);
 
-        const reorder = MOD.processChildren(res);
+        MOD.processChildren(res);
 
-        expect(reorder).toBe(false);
+        expect(res.tasks[TaskType.ReorderElements].length).toBe(0);
       });
 
       it('should reorder when component position changed', () => {
@@ -2292,9 +2281,9 @@ describe('component', () => {
 
         res.children = newChildren;
 
-        const reorder = MOD.processChildren(res);
+        MOD.processChildren(res);
 
-        expect(reorder).toBe(true);
+        expect(res.tasks[TaskType.ReorderElements].length).not.toBe(0);
       });
 
       it('should change order in the parent component array', () => {
@@ -2336,99 +2325,107 @@ describe('component', () => {
         ]);
       });
     });
+  });
 
-    describe('execution context propagation', () => {
-      const Fn = () => {
-        return (
-          <>
-            <div></div>
-            <img />
-          </>
-        );
-      };
-
-      const ctx = createContext();
-
-      const template = (
-        <div>
-          text
-          <>
-            <p />
-          </>
-          <button>
-            <span />
-            <img />
-          </button>
-          <Fn />
-          <ctx.Provider value={undefined}>
-            <>text</>
-          </ctx.Provider>
-          text
-        </div>
+  describe('computeNodeElementIndexInDOM', () => {
+    const Fn = () => {
+      return (
+        <>
+          <div></div>
+          <img />
+        </>
       );
+    };
 
-      const res = MOD.handleComponent<ElementComponent>(
-        template,
-        undefined,
-        root as unknown as ParentComponent,
-        0,
-        exCtx
-      );
+    const ctx = createContext();
 
-      const children = res.component.children;
+    const template = (
+      <div>
+        text
+        <>
+          <p />
+        </>
+        <button>
+          <span />
+          <img />
+        </button>
+        <Fn />
+        <ctx.Provider value={undefined}>
+          <>text</>
+        </ctx.Provider>
+        text
+      </div>
+    );
 
-      it('should assign direct node children their correct position', () => {
-        const txt = children[0] as TextComponent;
+    const res = MOD.handleComponent<ElementComponent>(
+      template,
+      undefined,
+      root as unknown as ParentComponent,
+      0,
+      exCtx
+    );
 
-        expect(txt.position).toBe(0);
-      });
+    const children = res.component.children;
 
-      it('should assign correct position for nested children (fragment)', () => {
-        const frg = children[1] as FragmentComponent;
-        const txt = frg.children[0] as ElementComponent;
+    it('should assign direct node children their correct position', () => {
+      const txt = children[0] as TextComponent;
 
-        expect(txt.position).toBe(1);
-      });
+      const position = MOD.computeNodeComponentIndexInDOM(txt, res.component);
 
-      it('should reset index for inner children with element component', () => {
-        const btn = children[2] as ElementComponent;
+      expect(position.index).toBe(0);
+    });
 
-        expect(btn.position).toBe(2);
+    it('should assign correct position for nested children (fragment)', () => {
+      const frg = children[1] as FragmentComponent;
+      const txt = frg.children[0] as ElementComponent;
 
-        const span = btn.children[0] as ElementComponent;
-        const img = btn.children[1] as ElementComponent;
+      const position = MOD.computeNodeComponentIndexInDOM(txt, res.component);
 
-        expect(span.position).toBe(0);
-        expect(img.position).toBe(1);
-      });
+      expect(position.index).toBe(1);
+    });
 
-      it('should assign correct position for nested children (nested: function >  fragment)', () => {
-        const fn = children[3] as FunctionComponent;
+    it('should reset index for inner children with element component', () => {
+      const btn = children[2] as ElementComponent;
 
-        const frg = fn.children[0] as FragmentComponent;
+      const span = btn.children[0] as ElementComponent;
+      const img = btn.children[1] as ElementComponent;
 
-        const div = frg.children[0] as ElementComponent;
-        const img = frg.children[1] as ElementComponent;
+      const position1 = MOD.computeNodeComponentIndexInDOM(span, btn);
+      const position2 = MOD.computeNodeComponentIndexInDOM(img, btn);
 
-        expect(div.position).toBe(3);
-        expect(img.position).toBe(4);
-      });
+      expect(position1.index).toBe(0);
+      expect(position2.index).toBe(1);
+    });
 
-      it('should assign correct position for nested children (nested: function > context > fragment)', () => {
-        const fn = children[4] as FunctionComponent;
-        const ctx = fn.children[0] as ContextComponent;
-        const frg = ctx.children[0] as FragmentComponent;
+    it('should assign correct position for nested children (nested: function >  fragment)', () => {
+      const fn = children[3] as FunctionComponent;
 
-        const div = frg.children[0] as ElementComponent;
+      const frg = fn.children[0] as FragmentComponent;
 
-        expect(div.position).toBe(5);
-      });
+      const div = frg.children[0] as ElementComponent;
+      const img = frg.children[1] as ElementComponent;
 
-      it('should resume dom position correctly', () => {
-        const txt = children[5] as TextComponent;
+      const positon1 = MOD.computeNodeComponentIndexInDOM(div, res.component);
+      const positon2 = MOD.computeNodeComponentIndexInDOM(img, res.component);
 
-        expect(txt.position).toBe(6);
-      });
+      expect(positon1.index).toBe(3);
+      expect(positon2.index).toBe(4);
+    });
+
+    it('should assign correct position for nested children (nested: function > context > fragment)', () => {
+      const fn = children[4] as FunctionComponent;
+      const ctx = fn.children[0] as ContextComponent;
+      const frg = ctx.children[0] as FragmentComponent;
+
+      const div = frg.children[0] as ElementComponent;
+
+      expect(div.position).toBe(5);
+    });
+
+    it('should resume dom position correctly', () => {
+      const txt = children[5] as TextComponent;
+
+      expect(txt.position).toBe(6);
     });
   });
 });

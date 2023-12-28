@@ -1,14 +1,10 @@
 import { generateId } from '../lib/helpers/helpers.js';
-import { mountApp, useEffect, useMemo, useState } from '../lib/index.js';
+import { mountApp, useMemo, useState } from '../lib/index.js';
 
 const Button = () => {
   const [text, setText] = useState('0');
 
   const id = useMemo(() => generateId());
-
-  useEffect(() => {
-    console.log(text);
-  }, text);
 
   return (
     <>
