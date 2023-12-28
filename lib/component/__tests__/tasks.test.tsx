@@ -41,10 +41,14 @@ describe('tasks', () => {
   let root = createRoot(document.body);
 
   let ctx: ExecutionContext = {
+    index: 0,
+    key: 0,
+    parent: root as unknown as ParentComponent,
     contexts: {},
     dom: {
       parent: root,
       nextIndex: 0,
+      firstIndex: 0,
     },
   };
 
@@ -54,10 +58,14 @@ describe('tasks', () => {
     root = createRoot(document.body);
 
     ctx = {
+      index: 0,
+      key: 0,
+      parent: root as unknown as ParentComponent,
       contexts: {},
       dom: {
-        nextIndex: 0,
         parent: root,
+        nextIndex: 0,
+        firstIndex: 0,
       },
     };
   });
@@ -319,7 +327,7 @@ describe('tasks', () => {
 
   describe('createReorderChildrenTask', () => {
     const Temp = () => (
-      <div>
+      <>
         <>
           <img />
         </>
@@ -329,7 +337,7 @@ describe('tasks', () => {
           </>
         </>
         <span />
-      </div>
+      </>
     );
 
     let el: ComponentHandlerResult<FunctionComponent>;
@@ -349,11 +357,10 @@ describe('tasks', () => {
     });
 
     it('should reorder components', () => {
-      const div = el.component.children[0] as ElementComponent;
+      const div = el.component.children[0] as FragmentComponent;
 
       const fr1 = div.children[0] as FragmentComponent;
       const fr2 = div.children[1] as FragmentComponent;
-
       const spn = div.children[2] as ElementComponent;
 
       div.children = [fr2, spn, fr1];
@@ -361,7 +368,7 @@ describe('tasks', () => {
       const task = createReorderChildrenTask(div);
       task.execute();
 
-      expect(document.body.innerHTML).toBe('<div><button></button><span></span><img></div>');
+      expect(document.body.innerHTML).toBe('<button></button><span></span><img>');
     });
   });
 
