@@ -1,11 +1,49 @@
 import { RuvyError } from '../helpers/helpers.js';
 import { queueRequest } from '../scheduler/scheduler.js';
 import { OutletComponent, RouterOptions, Template } from '../types.js';
-import { DestinationRequest, RouterInstance } from '@riadh-adrani/dom-router';
+import { DestinationRequest, RouterInstance, isUrlNavigatable } from '@riadh-adrani/dom-router';
 
 let router: RouterInstance<Template> | undefined;
 
 let rootOutlets: Array<OutletComponent> = [];
+
+export const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined => {
+  if (element.tagName.toLowerCase() === 'a') {
+    return element as HTMLAnchorElement;
+  }
+
+  const parent = element.parentElement;
+
+  if (parent) {
+    if (parent.tagName.toLowerCase() === 'a') {
+      return parent as HTMLAnchorElement;
+    } else if (parent.parentElement) {
+      return getClosestAnchorParent(parent.parentElement);
+    }
+  }
+
+  return undefined;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+document.addEventListener('click', (e: any) => {
+  if (!router) return;
+
+  if (!router) {
+    return;
+  }
+
+  const anchorEl = getClosestAnchorParent(e.target);
+
+  if (anchorEl) {
+    const path: string | null = anchorEl.getAttribute('href');
+    if (path && isUrlNavigatable(path)) {
+      e.preventDefault();
+
+      navigate(path);
+    }
+  }
+});
 
 export const addRootOutlet = (outlet: OutletComponent) => {
   if (isRootOutlet(outlet)) return;
@@ -62,9 +100,18 @@ export const navigate = (destination: DestinationRequest) => {
 export const createDestination = (destination: DestinationRequest): string | undefined => {
   if (typeof destination === 'number') return undefined;
 
-  if (typeof destination === 'string') return destination;
+  return withRouter(router => {
+    let url: string | undefined;
 
-  return withRouter(router => router.createPathFromNamedDestination(destination));
+    if (typeof destination === 'string') url = destination;
+    else url = router.createPathFromNamedDestination(destination);
+
+    if (typeof url !== 'undefined' && router.base) {
+      url = `${router.base}${url}`;
+    }
+
+    return url;
+  });
 };
 
 export const getPathname = (): string => withRouter(router => router.getPath());

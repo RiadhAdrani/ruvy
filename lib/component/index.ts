@@ -1246,9 +1246,9 @@ export const getClosestNodeComponents = (component: NonRootComponent): Array<Nod
     return component.children.reduce((acc, child) => {
       if (isNodeComponent(child)) {
         acc.push(child);
+      } else {
+        acc.push(...getClosestNodeComponents(child));
       }
-
-      acc.push(...getClosestNodeComponents(child));
 
       return acc;
     }, [] as Array<NodeComponent>);

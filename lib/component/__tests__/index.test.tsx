@@ -28,7 +28,7 @@ import {
   OutletTemplate,
   FragmentComponent,
   ContextComponent,
-} from '@/types.js';
+} from '../../types.js';
 import { afterAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
 import {
@@ -68,6 +68,7 @@ describe('component', () => {
 
   createRouter({
     catchAllElement: 'not found',
+    base: '/test',
     routes: [
       {
         element: <Outlet />,
@@ -1819,7 +1820,7 @@ describe('component', () => {
     });
 
     it('should transform "href" with <a> element', () => {
-      expect(el.props.href).toBe('/users/123');
+      expect(el.props.href).toBe('/test/users/123');
     });
   });
 

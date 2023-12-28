@@ -1,5 +1,6 @@
 import { generateId } from '../lib/helpers/helpers.js';
-import { mountApp, useMemo, useState } from '../lib/index.js';
+import { createRouter, mountApp, useMemo, useState } from '../lib/index.js';
+import { Outlet } from '../lib/index.js';
 
 const Button = () => {
   const [text, setText] = useState('0');
@@ -8,7 +9,7 @@ const Button = () => {
 
   return (
     <>
-      <button if={text === 'text'}>You entered the magic word text !</button>
+      <button if={text === 'text'}>text !</button>
       <input
         value={text}
         type={'text'}
@@ -21,12 +22,40 @@ const Button = () => {
   );
 };
 
+createRouter({
+  catchAllElement: <div>not found</div>,
+  base: '/playground',
+  routes: [
+    {
+      element: (
+        <div>
+          <Outlet />
+        </div>
+      ),
+      children: [
+        {
+          path: '/',
+          element: 'yeet',
+        },
+        {
+          path: '/html',
+          element: 'HTML',
+        },
+      ],
+    },
+  ],
+});
+
 const App = () => {
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div>
+          <a href={'/'}>Home</a>
+          <a href={'/html'}>HTML</a>
+        </div>
         <Button />
-        <Button />
+        <Outlet />
       </div>
     </>
   );

@@ -191,6 +191,18 @@ export const createReorderChildrenTask = (component: NonRootComponent): Task => 
         throw new RuvyError('unable to compute node index in dom');
       }
 
+      const parent = element.parentElement;
+
+      if (!parent) {
+        throw new RuvyError('element does not have any parent');
+      }
+
+      const child = parent.childNodes.item(index);
+
+      if (child === element) {
+        return;
+      }
+
       changeNodePosition(element, index);
     });
   };
