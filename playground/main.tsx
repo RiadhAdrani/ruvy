@@ -3,7 +3,7 @@ import { createRouter, mountApp, useMemo, useState } from '../lib/index.js';
 import { Outlet } from '../lib/index.js';
 
 const Button = () => {
-  const [text, setText] = useState('0');
+  const [text, setText] = useState('');
 
   const id = useMemo(() => generateId());
 
@@ -12,7 +12,7 @@ const Button = () => {
       <button if={text === 'text'}>text !</button>
       <input
         value={text}
-        type={'text'}
+        type={'password'}
         onInput={e => {
           setText(e.currentTarget.value);
         }}
@@ -53,6 +53,7 @@ const App = () => {
         <div>
           <a href={'/'}>Home</a>
           <a href={'/html'}>HTML</a>
+          <a href={'https://www.youtube.com/'}>HTML</a>
         </div>
         <Button />
         <Outlet />

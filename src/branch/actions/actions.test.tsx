@@ -18,7 +18,6 @@ import createAction, {
   createMountedCallbackAction,
 } from './actions.js';
 import { diffElementProps } from '../components/element/element.js';
-import { cast } from '@riadh-adrani/type-utils';
 import { getCurrent } from '../../core/core.js';
 import { pick } from '@riadh-adrani/obj-utils';
 import { msg } from '../../helpers/alert.js';
@@ -373,7 +372,7 @@ describe('actions', () => {
 
       createElPropsUpdateAction(div, diffs)();
 
-      cast<HTMLElement>(div.instance).click();
+      (div.instance as HTMLElement).click();
 
       expect(onClick).toHaveBeenCalledOnce();
     });
@@ -392,7 +391,7 @@ describe('actions', () => {
 
       createElPropsUpdateAction(div, diffs)();
 
-      cast<HTMLElement>(div.instance).click();
+      (div.instance as HTMLElement).click();
 
       expect(onClick).toHaveBeenCalledTimes(0);
       expect(onClick2).toHaveBeenCalledOnce();
@@ -411,7 +410,7 @@ describe('actions', () => {
 
       createElPropsUpdateAction(div, diffs)();
 
-      cast<HTMLElement>(div.instance).click();
+      (div.instance as HTMLElement).click();
 
       expect(onClick).toHaveBeenCalledTimes(0);
     });
