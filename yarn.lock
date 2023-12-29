@@ -333,10 +333,10 @@
   resolved "https://registry.yarnpkg.com/@riadh-adrani/async-utils/-/async-utils-1.0.2.tgz#bc0903271454ec2ea8c156ae9af3c11013e6a0de"
   integrity sha512-HphQxPIkusvDpOzo6I75dEuFdWszWaAOcmG1bGI2WRiFG/nDPk393aaLRVlKgVDP6vqmk0GHbsmkuzR9qWJYbQ==
 
-"@riadh-adrani/dom-router@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.1.tgz#006ac449ee83f51f95c4a995bec37eb9e6bad94a"
-  integrity sha512-XOKIhKnlJ9IzmaDv5FpSCbikNV3kDOJIFVGZ5ReaHilofB/VnFL6yP9wZa35NKNSbSvhJVVypCH82eXQXhi+kg==
+"@riadh-adrani/dom-router@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.2.tgz#f615c1d2a91515569d3a6eb5355faa33d6179bc1"
+  integrity sha512-eddQwCXHFcVwC3kNcmqsesYNVjNXFdtl5JBxlJZGMgJQLmIejP7KeT+QNFcNOvd14AbnUq2+ioty7HSQ5O/Bkg==
 
 "@riadh-adrani/dom-utils@1.3.2":
   version "1.3.2"
@@ -348,15 +348,20 @@
     "@riadh-adrani/type-utils" "^1.0.2"
     camelcase "^7.0.1"
 
-"@riadh-adrani/domer@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.2.tgz#78271b9b53a163717e846c6619a676c9a5823701"
-  integrity sha512-QU82rBduHThRZewNpeD+5Wei8ofnCEAb4vui1gqBxuL8RoQmjmsvM7Ca/DU8aPkNbpegFZzQFd2selEXXMxzzg==
+"@riadh-adrani/domer@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.3.tgz#38fcb3da0ec443b6f1e2d02f180ec1238ecfe375"
+  integrity sha512-zbz34fVH9AO3QAgpgDfPJ4Y6Nwu++2aZpCF9vNIAJn2DXPeShd6Zk9THYMGvTAjm5KpMNifDF81vPCwX9hnQAA==
   dependencies:
     "@riadh-adrani/obj-utils" "^1.0.2"
     camelcase "^7.0.1"
 
-"@riadh-adrani/obj-utils@1.0.2", "@riadh-adrani/obj-utils@^1.0.2":
+"@riadh-adrani/obj-utils@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/obj-utils/-/obj-utils-1.0.5.tgz#a859da47262da54abc797ddd6b22e34a4927c45d"
+  integrity sha512-ZQYFbRPAalAVrA15CMNTQbVR5JkWYEflKd80vdEri65e+MoKU+D5Zicbh4NjNLdTsEygz2AAtoURkvxSJdMhAg==
+
+"@riadh-adrani/obj-utils@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@riadh-adrani/obj-utils/-/obj-utils-1.0.2.tgz#3b48a857979907d5d8e02b89306392c9e8e044bb"
   integrity sha512-seQu8jNtFnFR5EzwAaRbJz2hGvSnmu7JopROeTrFnoOlp0hDxX3ZZtXWW+Ku1+m6neQ8yUiRMq3dNJINzs8RYg==

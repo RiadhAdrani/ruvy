@@ -1,3 +1,4 @@
+import { isNumber, isUndefined } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '../helpers/helpers.js';
 import { queueRequest } from '../scheduler/scheduler.js';
 import { OutletComponent, RouterOptions, Template } from '../types.js';
@@ -98,19 +99,13 @@ export const navigate = (destination: DestinationRequest) => {
 };
 
 export const createDestination = (destination: DestinationRequest): string | undefined => {
-  if (typeof destination === 'number') return undefined;
+  if (isUndefined(destination) || isNumber(destination)) return undefined;
 
   return withRouter(router => {
-    let url: string | undefined;
-
-    if (typeof destination === 'string') url = destination;
-    else url = router.createPathFromNamedDestination(destination);
-
-    if (typeof url !== 'undefined' && router.base) {
-      url = `${router.base}${url}`;
+    if (typeof destination === 'string' && !isUrlNavigatable(destination)) {
+      return destination;
     }
-
-    return url;
+    return router.toHref(destination);
   });
 };
 

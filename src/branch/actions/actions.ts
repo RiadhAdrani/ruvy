@@ -1,4 +1,4 @@
-import { cast, forEachKey, isFunction } from '@riadh-adrani/obj-utils';
+import { forEachKey, isFunction } from '@riadh-adrani/obj-utils';
 import { Callback } from '@riadh-adrani/type-utils';
 import {
   ActionType,
@@ -90,7 +90,7 @@ const createAction = <T = unknown>(type: ActionType, branch: Branch, data?: T): 
     }
     case ActionType.Cleanup:
     case ActionType.Effect: {
-      callback = cast<Effect>(data);
+      callback = data as Effect;
       break;
     }
     default: {
@@ -311,7 +311,7 @@ export const createElPropsUpdateAction = (
  * @param data text
  */
 export const createTextUpdateAction = (branch: Branch, data: string): Callback => {
-  return () => setTextNodeData(cast<Text>(branch.instance), data);
+  return () => setTextNodeData(branch.instance as Text, data);
 };
 
 export const createRenderInnerHTMLAction = (branch: Branch, data: string): Callback => {
