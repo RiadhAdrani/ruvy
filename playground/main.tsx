@@ -16,8 +16,6 @@ const Button = () => {
     <>
       <button
         onClick={() => {
-          console.log('toggling...');
-
           setTheme(!theme);
         }}
       >
