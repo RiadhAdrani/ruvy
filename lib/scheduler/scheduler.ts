@@ -131,15 +131,17 @@ export const optimizeRequesters = (requests: Array<Requester>): Array<Requester>
     deps
   );
 
-  return sorted.map(it => {
-    const comp = minimal[parseInt(it)];
+  return sorted
+    .map(it => {
+      const comp = minimal[parseInt(it)];
 
-    if (!comp) {
-      throw new RuvyError('something went wrong while trying to optimize dependencies');
-    }
+      if (!comp) {
+        throw new RuvyError('something went wrong while trying to optimize dependencies');
+      }
 
-    return comp;
-  });
+      return comp;
+    })
+    .reverse();
 };
 
 export const queueRequest = (data: RequestData) => {
