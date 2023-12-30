@@ -65,6 +65,7 @@ import {
   ValueOrFalse,
   Composable,
   GetState,
+  ComposableHook,
 } from '../types.js';
 import {
   createEffectCleanUpTask,
@@ -92,7 +93,7 @@ import {
   removeRootOutlet,
 } from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
-import { queueRequest } from '../scheduler/scheduler.js';
+import { isAncestorComponent, queueRequest } from '../scheduler/scheduler.js';
 
 export const RuvyAttributes = [
   'if',
@@ -766,8 +767,8 @@ export const pushBlukTasks = (tasks: ComponentTasks, target: ComponentTasks) => 
   }
 };
 
-export const unmountComponent = (
-  component: NonRootComponent,
+export const unmountComponentOrComposable = (
+  component: NonRootComponent | Composable,
   data: UnmountComponentData
 ): ComponentTasks => {
   const tasks = initComponentTasks();
@@ -776,33 +777,37 @@ export const unmountComponent = (
 
   component.status = ComponentStatus.Unmounting;
 
-  if (component.tag === ComponentTag.Function) {
+  if (isComposable(component) || component.tag === ComponentTag.Function) {
     component.hooks.forEach(it => {
       if (it.type === HookType.Effect && typeof it.cleanup === 'function') {
         // cleanup effect
         const cleanupTask = createEffectCleanUpTask(component, it);
 
         pushTask(cleanupTask, tasks);
+      } else if (it.type === HookType.Composable) {
+        unsubscribeFromComposable(it.name, component);
       }
     });
   }
 
-  if (component.tag === ComponentTag.Outlet && isRootOutlet(component)) {
-    removeRootOutlet(component);
-  }
+  if ('tag' in component) {
+    if (component.tag === ComponentTag.Outlet && isRootOutlet(component)) {
+      removeRootOutlet(component);
+    }
 
-  const unmountTask = createUnmountComponentTask(component, data);
+    const unmountTask = createUnmountComponentTask(component, data);
 
-  pushTask(unmountTask, tasks);
+    pushTask(unmountTask, tasks);
 
-  // unmount for children
-  if (isParentComponent(component)) {
-    component.children.forEach(child => {
-      const t = unmountComponent(child, childrenData);
+    // unmount for children
+    if (isParentComponent(component)) {
+      component.children.forEach(child => {
+        const t = unmountComponentOrComposable(child, childrenData);
 
-      // push them in tasks
-      pushBlukTasks(t, tasks);
-    });
+        // push them in tasks
+        pushBlukTasks(t, tasks);
+      });
+    }
   }
 
   return tasks;
@@ -1179,7 +1184,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
   // remove unused from the array of children
   res.component.children = res.component.children.filter(child => {
     if (child.status === ComponentStatus.Unmounting) {
-      const unmountTasks = unmountComponent(child, {});
+      const unmountTasks = unmountComponentOrComposable(child, {});
 
       pushBlukTasks(unmountTasks, res.tasks);
 
@@ -1369,7 +1374,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
         if (!areEqual(hook.value, newValue)) {
           hook.value = newValue;
 
-          queueRequest({ component });
+          queueRequest({ requester: component });
         }
       },
     };
@@ -1568,6 +1573,42 @@ export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
   return ctx as ContextObject<T>;
 };
 
+export const useComposable = <T = unknown>(name: string): T => {
+  if (!caller) {
+    throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: ComposableHook;
+
+  let value: unknown;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    value = getComposableValue(name);
+
+    hook = {
+      type: HookType.Composable,
+      name,
+    };
+
+    subscribeToComposable(name, caller.component);
+
+    caller.component.hooks.push(hook);
+  } else {
+    hook = caller.component.hooks[hookIndex] as ComposableHook;
+
+    value = getComposableValue(hook.name);
+
+    if (!hook || hook.type !== HookType.Composable) {
+      throw new RuvyError('unexpected hook type : expected composable but got something else.');
+    }
+  }
+
+  return value as T;
+};
+
 /**
        ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███████╗ █████╗ ██████╗ ██╗     ███████╗
       ██╔════╝██╔═══██╗████╗ ████║██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗██║     ██╔════╝
@@ -1578,6 +1619,16 @@ export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
  */
 
 const composableStore: Map<string, Composable> = new Map();
+
+export const getComposable = <R = unknown>(name: string): Composable<R> => {
+  const item = composableStore.get(name);
+
+  if (!item) {
+    throw new RuvyError('unable to retrieve composable value, entry not found.');
+  }
+
+  return item as Composable<R>;
+};
 
 export const isComposable = <R>(o: Component | Composable<R>): o is Composable<R> => {
   if (hasProperty(o, 'tag')) return false;
@@ -1621,6 +1672,29 @@ export const unmountComposable = (name: string) => {
   }
 };
 
+export const subscribeToComposable = (name: string, component: FunctionComponent | Composable) => {
+  const composable = getComposable(name);
+
+  if (isComposable(component)) {
+    if (!composable.subscribers.includes(component)) {
+      composable.subscribers.push(component);
+    }
+
+    return;
+  }
+
+  // check if a parent already subscribed in composable
+  const already = composable.subscribers.find(it => {
+    if (isComposable(it)) return false;
+
+    return isAncestorComponent(component, it);
+  });
+
+  if (!already) {
+    composable.subscribers.push(component);
+  }
+};
+
 export const createComposable = <R = unknown>(name: string, callback: () => R): GetState<R> => {
   if (composableStore.has(name)) {
     throw new RuvyError(`composable with name "${name}" is already created`);
@@ -1638,10 +1712,16 @@ export const createComposable = <R = unknown>(name: string, callback: () => R): 
 
   composableStore.set(name, composable);
 
-  // execute composable for the first time
-  const tasks = handleComposable(composable);
+  queueRequest({ requester: composable });
 
-  // TODO: schedule tasks to run on the scheduler
+  return () => useComposable<R>(name);
+};
 
-  return () => getComposableValue(name);
+export const unsubscribeFromComposable = (
+  name: string,
+  component: FunctionComponent | Composable
+) => {
+  const composable = getComposable(name);
+
+  composable.subscribers = composable.subscribers.filter(it => it === component);
 };

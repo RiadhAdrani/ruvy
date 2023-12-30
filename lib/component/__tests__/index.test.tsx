@@ -1547,7 +1547,7 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
       };
 
-      const tasks = MOD.unmountComponent(nil, {});
+      const tasks = MOD.unmountComponentOrComposable(nil, {});
 
       expect(tasks[TaskType.UnmountComponent].length).toBe(1);
     });
@@ -1572,7 +1572,7 @@ describe('component', () => {
 
       (res.component.hooks[0] as EffectHook).cleanup = cleanup;
 
-      const unmount = MOD.unmountComponent(res.component, {});
+      const unmount = MOD.unmountComponentOrComposable(res.component, {});
 
       expect(unmount[TaskType.RunEffectCleanup].length).toBe(1);
     });
@@ -1595,7 +1595,7 @@ describe('component', () => {
         exCtx
       );
 
-      const unmount = MOD.unmountComponent(res.component, {});
+      const unmount = MOD.unmountComponentOrComposable(res.component, {});
 
       expect(unmount[TaskType.RunEffectCleanup].length).toBe(0);
     });
@@ -1618,7 +1618,7 @@ describe('component', () => {
 
       elRes.component.children = [childRes.component];
 
-      const tasks = MOD.unmountComponent(elRes.component, {});
+      const tasks = MOD.unmountComponentOrComposable(elRes.component, {});
 
       expect(tasks[TaskType.UnmountComponent].length).toBe(2);
     });

@@ -79,6 +79,7 @@ export enum HookType {
   Memo = '#-memo',
   Ref = '#-ref',
   Context = '#-context',
+  Composable = '#-composable',
 }
 
 export enum ComponentStatus {
@@ -363,7 +364,7 @@ export interface Composable<R = unknown> {
   name: string;
   hooks: Array<Hook>;
   value: R;
-  subscribers: Array<FunctionComponent>;
+  subscribers: Array<FunctionComponent | Composable>;
   status: ComponentStatus;
   callback: () => R;
 }
@@ -416,12 +417,18 @@ export interface ContextHook<T = unknown> {
   value: ContextObject<T>;
 }
 
+export interface ComposableHook {
+  type: HookType.Composable;
+  name: string;
+}
+
 export type Hook<T = unknown> =
   | EffectHook
   | StateHook<T>
   | MemoHook<T>
   | RefHook<T>
-  | ContextHook<T>;
+  | ContextHook<T>
+  | ComposableHook;
 
 export enum TaskType {
   RenderElement = 'render-element',

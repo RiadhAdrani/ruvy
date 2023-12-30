@@ -1,23 +1,28 @@
-import { generateId } from '../lib/helpers/helpers.js';
-import { createRouter, mountApp, useMemo, useState } from '../lib/index.js';
+import { createRouter, mountApp, useState, createComposable } from '../lib/index.js';
 import { Outlet } from '../lib/index.js';
 
-const Button = () => {
-  const [text, setText] = useState('');
+const useTheme = createComposable('theme', () => {
+  const [theme, setTheme] = useState(true);
 
-  const id = useMemo(() => generateId());
+  return { theme, setTheme };
+});
+
+const Button = () => {
+  const $theme = useTheme();
+
+  const { setTheme, theme } = $theme;
 
   return (
     <>
-      <button if={text === 'text'}>text !</button>
-      <input
-        value={text}
-        type={'password'}
-        onInput={e => {
-          setText(e.currentTarget.value);
+      <button
+        onClick={() => {
+          console.log('toggling...');
+
+          setTheme(!theme);
         }}
-        id={'-' + id}
-      />
+      >
+        {theme ? 'Dark' : 'Light'}
+      </button>
     </>
   );
 };
@@ -47,6 +52,8 @@ createRouter({
 });
 
 const App = () => {
+  const [count, setCount] = useState(0);
+
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -55,6 +62,8 @@ const App = () => {
           <a href={'/html'}>HTML</a>
           <a href={'https://www.youtube.com/'}>HTML</a>
         </div>
+        <button onClick={() => setCount(count + 1)}>{count}</button>
+        <Button />
         <Button />
         <Outlet />
       </div>

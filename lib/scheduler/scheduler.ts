@@ -2,7 +2,9 @@ import {
   cloneExecutionContext,
   handleComponent,
   handleComposable,
+  initComponentTasks,
   isComposable,
+  pushBlukTasks,
 } from '../component/index.js';
 import { executeTasks } from '../core/index.js';
 import { RuvyError, generateId } from '../helpers/helpers.js';
@@ -12,43 +14,65 @@ import {
   ComponentTasks,
   Composable,
   FunctionComponent,
+  HostComponent,
   Outlet,
   OutletComponent,
+  ParentComponent,
   RootComponent,
   Template,
 } from '../types.js';
 import toposort from 'toposort';
 
-export interface UpdateRequest {
+export type Requester = FunctionComponent | OutletComponent | Composable;
+
+export interface RequestObject {
   id: string;
   date: Date;
   fulfilled: boolean;
-  component: FunctionComponent | OutletComponent | Composable;
 }
 
-export interface RenderRequest {
+export interface UpdateRequest extends RequestObject {
+  requester: Requester;
+}
+
+export interface RenderRequest extends RequestObject {
   root: RootComponent;
   child: Template;
 }
 
+export type Request = UpdateRequest | RenderRequest;
+
 export type SchedulerState = 'idle' | 'batching' | 'processing';
 
-export type UpdateRequestData = Pick<UpdateRequest, 'component'>;
+export type RequestData = Pick<RenderRequest, 'child' | 'root'> | Pick<UpdateRequest, 'requester'>;
 
 let state: SchedulerState = 'idle';
-let buffer: Array<UpdateRequest> = [];
-let pending: Array<UpdateRequest> = [];
+let buffer: Array<Request> = [];
+let pending: Array<Request> = [];
 
 const batchDelay = 5;
 
-export const isAncestorComponent = (
-  component: Component | Composable,
-  parent: FunctionComponent | OutletComponent | Composable
-): boolean => {
-  if (isComposable(component)) {
-    throw new RuvyError('not implemented');
-  }
+export const collectUniqueRequesters = (
+  requesters: Array<Requester>,
+  previous: Array<Requester>
+): Array<Requester> => {
+  requesters.forEach(req => {
+    if (previous.includes(req)) return;
 
+    previous.push(req);
+
+    if (isComposable(req)) {
+      collectUniqueRequesters(req.subscribers, previous);
+    }
+  });
+
+  return previous;
+};
+
+export const isAncestorComponent = (
+  component: Component,
+  parent: FunctionComponent | OutletComponent
+): boolean => {
   if (component.tag === ComponentTag.Root) return false;
 
   if (component.parent === parent) return true;
@@ -56,44 +80,74 @@ export const isAncestorComponent = (
   return isAncestorComponent(component.parent, parent);
 };
 
-export const optimizeComponentsToHandle = (
-  requests: Array<UpdateRequest>
-): Array<UpdateRequest> => {
-  const queue: Array<UpdateRequest['component']> = [];
+export const optimizeRequesters = (requests: Array<Requester>): Array<Requester> => {
+  const minimal: Array<Requester> = [];
 
-  const composables: Array<Composable> = requests
-    .filter(it => isComposable(it.component))
-    .map(it => it.component as Composable);
+  requests.forEach((it, index) => {
+    if (minimal.includes(it)) return;
 
-  return requests.reduce((acc, it, index) => {
-    if (queue.includes(it.component)) {
-      return acc;
+    if (isComposable(it)) {
+      minimal.push(it);
+      return;
     }
 
-    // check if component is already includes in the rest of the requesters
-    let found = false;
+    let ancestor: Requester | undefined = minimal.find(comp => {
+      if (isComposable(comp)) return false;
 
-    for (let i = index + 1; i < requests.length; i++) {
-      if (isAncestorComponent(it.component, requests[i].component)) {
-        found = true;
-        break;
-      }
+      return isAncestorComponent(it, comp);
+    });
+
+    ancestor ??= requests.slice(index).find(comp => {
+      if (isComposable(comp)) return false;
+
+      return isAncestorComponent(it, comp);
+    });
+
+    if (!ancestor) {
+      minimal.push(it);
     }
+  });
 
-    if (!found) {
-      acc.push(it);
+  const deps: Array<[string, string]> = minimal.reduce((acc, it, index) => {
+    if (isComposable(it)) {
+      const arr: Array<[string, string]> = [];
+
+      it.subscribers.forEach(sub => {
+        const i = minimal.indexOf(sub);
+
+        if (i !== -1) {
+          arr.push([i.toString(), index.toString()]);
+        }
+      });
+
+      acc.push(...arr);
     }
 
     return acc;
-  }, [] as Array<UpdateRequest>);
+  }, [] as Array<[string, string]>);
+
+  const sorted = toposort.array(
+    minimal.map((_, i) => i.toString()),
+    deps
+  );
+
+  return sorted.map(it => {
+    const comp = minimal[parseInt(it)];
+
+    if (!comp) {
+      throw new RuvyError('something went wrong while trying to optimize dependencies');
+    }
+
+    return comp;
+  });
 };
 
-export const queueRequest = (data: UpdateRequestData) => {
-  const request: UpdateRequest = {
-    ...data,
+export const queueRequest = (data: RequestData) => {
+  const request: Request = {
     date: new Date(),
     fulfilled: false,
     id: generateId(),
+    ...data,
   };
 
   if (state === 'processing') {
@@ -112,18 +166,35 @@ export const queueRequest = (data: UpdateRequestData) => {
   setTimeout(() => {
     state = 'processing';
 
-    const optimized = optimizeComponentsToHandle(pending);
+    const renders = pending.filter(it => 'root' in it) as Array<RenderRequest>;
+
+    const updates = pending.reduce((acc, it) => {
+      if ('requester' in it) {
+        acc.push(it);
+      }
+
+      return acc;
+    }, [] as Array<UpdateRequest>);
+
+    const requesters = collectUniqueRequesters(
+      updates.map(it => it.requester),
+      []
+    );
+
+    const optimized = optimizeRequesters(requesters);
 
     // empty the stack
     pending = [];
 
-    optimized.forEach(it => {
-      const component = it.component;
+    const tasks = initComponentTasks();
 
-      let tasks: ComponentTasks;
+    optimized.forEach(it => {
+      const component = it;
+
+      let tsks: ComponentTasks;
 
       if (isComposable(component)) {
-        tasks = handleComposable(component);
+        tsks = handleComposable(component);
       } else {
         const props = component.props;
         const type = component.tag === ComponentTag.Outlet ? Outlet : component.type;
@@ -138,11 +209,33 @@ export const queueRequest = (data: UpdateRequestData) => {
           ctx => (ctx.dom.nextIndex = component.ctx.dom.firstIndex)
         );
 
-        tasks = handleComponent(template, component, component.ctx.parent, index, ctx).tasks;
+        tsks = handleComponent(template, component, component.ctx.parent, index, ctx).tasks;
       }
 
-      executeTasks(tasks);
+      pushBlukTasks(tsks, tasks);
     });
+
+    renders.forEach(it => {
+      const { child, root } = it;
+
+      const index = root.children.length;
+
+      const parent = root as unknown as ParentComponent;
+
+      const res = handleComponent(child, undefined, parent, index, {
+        contexts: {},
+        dom: { parent: parent as HostComponent, firstIndex: 0, nextIndex: 0 },
+        index,
+        key: index,
+        parent,
+      });
+
+      root.children.push(res.component);
+
+      pushBlukTasks(res.tasks, tasks);
+    });
+
+    executeTasks(tasks);
 
     if (buffer.length === 0) {
       // it is over
