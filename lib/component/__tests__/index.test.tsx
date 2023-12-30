@@ -214,6 +214,7 @@ describe('component', () => {
       const value = withHookContext(
         {
           component: {
+            tag: ComponentTag.Function,
             hooks: [{ type: HookType.Context, value: ctx }],
           } as unknown as FunctionComponent,
           ctx: {

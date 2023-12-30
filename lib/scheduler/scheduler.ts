@@ -1,31 +1,54 @@
-import { cloneExecutionContext, handleComponent } from '../component/index.js';
+import {
+  cloneExecutionContext,
+  handleComponent,
+  handleComposable,
+  isComposable,
+} from '../component/index.js';
 import { executeTasks } from '../core/index.js';
-import { generateId } from '../helpers/helpers.js';
-import { Component, ComponentTag, FunctionComponent, Outlet, OutletComponent } from '../types.js';
+import { RuvyError, generateId } from '../helpers/helpers.js';
+import {
+  Component,
+  ComponentTag,
+  ComponentTasks,
+  Composable,
+  FunctionComponent,
+  Outlet,
+  OutletComponent,
+  RootComponent,
+  Template,
+} from '../types.js';
+import toposort from 'toposort';
 
 export interface UpdateRequest {
   id: string;
   date: Date;
   fulfilled: boolean;
-  component: FunctionComponent | OutletComponent;
+  component: FunctionComponent | OutletComponent | Composable;
+}
+
+export interface RenderRequest {
+  root: RootComponent;
+  child: Template;
 }
 
 export type SchedulerState = 'idle' | 'batching' | 'processing';
 
 export type UpdateRequestData = Pick<UpdateRequest, 'component'>;
 
-let buffer: Array<UpdateRequest> = [];
-
-let stack: Array<UpdateRequest> = [];
-
 let state: SchedulerState = 'idle';
+let buffer: Array<UpdateRequest> = [];
+let pending: Array<UpdateRequest> = [];
 
 const batchDelay = 5;
 
 export const isAncestorComponent = (
-  component: Component,
-  parent: FunctionComponent | OutletComponent
+  component: Component | Composable,
+  parent: FunctionComponent | OutletComponent | Composable
 ): boolean => {
+  if (isComposable(component)) {
+    throw new RuvyError('not implemented');
+  }
+
   if (component.tag === ComponentTag.Root) return false;
 
   if (component.parent === parent) return true;
@@ -36,10 +59,14 @@ export const isAncestorComponent = (
 export const optimizeComponentsToHandle = (
   requests: Array<UpdateRequest>
 ): Array<UpdateRequest> => {
-  const components: Array<UpdateRequest['component']> = [];
+  const queue: Array<UpdateRequest['component']> = [];
+
+  const composables: Array<Composable> = requests
+    .filter(it => isComposable(it.component))
+    .map(it => it.component as Composable);
 
   return requests.reduce((acc, it, index) => {
-    if (components.includes(it.component)) {
+    if (queue.includes(it.component)) {
       return acc;
     }
 
@@ -74,7 +101,7 @@ export const queueRequest = (data: UpdateRequestData) => {
     return;
   }
 
-  stack.push(request);
+  pending.push(request);
 
   if (state === 'batching') {
     return;
@@ -85,28 +112,34 @@ export const queueRequest = (data: UpdateRequestData) => {
   setTimeout(() => {
     state = 'processing';
 
-    // empty the stack
-    const optimized = optimizeComponentsToHandle(stack);
+    const optimized = optimizeComponentsToHandle(pending);
 
-    stack = [];
+    // empty the stack
+    pending = [];
 
     optimized.forEach(it => {
       const component = it.component;
 
-      const props = component.props;
-      const type = component.tag === ComponentTag.Outlet ? Outlet : component.type;
-      const children = component.props.children as Array<unknown>;
+      let tasks: ComponentTasks;
 
-      const index = component.ctx.index;
+      if (isComposable(component)) {
+        tasks = handleComposable(component);
+      } else {
+        const props = component.props;
+        const type = component.tag === ComponentTag.Outlet ? Outlet : component.type;
+        const children = component.props.children as Array<unknown>;
 
-      const template = createJsxElement(type, props, ...children);
+        const index = component.ctx.index;
 
-      const ctx = cloneExecutionContext(
-        component.ctx,
-        ctx => (ctx.dom.nextIndex = component.ctx.dom.firstIndex)
-      );
+        const template = createJsxElement(type, props, ...children);
 
-      const { tasks } = handleComponent(template, component, component.ctx.parent, index, ctx);
+        const ctx = cloneExecutionContext(
+          component.ctx,
+          ctx => (ctx.dom.nextIndex = component.ctx.dom.firstIndex)
+        );
+
+        tasks = handleComponent(template, component, component.ctx.parent, index, ctx).tasks;
+      }
 
       executeTasks(tasks);
     });
@@ -118,9 +151,9 @@ export const queueRequest = (data: UpdateRequestData) => {
     }
 
     // we have pending requests
-    stack = buffer;
+    pending = buffer;
     buffer = [];
 
-    queueRequest(stack[0]);
+    queueRequest(pending[0]);
   }, batchDelay);
 };

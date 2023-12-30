@@ -12,6 +12,7 @@ import {
   EffectHook,
   PortalComponent,
   NodeComponent,
+  Composable,
 } from '../types.js';
 import {
   element,
@@ -242,7 +243,10 @@ export const createUpdateTextTask = (component: TextComponent, data: string): Ta
   return createTask({ component, execute, type: TaskType.UpdateText });
 };
 
-export const createEffectTask = (component: FunctionComponent, hook: EffectHook): Task => {
+export const createEffectTask = (
+  component: FunctionComponent | Composable,
+  hook: EffectHook
+): Task => {
   const execute = () => {
     const cleanup = hook.callback();
 
@@ -254,7 +258,10 @@ export const createEffectTask = (component: FunctionComponent, hook: EffectHook)
   return createTask({ component, execute, type: TaskType.RunEffect });
 };
 
-export const createEffectCleanUpTask = (component: FunctionComponent, hook: EffectHook): Task => {
+export const createEffectCleanUpTask = (
+  component: FunctionComponent | Composable,
+  hook: EffectHook
+): Task => {
   const execute = () => {
     hook.cleanup?.();
 
