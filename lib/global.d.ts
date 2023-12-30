@@ -1,8 +1,47 @@
-import type { Arrayable } from '@riadh-adrani/type-utils';
-import type { StringWithAutoComplete } from '@riadh-adrani/obj-utils';
-import { BranchTemplate } from '../branch/types.js';
-import { Any, DOMEventHandler, Selector, UtilityProps } from './index.js';
-import { NamedNavigationRequest } from '../router/types.js';
+import { DestinationRequest } from '@riadh-adrani/dom-router';
+import { JsxTemplate, Key, RuvyNode } from './types.ts';
+import CSS from 'csstype';
+
+type Arrayable<T> = T | Array<T>;
+
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Any = any;
+
+export type PropsWithChildren<T extends object> = { children?: Array<RuvyNode> } & T;
+
+export type CallbackWithArgs<A extends Array<unknown> = [], R = void> = (...args: A) => R;
+
+export type DOMEventTarget<T extends Element> = Event & T;
+
+export type DOMEvent<E extends Event = Event, T extends Element = HTMLElement> = Event &
+  E & {
+    target: DOMEventTarget<HTMLElement>;
+    currentTarget: DOMEventTarget<T>;
+  };
+
+export type DOMEventHandler<E extends Event = Event, T extends Element = HTMLElement> = (
+  event: DOMEvent<E, T>
+) => void;
+
+export type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties[key]> } & Record<
+  string,
+  unknown
+>;
+
+export interface UtilityProps {
+  children: Array<RuvyNode>;
+  key: Key;
+  if: boolean;
+  else: unknown;
+  'else-if': boolean;
+  switch: unknown;
+  case: unknown;
+  'case:default': unknown;
+}
+
+export type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
+
+type StringWithAutoComplete<T> = T | (string & Record<never, never>);
 
 declare global {
   function createJsxElement(
@@ -11,7 +50,7 @@ declare global {
     ...children: Array<unknown>
   ): JSX.Element;
 
-  function createJsxFragmentElement(_: unknown, ...children: Array<unknown>): Array<unknown>;
+  function createJsxFragmentElement(children: Array<unknown>): Array<unknown>;
 
   interface DOMEvents<E extends Element> {
     onAnimationEnd: DOMEventHandler<AnimationEvent, E>;
@@ -246,7 +285,7 @@ declare global {
     height: string | number;
     hidden: boolean;
     high: string | number;
-    href: string | NamedNavigationRequest;
+    href: Exclude<DestinationRequest, number>;
     hreflang: string;
     'http-equiv': StringWithAutoComplete<
       'content-security-policy' | 'content-type' | 'default-style' | 'x-ua-compatibl' | 'refresh'
@@ -1525,7 +1564,7 @@ declare global {
   type SVGUseProps = Pick<SVGAttributes, 'href' | 'xlink:href' | 'x' | 'y' | 'width' | 'height'>;
 
   namespace JSX {
-    type Element = BranchTemplate<Any>;
+    type Element = JsxTemplate;
 
     interface IntrinsicAttributes extends Partial<UtilityProps> {}
 

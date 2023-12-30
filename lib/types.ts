@@ -302,7 +302,7 @@ export interface PortalComponent extends CommonComponent {
 
 export interface JsxFragmentComponent extends CommonComponent {
   tag: ComponentTag.JsxFragment;
-  type: (props: Record<string, unknown>) => unknown;
+  type: (props: Array<unknown>) => unknown;
 }
 
 export interface FragmentComponent extends CommonComponent {
@@ -358,6 +358,16 @@ export type NonRootComponent =
 
 export type Component = NonRootComponent | RootComponent;
 
+export interface Composable<R = unknown> {
+  id: string;
+  name: string;
+  hooks: Array<Hook>;
+  value: R;
+  subscribers: Array<FunctionComponent>;
+  status: ComponentStatus;
+  callback: () => R;
+}
+
 export type CreateState<T = unknown> = T | (() => T);
 
 export type SetState<T = unknown> = (valueOrSetter: T | ((val: T) => T)) => void;
@@ -374,7 +384,7 @@ export interface StateHook<T = unknown> {
 }
 
 export interface HookCaller {
-  component: FunctionComponent;
+  component: FunctionComponent | Composable;
   tasks: ComponentTasks;
   ctx: ExecutionContext;
 }
@@ -453,7 +463,7 @@ export const TasksSorted = [
 
 export interface Task {
   execute: () => void;
-  component: Component;
+  component: Component | Composable;
   id: string;
   type: TaskType;
   date: Date;

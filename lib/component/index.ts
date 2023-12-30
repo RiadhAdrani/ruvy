@@ -63,6 +63,8 @@ import {
   IfDirectiveSequence,
   IfDirectiveProcessResult,
   ValueOrFalse,
+  Composable,
+  GetState,
 } from '../types.js';
 import {
   createEffectCleanUpTask,
@@ -1316,7 +1318,7 @@ export const computeNodeComponentIndexInDOM = (
 let hookIndex = -1;
 let caller: HookCaller | undefined;
 
-export const withHookContext = (hookCaller: HookCaller, callback: () => Template): Template => {
+export const withHookContext = <R = Template>(hookCaller: HookCaller, callback: () => R): R => {
   caller = hookCaller;
 
   const out = callback();
@@ -1518,6 +1520,10 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
     throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
   }
 
+  if (!hasProperty(caller.component, 'tag')) {
+    throw new RuvyError('cannot call "useContext" in a composable.');
+  }
+
   // increment hook index
   hookIndex++;
 
@@ -1560,4 +1566,82 @@ export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
   };
 
   return ctx as ContextObject<T>;
+};
+
+/**
+       ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███████╗ █████╗ ██████╗ ██╗     ███████╗
+      ██╔════╝██╔═══██╗████╗ ████║██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗██║     ██╔════╝
+      ██║     ██║   ██║██╔████╔██║██████╔╝██║   ██║███████╗███████║██████╔╝██║     █████╗  
+      ██║     ██║   ██║██║╚██╔╝██║██╔═══╝ ██║   ██║╚════██║██╔══██║██╔══██╗██║     ██╔══╝  
+      ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║     ╚██████╔╝███████║██║  ██║██████╔╝███████╗███████╗
+       ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝      ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝                                                                               
+ */
+
+const composableStore: Map<string, Composable> = new Map();
+
+export const isComposable = <R>(o: Component | Composable<R>): o is Composable<R> => {
+  if (hasProperty(o, 'tag')) return false;
+
+  return true;
+};
+
+export const getComposableValue = <R = unknown>(name: string): R => {
+  if (!composableStore.has(name)) {
+    throw new RuvyError('unable to retrieve composable value, entry not found.');
+  }
+
+  return composableStore.get(name)?.value as R;
+};
+
+export const handleComposable = <R = unknown>(composable: Composable<R>): ComponentTasks => {
+  const caller = {
+    component: composable,
+    ctx: {} as ExecutionContext,
+    tasks: initComponentTasks(),
+  };
+
+  withHookContext(caller, () => {
+    const value = composable.callback();
+
+    composable.value = value;
+
+    if (composable.status !== ComponentStatus.Mounted) {
+      composable.status = ComponentStatus.Mounted;
+    }
+
+    return value;
+  });
+
+  return caller.tasks;
+};
+
+export const unmountComposable = (name: string) => {
+  if (!composableStore.has(name)) {
+    throw new RuvyError('not implemented');
+  }
+};
+
+export const createComposable = <R = unknown>(name: string, callback: () => R): GetState<R> => {
+  if (composableStore.has(name)) {
+    throw new RuvyError(`composable with name "${name}" is already created`);
+  }
+
+  const composable: Composable<R> = {
+    hooks: [],
+    id: generateId(),
+    name,
+    subscribers: [],
+    value: undefined as R,
+    status: ComponentStatus.Mounting,
+    callback,
+  };
+
+  composableStore.set(name, composable);
+
+  // execute composable for the first time
+  const tasks = handleComposable(composable);
+
+  // TODO: schedule tasks to run on the scheduler
+
+  return () => getComposableValue(name);
 };
