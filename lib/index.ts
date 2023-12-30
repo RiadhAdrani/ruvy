@@ -6,6 +6,8 @@ export {
   useMemo,
   useRef,
   createContext,
+  createComposable,
+  useComposable,
 } from './component/index.js';
 
 export { Outlet, Portal, Fragment } from './types.js';

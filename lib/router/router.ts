@@ -66,7 +66,7 @@ export const createRouter = (options: RouterOptions) => {
   }
 
   const onChanged = () => {
-    rootOutlets.forEach(component => queueRequest({ component }));
+    rootOutlets.forEach(component => queueRequest({ requester: component }));
   };
 
   router = new RouterInstance({ ...options, onChanged });

@@ -1,12 +1,10 @@
-import { handleComponent } from '../component/index.js';
+import { queueRequest } from '../scheduler/scheduler.js';
 import '../component/jsx.js';
 import { RuvyError } from '../helpers/helpers.js';
 import {
   ComponentTag,
   ComponentTasks,
-  ExecutionContext,
   MountAppConfig,
-  ParentComponent,
   RootComponent,
   TasksSorted,
 } from '../types.js';
@@ -30,30 +28,7 @@ export const mountApp = ({ app, host }: MountAppConfig) => {
 
   root = { children: [], instance: host, tag: ComponentTag.Root };
 
-  const ctx: ExecutionContext = {
-    contexts: {},
-    dom: {
-      firstIndex: 0,
-      nextIndex: 0,
-      parent: root,
-    },
-    index: 0,
-    key: 0,
-    parent: root as unknown as ParentComponent,
-  };
-
-  const { component, tasks } = handleComponent(
-    app,
-    undefined,
-    root as unknown as ParentComponent,
-    0,
-    ctx
-  );
-
-  root.children.push(component);
-
-  // exeucte tasks
-  executeTasks(tasks);
+  queueRequest({ root, child: app });
 };
 
 export const executeTasks = (tasks: ComponentTasks) => {
