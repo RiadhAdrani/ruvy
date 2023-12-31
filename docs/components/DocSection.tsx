@@ -1,8 +1,8 @@
-import { Outlet, PropsWithChildren, useMemo, getPathname } from '../index.js';
+import { Outlet, PropsWithUtility, useMemo, getPathname } from '../index.js';
 import useMarkdown from '../hooks/useMarkdown.js';
 import Markdown from './Markdown.js';
 
-export default ({ url, path }: PropsWithChildren<{ url: string; path: string }>) => {
+export default ({ url, path }: PropsWithUtility<{ url: string; path: string }>) => {
   const content = useMarkdown(url);
 
   const showMain = useMemo(() => {

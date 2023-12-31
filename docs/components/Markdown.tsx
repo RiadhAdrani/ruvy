@@ -1,13 +1,12 @@
 import createSanitizer from 'dompurify';
 import { marked } from 'marked';
-import { useEffect, useMemo, useRef } from '../index.js';
+import { createDestination, useEffect, useMemo, useRef } from '../index.js';
 import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { mangle } from 'marked-mangle';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/themes/prism-tomorrow.css';
-import { isBlank } from '@riadh-adrani/str-utils';
-import { getCurrent } from '../../src/core/core.js';
+import { isUrlNavigatable } from '@riadh-adrani/dom-router';
 
 marked.use(gfmHeadingId());
 marked.use(mangle());
@@ -53,21 +52,19 @@ export default ({ content }: MarkdownProps) => {
       });
     });
 
-    const router = getCurrent().router;
-
     ref.value.querySelectorAll('a').forEach(it => {
       const href = it.getAttribute('href');
 
       if (!href) return;
 
-      if (router.isNavigatable(href)) {
-        it.setAttribute('href', router.buildHrefFromRequest(href) ?? '');
+      if (isUrlNavigatable(href)) {
+        it.setAttribute('href', createDestination(href) ?? '');
       }
     });
 
     const hash = location.hash;
 
-    if (isBlank(hash)) return;
+    if (!hash.trim()) return;
 
     setTimeout(() => {
       const view = ref.value?.querySelector(hash);
@@ -77,7 +74,7 @@ export default ({ content }: MarkdownProps) => {
 
   return (
     <>
-      <div class="markdown-container w-100%" ref={ref} dom:innerHTML={sanitizedContent} />
+      <div class="markdown-container w-100%" ref={ref} innerHTML={sanitizedContent} />
     </>
   );
 };

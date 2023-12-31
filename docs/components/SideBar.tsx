@@ -1,5 +1,5 @@
 import { isActive } from '../utils/utils.js';
-import { PropsWithChildren, useCallback, useState } from '../index.js';
+import { PropsWithUtility, useCallback, useState } from '../index.js';
 import { DocItem } from '../types/index.js';
 import Link from './Link.js';
 import useScroll from '../hooks/useScroll.js';
@@ -63,7 +63,7 @@ const SideBarLink = (props: SideBarLinkProps) => {
   );
 };
 
-export default ({ items, root }: PropsWithChildren<SideBarProps>) => {
+export default ({ items, root }: PropsWithUtility<SideBarProps>) => {
   const [isOpen, setOpen] = useState(false);
   const [add, remove] = useScroll();
 

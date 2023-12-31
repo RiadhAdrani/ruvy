@@ -1,11 +1,11 @@
 import { join } from '../utils/utils.js';
-import { PropsWithChildren, useMemo, joinClasses } from '../index.js';
+import { PropsWithUtility, useMemo, joinClasses } from '../index.js';
 
 interface UButtonProps extends HTMLElementProps<HTMLButtonElement, ButtonProps> {
   type: 'text' | 'fill' | 'outline';
 }
 
-const Button = (props: PropsWithChildren<Partial<UButtonProps>>) => {
+const Button = (props: PropsWithUtility<Partial<UButtonProps>>) => {
   const { children, type, class: className } = props;
 
   const classes = useMemo<string>(() => {

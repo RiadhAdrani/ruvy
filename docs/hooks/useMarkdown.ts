@@ -1,31 +1,31 @@
-import { useEffect, createStore, useMemo } from '../index.js';
+import { createComposable, useState } from '../index.js';
 
-const [getMarkdownStore, setMarkdownStore] = createStore<Record<string, string>>('md-store', {});
+const useMarkdowns = createComposable('markdown', () => {
+  const [record, setRecord] = useState<Record<string, string>>({});
 
-const addEntry = (url: string, content: string) => {
-  setMarkdownStore({ ...getMarkdownStore(), [url]: content });
-};
+  const getEntry = (url: string): string => {
+    if (url in record) {
+      return record[url];
+    }
+
+    fetch(url).then(async res => {
+      const text = await res.text();
+
+      setRecord(rec => ({ ...rec, [url]: text }));
+    });
+
+    return '';
+  };
+
+  return { record, getEntry };
+});
 
 const useMarkdown = (url: string) => {
-  const content = useMemo(() => {
-    const md = getMarkdownStore()[url];
+  const { getEntry } = useMarkdowns();
 
-    return md ?? '';
-  }, [getMarkdownStore(), url]);
+  const entry = getEntry(url);
 
-  useEffect(() => {
-    const current: string | undefined = getMarkdownStore()[url];
-
-    if (!current) {
-      fetch(url).then(async res => {
-        const text = await res.text();
-
-        addEntry(url, text);
-      });
-    }
-  }, [url]);
-
-  return content;
+  return entry;
 };
 
 export default useMarkdown;

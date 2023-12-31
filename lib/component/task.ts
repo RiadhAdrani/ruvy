@@ -198,12 +198,6 @@ export const createReorderChildrenTask = (component: NonRootComponent): Task => 
         throw new RuvyError('element does not have any parent');
       }
 
-      const child = parent.childNodes.item(index);
-
-      if (child === element) {
-        return;
-      }
-
       changeNodePosition(element, index);
     });
   };

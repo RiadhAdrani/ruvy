@@ -1,58 +1,9 @@
 import { RouterConfig } from '@riadh-adrani/dom-router';
 import { Namespace } from '@riadh-adrani/domer';
 
-export enum ContextType {
-  Idle = 'idle',
-  Diff = 'diffing',
-  Composable = 'composable',
-  Component = 'component',
-  Flush = 'flush',
-  Paint = 'paint',
-  Effect = 'effect',
-  Hook = 'hook',
+export interface GlobalContext {
+  preventRequests?: boolean;
 }
-
-export interface IdleContext {
-  type: ContextType.Idle;
-}
-
-export interface DiffContext {
-  type: ContextType.Diff;
-}
-
-export interface ComposableContext {
-  type: ContextType.Composable;
-}
-
-export interface ComponentContext {
-  type: ContextType.Component;
-}
-
-export interface FlushContext {
-  type: ContextType.Flush;
-}
-
-export interface PaintContext {
-  type: ContextType.Paint;
-}
-
-export interface EffectContext {
-  type: ContextType.Effect;
-}
-
-export interface HookContext {
-  type: ContextType.Hook;
-}
-
-export type Context =
-  | IdleContext
-  | DiffContext
-  | ComposableContext
-  | ComponentContext
-  | FlushContext
-  | PaintContext
-  | EffectContext
-  | HookContext;
 
 export type Callback<Return = void, Args extends Array<unknown> = Array<unknown>> = (
   ...args: Args
@@ -261,7 +212,6 @@ export interface FunctionComponent extends CommonComponent {
 }
 
 export interface NodeComponentBase<T = Node> {
-  position: number;
   domParent: HostComponent;
   instance?: T;
 }
@@ -493,10 +443,6 @@ export interface ExecutionContext {
   dom: {
     /** parent in the DOM */
     parent: HostComponent;
-    /** next element (sibling) index in the DOM */
-    nextIndex: number;
-    /** needed for recomputation */
-    firstIndex: number;
   };
 }
 

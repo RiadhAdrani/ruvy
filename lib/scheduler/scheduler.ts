@@ -6,7 +6,7 @@ import {
   isComposable,
   pushBlukTasks,
 } from '../component/index.js';
-import { executeTasks } from '../core/index.js';
+import { executeTasks, frameworkContext } from '../core/index.js';
 import { RuvyError, generateId } from '../helpers/helpers.js';
 import {
   Component,
@@ -145,6 +145,10 @@ export const optimizeRequesters = (requests: Array<Requester>): Array<Requester>
 };
 
 export const queueRequest = (data: RequestData) => {
+  if (frameworkContext.preventRequests === true) {
+    return;
+  }
+
   const request: Request = {
     date: new Date(),
     fulfilled: false,
@@ -206,10 +210,7 @@ export const queueRequest = (data: RequestData) => {
 
         const template = createJsxElement(type, props, ...children);
 
-        const ctx = cloneExecutionContext(
-          component.ctx,
-          ctx => (ctx.dom.nextIndex = component.ctx.dom.firstIndex)
-        );
+        const ctx = cloneExecutionContext(component.ctx);
 
         tsks = handleComponent(template, component, component.ctx.parent, index, ctx).tasks;
       }
@@ -226,7 +227,7 @@ export const queueRequest = (data: RequestData) => {
 
       const res = handleComponent(child, undefined, parent, index, {
         contexts: {},
-        dom: { parent: parent as HostComponent, firstIndex: 0, nextIndex: 0 },
+        dom: { parent: parent as HostComponent },
         index,
         key: index,
         parent,

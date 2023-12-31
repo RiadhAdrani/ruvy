@@ -1,13 +1,16 @@
-import { createRouter, mountApp } from '../src/index.js';
+import { createRouter, mountApp } from '../lib/index.js';
 import App from './App.js';
+import NotFound from './components/NotFound.js';
 import { routes } from './router/routes.js';
 import './style/index.scss';
 import 'virtual:uno.css';
 
-createRouter(routes, {
+createRouter({
+  routes,
   base: '/ruvy',
   transformTitle: title => `${title} - Ruvy`,
-  scrollToTop: true,
+  correctScrolling: true,
+  catchAllElement: <NotFound />,
 });
 
-mountApp({ callback: App, hostElement: document.querySelector('#app') as HTMLElement });
+mountApp({ app: <App />, host: document.querySelector('#app') as HTMLElement });
