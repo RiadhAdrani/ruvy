@@ -1,9 +1,9 @@
-import { createStore, useEffect, useRef } from '../index.js';
+import { createComposable, useEffect, useRef, useState } from '../index.js';
 import useWindowSize from './useWindowSize.js';
 
-const [getScroll, setScroll] = createStore<Array<number>>('body-scroll', []);
+const useScroll = createComposable('scroll', () => {
+  const [scroll, setScroll] = useState<Array<number>>([]);
 
-const useScroll = () => {
   const ref = useRef(document.body.querySelector<HTMLDivElement>('#app'));
   const size = useWindowSize();
 
@@ -17,17 +17,17 @@ const useScroll = () => {
       return;
     }
 
-    ref.value.style.maxHeight = getScroll().length > 0 ? '100vh' : '';
-    ref.value.style.overflowY = getScroll().length > 0 ? 'hidden' : '';
-  }, [getScroll(), size]);
+    ref.value.style.maxHeight = scroll.length > 0 ? '100vh' : '';
+    ref.value.style.overflowY = scroll.length > 0 ? 'hidden' : '';
+  }, [scroll, size]);
 
-  const add = () => setScroll([...getScroll(), 0]);
+  const add = () => setScroll([...scroll, 0]);
 
   const remove = () => {
-    setScroll(getScroll().slice(0, getScroll().length - 1));
+    setScroll(scroll.slice(0, scroll.length - 1));
   };
 
   return [add, remove];
-};
+});
 
 export default useScroll;

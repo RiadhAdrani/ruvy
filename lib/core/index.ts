@@ -4,6 +4,7 @@ import { RuvyError } from '../helpers/helpers.js';
 import {
   ComponentTag,
   ComponentTasks,
+  GlobalContext,
   MountAppConfig,
   RootComponent,
   TasksSorted,
@@ -18,6 +19,10 @@ setConfig({
     },
   },
 });
+
+export const frameworkContext: GlobalContext = {
+  preventRequests: false,
+};
 
 let root: RootComponent | undefined;
 

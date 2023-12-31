@@ -1,4 +1,5 @@
-import { RawRoute, RuvyNode } from '../index.js';
+import { RuvyNode } from '@/types.js';
+import { RawRoute } from '@riadh-adrani/dom-router';
 
 export enum Theme {
   Dark = 'dark',

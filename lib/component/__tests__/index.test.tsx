@@ -28,8 +28,10 @@ import {
   OutletTemplate,
   FragmentComponent,
   ContextComponent,
+  ComponentTasks,
+  Composable,
 } from '../../types.js';
-import { afterAll, beforeEach, describe, expect, it, vitest } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
 import {
   compareElementProps,
@@ -53,6 +55,7 @@ import { omit } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '@/helpers/helpers.js';
 import { Namespace, element } from '@riadh-adrani/domer';
 import { createRouter, navigate, unmountRouter } from '@/router/router.js';
+import { executeTasks, frameworkContext } from '@core/index.js';
 
 const nonJsxComponents = [ComponentTag.Text, ComponentTag.Null, ComponentTag.Root];
 const jsxComponents = Object.values(ComponentTag).filter(it => !nonJsxComponents.includes(it));
@@ -64,6 +67,14 @@ const hostComponents = [ComponentTag.Element, ComponentTag.Portal, ComponentTag.
 const nonHostComponents = Object.values(ComponentTag).filter(it => !hostComponents.includes(it));
 
 describe('component', () => {
+  beforeAll(() => {
+    frameworkContext.preventRequests = true;
+  });
+
+  afterAll(() => {
+    frameworkContext.preventRequests = false;
+  });
+
   unmountRouter();
 
   createRouter({
@@ -101,9 +112,7 @@ describe('component', () => {
     key: 0,
     parent: root as unknown as ParentComponent,
     dom: {
-      nextIndex: 0,
       parent: root,
-      firstIndex: 0,
     },
   };
 
@@ -120,9 +129,7 @@ describe('component', () => {
       key: 0,
       parent: root as unknown as ParentComponent,
       dom: {
-        nextIndex: 0,
         parent: root,
-        firstIndex: 0,
       },
     };
   });
@@ -267,9 +274,7 @@ describe('component', () => {
         key: 0,
         parent: root,
         dom: {
-          nextIndex: 0,
           parent: root,
-          firstIndex: 0,
         },
       });
     });
@@ -467,11 +472,9 @@ describe('component', () => {
         contexts: {},
         index: 0,
         key: 0,
-        parent: root as unknown as ParentComponent,
+        parent: root,
         dom: {
-          nextIndex: 0,
           parent: root,
-          firstIndex: 0,
         },
       });
     });
@@ -856,17 +859,7 @@ describe('component', () => {
     });
 
     it('should set execution context', () => {
-      expect(res.component.ctx).toStrictEqual({
-        contexts: {},
-        index: 0,
-        key: 0,
-        parent: root as unknown as ParentComponent,
-        dom: {
-          nextIndex: 0,
-          parent: root,
-          firstIndex: 0,
-        },
-      });
+      expect(res.component.ctx.outletDepth).toStrictEqual(0);
     });
 
     it('should update outlet depth in ctx', () => {
@@ -1437,6 +1430,19 @@ describe('component', () => {
           })
         ).toThrow(new RuvyError('unexpected hook type : expected context but got something else.'));
       });
+
+      it('should throw when called in a composable', () => {
+        MOD.createComposable('ctx', () => {
+          useContext(ctxObj);
+        });
+
+        const comp = MOD.getComposable('ctx');
+
+        expect(() => MOD.handleComposable(comp)).toThrow(
+          new RuvyError('cannot call "useContext" in a composable.')
+        );
+        MOD.unmountComposable('ctx');
+      });
     });
   });
 
@@ -1841,7 +1847,6 @@ describe('component', () => {
       status: ComponentStatus.Mounted,
       tag: ComponentTag.Element,
       type: 'a',
-      position: 0,
       domParent: root,
     };
 
@@ -1851,6 +1856,12 @@ describe('component', () => {
 
     it('should return false with same jsx type', () => {
       expect(MOD.shouldRenderNewComponent(<a />, a)).toBe(false);
+    });
+
+    it('should return true with different jsx type', () => {
+      const Fn = vitest.fn();
+
+      expect(MOD.shouldRenderNewComponent(<Fn />, a)).toBe(true);
     });
 
     it('should return true same jsx element type but different namespace', () => {
@@ -1867,7 +1878,6 @@ describe('component', () => {
       status: ComponentStatus.Mounted,
       tag: ComponentTag.Element,
       type: 'a',
-      position: 0,
       domParent: root,
     };
 
@@ -2239,11 +2249,9 @@ describe('component', () => {
 
         MOD.processChildren(res);
 
-        expect(res.tasks[TaskType.SetComponentMounted].map(it => it.component.tag)).toStrictEqual([
-          ComponentTag.Element,
-          ComponentTag.Null,
-          ComponentTag.Text,
-        ]);
+        expect(
+          res.tasks[TaskType.SetComponentMounted].map(it => (it.component as Component).tag)
+        ).toStrictEqual([ComponentTag.Element, ComponentTag.Null, ComponentTag.Text]);
       });
 
       it('should throw when duplicate key is detected', () => {
@@ -2421,13 +2429,315 @@ describe('component', () => {
 
       const div = frg.children[0] as ElementComponent;
 
-      expect(div.position).toBe(5);
+      const position = MOD.computeNodeComponentIndexInDOM(div);
+
+      expect(position.index).toBe(5);
     });
 
     it('should resume dom position correctly', () => {
       const txt = children[5] as TextComponent;
 
-      expect(txt.position).toBe(6);
+      const position = MOD.computeNodeComponentIndexInDOM(txt);
+
+      expect(position.index).toBe(6);
+    });
+  });
+
+  describe('cloneExecutionContext', () => {
+    const old = exCtx;
+    const newest = MOD.cloneExecutionContext(old);
+
+    it('should create new object', () => {
+      expect(old !== newest).toBe(true);
+    });
+
+    it('should have the same structure', () => {
+      expect(old).toStrictEqual(newest);
+    });
+
+    it('should apply modification with callback', () => {
+      const ctx = MOD.cloneExecutionContext(old, ctx => (ctx.contexts = { test: true }));
+
+      expect(ctx.contexts).toStrictEqual({ test: true });
+    });
+  });
+
+  describe('composables', () => {
+    const cleanup = vitest.fn();
+    const effect = vitest.fn(() => cleanup);
+
+    const callback = vitest.fn(() => {
+      const [count] = useState(0);
+
+      const text = useMemo(() => (count > 1 ? 'clicks' : 'click'));
+
+      useEffect(effect);
+
+      return { count, text };
+    });
+
+    let composable: Composable<ReturnType<typeof callback>>;
+    let use: () => ReturnType<typeof callback>;
+
+    beforeAll(() => {
+      use = MOD.createComposable('test', callback);
+
+      composable = MOD.getComposable('test');
+    });
+
+    afterAll(() => {
+      try {
+        MOD.unmountComposable('test');
+      } catch (e) {
+        // already unmounted
+      }
+    });
+
+    describe('createComposable', () => {
+      it('should set name', () => {
+        expect(composable.name).toStrictEqual('test');
+      });
+
+      it('should set id', () => {
+        expect(typeof composable.id).toStrictEqual('string');
+      });
+
+      it('should init status', () => {
+        expect(composable.status).toStrictEqual(ComponentStatus.Mounting);
+      });
+
+      it('should init value', () => {
+        expect(composable.value).toStrictEqual(undefined);
+      });
+
+      it('should init subscribers ', () => {
+        expect(composable.subscribers).toStrictEqual([]);
+      });
+
+      it('should init callback', () => {
+        expect(composable.callback).toStrictEqual(callback);
+      });
+    });
+
+    describe('getComposable', () => {
+      it('should throw when no composable is found with the given name', () => {
+        expect(() => MOD.getComposable('nope')).toThrow(
+          new RuvyError('unable to retrieve composable value, entry not found.')
+        );
+      });
+
+      it('should return composable with given name', () => {
+        expect(MOD.getComposable('test')).toStrictEqual(composable);
+      });
+    });
+
+    describe('isComposable', () => {
+      it('should return true when object does not contain a tag', () => {
+        expect(MOD.isComposable(composable)).toBe(true);
+      });
+
+      it('should return false when object contains a tag', () => {
+        const component: FunctionComponent = {
+          tag: ComponentTag.Function,
+          type: vitest.fn(),
+          children: [],
+          hooks: [],
+          key: 0,
+          parent: root,
+          props: {},
+          status: ComponentStatus.Mounting,
+          ctx: exCtx,
+        };
+
+        expect(MOD.isComposable(component)).toBe(false);
+      });
+    });
+
+    describe('handleComposable', () => {
+      let tasks: ComponentTasks;
+
+      beforeAll(() => {
+        tasks = MOD.handleComposable(composable);
+      });
+
+      afterAll(() => {
+        executeTasks(tasks);
+      });
+
+      it('should execute the callback', () => {
+        expect(callback).toHaveBeenCalledOnce();
+      });
+
+      it('should set status to mounted', () => {
+        expect(composable.status).toStrictEqual(ComponentStatus.Mounted);
+      });
+
+      it('should set value', () => {
+        expect(composable.value).toStrictEqual({ count: 0, text: 'click' });
+      });
+
+      it('should deal with effects like components', () => {
+        expect(tasks[TaskType.RunEffect].length).toBe(1);
+      });
+    });
+
+    describe('useComposable', () => {
+      let sub: Composable;
+
+      beforeAll(() => {
+        MOD.createComposable('sub', () => {
+          const value = use();
+
+          return value;
+        });
+
+        const composable = MOD.getComposable('sub');
+
+        const tasks = MOD.handleComposable(composable);
+
+        executeTasks(tasks);
+      });
+
+      beforeEach(() => {
+        sub = MOD.getComposable('sub');
+      });
+
+      afterAll(() => {
+        MOD.unmountComposable('sub');
+      });
+
+      it('should throw when used outside hook context', () => {
+        expect(() => use()).toThrow(
+          new RuvyError('cannot call "useComposable" outisde of a functional component body.')
+        );
+      });
+
+      it('should add subscription to composable', () => {
+        expect(composable.subscribers).toStrictEqual([sub]);
+      });
+
+      it('should return composable value', () => {
+        const value = withHookContext(
+          { component: sub, ctx: {} as ExecutionContext, tasks: initComponentTasks() },
+          () => use()
+        );
+
+        expect(value).toStrictEqual({ count: 0, text: 'click' });
+      });
+
+      it('should throw when hook is not found', () => {
+        const component: Composable = {
+          callback: () => 0,
+          hooks: [],
+          id: '',
+          name: 'err',
+          status: ComponentStatus.Mounted,
+          subscribers: [],
+          value: 0,
+        };
+
+        expect(() =>
+          withHookContext(
+            { component, ctx: {} as ExecutionContext, tasks: initComponentTasks() },
+            () => use()
+          )
+        ).toThrow(
+          new RuvyError('unexpected hook type : expected composable but got something else.')
+        );
+      });
+    });
+
+    describe('subscribeToComposable', () => {
+      beforeEach(() => {
+        composable.subscribers = [];
+      });
+
+      const prnt: FunctionComponent = {
+        tag: ComponentTag.Function,
+        type: vitest.fn(),
+        children: [],
+        hooks: [],
+        key: 0,
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounting,
+        ctx: exCtx,
+      };
+
+      const cmpnt: FunctionComponent = {
+        tag: ComponentTag.Function,
+        type: vitest.fn(),
+        children: [],
+        hooks: [],
+        key: 0,
+        parent: prnt,
+        props: {},
+        status: ComponentStatus.Mounting,
+        ctx: exCtx,
+      };
+
+      const cmpsbl: Composable = {
+        callback: vitest.fn(),
+        hooks: [],
+        id: '',
+        name: 'child',
+        status: ComponentStatus.Mounted,
+        subscribers: [],
+        value: undefined,
+      };
+
+      it('should push to subscribers', () => {
+        MOD.subscribeToComposable('test', prnt);
+
+        expect(composable.subscribers).toStrictEqual([prnt]);
+      });
+
+      it('should not push to subscribers when an ancestor is already there', () => {
+        MOD.subscribeToComposable('test', prnt);
+
+        MOD.subscribeToComposable('test', cmpnt);
+
+        expect(composable.subscribers).toStrictEqual([prnt]);
+      });
+
+      it('should add composable to subscribers', () => {
+        MOD.subscribeToComposable('test', cmpsbl);
+
+        expect(composable.subscribers).toStrictEqual([cmpsbl]);
+      });
+
+      it('should not duplicate composable in subscribers', () => {
+        MOD.subscribeToComposable('test', cmpsbl);
+        MOD.subscribeToComposable('test', cmpsbl);
+
+        expect(composable.subscribers).toStrictEqual([cmpsbl]);
+      });
+
+      describe('unsubscribeFromComposable', () => {
+        it('should remove element from subscribers', () => {
+          MOD.subscribeToComposable('test', cmpsbl);
+
+          MOD.unsubscribeFromComposable('test', cmpsbl);
+
+          expect(composable.subscribers).toStrictEqual([]);
+        });
+      });
+    });
+
+    describe('unmountComposable', () => {
+      beforeAll(() => {
+        MOD.unmountComposable('test');
+      });
+
+      it('should remove composable from store', () => {
+        expect(() => MOD.getComposable('test')).toThrow(
+          new RuvyError('unable to retrieve composable value, entry not found.')
+        );
+      });
+
+      it('should run tasks', () => {
+        expect(cleanup).toHaveBeenCalledOnce();
+      });
     });
   });
 });

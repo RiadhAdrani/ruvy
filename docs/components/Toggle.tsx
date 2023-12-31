@@ -1,4 +1,4 @@
-import { PropsWithChildren } from '../index.js';
+import { PropsWithUtility } from '../index.js';
 
 interface UToggleProps extends HTMLElementProps<HTMLLabelElement, InputProps> {
   onColor: string;
@@ -7,7 +7,7 @@ interface UToggleProps extends HTMLElementProps<HTMLLabelElement, InputProps> {
   offImg: string;
 }
 
-export default (props: PropsWithChildren<Partial<UToggleProps>>) => {
+export default (props: PropsWithUtility<Partial<UToggleProps>>) => {
   return (
     <label {...props} class="switch rounded scale-55 u-border">
       <input checked={props.checked} type="checkbox" class:switch-input />

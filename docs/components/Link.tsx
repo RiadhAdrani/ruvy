@@ -1,11 +1,12 @@
 import { Arrayable } from '@riadh-adrani/type-utils';
-import { PropsWithChildren, joinClasses, useMemo } from '../index.js';
+import { joinClasses, useMemo } from '../index.js';
+import { PropsWithUtility } from '@/types.js';
 
 export interface LinkProps extends HTMLElementProps<HTMLAnchorElement, AProps> {
   isActive: boolean;
 }
 
-export default (props: Partial<PropsWithChildren<LinkProps>>) => {
+export default (props: Partial<PropsWithUtility<LinkProps>>) => {
   const { children, class: className, isActive } = props;
 
   const classes = useMemo<Arrayable<string>>(() => {

@@ -64,7 +64,6 @@ import {
   IfDirectiveProcessResult,
   ValueOrFalse,
   Composable,
-  GetState,
   ComposableHook,
 } from '../types.js';
 import {
@@ -80,7 +79,6 @@ import {
   createUnmountComponentTask,
   createUnrefElementTask,
   createUpdateTextTask,
-  createChangeElementPosition,
   createReorderChildrenTask,
 } from './task.js';
 import { RuvyError, generateId, moveElement } from '../helpers/helpers.js';
@@ -94,6 +92,7 @@ import {
 } from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
 import { isAncestorComponent, queueRequest } from '../scheduler/scheduler.js';
+import { executeTasks } from '../core/index.js';
 
 export const RuvyAttributes = [
   'if',
@@ -169,7 +168,6 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Element,
     type,
-    position: 0,
     domParent: _ctx.dom.parent,
   };
 
@@ -248,8 +246,6 @@ export const handleElement: ComponentHandler<ElementTemplate, ElementComponent> 
     _ctx,
     ctx =>
       (ctx.dom = {
-        firstIndex: 0,
-        nextIndex: 0,
         parent: component,
       })
   );
@@ -495,6 +491,14 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   const { props, type } = template;
 
+  const depth = (_ctx.outletDepth ?? -1) + 1;
+
+  const child = getTemplateByDepth(depth);
+
+  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
+    ctx.outletDepth = depth;
+  });
+
   const component = current ?? {
     children: [],
     key,
@@ -503,24 +507,16 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Outlet,
     type,
-    ctx: _ctx,
+    ctx,
   };
 
   if (current) {
     component.props = props;
   }
 
-  const depth = (_ctx.outletDepth ?? -1) + 1;
-
-  const child = getTemplateByDepth(depth);
-
   if (depth === 0) {
     addRootOutlet(component);
   }
-
-  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
-    ctx.outletDepth = depth;
-  });
 
   return { children: [child], ctx, component, tasks };
 };
@@ -612,7 +608,7 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Text,
     text,
-    position: ctx.dom.nextIndex,
+    position: 0,
     domParent: ctx.dom.parent,
   };
 
@@ -628,14 +624,6 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
       const updateTask = createUpdateTextTask(component, text);
 
       pushTask(updateTask, tasks);
-    }
-
-    if (ctx.dom.nextIndex !== component.position) {
-      const changePositionTask = createChangeElementPosition(component, ctx.dom.nextIndex);
-
-      pushTask(changePositionTask, tasks);
-
-      component.position = ctx.dom.nextIndex;
     }
   }
 
@@ -1052,10 +1040,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
 
   const childrenCount = res.children.length;
 
-  let domIndex = isHostComponent(res.component) ? 0 : res.ctx.dom.nextIndex;
-
-  res.ctx.dom.firstIndex = domIndex;
-
   for (let i = 0; i < childrenCount; i++) {
     const child = res.children[i];
 
@@ -1134,15 +1118,10 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
     let childRes: ComponentHandlerResult<Component>;
 
     const ctx = cloneExecutionContext(res.ctx, ctx => {
-      ctx.dom.nextIndex = domIndex;
       ctx.index = i;
       ctx.key = key;
       ctx.parent = res.component;
     });
-
-    if (isNodeTemplate(template)) {
-      domIndex++;
-    }
 
     // try and find the corresponding component
     const oldComponent = childrenMap[key];
@@ -1175,8 +1154,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
       }
     }
 
-    domIndex = isNodeComponent(childRes.component) ? domIndex : childRes.ctx.dom.nextIndex;
-
     // push tasks
     pushBlukTasks(childRes.tasks, res.tasks);
   }
@@ -1193,10 +1170,6 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
 
     return true;
   });
-
-  if (!isNodeComponent(res.component)) {
-    res.ctx.dom.nextIndex = domIndex;
-  }
 };
 
 export const cloneExecutionContext = (
@@ -1525,7 +1498,7 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
     throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
   }
 
-  if (!hasProperty(caller.component, 'tag')) {
+  if (isComposable(caller.component)) {
     throw new RuvyError('cannot call "useContext" in a composable.');
   }
 
@@ -1575,7 +1548,7 @@ export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
 
 export const useComposable = <T = unknown>(name: string): T => {
   if (!caller) {
-    throw new RuvyError('cannot call "useContext" outisde of a functional component body.');
+    throw new RuvyError('cannot call "useComposable" outisde of a functional component body.');
   }
 
   // increment hook index
@@ -1599,11 +1572,11 @@ export const useComposable = <T = unknown>(name: string): T => {
   } else {
     hook = caller.component.hooks[hookIndex] as ComposableHook;
 
-    value = getComposableValue(hook.name);
-
     if (!hook || hook.type !== HookType.Composable) {
       throw new RuvyError('unexpected hook type : expected composable but got something else.');
     }
+
+    value = getComposableValue(hook.name);
   }
 
   return value as T;
@@ -1619,6 +1592,28 @@ export const useComposable = <T = unknown>(name: string): T => {
  */
 
 const composableStore: Map<string, Composable> = new Map();
+
+export const createComposable = <R = unknown>(name: string, callback: () => R): (() => R) => {
+  if (composableStore.has(name)) {
+    throw new RuvyError(`composable with name "${name}" is already created`);
+  }
+
+  const composable: Composable<R> = {
+    hooks: [],
+    id: generateId(),
+    name,
+    subscribers: [],
+    value: undefined as R,
+    status: ComponentStatus.Mounting,
+    callback,
+  };
+
+  composableStore.set(name, composable);
+
+  queueRequest({ requester: composable });
+
+  return () => useComposable<R>(name);
+};
 
 export const getComposable = <R = unknown>(name: string): Composable<R> => {
   const item = composableStore.get(name);
@@ -1637,11 +1632,9 @@ export const isComposable = <R>(o: Component | Composable<R>): o is Composable<R
 };
 
 export const getComposableValue = <R = unknown>(name: string): R => {
-  if (!composableStore.has(name)) {
-    throw new RuvyError('unable to retrieve composable value, entry not found.');
-  }
+  const composable = getComposable<R>(name);
 
-  return composableStore.get(name)?.value as R;
+  return composable.value;
 };
 
 export const handleComposable = <R = unknown>(composable: Composable<R>): ComponentTasks => {
@@ -1667,9 +1660,13 @@ export const handleComposable = <R = unknown>(composable: Composable<R>): Compon
 };
 
 export const unmountComposable = (name: string) => {
-  if (!composableStore.has(name)) {
-    throw new RuvyError('not implemented');
-  }
+  const composable = getComposable(name);
+
+  const tasks = unmountComponentOrComposable(composable, {});
+
+  executeTasks(tasks);
+
+  composableStore.delete(name);
 };
 
 export const subscribeToComposable = (name: string, component: FunctionComponent | Composable) => {
@@ -1695,33 +1692,11 @@ export const subscribeToComposable = (name: string, component: FunctionComponent
   }
 };
 
-export const createComposable = <R = unknown>(name: string, callback: () => R): GetState<R> => {
-  if (composableStore.has(name)) {
-    throw new RuvyError(`composable with name "${name}" is already created`);
-  }
-
-  const composable: Composable<R> = {
-    hooks: [],
-    id: generateId(),
-    name,
-    subscribers: [],
-    value: undefined as R,
-    status: ComponentStatus.Mounting,
-    callback,
-  };
-
-  composableStore.set(name, composable);
-
-  queueRequest({ requester: composable });
-
-  return () => useComposable<R>(name);
-};
-
 export const unsubscribeFromComposable = (
   name: string,
   component: FunctionComponent | Composable
 ) => {
   const composable = getComposable(name);
 
-  composable.subscribers = composable.subscribers.filter(it => it === component);
+  composable.subscribers = composable.subscribers.filter(it => it !== component);
 };

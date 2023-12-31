@@ -1,6 +1,6 @@
-import { StateArray, useEffect, useState } from '../index.js';
+import { useEffect, useState } from '../index.js';
 
-const useLocalStorage = <T>(key: string, initValue: T): StateArray<T> => {
+const useLocalStorage = <T>(key: string, initValue: T) => {
   const [value, set, get] = useState<T>(
     localStorage.getItem(key) !== null
       ? (JSON.parse(localStorage.getItem(key) as string) as T)
