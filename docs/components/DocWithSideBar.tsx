@@ -1,17 +1,13 @@
-import { Outlet, getPathname } from '../index.js';
+import { Outlet } from '../index.js';
 import { DocItem } from '../types/index.js';
 import SideBar from './SideBar.js';
-import { RuvyNode } from '@/types.js';
 
 export interface DocWithSideBarProps {
   sideBarItems: Array<DocItem>;
-  mainComponent: RuvyNode;
   rootURL: string;
 }
 
-const DocWithSideBar = ({ rootURL, mainComponent, sideBarItems }: DocWithSideBarProps) => {
-  const route = getPathname();
-
+const DocWithSideBar = ({ rootURL, sideBarItems }: DocWithSideBarProps) => {
   return (
     <>
       <SideBar items={sideBarItems} root={rootURL} />

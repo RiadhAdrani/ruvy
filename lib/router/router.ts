@@ -2,9 +2,9 @@ import { isNumber, isUndefined } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '../helpers/helpers.js';
 import { queueRequest } from '../scheduler/scheduler.js';
 import { OutletComponent, RouterOptions, Template } from '../types.js';
-import { DestinationRequest, RouterInstance, isUrlNavigatable } from '@riadh-adrani/dom-router';
+import { DestinationRequest, Router, isUrlNavigatable } from '@riadh-adrani/dom-router';
 
-let router: RouterInstance<Template> | undefined;
+let router: Router<Template> | undefined;
 
 let rootOutlets: Array<OutletComponent> = [];
 
@@ -66,13 +66,13 @@ export const createRouter = (options: RouterOptions) => {
   }
 
   const onChanged = () => {
-    rootOutlets.forEach(component => queueRequest({ requester: component }));
+    queueRequest({ type: 'route' });
   };
 
-  router = new RouterInstance({ ...options, onChanged });
+  router = new Router({ ...options, onChanged });
 };
 
-const withRouter = <T>(callback: (router: RouterInstance<Template>) => T): T => {
+const withRouter = <T>(callback: (router: Router<Template>) => T): T => {
   if (!router) {
     throw new RuvyError('a router is yet to be created');
   }
@@ -89,7 +89,9 @@ export const unmountRouter = () => {
 export const getTemplateByDepth = (depth: number): Template => {
   if (!router) return null;
 
-  return router.getElementByDepth(depth);
+  const template = router.getElementByDepth(depth);
+
+  return template;
 };
 
 export const navigate = (destination: DestinationRequest) => {
@@ -111,5 +113,4 @@ export const createDestination = (destination: DestinationRequest): string | und
 
 export const getPathname = (): string => withRouter(router => router.getPath());
 
-export const getSearchParams = (): Record<string, string | undefined> =>
-  withRouter(router => router.getSearchParams());
+export const getSearchParams = (): Record<string, string | undefined> => withRouter(() => ({}));

@@ -8,11 +8,19 @@ import {
   MountAppConfig,
   RootComponent,
   TasksSorted,
+  Template,
 } from '../types.js';
 import { setConfig } from '@riadh-adrani/domer';
 
 setConfig({
   events: {
+    wrapper: (e, cb) => {
+      try {
+        cb(e);
+      } catch (e) {
+        console.error(e);
+      }
+    },
     syntax: {
       svelte: false,
       vue: false,
@@ -24,7 +32,8 @@ export const frameworkContext: GlobalContext = {
   preventRequests: false,
 };
 
-let root: RootComponent | undefined;
+export let root: RootComponent | undefined;
+export let template: Template;
 
 export const mountApp = ({ app, host }: MountAppConfig) => {
   if (root) {
@@ -32,6 +41,8 @@ export const mountApp = ({ app, host }: MountAppConfig) => {
   }
 
   root = { children: [], instance: host, tag: ComponentTag.Root };
+
+  template = app;
 
   queueRequest({ root, child: app });
 };

@@ -491,14 +491,6 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   const { props, type } = template;
 
-  const depth = (_ctx.outletDepth ?? -1) + 1;
-
-  const child = getTemplateByDepth(depth);
-
-  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
-    ctx.outletDepth = depth;
-  });
-
   const component = current ?? {
     children: [],
     key,
@@ -507,16 +499,26 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Outlet,
     type,
-    ctx,
+    ctx: _ctx,
   };
+
+  const depth = (_ctx.outletDepth ?? -1) + 1;
+
+  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
+    ctx.outletDepth = depth;
+  });
 
   if (current) {
     component.props = props;
+
+    component.ctx = ctx;
   }
 
   if (depth === 0) {
     addRootOutlet(component);
   }
+
+  const child = getTemplateByDepth(depth);
 
   return { children: [child], ctx, component, tasks };
 };

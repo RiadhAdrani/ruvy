@@ -6,7 +6,7 @@ import {
   isComposable,
   pushBlukTasks,
 } from '../component/index.js';
-import { executeTasks, frameworkContext } from '../core/index.js';
+import { executeTasks, frameworkContext, root, template } from '../core/index.js';
 import { RuvyError, generateId } from '../helpers/helpers.js';
 import {
   Component,
@@ -35,16 +35,23 @@ export interface UpdateRequest extends RequestObject {
   requester: Requester;
 }
 
+export interface RouteUpdateRequest extends RequestObject {
+  type: 'route';
+}
+
 export interface RenderRequest extends RequestObject {
   root: RootComponent;
   child: Template;
 }
 
-export type Request = UpdateRequest | RenderRequest;
+export type Request = UpdateRequest | RenderRequest | RouteUpdateRequest;
 
 export type SchedulerState = 'idle' | 'batching' | 'processing';
 
-export type RequestData = Pick<RenderRequest, 'child' | 'root'> | Pick<UpdateRequest, 'requester'>;
+export type RequestData =
+  | Pick<RenderRequest, 'child' | 'root'>
+  | Pick<UpdateRequest, 'requester'>
+  | { type: 'route' };
 
 let state: SchedulerState = 'idle';
 let buffer: Array<Request> = [];
@@ -172,7 +179,9 @@ export const queueRequest = (data: RequestData) => {
   setTimeout(() => {
     state = 'processing';
 
-    const renders = pending.filter(it => 'root' in it) as Array<RenderRequest>;
+    const nav = pending.some(it => 'type' in it);
+
+    const renders = nav ? [] : (pending.filter(it => 'root' in it) as Array<RenderRequest>);
 
     const updates = pending.reduce((acc, it) => {
       if ('requester' in it) {
@@ -238,11 +247,30 @@ export const queueRequest = (data: RequestData) => {
       pushBlukTasks(res.tasks, tasks);
     });
 
+    if (nav) {
+      const res = handleComponent(
+        template,
+        root?.children[0],
+        root as unknown as ParentComponent,
+        0,
+        {
+          contexts: {},
+          dom: { parent: root as HostComponent },
+          index: 0,
+          key: 0,
+          parent: root as unknown as ParentComponent,
+        }
+      );
+
+      pushBlukTasks(res.tasks, tasks);
+    }
+
     executeTasks(tasks);
 
     if (buffer.length === 0) {
       // it is over
       state = 'idle';
+
       return;
     }
 

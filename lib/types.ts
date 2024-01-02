@@ -480,7 +480,7 @@ export interface IfDirectiveProcessResult {
 
 export type RouterOptions = Pick<
   RouterConfig<Template>,
-  'base' | 'catchAllElement' | 'correctScrolling' | 'routes' | 'transformTitle' | 'type'
+  'base' | 'correctScrolling' | 'routes' | 'transformTitle' | 'type'
 >;
 
 export interface MountAppConfig {

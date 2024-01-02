@@ -23,7 +23,7 @@ const SideBarLink = (props: SideBarLinkProps) => {
 
   return (
     <>
-      {!item.routes ? (
+      {!item.children ? (
         <Link
           {...props}
           href={`${root}${item.path}`}
@@ -47,9 +47,9 @@ const SideBarLink = (props: SideBarLinkProps) => {
             </Link>
           </summary>
           <div class="m-l-2 col border-l-solid  border-l-1px border-l-[color:var(--border)]">
-            {item.routes?.map(sub => (
+            {item.children?.map(sub => (
               <SideBarLink
-                item={{ ...sub, path: `${item.path}/${sub.path}` }}
+                item={{ ...sub, path: `${item.path}${sub.path}` }}
                 root={root}
                 onClick={onClick}
               >
