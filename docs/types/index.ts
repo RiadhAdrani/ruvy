@@ -1,5 +1,5 @@
 import { RuvyNode } from '@/types.js';
-import { RawRoute } from '@riadh-adrani/dom-router';
+import { PathRawRoute } from '@riadh-adrani/dom-router';
 
 export enum Theme {
   Dark = 'dark',
@@ -7,4 +7,4 @@ export enum Theme {
   Device = 'device',
 }
 
-export type DocItem = RawRoute<RuvyNode>;
+export type DocItem = PathRawRoute<RuvyNode>;
