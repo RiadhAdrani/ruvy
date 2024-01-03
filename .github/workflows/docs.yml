@@ -1,4 +1,4 @@
-name: Docs
+name: Deploy Docs
 on:
   push:
     branches:
@@ -12,7 +12,7 @@ on:
 permissions:
   contents: write
 jobs:
-  build-and-deploy:
+  deploy-docs:
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     steps:
