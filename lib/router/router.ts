@@ -1,12 +1,15 @@
 import { isNumber, isUndefined } from '@riadh-adrani/obj-utils';
 import { RuvyError } from '../helpers/helpers.js';
-import { queueRequest } from '../scheduler/scheduler.js';
-import { OutletComponent, RouterOptions, Template } from '../types.js';
-import { DestinationRequest, Router, isUrlNavigatable } from '@riadh-adrani/dom-router';
+import { queueRequest } from '../core/index.js';
+import { RouterOptions, Template } from '../types.js';
+import {
+  DestinationOptions,
+  DestinationRequest,
+  Router,
+  isUrlNavigatable,
+} from '@riadh-adrani/dom-router';
 
 let router: Router<Template> | undefined;
-
-let rootOutlets: Array<OutletComponent> = [];
 
 export const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined => {
   if (element.tagName.toLowerCase() === 'a') {
@@ -46,20 +49,6 @@ document.addEventListener('click', (e: any) => {
   }
 });
 
-export const addRootOutlet = (outlet: OutletComponent) => {
-  if (isRootOutlet(outlet)) return;
-
-  rootOutlets.push(outlet);
-};
-
-export const removeRootOutlet = (outlet: OutletComponent) => {
-  rootOutlets = rootOutlets.filter(it => it !== outlet);
-};
-
-export const isRootOutlet = (outlet: OutletComponent): boolean => {
-  return rootOutlets.includes(outlet);
-};
-
 export const createRouter = (options: RouterOptions) => {
   if (router) {
     throw new RuvyError('another router was already, please unmount it first');
@@ -94,9 +83,9 @@ export const getTemplateByDepth = (depth: number): Template => {
   return template;
 };
 
-export const navigate = (destination: DestinationRequest) => {
+export const navigate = (destination: DestinationRequest, options: DestinationOptions = {}) => {
   withRouter(router => {
-    router.navigate(destination);
+    router.navigate(destination, options);
   });
 };
 
@@ -113,4 +102,6 @@ export const createDestination = (destination: DestinationRequest): string | und
 
 export const getPathname = (): string => withRouter(router => router.getPath());
 
-export const getSearchParams = (): Record<string, string | undefined> => withRouter(() => ({}));
+export const getSearchParams = () => withRouter(router => router.getSearchParams());
+
+export const getParams = () => withRouter(router => router.getParams());

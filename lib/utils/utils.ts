@@ -12,7 +12,7 @@ export const joinClasses = (
   const filtered = classes.filter(it => !isFalsy(it));
 
   return filtered
-    .map(it => (isArray(it) ? (it as Array<string>).filter(cls => !isFalsy(cls)).join(' ') : it))
+    .map(it => (isArray(it) ? it.filter(cls => !isFalsy(cls)).join(' ') : it))
     .join(' ')
     .trim();
 };

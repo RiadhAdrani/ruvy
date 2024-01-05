@@ -13,8 +13,9 @@ export {
 export { Outlet, Portal, Fragment } from './types.js';
 
 export type { RuvyNode } from './types.js';
+export * from './global.d.js';
 
-export { mountApp } from './core/index.js';
+export { mountApp, unmountApp } from './core/index.js';
 
 export {
   getPathname,

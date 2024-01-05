@@ -83,16 +83,9 @@ import {
 } from './task.js';
 import { RuvyError, generateId, moveElement } from '../helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
-import {
-  addRootOutlet,
-  createDestination,
-  getTemplateByDepth,
-  isRootOutlet,
-  removeRootOutlet,
-} from '../router/router.js';
+import { createDestination, getTemplateByDepth } from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
-import { isAncestorComponent, queueRequest } from '../scheduler/scheduler.js';
-import { executeTasks } from '../core/index.js';
+import { isAncestorComponent, queueRequest } from '../core/index.js';
 
 export const RuvyAttributes = [
   'if',
@@ -491,6 +484,12 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
 
   const { props, type } = template;
 
+  const depth = (_ctx.outletDepth ?? -1) + 1;
+
+  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
+    ctx.outletDepth = depth;
+  });
+
   const component = current ?? {
     children: [],
     key,
@@ -499,23 +498,11 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
     status: ComponentStatus.Mounting,
     tag: ComponentTag.Outlet,
     type,
-    ctx: _ctx,
+    ctx,
   };
-
-  const depth = (_ctx.outletDepth ?? -1) + 1;
-
-  const ctx: ExecutionContext = cloneExecutionContext(_ctx, ctx => {
-    ctx.outletDepth = depth;
-  });
 
   if (current) {
     component.props = props;
-
-    component.ctx = ctx;
-  }
-
-  if (depth === 0) {
-    addRootOutlet(component);
   }
 
   const child = getTemplateByDepth(depth);
@@ -781,10 +768,6 @@ export const unmountComponentOrComposable = (
   }
 
   if ('tag' in component) {
-    if (component.tag === ComponentTag.Outlet && isRootOutlet(component)) {
-      removeRootOutlet(component);
-    }
-
     const unmountTask = createUnmountComponentTask(component, data);
 
     pushTask(unmountTask, tasks);
@@ -1349,7 +1332,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
         if (!areEqual(hook.value, newValue)) {
           hook.value = newValue;
 
-          queueRequest({ requester: component });
+          queueRequest({ requester: component, type: 'update' });
         }
       },
     };
@@ -1593,7 +1576,11 @@ export const useComposable = <T = unknown>(name: string): T => {
        ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝      ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝                                                                               
  */
 
+let index = 0;
+
 const composableStore: Map<string, Composable> = new Map();
+
+export const getComposables = () => composableStore.entries();
 
 export const createComposable = <R = unknown>(name: string, callback: () => R): (() => R) => {
   if (composableStore.has(name)) {
@@ -1607,12 +1594,15 @@ export const createComposable = <R = unknown>(name: string, callback: () => R): 
     subscribers: [],
     value: undefined as R,
     status: ComponentStatus.Mounting,
+    index,
     callback,
   };
 
+  index++;
+
   composableStore.set(name, composable);
 
-  queueRequest({ requester: composable });
+  queueRequest({ requester: composable, type: 'update' });
 
   return () => useComposable<R>(name);
 };
@@ -1666,9 +1656,9 @@ export const unmountComposable = (name: string) => {
 
   const tasks = unmountComponentOrComposable(composable, {});
 
-  executeTasks(tasks);
-
   composableStore.delete(name);
+
+  return tasks;
 };
 
 export const subscribeToComposable = (name: string, component: FunctionComponent | Composable) => {

@@ -59,6 +59,7 @@
     "@vitest/coverage-v8": "^1.1.0",
     "dompurify": "^3.0.3",
     "eslint": "^8.41.0",
+    "eslint-plugin-vitest": "^0.3.20",
     "jsdom": "^23.0.1",
     "marked": "^5.0.5",
     "marked-gfm-heading-id": "^3.0.4",
@@ -75,7 +76,7 @@
     "vitest": "^1.1.0"
   },
   "dependencies": {
-    "@riadh-adrani/dom-router": "^0.0.3",
+    "@riadh-adrani/dom-router": "^0.0.4",
     "@riadh-adrani/domer": "^0.0.3",
     "@riadh-adrani/obj-utils": "1.0.5",
     "@riadh-adrani/type-utils": "1.0.2",
