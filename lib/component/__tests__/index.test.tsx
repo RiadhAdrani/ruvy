@@ -78,7 +78,6 @@ describe('component', () => {
   unmountRouter();
 
   createRouter({
-    catchAllElement: 'not found',
     base: '/test',
     routes: [
       {
@@ -449,7 +448,7 @@ describe('component', () => {
       expect(res.component.status).toBe(ComponentStatus.Mounting);
     });
 
-    it('should add correct status', () => {
+    it('should add correct parent', () => {
       expect(res.component.parent).toStrictEqual(root);
     });
 
@@ -563,7 +562,7 @@ describe('component', () => {
       expect(res.component.props).toStrictEqual({ children: [], if: true });
     });
 
-    it('should set type', () => {
+    it('should set tag', () => {
       expect(res.component.tag).toBe(ComponentTag.Function);
     });
 
@@ -2510,7 +2509,7 @@ describe('component', () => {
         expect(composable.value).toStrictEqual(undefined);
       });
 
-      it('should init subscribers ', () => {
+      it('should init subscribers', () => {
         expect(composable.subscribers).toStrictEqual([]);
       });
 
@@ -2634,6 +2633,7 @@ describe('component', () => {
           status: ComponentStatus.Mounted,
           subscribers: [],
           value: 0,
+          index: 10,
         };
 
         expect(() =>
@@ -2684,6 +2684,7 @@ describe('component', () => {
         status: ComponentStatus.Mounted,
         subscribers: [],
         value: undefined,
+        index: 55,
       };
 
       it('should push to subscribers', () => {
@@ -2726,7 +2727,8 @@ describe('component', () => {
 
     describe('unmountComposable', () => {
       beforeAll(() => {
-        MOD.unmountComposable('test');
+        const tasks = MOD.unmountComposable('test');
+        executeTasks(tasks);
       });
 
       it('should remove composable from store', () => {

@@ -31,9 +31,9 @@ export type Selector = { [key in keyof CSS.Properties]: Arrayable<CSS.Properties
 export interface UtilityProps {
   children: Array<RuvyNode>;
   key: Key;
-  if: boolean;
+  if: unknown;
   else: unknown;
-  'else-if': boolean;
+  'else-if': unknown;
   switch: unknown;
   case: unknown;
   'case:default': unknown;

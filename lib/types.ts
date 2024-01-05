@@ -1,8 +1,49 @@
 import { RouterConfig } from '@riadh-adrani/dom-router';
 import { Namespace } from '@riadh-adrani/domer';
 
+export type Requester = FunctionComponent | OutletComponent | Composable;
+
+export type RequestType = 'mount' | 'update' | 'route' | 'unmount';
+
+export interface RequestObject {
+  id: string;
+  date: Date;
+  fulfilled: boolean;
+  type: RequestType;
+}
+
+export interface UpdateRequest extends RequestObject {
+  type: 'update';
+  requester: Requester;
+}
+
+export interface RouteUpdateRequest extends RequestObject {
+  type: 'route';
+}
+
+export interface RenderRequest extends RequestObject {
+  type: 'mount';
+  root: RootComponent;
+  child: Template;
+}
+
+export interface UnmountRequest extends RequestObject {
+  type: 'unmount';
+}
+
+export type Request = UpdateRequest | RenderRequest | RouteUpdateRequest | UnmountRequest;
+
+export type SchedulerState = 'idle' | 'batching' | 'processing' | 'unmounting';
+
+export type RequestData =
+  | Pick<RenderRequest, 'child' | 'root' | 'type'>
+  | Pick<UpdateRequest, 'requester' | 'type'>
+  | Pick<RouteUpdateRequest, 'type'>
+  | Pick<UnmountRequest, 'type'>;
+
 export interface GlobalContext {
   preventRequests?: boolean;
+  preventRequestsProcessing?: boolean;
 }
 
 export type Callback<Return = void, Args extends Array<unknown> = Array<unknown>> = (
@@ -316,6 +357,7 @@ export interface Composable<R = unknown> {
   value: R;
   subscribers: Array<FunctionComponent | Composable>;
   status: ComponentStatus;
+  index: number;
   callback: () => R;
 }
 

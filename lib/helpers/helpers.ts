@@ -39,3 +39,11 @@ export function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: numb
 
   return arrayCopy;
 }
+
+export const wait = async (time: number): Promise<void> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};

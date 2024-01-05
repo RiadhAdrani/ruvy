@@ -4,7 +4,7 @@ on:
 permissions:
   contents: write
 jobs:
-  test:
+  linting:
     runs-on: ubuntu-latest
     strategy:
       matrix:
