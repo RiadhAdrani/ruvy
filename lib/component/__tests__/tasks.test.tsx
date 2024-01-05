@@ -47,8 +47,6 @@ describe('tasks', () => {
     contexts: {},
     dom: {
       parent: root,
-      nextIndex: 0,
-      firstIndex: 0,
     },
   };
 
@@ -64,8 +62,6 @@ describe('tasks', () => {
       contexts: {},
       dom: {
         parent: root,
-        nextIndex: 0,
-        firstIndex: 0,
       },
     };
   });
