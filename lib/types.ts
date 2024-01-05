@@ -272,6 +272,7 @@ export interface TextComponent
     NodeComponentBase<Text> {
   tag: ComponentTag.Text;
   text: string;
+  /** @deprecated */
   position: number;
 }
 

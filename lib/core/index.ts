@@ -57,7 +57,7 @@ export const __didRender__ = () => didRender;
 
 const batchDelay = 12;
 
-export const __setUpdateDepth = (v: number) => {
+export const __setUpdateDepth__ = (v: number) => {
   updateDepth = v;
 };
 
@@ -381,7 +381,7 @@ export const executeTasks = (tasks: ComponentTasks) => {
       try {
         task.execute();
       } catch (e) {
-        // some err
+        console.error(e);
       }
     });
   });

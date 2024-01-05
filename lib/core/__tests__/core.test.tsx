@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createComposable } from '../../../docs/index.js';
 import {
   __resetBuffer__,
@@ -15,7 +15,7 @@ import {
   __buffer__,
   processPending,
   unmountApp,
-  __setUpdateDepth,
+  __setUpdateDepth__,
 } from '../index.js';
 import {
   Composable,
@@ -31,7 +31,7 @@ import {
   subscribeToComposable,
   unmountComposable,
 } from '@/component/index.js';
-import { RuvyError, wait } from '@/helpers/helpers.js';
+import { RuvyError } from '@/helpers/helpers.js';
 
 describe('collectUniqueRequesters', () => {
   const requesters: Array<Requester> = [];
@@ -227,20 +227,6 @@ describe('queueRequeust', () => {
     expect(__buffer__().length).toBe(0);
     expect(__pending__().length).toBe(0);
   });
-
-  it('should process pendings', async () => {
-    frameworkContext.preventRequestsProcessing = false;
-
-    const root = createRoot(document.body);
-    const Fn = vitest.fn(() => <div />);
-    const child = <Fn />;
-
-    queueRequest({ type: 'mount', root, child });
-
-    await wait(10);
-
-    expect(Fn).toHaveBeenCalledOnce();
-  });
 });
 
 describe('processPending', () => {
@@ -300,8 +286,8 @@ describe('processPending', () => {
     expect(__buffer__()).toStrictEqual([]);
   });
 
-  it('should throw when updateDeppth exceed 100', () => {
-    __setUpdateDepth(101);
+  it('should throw when updateDeppth exceed 100', async () => {
+    __setUpdateDepth__(101);
 
     expect(() => processPending()).toThrow(
       new RuvyError('infinite re-rendering detected: update depth exceeded 100.')

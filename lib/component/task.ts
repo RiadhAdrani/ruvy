@@ -215,7 +215,13 @@ export const createTextTask = (component: TextComponent): Task => {
       throw new RuvyError('unable to find element hosting parent.');
     }
 
-    insertNode(instance, host.instance, component.position);
+    const { index, found } = computeNodeComponentIndexInDOM(component);
+
+    if (!found) {
+      throw new RuvyError('unable to compute node index in dom');
+    }
+
+    insertNode(instance, host.instance, index);
 
     component.instance = instance;
   };

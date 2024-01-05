@@ -31,5 +31,12 @@
       "@utils/*": ["./lib/utils/*"]
     }
   },
-  "include": ["./lib", "./docs", "./playground"]
+  "include": [
+    "./lib",
+    "./docs",
+    "./playground",
+    "./vite.config.ts",
+    "./vite.dev.config.ts",
+    "./vite.playground.config.ts"
+  ]
 }
