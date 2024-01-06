@@ -81,7 +81,7 @@ import {
   createUpdateTextTask,
   createReorderChildrenTask,
 } from './task.js';
-import { RuvyError, generateId, moveElement } from '../helpers/helpers.js';
+import { RuvyError, generateHexId, generateId, moveElement } from '../helpers/helpers.js';
 import { createFragmentTemplate } from './jsx.js';
 import { createDestination, getTemplateByDepth } from '../router/router.js';
 import { DestinationRequest } from '@riadh-adrani/dom-router';
@@ -1566,6 +1566,8 @@ export const useComposable = <T = unknown>(name: string): T => {
 
   return value as T;
 };
+
+export const useId = () => useMemo(() => generateHexId());
 
 /**
        ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███████╗ █████╗ ██████╗ ██╗     ███████╗

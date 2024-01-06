@@ -31,6 +31,14 @@ export const generateId = (): string => {
   return id;
 };
 
+export let hexCounter = 999;
+
+export const generateHexId = () => {
+  hexCounter++;
+
+  return hexCounter.toString(16);
+};
+
 export function moveElement<T>(array: Array<T>, fromIndex: number, toIndex: number): Array<T> {
   const arrayCopy = [...array];
   const element = arrayCopy.splice(fromIndex, 1)[0];
