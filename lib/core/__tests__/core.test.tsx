@@ -1,20 +1,20 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createComposable } from '../../../docs/index.js';
 import {
-  __resetBuffer__,
-  __setDidRender__,
-  __resetPending__,
   collectUniqueRequesters,
   frameworkContext,
   isAncestorComponent,
   optimizeRequesters,
-  __setState__,
   queueRequest,
+  processPending,
+  unmountApp,
+  __resetBuffer__,
+  __setDidRender__,
+  __resetPending__,
+  __setState__,
   __pending__,
   __state__,
   __buffer__,
-  processPending,
-  unmountApp,
   __setUpdateDepth__,
 } from '../index.js';
 import {
@@ -292,5 +292,7 @@ describe('processPending', () => {
     expect(() => processPending()).toThrow(
       new RuvyError('infinite re-rendering detected: update depth exceeded 100.')
     );
+
+    __setUpdateDepth__(0);
   });
 });
