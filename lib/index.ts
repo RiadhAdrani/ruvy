@@ -5,9 +5,10 @@ export {
   useEffect,
   useMemo,
   useRef,
+  useId,
+  useComposable,
   createContext,
   createComposable,
-  useComposable,
 } from './component/index.js';
 
 export { Outlet, Portal, Fragment } from './types.js';
