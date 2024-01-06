@@ -384,6 +384,8 @@ describe('tasks', () => {
         text: 'test',
       };
 
+      root.children = [component];
+
       task = createTextTask(component);
 
       task.execute();
