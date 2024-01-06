@@ -1,32 +1,33 @@
-import { mountApp, useState, createComposable } from '../lib/index.js';
+import { generateHexId } from '../lib/helpers/helpers.js';
+import { mountApp, useState, useMemo } from '../lib/index.js';
 
-const useCount = createComposable('count', () => {
-  const [count, setCount] = useState(0);
-
-  return { count, setCount };
-});
-
-const Button = () => {
-  const [number, setNumber] = useState(0);
-
-  const { count, setCount } = useCount();
-
-  return (
-    <>
-      <div>
-        <button onClick={() => setNumber(number + 1)}>
-          local {number} {number + 1} {number + 2}
-        </button>
-        <button onClick={() => setCount(count + 1)}>global {count}</button>
-      </div>
-    </>
-  );
-};
+const id1 = generateHexId();
+const id2 = generateHexId();
+const id3 = generateHexId();
+const id4 = generateHexId();
 
 const App = () => {
+  const [reverse, setReverse] = useState(false);
+
+  const items = useMemo(() => {
+    const arr = [id1, id2, id3, id4];
+
+    if (reverse) {
+      arr.reverse();
+    }
+
+    return arr;
+  }, [reverse]);
+
   return (
     <>
-      <Button />
+      <button onClick={() => setReverse(!reverse)}>reverse</button>
+      <p>{items}</p>
+      <>
+        {items.map(id => (
+          <div key={id}>{id}</div>
+        ))}
+      </>
     </>
   );
 };

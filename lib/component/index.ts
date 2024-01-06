@@ -1128,9 +1128,16 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
 
       childRes = handleComponent(template, oldComponent.component, parent, i, res.ctx);
 
-      if (parent.children.indexOf(oldComponent.component) !== i) {
+      const currentIndex = parent.children.indexOf(oldComponent.component);
+
+      if (currentIndex === -1) {
+        // ! this should not happen
+        throw new RuvyError('unable to determine component index');
+      }
+
+      if (currentIndex !== i) {
         // need to change element position
-        parent.children = moveElement(parent.children, oldComponent.index, i);
+        parent.children = moveElement(parent.children, currentIndex, i);
 
         // update children position
         const reorderTask = createReorderChildrenTask(oldComponent.component);
@@ -1144,7 +1151,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
   }
 
   // remove unused from the array of children
-  res.component.children = res.component.children.filter(child => {
+  parent.children = parent.children.filter(child => {
     if (child.status === ComponentStatus.Unmounting) {
       const unmountTasks = unmountComponentOrComposable(child, {});
 
