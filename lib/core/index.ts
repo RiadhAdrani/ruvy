@@ -36,13 +36,12 @@ import {
 } from '../types.js';
 import toposort from 'toposort';
 
-export const frameworkContext: GlobalContext = {
-  preventRequests: false,
-  preventRequestsProcessing: false,
-};
+export const frameworkContext: GlobalContext = {};
 
 export let root: RootComponent | undefined;
 export let template: Template;
+
+const batchDelay = 5;
 
 let state: SchedulerState = 'idle';
 let buffer: Array<Request> = [];
@@ -50,12 +49,21 @@ let pending: Array<Request> = [];
 let didRender = false;
 let updateDepth = 0;
 
+const reset = () => {
+  state = 'idle';
+  buffer = [];
+  pending = [];
+  didRender = false;
+  updateDepth = 0;
+
+  root = undefined;
+  template = undefined;
+};
+
 export const __state__ = () => state;
 export const __buffer__ = () => buffer;
 export const __pending__ = () => pending;
 export const __didRender__ = () => didRender;
-
-const batchDelay = 5;
 
 export const __setUpdateDepth__ = (v: number) => {
   updateDepth = v;
@@ -198,6 +206,12 @@ export const processPending = () => {
     state = 'unmounting';
 
     if (!didRender) {
+      if (frameworkContext.skipThrowingWhenUnmountingNoApp) {
+        reset();
+
+        return;
+      }
+
       throw new RuvyError('no application to be unmounted');
     }
   }
@@ -293,8 +307,7 @@ export const processPending = () => {
       .forEach(([it]) => pushBlukTasks(unmountComposable(it), tasks));
 
     // remove root and template
-    root = undefined;
-    template = undefined;
+    reset();
   }
 
   executeTasks(tasks);

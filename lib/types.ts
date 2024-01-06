@@ -44,6 +44,7 @@ export type RequestData =
 export interface GlobalContext {
   preventRequests?: boolean;
   preventRequestsProcessing?: boolean;
+  skipThrowingWhenUnmountingNoApp?: boolean;
 }
 
 export type Callback<Return = void, Args extends Array<unknown> = Array<unknown>> = (
