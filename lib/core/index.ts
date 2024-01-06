@@ -55,7 +55,7 @@ export const __buffer__ = () => buffer;
 export const __pending__ = () => pending;
 export const __didRender__ = () => didRender;
 
-const batchDelay = 12;
+const batchDelay = 5;
 
 export const __setUpdateDepth__ = (v: number) => {
   updateDepth = v;
