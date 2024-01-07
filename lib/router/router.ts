@@ -11,6 +11,8 @@ import {
 
 let router: Router<Template> | undefined;
 
+export const __router__ = () => router;
+
 export const getClosestAnchorParent = (element: Element): HTMLAnchorElement | undefined => {
   if (element.tagName.toLowerCase() === 'a') {
     return element as HTMLAnchorElement;
@@ -33,10 +35,6 @@ export const getClosestAnchorParent = (element: Element): HTMLAnchorElement | un
 document.addEventListener('click', (e: any) => {
   if (!router) return;
 
-  if (!router) {
-    return;
-  }
-
   const anchorEl = getClosestAnchorParent(e.target);
 
   if (anchorEl) {
@@ -51,7 +49,7 @@ document.addEventListener('click', (e: any) => {
 
 export const createRouter = (options: RouterOptions) => {
   if (router) {
-    throw new RuvyError('another router was already, please unmount it first');
+    throw new RuvyError('another router was already mounted, please unmount it first');
   }
 
   const onChanged = () => {
@@ -70,7 +68,7 @@ const withRouter = <T>(callback: (router: Router<Template>) => T): T => {
 };
 
 export const unmountRouter = () => {
-  if (router) router.unload();
+  router?.unload();
 
   router = undefined;
 };
@@ -96,6 +94,7 @@ export const createDestination = (destination: DestinationRequest): string | und
     if (typeof destination === 'string' && !isUrlNavigatable(destination)) {
       return destination;
     }
+
     return router.toHref(destination);
   });
 };
