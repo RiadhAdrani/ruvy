@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig",
   "include": ["./lib"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx", "./docs"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "./docs", "**/__tests__/**"],
   "compilerOptions": {
     "types": [],
     "declaration": false,
