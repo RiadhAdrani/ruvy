@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Outlet, createRouter, navigate, unmountRouter } from '../../docs/index.js';
-import { RawRoute } from '@riadh-adrani/dom-router';
+import { RawRoute, RouterType } from '@riadh-adrani/dom-router';
 import { Template } from '@/types.js';
 import { __test__mount, __test__unmount } from './utils.js';
 import { wait } from '@/helpers/helpers.js';
@@ -73,6 +73,52 @@ const routes: Array<RawRoute<Template>> = [
 describe('browser router', () => {
   beforeEach(async () => {
     createRouter({ routes });
+
+    await __test__mount(<Outlet />);
+  });
+
+  afterEach(async () => {
+    unmountRouter();
+
+    await __test__unmount();
+  });
+
+  it('should render page correctly (/)', () => {
+    expect(document.body.innerHTML).toBe('<div><div>Home</div></div>');
+  });
+
+  it('should render page correctly (/users)', async () => {
+    navigate('/users');
+
+    await wait(10);
+
+    expect(document.body.innerHTML).toBe(
+      '<div><div><h1>Users</h1><div>Welcome Users</div></div></div>'
+    );
+  });
+
+  it('should render page correctly (/users/me)', async () => {
+    navigate('/users/me');
+
+    await wait(10);
+
+    expect(document.body.innerHTML).toBe(
+      '<div><div><h1>Users</h1><div><p>UserId</p><p>Welcome back</p></div></div></div>'
+    );
+  });
+
+  it('should render page correctly (/editor/ruvy)', async () => {
+    navigate('/editor/ruvy');
+
+    await wait(10);
+
+    expect(document.body.innerHTML).toBe('<div><main><div>ruvy</div></main></div>');
+  });
+});
+
+describe('hash router', () => {
+  beforeEach(async () => {
+    createRouter({ routes, type: RouterType.Hash });
 
     await __test__mount(<Outlet />);
   });
