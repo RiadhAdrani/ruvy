@@ -328,10 +328,10 @@
   resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.5.tgz#3177755416c333da7ec6fb622c37ee4289ae2674"
   integrity sha512-COaeXiQM1dOeEGKBpcE5CzZhwNljltrO4h1Wvq2VZHyYOMqEzaMFtymJ30WbGY14mkUthMlAerOr32AMYSt53Q==
 
-"@riadh-adrani/domer@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.3.tgz#38fcb3da0ec443b6f1e2d02f180ec1238ecfe375"
-  integrity sha512-zbz34fVH9AO3QAgpgDfPJ4Y6Nwu++2aZpCF9vNIAJn2DXPeShd6Zk9THYMGvTAjm5KpMNifDF81vPCwX9hnQAA==
+"@riadh-adrani/domer@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/domer/-/domer-0.0.4.tgz#7849a9d404f157113b51672bf917e6da6f3ed588"
+  integrity sha512-nKzrxb8fvpmcQp7IGH6B0ibrfpTLbBFNXAyUamTxGQ+eYN0g7FNEIvx0UVH8SyBlBhFxE57QGuGkoS9Af8/2mQ==
   dependencies:
     "@riadh-adrani/obj-utils" "^1.0.2"
     camelcase "^7.0.1"
