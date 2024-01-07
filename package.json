@@ -32,7 +32,7 @@
     "playground": "vite --config vite.playground.config.ts",
     "build:docs": "vite --config vite.dev.config.ts build",
     "serve:docs": "vite --config vite.dev.config.ts serve",
-    "build:copy-global": "cp src/types/global.d.ts build/types/global.d.ts",
+    "build:copy-global": "cp lib/global.d.ts build/global.d.ts",
     "build:js": "tsc --project tsconfig.build.json",
     "build:dts": "tsc --project tsconfig.build.dts.json",
     "build": "rm -rf build && yarn build:js && yarn build:dts && yarn build:copy-global",
