@@ -2516,6 +2516,18 @@ describe('component', () => {
       it('should init callback', () => {
         expect(composable.callback).toStrictEqual(callback);
       });
+
+      it('should throw when called in a hook context', () => {
+        expect(() =>
+          withHookContext({ component: composable, ctx: exCtx, tasks: initComponentTasks() }, () =>
+            MOD.createComposable('in-hook-ctx', () => 0)
+          )
+        ).toThrow(
+          new RuvyError(
+            `cannot create a composable inside a function component or another composable.`
+          )
+        );
+      });
     });
 
     describe('getComposable', () => {

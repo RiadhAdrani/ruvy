@@ -1592,6 +1592,12 @@ const composableStore: Map<string, Composable> = new Map();
 export const getComposables = () => composableStore.entries();
 
 export const createComposable = <R = unknown>(name: string, callback: () => R): (() => R) => {
+  if (caller) {
+    throw new RuvyError(
+      'cannot create a composable inside a function component or another composable.'
+    );
+  }
+
   if (composableStore.has(name)) {
     throw new RuvyError(`composable with name "${name}" is already created`);
   }
