@@ -1,10 +1,10 @@
-name: Check Linting
+name: CI
 on:
   push:
 permissions:
   contents: write
 jobs:
-  linting:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,3 +18,6 @@ jobs:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
       - run: yarn lint:check
+      - run: yarn format:check
+      - run: yarn types:check
+      - run: yarn test:once
