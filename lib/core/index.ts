@@ -1,5 +1,6 @@
 import '../component/jsx.js';
 import {
+  Composable,
   GlobalContext,
   MountAppConfig,
   RenderRequest,
@@ -164,7 +165,7 @@ export const optimizeRequesters = (requests: Array<Requester>): Array<Requester>
     deps
   );
 
-  return sorted
+  const out = sorted
     .map(it => {
       const comp = minimal[parseInt(it)];
 
@@ -175,6 +176,25 @@ export const optimizeRequesters = (requests: Array<Requester>): Array<Requester>
       return comp;
     })
     .reverse();
+
+  if (!didRender) {
+    const composables: Array<Composable> = [];
+    const others: Array<Requester> = [];
+
+    out.forEach(it => {
+      if (isComposable(it)) {
+        composables.push(it);
+      } else {
+        others.push(it);
+      }
+    });
+
+    const sorted = [...composables.sort((a, b) => a.index - b.index), ...others];
+
+    return sorted;
+  }
+
+  return out;
 };
 
 export const processPending = () => {

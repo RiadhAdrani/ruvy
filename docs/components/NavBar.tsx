@@ -1,6 +1,5 @@
 import { Theme } from '../types/index.js';
-import { UIContext } from '../context/UI.js';
-import { useContext } from '../index.js';
+import { useApp } from '../context/UI.js';
 import Toggle from './Toggle.js';
 import Link from './Link.js';
 import Button from './Button.js';
@@ -9,7 +8,7 @@ import { isActive } from '../utils/utils.js';
 import useLogo from '../hooks/useLogo.js';
 
 export default () => {
-  const { computedTheme, toggleTheme, isNavOpen, toggleNav } = useContext(UIContext);
+  const { computedTheme, toggleTheme, isNavOpen, toggleNav } = useApp();
   const logo = useLogo();
 
   const menuItems = [
@@ -48,7 +47,7 @@ export default () => {
               ))}
             </div>
           </div>
-          <div class="row hidden md:flex items-center">
+          <div class="row hidden gap-3 md:flex items-center">
             <div class="row gap-1">
               {externalItems.map(it => (
                 <Link href={it.href} target="_blank">
@@ -56,6 +55,10 @@ export default () => {
                 </Link>
               ))}
             </div>
+            <select>
+              <option>0.5.0</option>
+              <option>0.5.1</option>
+            </select>
             <Toggle checked={computedTheme === Theme.Dark} onChange={() => toggleTheme()} />
           </div>
           <div class="col md:hidden">

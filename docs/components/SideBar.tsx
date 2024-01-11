@@ -2,7 +2,8 @@ import { isActive } from '../utils/utils.js';
 import { PropsWithUtility, useCallback, useState } from '../index.js';
 import { DocItem } from '../types/index.js';
 import Link from './Link.js';
-import useScroll from '../hooks/useScroll.js';
+import { useScroll } from '../hooks/composables.js';
+import { PathRawRoute } from '@riadh-adrani/dom-router';
 
 export interface SideBarProps {
   items: Array<DocItem>;
@@ -25,7 +26,7 @@ const SideBarLink = (props: SideBarLinkProps) => {
     <>
       {!item.children ? (
         <Link
-          {...props}
+          {...(props as Record<string, unknown>)}
           href={`${root}${item.path}`}
           isActive={isActive(`${root}${item.path}`)}
           onClick={onClick}
@@ -37,7 +38,7 @@ const SideBarLink = (props: SideBarLinkProps) => {
         <details open={open}>
           <summary onClick={toggle}>
             <Link
-              {...props}
+              {...(props as Record<string, unknown>)}
               href={`${root}${item.path}`}
               isActive={isActive(`${root}${item.path}`)}
               onClick={onClick}
@@ -49,11 +50,11 @@ const SideBarLink = (props: SideBarLinkProps) => {
           <div class="m-l-2 col border-l-solid  border-l-1px border-l-[color:var(--border)]">
             {item.children?.map(sub => (
               <SideBarLink
-                item={{ ...sub, path: `${item.path}${sub.path}` }}
+                item={{ ...sub, path: `${item.path}${(sub as PathRawRoute).path}` }}
                 root={root}
                 onClick={onClick}
               >
-                {sub.title}
+                {(sub as PathRawRoute).title}
               </SideBarLink>
             ))}
           </div>
