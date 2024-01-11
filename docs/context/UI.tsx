@@ -1,29 +1,15 @@
 import { Theme } from '../types/index.js';
-import { createContext, useCallback, useEffect, useMemo, useState } from '../index.js';
+import { createComposable, useCallback, useEffect, useMemo, useState } from '../index.js';
 import { getLogo, isDarkMode } from '../utils/utils.js';
 import useLocalStorage from '../hooks/useLocalStorage.js';
 import { isBoolean } from '@riadh-adrani/obj-utils';
-import useScroll from '../hooks/useScroll.js';
+import { useScroll } from '../hooks/composables.js';
 
-interface IUIConext {
-  theme: Theme;
-  computedTheme: Theme;
-  isNavOpen: boolean;
-  toggleNav: (v?: boolean) => void;
-  toggleTheme: (v?: Theme) => void;
-}
-
-export const UIContext = createContext<IUIConext>({
-  theme: Theme.Device,
-  computedTheme: Theme.Light,
-  toggleTheme: () => 0,
-  isNavOpen: false,
-  toggleNav: () => 0,
-});
-
-export const UIProvider = ({ children }: { children?: unknown }) => {
+export const useApp = createComposable('app', () => {
   const [theme, setTheme] = useLocalStorage('@riadh-adrani-ruvy-docs-theme', Theme.Device);
   const [isNavOpen, setNavOpen] = useState(false);
+
+  const [version, setVersion] = useState<true | string>(true);
 
   const [add, remove] = useScroll();
 
@@ -58,9 +44,13 @@ export const UIProvider = ({ children }: { children?: unknown }) => {
     setNavOpen(v);
   }, isNavOpen);
 
-  return (
-    <UIContext.Provider value={{ theme, computedTheme, toggleTheme, isNavOpen, toggleNav }}>
-      {children}
-    </UIContext.Provider>
-  );
-};
+  return {
+    theme,
+    computedTheme,
+    version,
+    setVersion,
+    toggleNav,
+    toggleTheme,
+    isNavOpen,
+  };
+});

@@ -1,8 +1,8 @@
 import { DocItem } from '../types/index.js';
 
-import quickStart from './learn/quick-start.md';
-import setup from './learn/setup.md';
-import tutorialTodo from './learn/tutorial-todo.md';
+import quickStart from './learn/quick-start.md?raw';
+import setup from './learn/setup.md?raw';
+import tutorialTodo from './learn/tutorial-todo.md?raw';
 
 export const LearnSections: Array<DocItem> = [
   {
