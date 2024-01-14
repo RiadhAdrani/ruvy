@@ -121,11 +121,11 @@ export const navigate = (destination: DestinationRequest, options: DestinationOp
 export const createDestination = (destination: DestinationRequest): string | undefined => {
   if (isUndefined(destination) || isNumber(destination)) return undefined;
 
-  return withRouter(router => {
-    if (typeof destination === 'string' && !isUrlNavigatable(destination)) {
-      return destination;
-    }
+  if (typeof destination === 'string' && (!router || !isUrlNavigatable(destination))) {
+    return destination;
+  }
 
+  return withRouter(router => {
     return router.toHref(destination);
   });
 };

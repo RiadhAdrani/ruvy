@@ -161,10 +161,12 @@ describe('createDestination', () => {
     expect(createDestination(0)).toBe(undefined);
   });
 
-  it('should throw when router is undefined', () => {
-    expect(() => createDestination('/hello')).toThrow(
-      new RuvyError('a router is yet to be created')
-    );
+  it('should not throw when router is undefined', () => {
+    expect(createDestination('/hello')).toBe('/hello');
+  });
+
+  it('should return url as it is when it is external (not navigatable)', () => {
+    expect(createDestination('https://github.com/')).toBe('https://github.com/');
   });
 
   describe('with router', () => {
