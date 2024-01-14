@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- `createComposable` create a global hook that can be accessed from anywhere in the tree.
+- `useComposable` retrieve a named `composable`.
+- `unmountApp` used to unmount the current app instance.
+- `unmountRouter` used to unmount the current router instance.
+- `createDestination` create a valid url using a destination request.
+
+### Changes
+
+- remake the framework from scratch and changed its architecture to be more expandable and dynamic.
+- use `@riadh-adrani/domer` instead of `@riadh-adrani/dom-utils` for DOM manipulations.
+- use `@riadh-adrani/dom-router` as the base of the routing system.
+- `navigate` now accepts a second parameter `DestinationOptions`.
+
+### Removed
+
+- `createStore` is removed, replaced by `createComposable`.
+- `batch` no longer useful during to framework architectural change.
+- `replace` removed, you can set `DestinationOptions.replace` to `true` instead.
+
 ## 0.5.0 - 2023-10-03
 
 ### Removed
