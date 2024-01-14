@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - `unmountRouter` used to unmount the current router instance.
 - `createDestination` create a valid url using a destination request.
 
-### Changes
+### Changed
 
 - remake the framework from scratch and changed its architecture to be more expandable and dynamic.
 - switched to `@riadh-adrani/domer` instead of `@riadh-adrani/dom-utils` for DOM manipulations.
