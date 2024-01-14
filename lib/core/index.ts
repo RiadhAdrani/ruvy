@@ -394,6 +394,20 @@ setConfig({
   },
 });
 
+/**
+ * schedule the creation of a `Ruvy` application.
+ *
+ * Only one application instance can exist at a given time
+ *
+ * @example
+ * ```jsx
+ * mountApp({
+ *    app: <div>App</div>,
+ *    host: document.body
+ * });
+ * ```
+ * @since v0.5.0
+ */
 export const mountApp = ({ app, host }: MountAppConfig) => {
   if (root) {
     throw new RuvyError('an app is already mounted');
@@ -406,6 +420,18 @@ export const mountApp = ({ app, host }: MountAppConfig) => {
   queueRequest({ root, child: app, type: 'mount' });
 };
 
+/**
+ * schedule the unmounting of the mounted `Ruvy` application.
+ *
+ * used generally for testing purposes.
+ *
+ * @example
+ * ```jsx
+ * unmountApp()
+ * ```
+ *
+ * @since v0.5.1
+ */
 export const unmountApp = () => queueRequest({ type: 'unmount' });
 
 export const executeTasks = (tasks: ComponentTasks) => {

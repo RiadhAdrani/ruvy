@@ -1299,6 +1299,16 @@ export const withHookContext = <R = Template>(hookCaller: HookCaller, callback: 
   return out;
 };
 
+/**
+ * allow you to create a stateful variable and update it using the `setter` function.
+ * @param create initial state or a function that return the initial state, it will be called only one during the initialization phase.
+ * @returns an array of 3 elements : `[0]` is the current state, `[1]` is the setter function and `[2]` is a getter function that retrieves the real value of the state, useful with asynchronous calls.
+ * @example
+ * ```
+ * const [count, setCount, getCount] = useState(0)
+ * ```
+ * @since v0.5.0
+ */
 export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   if (!caller) {
     throw new RuvyError('cannot call "useState" outisde of a functional component body.');
@@ -1356,6 +1366,20 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
   return [hook.value, hook.setValue, hook.getValue] as UseState<T>;
 };
 
+/**
+ * let you execute an effect callback each time `deps` changes.
+ * @param callback the function containing your logic. it can return a cleanup function that will be executed when the component is unmounted, or when dependencies changes.
+ * @param deps (optional) dependency according to which the effect will be re-executed. `undefined` by default.
+ * @example
+ * ```
+ * const filtered = useEffect(() => {
+ *    const unsubscribe = subscribeTo('some-external-store')
+ *
+ * return () => unsubscribe()
+ * });
+ * ```
+ * @since v0.5.0
+ */
 export const useEffect = (callback: Effect, deps?: unknown): void => {
   if (!caller) {
     throw new RuvyError('cannot call "useEffect" outisde of a functional component body.');
@@ -1406,6 +1430,18 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
   }
 };
 
+/**
+ * let you cache a computation between re-renders.
+ * @param callback the function that will compute the value you want to cache, it should not take arguments.
+ * @param deps (optional) dependency according to which the computation will be re-evaluated. `undefined` by default.
+ * @example
+ * ```
+ * const filtered = useMemo(() => {
+ *    return todos.filter(it => it.name.includes(searchQuery))
+ * }, searchQuery);
+ * ```
+ * @since v0.5.0
+ */
 export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
   if (!caller) {
     throw new RuvyError('cannot call "useMemo" outisde of a functional component body.');
@@ -1443,10 +1479,33 @@ export const useMemo = <T = unknown>(callback: () => T, deps?: unknown): T => {
   return hook.value as T;
 };
 
+/**
+ * let you cache a callback between rerenders.
+ * @param callback the callback that you want to cache, it can take any arguments and return any value.
+ * @param deps (optional) dependency according to which the callback will be re-evaluated. `undefined` by default.
+ * @example
+ * ```
+ * const onClick = useCallback(() => setCount(count + 1),count);
+ * ```
+ * @since v0.5.0
+ */
 export const useCallback = <T = () => void>(callback: T, deps?: unknown): T => {
   return useMemo(() => callback, deps);
 };
 
+/**
+ * let you store a reference to a value that does not impact rendering
+ * @param value initial value
+ * @example
+ * ```jsx
+ * //...
+ *
+ * const div = useRef();
+ *
+ * return <div ref={div}>Ruvy</div>
+ * ```
+ * @since v0.5.0
+ */
 export const useRef = <T = unknown>(value?: T): RefValue<T> => {
   if (!caller) {
     throw new RuvyError('cannot call "useRef" outisde of a functional component body.');
@@ -1484,6 +1543,20 @@ export const createContextProviderComponent = <T>({
   return createJsxElement(ComponentTag.Context, { value, ctx }, ...(children ?? []));
 };
 
+/**
+ * let you read the closest context value given its object.
+ * @param obj the resulting object of context creation
+ * @example
+ * ```jsx
+ * const AppContext = createContext();
+ *
+ * // ...
+ *
+ * const data = useContext(AppContext);
+ *
+ * ```
+ * @since v0.5.0
+ */
 export const useContext = <T>(obj: ContextObject<T>): T => {
   // find the context in the execution context
   if (!caller) {
@@ -1523,6 +1596,20 @@ export const useContext = <T>(obj: ContextObject<T>): T => {
   return ctx[obj.id] as T;
 };
 
+/**
+ * let you create a context object that can provided to decending component.
+ * @param _init optional initial value
+ * @example
+ * ```jsx
+ * const AppContext = createContext();
+ *
+ * // ...
+ *
+ * const data = useContext(AppContext);
+ *
+ * ```
+ * @since v0.5.0
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
   const ctx: ContextObject = {
@@ -1538,6 +1625,25 @@ export const createContext = <T = unknown>(_init?: T): ContextObject<T> => {
   return ctx as ContextObject<T>;
 };
 
+/**
+ * let you retrieve and subscribe to the given named composable.
+ * @param name composable name
+ * @example
+ * ```jsx
+ * createComposable('count',() => {
+ *    const [count,setCount] = useState(0);
+ *
+ *    return {count, setCount};
+ * })
+ *
+ * // ...
+ *
+ * const {count,setCount} = useComposable('count');
+ *
+ * // ...
+ * ```
+ * @since v0.5.1
+ */
 export const useComposable = <T = unknown>(name: string): T => {
   if (!caller) {
     throw new RuvyError('cannot call "useComposable" outisde of a functional component body.');
@@ -1574,6 +1680,10 @@ export const useComposable = <T = unknown>(name: string): T => {
   return value as T;
 };
 
+/**
+ * let you generate a unique id that will be preserved after re-renders.
+ * @since v0.5.0
+ */
 export const useId = () => useMemo(() => generateHexId());
 
 /**
@@ -1591,6 +1701,26 @@ const composableStore: Map<string, Composable> = new Map();
 
 export const getComposables = () => composableStore.entries();
 
+/**
+ * schedule the creation of a new `composable` / `store` and return its shorthand `useComposable` helper function.
+ * @param name a globally unique name
+ * @param callback function that will be re-called to create the composable value, you can use hooks within except for `useContext`.
+ * @example
+ * ```jsx
+ * createComposable('count',() => {
+ *    const [count,setCount] = useState(0);
+ *
+ *    return {count, setCount};
+ * })
+ *
+ * // ...
+ *
+ * const {count,setCount} = useComposable('count');
+ *
+ * // ...
+ * ```
+ * @since v0.5.1
+ */
 export const createComposable = <R = unknown>(name: string, callback: () => R): (() => R) => {
   if (caller) {
     throw new RuvyError(

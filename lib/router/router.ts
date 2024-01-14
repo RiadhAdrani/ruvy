@@ -47,6 +47,12 @@ document.addEventListener('click', (e: any) => {
   }
 });
 
+/**
+ * create a new router instance
+ * @param options router options
+ * @throws if a router is already created.
+ * @since v0.5.0
+ */
 export const createRouter = (options: RouterOptions) => {
   if (router) {
     throw new RuvyError('another router was already mounted, please unmount it first');
@@ -67,6 +73,10 @@ const withRouter = <T>(callback: (router: Router<Template>) => T): T => {
   return callback(router);
 };
 
+/**
+ * unmount the current router and perform needed cleanup.
+ * @since v0.5.1
+ */
 export const unmountRouter = () => {
   router?.unload();
 
@@ -81,12 +91,33 @@ export const getTemplateByDepth = (depth: number): Template => {
   return template;
 };
 
+/**
+ * schedule a navigation request using the provided destination.
+ * @param destination request
+ * @throws if no router is created
+ * @param options navigation options.
+ * @since v0.5.0
+ */
 export const navigate = (destination: DestinationRequest, options: DestinationOptions = {}) => {
   withRouter(router => {
     router.navigate(destination, options);
   });
 };
 
+/**
+ * compute destination string path from a named/path destination request,
+ * adds base and perform needed transformation for named routes.
+ *
+ * returns undefined when destination is of type ``undefined`` or a ``number``.
+ *
+ * @param destination named destination or a simple relative url path.
+ * @throws if no router is created
+ * @example
+ * ```
+ * const to = createDestination({name: 'User', params:{id:'122'}}); // /users/123
+ * ```
+ * @since v0.5.1
+ */
 export const createDestination = (destination: DestinationRequest): string | undefined => {
   if (isUndefined(destination) || isNumber(destination)) return undefined;
 
@@ -99,8 +130,49 @@ export const createDestination = (destination: DestinationRequest): string | und
   });
 };
 
+/**
+ * retrieve the current router path (without base).
+ *
+ * @throws if no router is created
+ * @example
+ * ```jsx
+ * const UserPage = () => {
+ *  const path = getPathname() // /users/123
+ *
+ * // ...
+ * }
+ * ```
+ * @since v0.5.0
+ */
 export const getPathname = (): string => withRouter(router => router.getPath());
 
+/**
+ * retrieve the current router path search query params.
+ *
+ * @throws if no router is created
+ * @example
+ * ```jsx
+ * const UserPage = () => {
+ *  const params = getSearchParams() // { id : '123' }
+ *
+ * // ...
+ * }
+ * ```
+ * @since v0.5.0
+ */
 export const getSearchParams = () => withRouter(router => router.getSearchParams());
 
+/**
+ * retrieve the current router path params.
+ *
+ * @throws if no router is created
+ * @example
+ * ```jsx
+ * const UserPage = () => {
+ *  const params = getParams() // { id : '123' }
+ *  // ...
+ * }
+ * ```
+ * @since v0.5.0
+ */
 export const getParams = () => withRouter(router => router.getParams());
