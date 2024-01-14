@@ -15,8 +15,8 @@ All notable changes to this project will be documented in this file.
 ### Changes
 
 - remake the framework from scratch and changed its architecture to be more expandable and dynamic.
-- use `@riadh-adrani/domer` instead of `@riadh-adrani/dom-utils` for DOM manipulations.
-- use `@riadh-adrani/dom-router` as the base of the routing system.
+- switched to `@riadh-adrani/domer` instead of `@riadh-adrani/dom-utils` for DOM manipulations.
+- switched to `@riadh-adrani/dom-router` as the base of the routing system.
 - `navigate` now accepts a second parameter `DestinationOptions`.
 
 ### Removed
