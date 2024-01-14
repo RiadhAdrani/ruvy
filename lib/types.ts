@@ -154,10 +154,44 @@ export interface PortalProps {
   container: Element;
 }
 
+/**
+ * used to render the correct router segment element.
+ *
+ * @example
+ * ```
+ * const App = () => {
+ *  return <div><Outlet/></div>
+ * }
+ * ```
+ * @since v0.5.0
+ */
 export const Outlet = () => null as unknown as JSX.Element;
 
+/**
+ * used to render children in an already existing element, preferably outside the application but inside the `document.body`
+ * @param props
+ * @example
+ * ```jsx
+ * const Dialog = () => {
+ *  return <Portal container={document.body}>
+ *    <div>My Dialog</div>
+ *  </Portal>
+ * }
+ * ```
+ * @since v0.5.0
+ */
 export const Portal = (props: PortalProps) => props as unknown as JSX.Element;
 
+/**
+ * used to render a group of elements without a wrapping DOM element. can be used as `<></>`
+ * @example
+ * ```jsx
+ * const Verbose = () => <Fragment>Hello World</Fragment>
+ * const Shorthand = () => <>Hello World</>
+ *
+ * ```
+ * @since v0.5.0
+ */
 export const Fragment = () => null as unknown as JSX.Element;
 
 export interface FunctionTemplate extends CommonTemplate {
@@ -528,6 +562,8 @@ export type RouterOptions = Pick<
 >;
 
 export interface MountAppConfig {
+  /** application template that will be mounted */
   app: RuvyNode;
+  /** document element that will host the application */
   host: Element;
 }

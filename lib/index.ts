@@ -27,4 +27,18 @@ export {
   unmountRouter,
 } from './router/router.js';
 
+export { RouterType, isUrlNavigatable } from '@riadh-adrani/dom-router';
+
+export type {
+  RawRoute,
+  IndexRawRoute,
+  PathRawRoute,
+  CatchRawRoute,
+  LayoutRawRoute,
+  DestinationOptions,
+  NamedDestinationRequest,
+  RelativeDestinationRequest,
+  DestinationRequest,
+} from '@riadh-adrani/dom-router';
+
 export * from './utils/utils.js';
