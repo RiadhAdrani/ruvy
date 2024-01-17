@@ -17,6 +17,8 @@ Ruvy is a lightweight front-end framework inspired by the principles of React, d
 - Hooks for managing state, performing side effects, and custom logic reuse.
 - Synchronous rendering for a straightforward and beginner-friendly development experience.
 - Intuitive API that closely resembles React's patterns and conventions.
+- Built-in router very similar to `React Router DOM`
+- Built-in global stores with `composables`.
 
 ---
 

@@ -6,15 +6,15 @@ import Learn from '../pages/Learn.js';
 import { DocsSections } from '../md/docs.js';
 
 import { LearnSections } from '../md/learn.js';
-import { PathRawRoute, RawRoute } from '@riadh-adrani/dom-router';
+import { RawRoute } from '@riadh-adrani/dom-router';
 import { Outlet, RuvyNode } from '../index.js';
 
 import NavBar from '../components/NavBar.js';
 import DocWithSideBar from '../components/DocWithSideBar.js';
-import Markdown from '../components/Markdown.js';
 import NotFound from '../components/NotFound.js';
 
-import apiDoc from '../md/docs/api.md?raw';
+import VersionedMarkdown from '../components/Versioned.markdown.js';
+import { DocItem } from '../types/index.js';
 
 export const routes: Array<RawRoute<RuvyNode>> = [
   {
@@ -46,7 +46,7 @@ export const routes: Array<RawRoute<RuvyNode>> = [
           { path: '', element: <Learn /> },
           ...LearnSections.map(it => ({
             path: it.path,
-            element: <Markdown content={it.element as string} />,
+            element: <VersionedMarkdown versions={it.versions} />,
           })),
         ],
       },
@@ -59,10 +59,13 @@ export const routes: Array<RawRoute<RuvyNode>> = [
             path: it.path,
             element: <Outlet />,
             children: [
-              { path: '', element: <Markdown content={apiDoc} /> },
-              ...(it.children as Array<PathRawRoute>).map(sub => ({
+              {
+                path: '',
+                element: <VersionedMarkdown versions={it.versions} />,
+              },
+              ...(it.children as Array<DocItem>).map(sub => ({
                 path: sub.path,
-                element: <Markdown content={sub.element as string} />,
+                element: <VersionedMarkdown versions={sub.versions} />,
               })),
             ],
           })),

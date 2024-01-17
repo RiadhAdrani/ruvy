@@ -21,7 +21,11 @@ export default ({ content }: MarkdownProps) => {
   const ref = useRef<HTMLDivElement>();
 
   const sanitizedContent = useMemo(
-    () => sanitizer.sanitize(marked.parse(content), { ADD_ATTR: ['target'] }),
+    () =>
+      sanitizer.sanitize(marked.parse(content), {
+        ADD_ATTR: ['target', 'src', 'style', 'frameBorder'],
+        ADD_TAGS: ['iframe'],
+      }),
     content
   );
 

@@ -1,4 +1,5 @@
-import { Theme } from '../types/index.js';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Theme, Versions } from '../types/index.js';
 import { useApp } from '../context/UI.js';
 import Toggle from './Toggle.js';
 import Link from './Link.js';
@@ -6,19 +7,23 @@ import Button from './Button.js';
 import Footer from './Footer.js';
 import { isActive } from '../utils/utils.js';
 import useLogo from '../hooks/useLogo.js';
+import { useMemo } from '../index.js';
 
 export default () => {
-  const { computedTheme, toggleTheme, isNavOpen, toggleNav } = useApp();
+  const { computedTheme, toggleTheme, isNavOpen, toggleNav, version, setVersion } = useApp();
+
   const logo = useLogo();
 
-  const menuItems = [
+  const menuItems = useMemo(() => [
     { title: 'Learn', href: '/learn' },
     { title: 'Docs', href: '/docs' },
     { title: 'Examples', href: '/examples' },
     { title: 'Acknowledgment', href: '/acknowledgment' },
-  ];
+  ]);
 
-  const externalItems = [{ title: 'GitHub', href: 'https://github.com/RiadhAdrani/ruvy' }];
+  const externalItems = useMemo(() => [
+    { title: 'GitHub', href: 'https://github.com/RiadhAdrani/ruvy' },
+  ]);
 
   return (
     <>
@@ -55,9 +60,12 @@ export default () => {
                 </Link>
               ))}
             </div>
-            <select>
-              <option>0.5.0</option>
-              <option>0.5.1</option>
+            <select onChange={e => setVersion((e.target as any).value)}>
+              {Versions.map(it => (
+                <option key={it} selected={version === it} value={it}>
+                  v{it}
+                </option>
+              ))}
             </select>
             <Toggle checked={computedTheme === Theme.Dark} onChange={() => toggleTheme()} />
           </div>

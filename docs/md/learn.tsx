@@ -7,17 +7,32 @@ import tutorialTodo from './learn/tutorial-todo.md?raw';
 export const LearnSections: Array<DocItem> = [
   {
     path: '/quick-start',
-    element: quickStart,
+    versions: [
+      {
+        from: '0.5.0',
+        md: quickStart,
+      },
+    ],
     title: 'Quick Start',
   },
   {
     path: '/setup',
-    element: setup,
+    versions: [
+      {
+        from: '0.5.0',
+        md: setup,
+      },
+    ],
     title: 'Setup',
   },
   {
     path: '/tutorial-todo',
-    element: tutorialTodo,
+    versions: [
+      {
+        from: '0.5.0',
+        md: tutorialTodo,
+      },
+    ],
     title: 'Tutorial : Todo',
   },
 ];

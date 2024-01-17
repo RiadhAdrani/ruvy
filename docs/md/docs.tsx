@@ -31,52 +31,150 @@ import eventModifiers from './docs/more/event-modifiers.md?raw';
 import { DocItem } from '../types/index.js';
 
 export const ApiSections: Array<DocItem> = [
-  { path: '/mountApp', element: mountApp, title: 'mountApp' },
-  { path: '/createRouter', element: createRouter, title: 'createRouter' },
-  { path: '/createStore', element: createStore, title: 'createStore' },
-  { path: '/useState', element: useState, title: 'useState' },
-  { path: '/useEffect', element: useEffect, title: 'useEffect' },
-  { path: '/useMemo', element: useMemo, title: 'useMemo' },
-  { path: '/useCallback', element: useCallback, title: 'useCallback' },
-  { path: '/useContext', element: useContext, title: 'useContext' },
-  { path: '/useId', element: useId, title: 'useId' },
-  { path: '/createContext', element: createContext, title: 'createContext' },
-  { path: '/getParams', element: getParams, title: 'getParams' },
-  { path: '/getSearchParams', element: getSearchParams, title: 'getSearchParams' },
-  { path: '/getPathname', element: getPathname, title: 'getPathname' },
-  { path: '/replace', element: replace, title: 'replace' },
-  { path: '/navigate', element: navigate, title: 'navigate' },
-  { path: '/batch', element: batch, title: 'batch' },
-  { path: '/outlet', element: outlet, title: '<Outlet/>' },
-  { path: '/fragment', element: fragment, title: '<Fragment/>' },
-  { path: '/portal', element: portal, title: '<Portal/>' },
+  {
+    path: '/mountApp',
+    versions: [{ from: '0.5.0', md: mountApp }],
+    title: 'mountApp',
+  },
+  {
+    path: '/createRouter',
+    versions: [{ from: '0.5.0', md: createRouter }],
+    title: 'createRouter',
+  },
+  {
+    path: '/createStore',
+    versions: [{ from: '0.5.0', to: '0.5.0', md: createStore }],
+    title: 'createStore',
+  },
+  {
+    path: '/useState',
+    versions: [{ from: '0.5.0', md: useState }],
+    title: 'useState',
+  },
+  {
+    path: '/useEffect',
+    versions: [{ from: '0.5.0', md: useEffect }],
+    title: 'useEffect',
+  },
+  {
+    path: '/useMemo',
+    versions: [{ from: '0.5.0', md: useMemo }],
+    title: 'useMemo',
+  },
+  {
+    path: '/useCallback',
+    versions: [{ from: '0.5.0', md: useCallback }],
+    title: 'useCallback',
+  },
+  {
+    path: '/useContext',
+    versions: [{ from: '0.5.0', md: useContext }],
+    title: 'useContext',
+  },
+  {
+    path: '/useId',
+    versions: [{ from: '0.5.0', md: useId }],
+    title: 'useId',
+  },
+  {
+    path: '/createContext',
+    versions: [{ from: '0.5.0', md: createContext }],
+    title: 'createContext',
+  },
+  {
+    path: '/getParams',
+    versions: [{ from: '0.5.0', md: getParams }],
+    title: 'getParams',
+  },
+  {
+    path: '/getSearchParams',
+    versions: [{ from: '0.5.0', md: getSearchParams }],
+    title: 'getSearchParams',
+  },
+  {
+    path: '/getPathname',
+    versions: [{ from: '0.5.0', md: getPathname }],
+    title: 'getPathname',
+  },
+  {
+    path: '/replace',
+    versions: [{ from: '0.5.0', to: '0.5.0', md: replace }],
+    element: replace,
+    title: 'replace',
+  },
+  {
+    path: '/navigate',
+    versions: [{ from: '0.5.0', md: navigate }],
+    title: 'navigate',
+  },
+  {
+    path: '/batch',
+    versions: [{ from: '0.5.0', to: '0.5.0', md: batch }],
+    element: batch,
+    title: 'batch',
+  },
+  {
+    path: '/outlet',
+    versions: [{ from: '0.5.0', md: outlet }],
+    title: '<Outlet/>',
+  },
+  {
+    path: '/fragment',
+    versions: [{ from: '0.5.0', md: fragment }],
+    title: '<Fragment/>',
+  },
+  {
+    path: '/portal',
+    versions: [{ from: '0.5.0', md: portal }],
+    title: '<Portal/>',
+  },
 ];
 
 export const MoreSections: Array<DocItem> = [
-  { path: '/class-attribute', element: classAttribute, title: 'Class attribute' },
-  { path: '/joinClasses', element: joinClasses, title: 'joinClasses' },
-  { path: '/if-directive', element: ifDirective, title: 'if directives' },
-  { path: '/switch-directive', element: switchDirective, title: 'switch directives' },
-  { path: '/event-modifiers', element: eventModifiers, title: 'Event modifiers' },
+  {
+    path: '/class-attribute',
+    versions: [{ from: '0.5.0', md: classAttribute }],
+    title: 'Class attribute',
+  },
+  {
+    path: '/joinClasses',
+    versions: [{ from: '0.5.0', md: joinClasses }],
+    title: 'joinClasses',
+  },
+  {
+    path: '/if-directive',
+    versions: [{ from: '0.5.0', md: ifDirective }],
+    title: 'if directives',
+  },
+  {
+    path: '/switch-directive',
+    versions: [{ from: '0.5.0', md: switchDirective }],
+    title: 'switch directives',
+  },
+  {
+    path: '/event-modifiers',
+    versions: [{ from: '0.5.0', md: eventModifiers }],
+    title: 'Event modifiers',
+  },
 ];
 
 export const DocsSections: Array<DocItem> = [
   {
     path: '/api',
-    element: api,
     title: 'API',
     children: ApiSections,
+    versions: [{ from: '0.5.0', md: api }],
   },
   {
     path: '/more',
-    element: more,
     title: 'More',
     children: MoreSections,
+    versions: [{ from: '0.5.0', md: more }],
   },
   {
     path: '/types',
-    element: types,
     title: 'Types',
     children: [],
+    versions: [{ from: '0.5.0', md: types }],
   },
 ];

@@ -1,4 +1,4 @@
-import { Theme } from '../types/index.js';
+import { Theme, Version, Versions } from '../types/index.js';
 import { createComposable, useCallback, useEffect, useMemo, useState } from '../index.js';
 import { getLogo, isDarkMode } from '../utils/utils.js';
 import useLocalStorage from '../hooks/useLocalStorage.js';
@@ -9,7 +9,7 @@ export const useApp = createComposable('app', () => {
   const [theme, setTheme] = useLocalStorage('@riadh-adrani-ruvy-docs-theme', Theme.Device);
   const [isNavOpen, setNavOpen] = useState(false);
 
-  const [version, setVersion] = useState<true | string>(true);
+  const [version, setVersion] = useState<Version>(Versions.at(-1) as Version);
 
   const [add, remove] = useScroll();
 
@@ -43,6 +43,10 @@ export const useApp = createComposable('app', () => {
     v ? add() : remove();
     setNavOpen(v);
   }, isNavOpen);
+
+  // const selectDocVersion = useCallback(() => {
+
+  // })
 
   return {
     theme,
