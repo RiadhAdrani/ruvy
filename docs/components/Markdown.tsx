@@ -5,6 +5,7 @@ import { gfmHeadingId } from 'marked-gfm-heading-id';
 import { mangle } from 'marked-mangle';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
+// import 'prismjs/components/prism-tsx';
 import 'prismjs/themes/prism-tomorrow.css';
 import { isUrlNavigatable } from '@riadh-adrani/dom-router';
 

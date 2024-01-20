@@ -1,4 +1,6 @@
-import api from './docs/api.md?raw';
+import api_v0_5_0 from './docs/api/index/index_0.5.0.md?raw';
+import api_v0_5_2 from './docs/api/index/index_0.5.2.md?raw';
+
 import types from './docs/types.md?raw';
 
 import useState from './docs/api/useState.md?raw';
@@ -8,11 +10,9 @@ import useCallback from './docs/api/useCallback.md?raw';
 import useContext from './docs/api/useContext.md?raw';
 import useId from './docs/api/useId.md?raw';
 import createContext from './docs/api/createContext.md?raw';
-import createRouter from './docs/api/createRouter.md?raw';
 import getParams from './docs/api/getParams.md?raw';
 import getPathname from './docs/api/getPathname.md?raw';
 import getSearchParams from './docs/api/getSearchParams.md?raw';
-import mountApp from './docs/api/mountApp.md?raw';
 import navigate from './docs/api/navigate.md?raw';
 import replace from './docs/api/replace.md?raw';
 import outlet from './docs/api/outlet.md?raw';
@@ -20,6 +20,12 @@ import portal from './docs/api/portal.md?raw';
 import fragment from './docs/api/fragment.md?raw';
 import batch from './docs/api/batch.md?raw';
 import createStore from './docs/api/createStore.md?raw';
+
+import mountApp_v0_5_0 from './docs/api/mountApp/mountApp_0.5.0.md?raw';
+import mountApp_v0_5_2 from './docs/api/mountApp/mountApp_0.5.2.md?raw';
+
+import createRouter_v0_5_0 from './docs/api/createRouter/createRouter_0.5.0.md?raw';
+import createRouter_v0_5_2 from './docs/api/createRouter/createRouter_0.5.2.md?raw';
 
 import more from './docs/more.md?raw';
 import classAttribute from './docs/more/class-attribute.md?raw';
@@ -33,12 +39,18 @@ import { DocItem } from '../types/index.js';
 export const ApiSections: Array<DocItem> = [
   {
     path: '/mountApp',
-    versions: [{ from: '0.5.0', md: mountApp }],
+    versions: [
+      { from: '0.5.0', to: '0.5.0', md: mountApp_v0_5_0 },
+      { from: '0.5.2', md: mountApp_v0_5_2 },
+    ],
     title: 'mountApp',
   },
   {
     path: '/createRouter',
-    versions: [{ from: '0.5.0', md: createRouter }],
+    versions: [
+      { from: '0.5.0', to: '0.5.0', md: createRouter_v0_5_0 },
+      { from: '0.5.2', md: createRouter_v0_5_2 },
+    ],
     title: 'createRouter',
   },
   {
@@ -163,7 +175,10 @@ export const DocsSections: Array<DocItem> = [
     path: '/api',
     title: 'API',
     children: ApiSections,
-    versions: [{ from: '0.5.0', md: api }],
+    versions: [
+      { from: '0.5.0', to: '0.5.0', md: api_v0_5_0 },
+      { from: '0.5.2', md: api_v0_5_2 },
+    ],
   },
   {
     path: '/more',
