@@ -60,10 +60,13 @@ export default () => {
                 </Link>
               ))}
             </div>
-            <select onChange={e => setVersion((e.target as any).value)}>
+            <select onChange={e => setVersion((e.target as any).value)} class="p-1">
               {Versions.map(it => (
-                <option key={it} selected={version === it} value={it}>
-                  v{it}
+                <option class="p-y-1" key={it} selected={version === it} value={it}>
+                  <div>v{it}</div>{' '}
+                  <div class="m-l-2" if={it === Versions.at(-1)}>
+                    @latest
+                  </div>
                 </option>
               ))}
             </select>
@@ -123,6 +126,19 @@ export default () => {
               {it.title}
             </Link>
           ))}
+        </div>
+        <div class="row items-center justify-between p-t-5">
+          <p class={'p-x-2'}>Version</p>
+          <select onChange={e => setVersion((e.target as any).value)} class="p-1">
+            {Versions.map(it => (
+              <option class="p-y-1" key={it} selected={version === it} value={it}>
+                <div>v{it}</div>{' '}
+                <div class="m-l-2" if={it === Versions.at(-1)}>
+                  @latest
+                </div>
+              </option>
+            ))}
+          </select>
         </div>
         <div class={'row items-center justify-between p-y-5 text-[var(--text-low)]'}>
           <p class={'p-x-2'}>Theme</p>

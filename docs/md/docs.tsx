@@ -1,9 +1,4 @@
-import api_v0_5_0 from './docs/api/index/index_0.5.0.md?raw';
-import api_v0_5_2 from './docs/api/index/index_0.5.2.md?raw';
-
 import types from './docs/types.md?raw';
-
-import useState from './docs/api/useState.md?raw';
 import useEffect from './docs/api/useEffect.md?raw';
 import useMemo from './docs/api/useMemo.md?raw';
 import useCallback from './docs/api/useCallback.md?raw';
@@ -21,12 +16,6 @@ import fragment from './docs/api/fragment.md?raw';
 import batch from './docs/api/batch.md?raw';
 import createStore from './docs/api/createStore.md?raw';
 
-import mountApp_v0_5_0 from './docs/api/mountApp/mountApp_0.5.0.md?raw';
-import mountApp_v0_5_2 from './docs/api/mountApp/mountApp_0.5.2.md?raw';
-
-import createRouter_v0_5_0 from './docs/api/createRouter/createRouter_0.5.0.md?raw';
-import createRouter_v0_5_2 from './docs/api/createRouter/createRouter_0.5.2.md?raw';
-
 import more from './docs/more.md?raw';
 import classAttribute from './docs/more/class-attribute.md?raw';
 import joinClasses from './docs/more/joinClasses.md?raw';
@@ -34,23 +23,23 @@ import ifDirective from './docs/more/if-directive.md?raw';
 import switchDirective from './docs/more/switch-directive.md?raw';
 import eventModifiers from './docs/more/event-modifiers.md?raw';
 
+import createRouter__versions from './docs/api/createRouter/md.js';
+import mountApp__versions from './docs/api/mountApp/md.js';
+import useState__versions from './docs/api/useState/md.js';
+
+import docs__versions from './docs/api/index/md.js';
+
 import { DocItem } from '../types/index.js';
 
 export const ApiSections: Array<DocItem> = [
   {
     path: '/mountApp',
-    versions: [
-      { from: '0.5.0', to: '0.5.0', md: mountApp_v0_5_0 },
-      { from: '0.5.2', md: mountApp_v0_5_2 },
-    ],
+    versions: mountApp__versions,
     title: 'mountApp',
   },
   {
     path: '/createRouter',
-    versions: [
-      { from: '0.5.0', to: '0.5.0', md: createRouter_v0_5_0 },
-      { from: '0.5.2', md: createRouter_v0_5_2 },
-    ],
+    versions: createRouter__versions,
     title: 'createRouter',
   },
   {
@@ -60,7 +49,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/useState',
-    versions: [{ from: '0.5.0', md: useState }],
+    versions: useState__versions,
     title: 'useState',
   },
   {
@@ -175,10 +164,7 @@ export const DocsSections: Array<DocItem> = [
     path: '/api',
     title: 'API',
     children: ApiSections,
-    versions: [
-      { from: '0.5.0', to: '0.5.0', md: api_v0_5_0 },
-      { from: '0.5.2', md: api_v0_5_2 },
-    ],
+    versions: docs__versions,
   },
   {
     path: '/more',
