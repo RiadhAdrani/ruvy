@@ -12,9 +12,13 @@ Ruvy is a lightweight front-end framework inspired by the principles of React, d
 
 ## Getting Started
 
-To get started with Ruvy, you can generate a starter template using our `cli` (coming soon).
+To get started with Ruvy, you can generate a starter template using our `cli` :
 
-Or you can try it in [`StackBlitz`](https://stackblitz.com/edit/ruvy?file=package.json,src%2Fmain.tsx).
+```bash
+npx @riadh-adrani/create-ruvy
+```
+
+Or you can try it in [`StackBlitz`](https://stackblitz.com/edit/ruvy-m8d2rb?file=src%2Fmain.tsx).
 
 ## Contributing
 
