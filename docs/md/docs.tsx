@@ -26,6 +26,7 @@ import eventModifiers from './docs/more/event-modifiers.md?raw';
 import createRouter__versions from './docs/api/createRouter/md.js';
 import mountApp__versions from './docs/api/mountApp/md.js';
 import useState__versions from './docs/api/useState/md.js';
+import useEffect__versions from './docs/api/useEffect/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -54,7 +55,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/useEffect',
-    versions: [{ from: '0.5.0', md: useEffect }],
+    versions: useEffect__versions,
     title: 'useEffect',
   },
   {
