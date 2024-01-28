@@ -20,11 +20,11 @@ import {
   extractEventDetails,
   removeEventListener,
   setEventListener,
-  setAttribute,
   removeAttribute,
   removeNode,
   changeNodePosition,
   text,
+  setAttribute,
 } from '@riadh-adrani/domer';
 import {
   computeNodeComponentIndexInDOM,

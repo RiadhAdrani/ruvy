@@ -17,6 +17,7 @@ export default () => {
   const menuItems = useMemo(() => [
     { title: 'Learn', href: '/learn' },
     { title: 'Docs', href: '/docs' },
+    { title: 'Changelogs', href: '/changelogs' },
     { title: 'Examples', href: '/examples' },
     { title: 'Acknowledgment', href: '/acknowledgment' },
   ]);
@@ -60,9 +61,9 @@ export default () => {
                 </Link>
               ))}
             </div>
-            <select onChange={e => setVersion((e.target as any).value)} class="p-1">
+            <select onChange={e => setVersion((e.target as any).value)} class="p-0.5">
               {Versions.map(it => (
-                <option class="p-y-1" key={it} selected={version === it} value={it}>
+                <option class="p-y-0.5" key={it} selected={version === it} value={it}>
                   <div>v{it}</div>{' '}
                   <div class="m-l-2" if={it === Versions.at(-1)}>
                     @latest

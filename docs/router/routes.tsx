@@ -15,6 +15,7 @@ import NotFound from '../components/NotFound.js';
 
 import VersionedMarkdown from '../components/Versioned.markdown.js';
 import { DocItem } from '../types/index.js';
+import Changelogs from '../pages/Changelogs.js';
 
 export const routes: Array<RawRoute<RuvyNode>> = [
   {
@@ -36,6 +37,7 @@ export const routes: Array<RawRoute<RuvyNode>> = [
       { path: '', title: 'Home', element: <Home />, name: 'Home' },
       { path: '/docs', title: 'Docs', element: <Docs /> },
       { path: '/learn', title: 'Learn', element: <Learn />, name: 'Learn' },
+      { path: '/changelogs', title: 'Changelogs', element: <Changelogs />, name: 'ChangeLogs' },
       { path: '/acknowledgment', title: 'Acknowledgment', element: <Acknowledgment /> },
       { path: '/examples', title: 'Examples', element: <Examples /> },
       { path: '/*', element: <NotFound /> },

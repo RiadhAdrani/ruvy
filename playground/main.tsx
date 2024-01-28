@@ -1,73 +1,51 @@
-import {
-  mountApp,
-  useState,
-  createComposable,
-  createContext,
-  createRouter,
-  Outlet,
-  navigate,
-} from '../lib/index.js';
+// import './style.css';
+import { DOMEvent, mountApp, useCallback, useState } from '../lib/index.js';
 
-export const useCount = createComposable('count', () => {
-  const [count, setCount] = useState(0);
+export interface Item {
+  text: string;
+  creation: number;
+}
 
-  return { count, setCount };
-});
+export type SortType = 'alpha' | 'creation';
 
-createRouter({
-  base: '/playground',
-  routes: [
-    {
-      element: (
-        <div>
-          <nav>
-            <a href={'/'}>Home</a>
+export interface SortData {
+  type: SortType;
+  asc: boolean;
+}
 
-            <a href={'/users'}>Users</a>
-
-            <a href={'/users/123'}>User 123</a>
-          </nav>
-          <div>
-            <Outlet />
-          </div>
-        </div>
-      ),
-      children: [
-        { path: '/', element: <div>Home</div> },
-        { path: '/*', element: <div>not found</div> },
-        {
-          path: '/users',
-          element: (
-            <div>
-              <h1>Users</h1>
-              <Outlet />
-            </div>
-          ),
-          children: [
-            { path: '', element: <div>Welcome Users</div> },
-            { path: '/search', element: <div>Search Users</div> },
-            { path: '/:id', element: <div>User Id</div> },
-          ],
-        },
-      ],
-    },
-  ],
-});
-
-export const AppContext = createContext<{ app: string; count: number }>();
-
-export const useAppContext = AppContext.use;
+const host = document.querySelector('#app') as HTMLElement;
 
 const App = () => {
+  const [text, setText] = useState('');
+  const [items, setItems] = useState<Array<Item>>([]);
+
+  const [sorting, setSorting] = useState<SortData>({
+    asc: false,
+    type: 'alpha',
+  });
+
+  const add = useCallback(() => {
+    if (!text.trim()) {
+      alert('empty text !');
+      return;
+    }
+
+    setText('');
+    setItems(v => [...v, { text: text, creation: Date.now() }]);
+  }, [text]);
+
+  const onInput = useCallback((e: DOMEvent<InputEvent, HTMLInputElement>) =>
+    setText(e.currentTarget.value)
+  );
+
   return (
-    <>
-      <button onClick={() => navigate(-1)}>back</button>
-      <Outlet />
-    </>
+    <div>
+      <div class:add>
+        <input value={text} placeholder={'new item'} onInput={onInput} />
+        <button onClick={add}>Add</button>
+      </div>
+    </div>
   );
 };
 
-mountApp({
-  app: <App />,
-  host: document.body,
-});
+mountApp({ host, app: <App /> });

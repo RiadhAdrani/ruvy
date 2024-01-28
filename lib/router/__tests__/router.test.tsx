@@ -89,7 +89,7 @@ describe('getClosestAnchorParent', () => {
 
 describe('createRouter', () => {
   it('should create a new router', () => {
-    createRouter({ routes: [] });
+    createRouter({ routes: [{ path: '/' }] });
 
     expect(__router__() instanceof Router).toBe(true);
 
@@ -97,7 +97,7 @@ describe('createRouter', () => {
   });
 
   it('should throw when a router is already mounted', () => {
-    createRouter({ routes: [] });
+    createRouter({ routes: [{ path: '/' }] });
 
     expect(() => createRouter({ routes: [] })).toThrow(
       new RuvyError('another router was already mounted, please unmount it first')
@@ -109,7 +109,7 @@ describe('createRouter', () => {
 
 describe('unmountRouter', () => {
   it('should unmount router', () => {
-    createRouter({ routes: [] });
+    createRouter({ routes: [{ path: '/' }] });
 
     unmountRouter();
 

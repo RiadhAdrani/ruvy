@@ -1,6 +1,4 @@
 import types from './docs/types.md?raw';
-import useEffect from './docs/api/useEffect.md?raw';
-import useMemo from './docs/api/useMemo.md?raw';
 import useCallback from './docs/api/useCallback.md?raw';
 import useContext from './docs/api/useContext.md?raw';
 import useId from './docs/api/useId.md?raw';
@@ -27,6 +25,7 @@ import createRouter__versions from './docs/api/createRouter/md.js';
 import mountApp__versions from './docs/api/mountApp/md.js';
 import useState__versions from './docs/api/useState/md.js';
 import useEffect__versions from './docs/api/useEffect/md.js';
+import useMemo__versions from './docs/api/useMemo/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -60,7 +59,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/useMemo',
-    versions: [{ from: '0.5.0', md: useMemo }],
+    versions: useMemo__versions,
     title: 'useMemo',
   },
   {
