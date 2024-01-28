@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/RiadhAdrani/ruvy"
   },
-  "version": "0.5.2",
+  "version": "0.5.3",
   "type": "module",
   "types": "./build/index.d.ts",
   "exports": "./build/index.js",
