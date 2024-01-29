@@ -1,5 +1,4 @@
 import types from './docs/types.md?raw';
-import useCallback from './docs/api/useCallback.md?raw';
 import useContext from './docs/api/useContext.md?raw';
 import useId from './docs/api/useId.md?raw';
 import createContext from './docs/api/createContext.md?raw';
@@ -26,6 +25,7 @@ import mountApp__versions from './docs/api/mountApp/md.js';
 import useState__versions from './docs/api/useState/md.js';
 import useEffect__versions from './docs/api/useEffect/md.js';
 import useMemo__versions from './docs/api/useMemo/md.js';
+import useCallback__versions from './docs/api/useCallback/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -64,7 +64,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/useCallback',
-    versions: [{ from: '0.5.0', md: useCallback }],
+    versions: useCallback__versions,
     title: 'useCallback',
   },
   {
