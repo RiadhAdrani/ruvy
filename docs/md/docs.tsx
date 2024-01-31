@@ -1,5 +1,6 @@
 import types from './docs/types.md?raw';
 import useContext from './docs/api/useContext.md?raw';
+import useId from './docs/api/useId.md?raw';
 import createContext from './docs/api/createContext.md?raw';
 import getParams from './docs/api/getParams.md?raw';
 import getPathname from './docs/api/getPathname.md?raw';
@@ -20,6 +21,8 @@ import switchDirective from './docs/more/switch-directive.md?raw';
 import eventModifiers from './docs/more/event-modifiers.md?raw';
 
 import createRouter__versions from './docs/api/createRouter/md.js';
+import createContext__versions from './docs/api/createContext/md.js';
+
 import mountApp__versions from './docs/api/mountApp/md.js';
 
 import useState__versions from './docs/api/useState/md.js';
@@ -27,6 +30,7 @@ import useEffect__versions from './docs/api/useEffect/md.js';
 import useMemo__versions from './docs/api/useMemo/md.js';
 import useCallback__versions from './docs/api/useCallback/md.js';
 import useId__versions from './docs/api/useId/md.js';
+import useContext__versions from './docs/api/useContext/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -70,7 +74,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/useContext',
-    versions: [{ from: '0.5.0', md: useContext }],
+    versions: useContext__versions,
     title: 'useContext',
   },
   {
@@ -80,7 +84,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/createContext',
-    versions: [{ from: '0.5.0', md: createContext }],
+    versions: createContext__versions,
     title: 'createContext',
   },
   {
