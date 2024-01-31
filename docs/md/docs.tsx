@@ -1,7 +1,4 @@
 import types from './docs/types.md?raw';
-import useContext from './docs/api/useContext.md?raw';
-import useId from './docs/api/useId.md?raw';
-import createContext from './docs/api/createContext.md?raw';
 import getParams from './docs/api/getParams.md?raw';
 import getPathname from './docs/api/getPathname.md?raw';
 import getSearchParams from './docs/api/getSearchParams.md?raw';
