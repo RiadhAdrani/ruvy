@@ -29,6 +29,7 @@ import useMemo__versions from './docs/api/useMemo/md.js';
 import useCallback__versions from './docs/api/useCallback/md.js';
 import useId__versions from './docs/api/useId/md.js';
 import useContext__versions from './docs/api/useContext/md.js';
+import useComposable__versions from './docs/api/useComposable/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -79,6 +80,11 @@ export const ApiSections: Array<DocItem> = [
     path: '/useContext',
     versions: useContext__versions,
     title: 'useContext',
+  },
+  {
+    path: '/useComposable',
+    versions: useComposable__versions,
+    title: 'useComposable',
   },
   {
     path: '/useId',
