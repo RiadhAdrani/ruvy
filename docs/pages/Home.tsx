@@ -41,7 +41,7 @@ export default () => {
             <a href="/docs">
               <Button type="fill">Browse Docs</Button>
             </a>
-            <a href="https://stackblitz.com/edit/ruvy?file=src%2Fmain.tsx" target="_blank">
+            <a href="https://stackblitz.com/edit/ruvy-dbjavf?file=src%2Fmain.tsx" target="_blank">
               <Button type="fill">Try on StackBlitz</Button>
             </a>
           </div>

@@ -18,7 +18,7 @@ To get started with Ruvy, you can generate a starter template using our `cli` :
 npx @riadh-adrani/create-ruvy
 ```
 
-Or you can try it in [`StackBlitz`](https://stackblitz.com/edit/ruvy-m8d2rb?file=src%2Fmain.tsx).
+Or you can try it in [`StackBlitz`](https://stackblitz.com/edit/ruvy-dbjavf?file=src%2Fmain.tsx).
 
 ## Contributing
 
