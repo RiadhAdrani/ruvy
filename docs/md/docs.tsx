@@ -18,6 +18,7 @@ import switchDirective from './docs/more/switch-directive.md?raw';
 import eventModifiers from './docs/more/event-modifiers.md?raw';
 
 import createRouter__versions from './docs/api/createRouter/md.js';
+import createComposable__versions from './docs/api/createComposable/md.js';
 import createContext__versions from './docs/api/createContext/md.js';
 
 import mountApp__versions from './docs/api/mountApp/md.js';
@@ -48,6 +49,11 @@ export const ApiSections: Array<DocItem> = [
     path: '/createStore',
     versions: [{ from: '0.5.0', to: '0.5.0', md: createStore }],
     title: 'createStore',
+  },
+  {
+    path: '/createComposable',
+    versions: createComposable__versions,
+    title: 'createComposable',
   },
   {
     path: '/useState',
