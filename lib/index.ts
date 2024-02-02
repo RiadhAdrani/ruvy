@@ -19,6 +19,7 @@ export * from './global.d.js';
 export { mountApp, unmountApp } from './core/index.js';
 
 export {
+  getParams,
   getPathname,
   createRouter,
   createDestination,
