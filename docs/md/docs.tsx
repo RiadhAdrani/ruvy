@@ -1,6 +1,5 @@
 import types from './docs/types.md?raw';
 import getPathname from './docs/api/getPathname.md?raw';
-import getSearchParams from './docs/api/getSearchParams.md?raw';
 import navigate from './docs/api/navigate.md?raw';
 import replace from './docs/api/replace.md?raw';
 import outlet from './docs/api/outlet.md?raw';
@@ -30,6 +29,7 @@ import useId__versions from './docs/api/useId/md.js';
 import useContext__versions from './docs/api/useContext/md.js';
 import useComposable__versions from './docs/api/useComposable/md.js';
 import getParams__versions from './docs/api/getParams/md.js';
+import getSearchParams__versions from './docs/api/getSearchParams/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -103,7 +103,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/getSearchParams',
-    versions: [{ from: '0.5.0', md: getSearchParams }],
+    versions: getSearchParams__versions,
     title: 'getSearchParams',
   },
   {
