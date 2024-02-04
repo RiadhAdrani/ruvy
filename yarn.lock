@@ -323,10 +323,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@riadh-adrani/dom-router@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.6.tgz#865c20074c25f914d27615fc608e0f6e409ad1c2"
-  integrity sha512-zI6xwZU+nX9ZEDuC2pZejUdHfXG+Pn95mCfjsCNlg4gwZIRzBADYb5Fo0x2GvgfJc2L2hfu0qKAl/poucfS+sQ==
+"@riadh-adrani/dom-router@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@riadh-adrani/dom-router/-/dom-router-0.0.7.tgz#9ff7aa8c4e292245c4ff51f4ac4eb724f7cb531d"
+  integrity sha512-QKLfSNptBqMlP2990+5FBsIaWOqtQqvo3ivniUrLEOKF+t7QbqvugaGHgHEwTmDlgL9fABaPofI+45MJ/gU9Qw==
 
 "@riadh-adrani/domer@^0.0.5":
   version "0.0.5"
