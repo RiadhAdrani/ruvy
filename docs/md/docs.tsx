@@ -1,5 +1,4 @@
 import types from './docs/types.md?raw';
-import navigate from './docs/api/navigate.md?raw';
 import replace from './docs/api/replace.md?raw';
 import outlet from './docs/api/outlet.md?raw';
 import portal from './docs/api/portal.md?raw';
@@ -30,6 +29,7 @@ import useComposable__versions from './docs/api/useComposable/md.js';
 import getParams__versions from './docs/api/getParams/md.js';
 import getSearchParams__versions from './docs/api/getSearchParams/md.js';
 import getPathname__versions from './docs/api/getPathname/md.js';
+import navigate__versions from './docs/api/navigate/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -119,7 +119,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/navigate',
-    versions: [{ from: '0.5.0', md: navigate }],
+    versions: navigate__versions,
     title: 'navigate',
   },
   {
