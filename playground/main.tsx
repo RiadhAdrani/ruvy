@@ -17,12 +17,7 @@ const host = document.querySelector('#app') as HTMLElement;
 
 const App = () => {
   const [text, setText] = useState('');
-  const [items, setItems] = useState<Array<Item>>([]);
-
-  const [sorting, setSorting] = useState<SortData>({
-    asc: false,
-    type: 'alpha',
-  });
+  const [, setItems] = useState<Array<Item>>([]);
 
   const add = useCallback(() => {
     if (!text.trim()) {
