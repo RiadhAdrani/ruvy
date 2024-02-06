@@ -1,6 +1,5 @@
 import types from './docs/types.md?raw';
 import replace from './docs/api/replace.md?raw';
-import outlet from './docs/api/outlet.md?raw';
 import portal from './docs/api/portal.md?raw';
 import fragment from './docs/api/fragment.md?raw';
 import batch from './docs/api/batch.md?raw';
@@ -30,6 +29,7 @@ import getParams__versions from './docs/api/getParams/md.js';
 import getSearchParams__versions from './docs/api/getSearchParams/md.js';
 import getPathname__versions from './docs/api/getPathname/md.js';
 import navigate__versions from './docs/api/navigate/md.js';
+import outlet__versions from './docs/api/outlet/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -130,7 +130,7 @@ export const ApiSections: Array<DocItem> = [
   },
   {
     path: '/outlet',
-    versions: [{ from: '0.5.0', md: outlet }],
+    versions: outlet__versions,
     title: '<Outlet/>',
   },
   {
