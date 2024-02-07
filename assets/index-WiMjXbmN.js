@@ -1095,53 +1095,6 @@ function Layout() {
   );
 }
 \`\`\`
-`,Fi=`# Fragment
-
-\`<Fragment/>\`, used also as \`<></>\`, is a built-in component that allows the user to group elements without the need of a wrapper node.
-
-<hr/>
-
-### Type & Parameters
-
-\`\`\`ts
-function Fragment(props: PropsWithUtility): JSX.Element;
-\`\`\`
-
-accepts an object of type [\`PropsWithUtility\`](/docs/types#propswithutility).
-
-<hr/>
-
-### Example
-
-#### <Fragment/>
-
-\`\`\`ts
-function Layout() {
-  return (
-    <Fragment>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </Fragment>
-  );
-}
-\`\`\`
-
-<hr/>
-
-#### <></>
-
-\`\`\`ts
-function Layout() {
-  return (
-    <>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-    </>
-  );
-}
-\`\`\`
 `,Er=`# batch
 
 \`batch\` lets you batch state updates in a single one.
@@ -1189,7 +1142,7 @@ function User() {
   // ...
 }
 \`\`\`
-`,ki=`# createStore
+`,Fi=`# createStore
 
 \`createStore\` is a function that lets you create a new global store, accessed from anywhere.
 
@@ -1236,7 +1189,7 @@ function MyComponent() {
   return <div onClick={onClickHandler}>{getCount()}</div>;
 }
 \`\`\`
-`,Ei=`# Beyond React: Exploring Additional Features and Differences
+`,ki=`# Beyond React: Exploring Additional Features and Differences
 
 In this section, we go beyond the realm of \`React\` and delve into the unique features and differentiating factors of our framework. While our framework draws inspiration from \`React\`, it also brings its own set of innovative functionalities and approaches to front-end development. Here, you will discover additional features that enrich your development experience, allowing you to tackle complex challenges with ease. We also highlight the key differences between our framework and React, providing insights into how our approach may diverge or enhance certain aspects of application development. Join us on this exploration as we showcase the unique capabilities that set our framework apart and empower you to create exceptional web applications.
 
@@ -1250,7 +1203,7 @@ Here is the list of differences and additional features :
 - [\`joinClasses()\`](/docs/more/joinClasses)
 - [\`if directives\`](/docs/more/if-directive)
 - [\`switch directives\`](/docs/more/switch-directive)
-`,Ci=`# Class attribute
+`,Ei=`# Class attribute
 
 In our framework, we have adopted the use of the \`class\` attribute instead of \`className\`, as commonly used in \`React\`. This decision was made to streamline the styling process and provide a more intuitive experience for developers. By using the familiar \`class\` attribute, you can leverage the power of CSS classes directly, without the need for additional JSX transformations. This not only simplifies the syntax but also allows you to seamlessly apply multiple classes to an element by providing either a \`string\` or an \`array of strings\` as the value of the class attribute. This flexibility empowers you to organize and manage your styles more efficiently, making it easier to achieve the desired look and feel for your components. Embracing the class attribute in our framework provides a smooth transition for developers familiar with traditional HTML and CSS practices, enhancing productivity and promoting code clarity.
 
@@ -1293,7 +1246,7 @@ const isActive = useMemo(() => {
 
 <div class:active={isActive}>Nice</div>;
 \`\`\`
-`,Ai="# joinClasses\n\n`joinClasses` is a function that filters and join classes of different types.\n\n<hr/>\n\n### Type & Parameters\n\n```ts\nfunction joinClasses(...classes: Arrayable<string | undefined | null>): string;\n```\n\nAccepts `Arrayable` arguments of type `string`, `undefined` or `null`.\n\n<hr/>\n\n### Notes ⚠️\n\n- Eleminate `falsy` values like `undefined`, `null` or `false`.\n\n<hr/>\n\n### Example\n\n```ts\njoinClasses('join', 'classes'); // `join classes`\njoinClasses(['join'], 'classes'); // `join classes`\njoinClasses(['join'], undefined, 'classes', null); // `join classes`\n```\n",Ti=`# \`if\` directive
+`,Ci="# joinClasses\n\n`joinClasses` is a function that filters and join classes of different types.\n\n<hr/>\n\n### Type & Parameters\n\n```ts\nfunction joinClasses(...classes: Arrayable<string | undefined | null>): string;\n```\n\nAccepts `Arrayable` arguments of type `string`, `undefined` or `null`.\n\n<hr/>\n\n### Notes ⚠️\n\n- Eleminate `falsy` values like `undefined`, `null` or `false`.\n\n<hr/>\n\n### Example\n\n```ts\njoinClasses('join', 'classes'); // `join classes`\njoinClasses(['join'], 'classes'); // `join classes`\njoinClasses(['join'], undefined, 'classes', null); // `join classes`\n```\n",Ai=`# \`if\` directive
 
 A structural directive that conditionally includes a component based on the value of an expression coerced to \`boolean\`. When the expression does not evaluates to \`false\`, \`Ruvy\` will render it, otherwise it will be hidden.
 
@@ -1364,7 +1317,7 @@ You can use the \`else\` directive to indicate an \`"else block"\` for \`if\` or
 # Notes ⚠️
 
 - Cannot use \`else\` or \`else-if\` directives before an \`if\` directive at the beginning, \`Ruvy\` will throw an error.
-`,Si=`# \`switch\` directive
+`,Ti=`# \`switch\` directive
 
 A structural directive that conditionally includes a child component based on the comparison of its value with child's\`case\` value.
 
@@ -1414,7 +1367,7 @@ Used as a fallback when every previous \`case\` failed.
   <div case:default>No case is matched</div> // 👈 will be rendered
 </div>
 \`\`\`
-`,Ri=`# Event modifiers
+`,Si=`# Event modifiers
 
 It is a very common need to call \`event.preventDefault()\` or \`event.stopPropagation()\` inside event handlers. We can do it easily within methods, but it would be better if the methods can be more pure with only data logic rather than having to deal with DOM event details.
 
@@ -1455,7 +1408,7 @@ const clickHandler = () => {
 ### Notes ⚠️
 
 - You can only use on method per event which means defining \`onClick\` and \`onClick:prevent\` for example will result in only one of them to be used as an event listener.
-`,_i=`# createRouter
+`,Ri=`# createRouter
 
 \`createrRouter\` allows the user to initialize a router that uses the \`DOM History API\` to update the URL and react to any changes.
 
@@ -1596,7 +1549,7 @@ createRouter(
   {}
 );
 \`\`\`
-`,Bi=`# createRouter
+`,_i=`# createRouter
 
 \`createrRouter\` allows the user to initialize a router that uses the \`DOM History API\` to update the URL and react to any changes.
 
@@ -1693,7 +1646,7 @@ Like React Router or any other routing system, you only need to add \`:\` before
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-tvwwac?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,Ii=[{from:"0.5.0",to:"0.5.0",md:_i},{from:"0.5.2",md:Bi}],Pi=`# createComposable
+`,Bi=[{from:"0.5.0",to:"0.5.0",md:Ri},{from:"0.5.2",md:_i}],Ii=`# createComposable
 
 \`createContext\` lets you create a global store and return a getter \`hook\`.
 
@@ -1727,7 +1680,7 @@ createComposable returns a \`hook\` that can be used inside a functional compone
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-lqiij9?embed=1&file=src%2FCount.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,Mi=[{from:"0.5.2",md:Pi}],Li=`# createContext
+`,Pi=[{from:"0.5.2",md:Ii}],Mi=`# createContext
 
 \`createContext\` lets you create a context that components can provide or read.
 
@@ -1777,7 +1730,7 @@ function Child() {
   return <div>{count}</div>
 }
 \`\`\`
-`,Ni=`# createContext
+`,Li=`# createContext
 
 \`createContext\` lets you create a context that components can provide or read.
 
@@ -1812,7 +1765,7 @@ The context object itself does not hold any information. It represents which con
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-jewpid?embed=1&file=src%2FCount.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,Oi=[{from:"0.5.0",to:"0.5.0",md:Li},{from:"0.5.2",md:Ni}],Ui=`# mountApp
+`,Ni=[{from:"0.5.0",to:"0.5.0",md:Mi},{from:"0.5.2",md:Li}],Oi=`# mountApp
 
 \`mountApp\` let's you mount your application and render it inside a browser DOM node.
 
@@ -1853,7 +1806,7 @@ const host = document.body;
 // mounting the app
 mountApp({ hostElement: host, callback: App });
 \`\`\`
-`,zi=`# mountApp
+`,Ui=`# mountApp
 
 \`mountApp\` let's you mount your application and render it inside a browser DOM node.
 
@@ -1885,7 +1838,7 @@ The only parameter is the \`params\` object of type [\`MountParams\`](/docs/type
 <br/>
 
 <iframe src="https://stackblitz.com/edit/ruvy-c7vnhf?embed=1&file=src%2Fmain.tsx&hideExplorer=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,$i=[{from:"0.5.0",to:"0.5.0",md:Ui},{from:"0.5.2",md:zi}],Hi=`# useState
+`,zi=[{from:"0.5.0",to:"0.5.0",md:Oi},{from:"0.5.2",md:Ui}],$i=`# useState
 
 \`useState\` is a hook that lets you add a state variable inside a component.
 
@@ -1932,7 +1885,7 @@ function MyComponent() {
   return <div onClick={onClickHandler}>{count}</div>;
 }
 \`\`\`
-`,ji=`# useState
+`,Hi=`# useState
 
 \`useState\` is a hook that lets you add a state variable inside a component.
 
@@ -1967,7 +1920,7 @@ The only parameter is the \`initialState\`, which as its name suggests, initiali
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-7fb6t1?embed=1&file=src%2FButton.tsx&hideExplorer=1&hideNavigation=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,Ji=[{from:"0.5.0",to:"0.5.0",md:Hi},{from:"0.5.2",md:ji}],Wi=`# useEffect
+`,ji=[{from:"0.5.0",to:"0.5.0",md:$i},{from:"0.5.2",md:Hi}],Ji=`# useEffect
 
 \`useEffect\` is a hook that lets synchronize your component with an external
 
@@ -2015,7 +1968,7 @@ function MyComponent() {
   return <div>{data}</div>;
 }
 \`\`\`
-`,Gi=`# useEffect
+`,Wi=`# useEffect
 
 \`useEffect\` is a hook that lets synchronize your component with an external
 
@@ -2049,7 +2002,7 @@ accepts two parameters:
 <br/>
 
 <iframe src="https://stackblitz.com/edit/ruvy-gnkbsq?embed=1&file=src%2FStopWatch.tsx&hideExplorer=1&hideNavigation=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,Zi=[{from:"0.5.0",to:"0.5.0",md:Wi},{from:"0.5.2",md:Gi}],qi=`# useMemo
+`,Gi=[{from:"0.5.0",to:"0.5.0",md:Ji},{from:"0.5.2",md:Wi}],Zi=`# useMemo
 
 \`useMemo\` is a hook that lets cache the result of a calculation between re-renders.
 
@@ -2092,7 +2045,7 @@ function TodoList({ todos }: { todos: Array<ToDo> }) {
 On every subsequent render, Ruvy will compare the dependencies with the dependencies you passed during the last render. If none of the dependencies have changed (compared deeply), useMemo will return the value you already calculated before. Otherwise, the calculation will re-run which will return a new value.
 
 In other words, useMemo caches a calculation result between re-renders until its dependencies change.
-`,Yi=`# useMemo
+`,qi=`# useMemo
 
 \`useMemo\` is a hook that lets cache the result of a calculation between re-renders.
 
@@ -2128,7 +2081,7 @@ In other words, \`useMemo\` caches a calculation result between re-renders until
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-ycuqms?embed=1&file=src%2FList.tsx&hideExplorer=1&hideNavigation=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,Vi=[{from:"0.5.0",to:"0.5.0",md:qi},{from:"0.5.2",md:Yi}],Xi=`# useCallback
+`,Yi=[{from:"0.5.0",to:"0.5.0",md:Zi},{from:"0.5.2",md:qi}],Vi=`# useCallback
 
 \`useCallback\` is a hook that lets you cache a function definition between re-renders.
 
@@ -2170,7 +2123,7 @@ function Component() {
   return <button onClick={onClick}>{count}</button>;
 }
 \`\`\`
-`,Qi=`# useCallback
+`,Xi=`# useCallback
 
 \`useCallback\` is a hook that lets you cache a function definition between re-renders.
 
@@ -2200,7 +2153,7 @@ accepts two parameters:
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-zbkr1h?embed=1&file=src%2FButton.tsx&hideExplorer=1&hideNavigation=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,Ki=[{from:"0.5.0",to:"0.5.0",md:Xi},{from:"0.5.2",md:Qi}],el=`# useId
+`,Qi=[{from:"0.5.0",to:"0.5.0",md:Vi},{from:"0.5.2",md:Xi}],Ki=`# useId
 
 \`useId\` is a hook for generating unique IDs that can be passed to accessibility attributes.
 
@@ -2240,7 +2193,7 @@ function MyComponent() {
   // ...
 }
 \`\`\`
-`,tl=`# useId
+`,el=`# useId
 
 \`useId\` is a hook for generating unique IDs that can be passed to accessibility attributes.
 
@@ -2269,7 +2222,7 @@ function useId(): string;
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-qlgy4g?embed=1&file=src%2FButton.tsx&hideExplorer=1&hideNavigation=1" frameBorder="0" style="width:100%;height:500px;"></iframe>
-`,nl=[{from:"0.5.0",to:"0.5.0",md:el},{from:"0.5.2",md:tl}],rl=`# useContext
+`,tl=[{from:"0.5.0",to:"0.5.0",md:Ki},{from:"0.5.2",md:el}],nl=`# useContext
 
 \`useContext\` is a hook that lets you subscribe to context from your component, which removes the need of props drilling.
 
@@ -2330,7 +2283,7 @@ function Child() {
   return <div>{count}</div>
 }
 \`\`\`
-`,ol=`# useContext
+`,rl=`# useContext
 
 \`useContext\` is a hook that lets you subscribe to context from your component, which removes the need of props drilling.
 
@@ -2371,7 +2324,7 @@ useContext returns the context value for the calling component. It is determined
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-jewpid?embed=1&file=src%2FCount.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,al=[{from:"0.5.0",to:"0.5.0",md:rl},{from:"0.5.2",md:ol}],sl=`# useComposable
+`,ol=[{from:"0.5.0",to:"0.5.0",md:nl},{from:"0.5.2",md:rl}],al=`# useComposable
 
 \`useComposable\` is a hook that lets you subscribe to a composable by its \`name\`.
 
@@ -2403,7 +2356,7 @@ returns the composable current value.
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-lqiij9?embed=1&file=src%2FCount.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,il=[{from:"0.5.2",md:sl}],ll=`# getParams
+`,sl=[{from:"0.5.2",md:al}],il=`# getParams
 
 \`getParams\` is a function that returns an object of key/value pairs of the dynamic params from the current URL that were matched to the closest route by the current router.
 
@@ -2435,7 +2388,7 @@ returns an object of key/value pairs of the dynamic params from the current URL 
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-aarsuf?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,ul=`# getParams
+`,ll=`# getParams
 
 \`getParams\` is a function that returns an object of key/value pairs of the dynamic params from the current URL that were matched by the current route. Child routes inherit all params from their parent routes.
 
@@ -2479,7 +2432,7 @@ function Component() {
   // ...
 }
 \`\`\`
-`,cl=[{from:"0.5.0",to:"0.5.0",md:ul},{from:"0.5.2",md:ll}],dl=`# getSearchParams
+`,ul=[{from:"0.5.0",to:"0.5.0",md:ll},{from:"0.5.2",md:il}],cl=`# getSearchParams
 
 \`getSearchParams\` is a function that returns an object of key/value pairs of the dynamic search params (if they exists) from the current URL.
 
@@ -2510,7 +2463,7 @@ returns an object of key/value pairs of the search params from the current URL m
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-97b6gb?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,hl=`# getSearchParams
+`,dl=`# getSearchParams
 
 \`getSearchParams\` is a function that returns an object of key/value pairs of the dynamic search params (if they exists) from the current URL.
 
@@ -2553,7 +2506,7 @@ function Component() {
   // ...
 }
 \`\`\`
-`,pl=[{from:"0.5.0",to:"0.5.0",md:hl},{from:"0.5.2",md:dl}],ml=`# getPathname
+`,hl=[{from:"0.5.0",to:"0.5.0",md:dl},{from:"0.5.2",md:cl}],pl=`# getPathname
 
 \`getPathname\` is a function that returns the current URL's pathname.
 
@@ -2578,7 +2531,7 @@ returns the current \`pathname\` without the \`base\`.
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-dpmsqk?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
-`,fl=`# getPathname
+`,ml=`# getPathname
 
 \`getPathname\` is a function that returns the current URL's pathname.
 
@@ -2630,7 +2583,7 @@ function Component() {
   // ...
 }
 \`\`\`
-`,gl=[{from:"0.5.0",to:"0.5.0",md:fl},{from:"0.5.2",md:ml}],bl=`# navigate
+`,fl=[{from:"0.5.0",to:"0.5.0",md:ml},{from:"0.5.2",md:pl}],gl=`# navigate
 
 \`navigate\` lets you navigate programmatically between routes.
 
@@ -2694,7 +2647,7 @@ navigate(1); // forward path
 
 //...
 \`\`\`
-`,yl='# navigate\n\n`navigate` lets you navigate programmatically between routes.\n\n<hr/>\n\n### Type & Parameters\n\n```ts\nfunction navigate(request: DestinationRequest, options?: DestinationOptions): void;\n```\n\nAccepts two arguments, with the second one being optional :\n\n- `request` : could be one of the following :\n  - `string` : path string like `/ruvy`.\n  - `number` : relative navigation like `-1` which will go back by one entry, or `1` which will go forward by one entry.\n  - `object` : describing a named destination having the following keys :\n    - `name` : path name as provided in the router.\n    - `query` (optional) : a record of string or number that will be used to build query params.\n    - `params` (optional) : a record containing parameters of a dynamic route.\n    - `hash` (optional) : a string targeting an element id.\n- `options` (optional) : additional options :\n  - `replace` (optional) : a boolean indicating if the router should replace the current state or push a new one.\n\n<hr/>\n\n### Notes ⚠️\n\n- `navigate` pushes a new entry to the `history` object by default.\n- `replace` is removed in version `0.5.1`, instead, use `navigate` with the `replace` option set to `true`.\n\n<hr/>\n\n### Example\n\n<iframe src="https://stackblitz.com/edit/ruvy-q9bibe?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>\n',wl=[{from:"0.5.0",to:"0.5.0",md:bl},{from:"0.5.2",md:yl}],vl=`# Outlet
+`,bl='# navigate\n\n`navigate` lets you navigate programmatically between routes.\n\n<hr/>\n\n### Type & Parameters\n\n```ts\nfunction navigate(request: DestinationRequest, options?: DestinationOptions): void;\n```\n\nAccepts two arguments, with the second one being optional :\n\n- `request` : could be one of the following :\n  - `string` : path string like `/ruvy`.\n  - `number` : relative navigation like `-1` which will go back by one entry, or `1` which will go forward by one entry.\n  - `object` : describing a named destination having the following keys :\n    - `name` : path name as provided in the router.\n    - `query` (optional) : a record of string or number that will be used to build query params.\n    - `params` (optional) : a record containing parameters of a dynamic route.\n    - `hash` (optional) : a string targeting an element id.\n- `options` (optional) : additional options :\n  - `replace` (optional) : a boolean indicating if the router should replace the current state or push a new one.\n\n<hr/>\n\n### Notes ⚠️\n\n- `navigate` pushes a new entry to the `history` object by default.\n- `replace` is removed in version `0.5.1`, instead, use `navigate` with the `replace` option set to `true`.\n\n<hr/>\n\n### Example\n\n<iframe src="https://stackblitz.com/edit/ruvy-q9bibe?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>\n',yl=[{from:"0.5.0",to:"0.5.0",md:gl},{from:"0.5.2",md:bl}],wl=`# Outlet
 
 \`<Outlet/>\` is a component that dynamically renders the suitable elements for the current router state.
 
@@ -2751,7 +2704,7 @@ function User() {
   );
 }
 \`\`\`
-`,xl=`# Outlet
+`,vl=`# Outlet
 
 \`<Outlet/>\` is a component that dynamically renders the suitable elements for the current router state.
 
@@ -2776,7 +2729,73 @@ The only parameter is the \`path\` string.
 ### Example
 
 <iframe src="https://stackblitz.com/edit/ruvy-dveo5e?embed=1&file=src%2FNavBar.tsx&hideExplorer=1&hideNavigation=1&view=preview" class="stackblitz"></iframe>
-`,Dl=[{from:"0.5.0",to:"0.5.0",md:vl},{from:"0.5.2",md:xl}],Fl=`# API
+`,xl=[{from:"0.5.0",to:"0.5.0",md:wl},{from:"0.5.2",md:vl}],Dl=`# Fragment
+
+\`<Fragment/>\`, used also as \`<></>\`, is a built-in component that allows the user to group elements without the need of a wrapper node.
+
+<hr/>
+
+### Type & Parameters
+
+\`\`\`ts
+function Fragment(props: PropsWithUtility): JSX.Element;
+\`\`\`
+
+accepts an object of type [\`PropsWithUtility\`](/docs/types#propswithutility).
+
+<hr/>
+
+### Example
+
+#### <Fragment/>
+
+\`\`\`ts
+function Layout() {
+  return (
+    <Fragment>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </Fragment>
+  );
+}
+\`\`\`
+
+<hr/>
+
+#### <></>
+
+\`\`\`ts
+function Layout() {
+  return (
+    <>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+    </>
+  );
+}
+\`\`\`
+`,Fl=`# Fragment
+
+\`<Fragment/>\`, used also as \`<></>\`, is a built-in component that allows the user to group elements without the need of a wrapper node.
+
+<hr/>
+
+### Type & Parameters
+
+\`\`\`ts
+function Fragment(props: PropsWithUtility): JSX.Element;
+\`\`\`
+
+accepts an object of type [\`PropsWithUtility\`](/docs/types#propswithutility).
+
+<hr/>
+
+#### Example
+
+<iframe src="https://stackblitz.com/edit/ruvy-bjc9lc?embed=1&file=src%2Fmain.tsx&hideExplorer=1&hideNavigation=1" class="stackblitz"></iframe>
+`,kl=[{from:"0.5.0",to:"0.5.0",md:Dl},{from:"0.5.2",md:Fl}],El=`# API
 
 Welcome to the API documentation section, where you will find detailed information about the various features and functionalities provided by our framework's API. This comprehensive resource serves as your guide to understanding and harnessing the power of our framework's capabilities, allowing you to build robust and dynamic web applications. Whether you're a beginner seeking to explore the basics or an experienced developer looking to leverage advanced features, this API documentation will provide you with the necessary insights, examples, and guidelines to make the most of our framework's API. Let's dive in and unlock the full potential of our framework!
 
@@ -2832,7 +2851,7 @@ Here is the full list of the \`API\` methods :
 - [\`<Outlet/>\`](/docs/api/outlet)
 - [\`<Portal/>\`](/docs/api/portal)
 - [\`<Fragment/>\`](/docs/api/fragment)
-`,kl=`# API
+`,Cl=`# API
 
 Welcome to the API documentation section, where you will find detailed information about the various features and functionalities provided by our framework's API. This comprehensive resource serves as your guide to understanding and harnessing the power of our framework's capabilities, allowing you to build robust and dynamic web applications. Whether you're a beginner seeking to explore the basics or an experienced developer looking to leverage advanced features, this API documentation will provide you with the necessary insights, examples, and guidelines to make the most of our framework's API. Let's dive in and unlock the full potential of our framework!
 
@@ -2887,7 +2906,7 @@ Here is the full list of the \`API\` methods :
 - [\`<Outlet/>\`](/docs/api/outlet)
 - [\`<Portal/>\`](/docs/api/portal)
 - [\`<Fragment/>\`](/docs/api/fragment)
-`,El=[{from:"0.5.0",to:"0.5.0",md:Fl},{from:"0.5.2",md:kl}],Cl=[{path:"/mountApp",versions:$i,title:"mountApp"},{path:"/createRouter",versions:Ii,title:"createRouter"},{path:"/createStore",versions:[{from:"0.5.0",to:"0.5.0",md:ki}],title:"createStore"},{path:"/createComposable",versions:Mi,title:"createComposable"},{path:"/useState",versions:Ji,title:"useState"},{path:"/useEffect",versions:Zi,title:"useEffect"},{path:"/useMemo",versions:Vi,title:"useMemo"},{path:"/useCallback",versions:Ki,title:"useCallback"},{path:"/useContext",versions:al,title:"useContext"},{path:"/useComposable",versions:il,title:"useComposable"},{path:"/useId",versions:nl,title:"useId"},{path:"/createContext",versions:Oi,title:"createContext"},{path:"/getParams",versions:cl,title:"getParams"},{path:"/getSearchParams",versions:pl,title:"getSearchParams"},{path:"/getPathname",versions:gl,title:"getPathname"},{path:"/replace",versions:[{from:"0.5.0",to:"0.5.0",md:kr}],element:kr,title:"replace"},{path:"/navigate",versions:wl,title:"navigate"},{path:"/batch",versions:[{from:"0.5.0",to:"0.5.0",md:Er}],element:Er,title:"batch"},{path:"/outlet",versions:Dl,title:"<Outlet/>"},{path:"/fragment",versions:[{from:"0.5.0",md:Fi}],title:"<Fragment/>"},{path:"/portal",versions:[{from:"0.5.0",md:Di}],title:"<Portal/>"}],Al=[{path:"/class-attribute",versions:[{from:"0.5.0",md:Ci}],title:"Class attribute"},{path:"/joinClasses",versions:[{from:"0.5.0",md:Ai}],title:"joinClasses"},{path:"/if-directive",versions:[{from:"0.5.0",md:Ti}],title:"if directives"},{path:"/switch-directive",versions:[{from:"0.5.0",md:Si}],title:"switch directives"},{path:"/event-modifiers",versions:[{from:"0.5.0",md:Ri}],title:"Event modifiers"}],Cr=[{path:"/api",title:"API",children:Cl,versions:El},{path:"/more",title:"More",children:Al,versions:[{from:"0.5.0",md:Ei}]},{path:"/types",title:"Types",children:[],versions:[{from:"0.5.0",md:xi}]}],Tl=`# Quick Start
+`,Al=[{from:"0.5.0",to:"0.5.0",md:El},{from:"0.5.2",md:Cl}],Tl=[{path:"/mountApp",versions:zi,title:"mountApp"},{path:"/createRouter",versions:Bi,title:"createRouter"},{path:"/createStore",versions:[{from:"0.5.0",to:"0.5.0",md:Fi}],title:"createStore"},{path:"/createComposable",versions:Pi,title:"createComposable"},{path:"/useState",versions:ji,title:"useState"},{path:"/useEffect",versions:Gi,title:"useEffect"},{path:"/useMemo",versions:Yi,title:"useMemo"},{path:"/useCallback",versions:Qi,title:"useCallback"},{path:"/useContext",versions:ol,title:"useContext"},{path:"/useComposable",versions:sl,title:"useComposable"},{path:"/useId",versions:tl,title:"useId"},{path:"/createContext",versions:Ni,title:"createContext"},{path:"/getParams",versions:ul,title:"getParams"},{path:"/getSearchParams",versions:hl,title:"getSearchParams"},{path:"/getPathname",versions:fl,title:"getPathname"},{path:"/replace",versions:[{from:"0.5.0",to:"0.5.0",md:kr}],element:kr,title:"replace"},{path:"/navigate",versions:yl,title:"navigate"},{path:"/batch",versions:[{from:"0.5.0",to:"0.5.0",md:Er}],element:Er,title:"batch"},{path:"/outlet",versions:xl,title:"<Outlet/>"},{path:"/fragment",versions:kl,title:"<Fragment/>"},{path:"/portal",versions:[{from:"0.5.0",md:Di}],title:"<Portal/>"}],Sl=[{path:"/class-attribute",versions:[{from:"0.5.0",md:Ei}],title:"Class attribute"},{path:"/joinClasses",versions:[{from:"0.5.0",md:Ci}],title:"joinClasses"},{path:"/if-directive",versions:[{from:"0.5.0",md:Ai}],title:"if directives"},{path:"/switch-directive",versions:[{from:"0.5.0",md:Ti}],title:"switch directives"},{path:"/event-modifiers",versions:[{from:"0.5.0",md:Si}],title:"Event modifiers"}],Cr=[{path:"/api",title:"API",children:Tl,versions:Al},{path:"/more",title:"More",children:Sl,versions:[{from:"0.5.0",md:ki}]},{path:"/types",title:"Types",children:[],versions:[{from:"0.5.0",md:xi}]}],Rl=`# Quick Start
 
 In this section, you will learn:
 
@@ -3167,7 +3186,7 @@ If you render the same component multiple times, each will get \`its own state\`
 Check out the [Tutorial](/learn/tutorial-todo) to put them into practice and build your first mini-app.
 
 <br/>
-`,Sl='# Setup a new Project\n\nUnlike `React`, `Ruvy` is a framework, so it is recommended to build your whole app using it, we suggest a few methods to create your project:\n\n---\n\n## `CLI`\n\nYou can create a new starter template using our cli <a target="_blank" href="https://github.com/RiadhAdrani/create-ruvy">`create-ruvy`</a>:\n\n<br/>\n\n`npm`\n\n```bash\nnpx @riadh-adrani/create-ruvy\n```\n\n`yarn`\n\n```bash\nyarn create @riadh-adrani/ruvy\n```\n\n---\n\n## `StackBlitz`\n\nIf you want to quickly try `Ruvy`, we offer a starter sandbox on `StackBlitz` that you can check out <a target="_blank" href="https://stackblitz.com/edit/ruvy-dbjavf?file=src%2Fmain.tsx">here</a>.\n',Rl=`# Tutorial : Todo
+`,_l='# Setup a new Project\n\nUnlike `React`, `Ruvy` is a framework, so it is recommended to build your whole app using it, we suggest a few methods to create your project:\n\n---\n\n## `CLI`\n\nYou can create a new starter template using our cli <a target="_blank" href="https://github.com/RiadhAdrani/create-ruvy">`create-ruvy`</a>:\n\n<br/>\n\n`npm`\n\n```bash\nnpx @riadh-adrani/create-ruvy\n```\n\n`yarn`\n\n```bash\nyarn create @riadh-adrani/ruvy\n```\n\n---\n\n## `StackBlitz`\n\nIf you want to quickly try `Ruvy`, we offer a starter sandbox on `StackBlitz` that you can check out <a target="_blank" href="https://stackblitz.com/edit/ruvy-dbjavf?file=src%2Fmain.tsx">here</a>.\n',Bl=`# Tutorial : Todo
 
 Welcome to our comprehensive tutorial on building a simple \`Todo List App\` with \`Ruvy\`. In this tutorial, we will take you on a step-by-step journey to create a fully functional todo list, where you'll learn and apply the fundamental concepts of \`Ruvy\`. By the end of this tutorial, you'll have a solid understanding of Ruvy's \`component-based\` architecture, the power of \`hooks\` for managing, and how to efficiently \`create\`, \`rea\`d, and \`delete\` todo items. Whether you're a seasoned developer exploring a new framework or a beginner taking your first steps in web development, this tutorial will equip you with the skills to build dynamic web applications using Ruvy. Let's get started and bring your todo list to life with \`Ruvy\`!
 
@@ -3613,7 +3632,7 @@ Congrats on completing the tutorial, but we suggest that you continue your journ
 <br/>
 
 **\`🎉 Happy Coding ! 🎉\`**
-`,Ar=[{path:"/quick-start",versions:[{from:"0.5.0",md:Tl}],title:"Quick Start"},{path:"/setup",versions:[{from:"0.5.0",md:Sl}],title:"Setup"},{path:"/tutorial-todo",versions:[{from:"0.5.0",md:Rl}],title:"Tutorial : Todo"}],Tr=n=>createJsxElement("label",{...n,class:"switch rounded scale-55 u-border"},createJsxElement("input",{checked:n.checked,type:"checkbox","class:switch-input":!0}),createJsxElement("span",{class:"switch-slider rounded before:rounded"})),Ne=n=>{const{children:e,class:t,isActive:r}=n,o=me(()=>{let a="p-x-2 text-[0.9em]";return r?a+=" color-[var(--link)]":a+=" color-[var(--text-low)] hover:color-[var(--text-strong)]",Qr(a,t)},[t,r]);return createJsxElement("a",{...n,class:o},e)},_l=()=>{const{computedTheme:n,toggleTheme:e,isNavOpen:t,toggleNav:r,version:o,setVersion:a}=Ut(),i=bo(),s=me(()=>[{title:"Learn",href:"/learn"},{title:"Docs",href:"/docs"},{title:"Changelogs",href:"/changelogs"},{title:"Examples",href:"/examples"},{title:"Acknowledgment",href:"/acknowledgment"}]),l=me(()=>[{title:"GitHub",href:"https://github.com/RiadhAdrani/ruvy"}]);return createJsxElement(createJsxFragmentElement,null,createJsxElement("div",{class:["row-center","w-100%","bg-[color:var(--primary)]","p-x-5","h-[var(--nav-bar-height)]","border-b border-b-1px border-b-solid border-[color:var(--border-low)]","fixed top-0px z-[var(--nav-bar-z)]"]},createJsxElement("div",{class:"row justify-between items-center max-w-1200px flex-1 z-2"},createJsxElement("div",{class:"row items-center gap-8"},createJsxElement("a",{href:{name:"Home"},class:"p-x-1 row-center gap-3"},createJsxElement("img",{src:i,class:"h-25px w-25px"}),createJsxElement("h2",{class:"hidden md:inline-block"},"Ruvy")),createJsxElement("div",{class:"row hidden md:flex gap-1"},s.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank",isActive:It(c.href)},c.title)))),createJsxElement("div",{class:"row hidden gap-3 md:flex items-center"},createJsxElement("div",{class:"row gap-1"},l.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank"},c.title))),createJsxElement("select",{onChange:c=>a(c.target.value),class:"p-0.5"},he.map(c=>createJsxElement("option",{class:"p-y-0.5",key:c,selected:o===c,value:c},createJsxElement("div",null,"v",c)," ",createJsxElement("div",{class:"m-l-2",if:c===he.at(-1)},"@latest")))),createJsxElement(Tr,{checked:n===de.Dark,onChange:()=>e()})),createJsxElement("div",{class:"col md:hidden"},createJsxElement(At,{type:"text",class:["nav-bar-mobile-btn col-center",t?"nav-bar-mobile-btn-expanded":""],onClick:()=>r()})))),createJsxElement("div",{class:["col md:hidden",t?"top-[var(--nav-bar-height)] opacity-100":"-top-100vh opacity-0","fixed left-0px right-0px","bg-[color:var(--primary)]","overflow-y-auto","duration-[var(--t-long)]","p-5","z-1"],style:{height:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:["col gap-3 p-y-5","border-b border-b-solid border-b-1px border-[color:var(--border-low)]"]},s.map(c=>createJsxElement(Ne,{href:c.href,class:"",target:"_blank",isActive:It(c.href),onClick:()=>r(!1)},c.title))),createJsxElement("div",{class:["col gap-3 p-y-5","border-b border-b-solid border-b-1px border-[color:var(--border-low)]"]},l.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank"},c.title))),createJsxElement("div",{class:"row items-center justify-between p-t-5"},createJsxElement("p",{class:"p-x-2"},"Version"),createJsxElement("select",{onChange:c=>a(c.target.value),class:"p-1"},he.map(c=>createJsxElement("option",{class:"p-y-1",key:c,selected:o===c,value:c},createJsxElement("div",null,"v",c)," ",createJsxElement("div",{class:"m-l-2",if:c===he.at(-1)},"@latest"))))),createJsxElement("div",{class:"row items-center justify-between p-y-5 text-[var(--text-low)]"},createJsxElement("p",{class:"p-x-2"},"Theme"),createJsxElement(Tr,{checked:n===de.Dark,onChange:()=>e()})),createJsxElement(fo,null)))},mn=n=>{var s;const{item:e,root:t,onClick:r}=n,[o,a]=Re(!1),i=dn(()=>a(!o),o);return createJsxElement(createJsxFragmentElement,null,e.children?createJsxElement("details",{open:o},createJsxElement("summary",{onClick:i},createJsxElement(Ne,{...n,href:`${t}${e.path}`,isActive:It(`${t}${e.path}`),onClick:r,class:"m-y-2"},e.title)),createJsxElement("div",{class:"m-l-2 col border-l-solid  border-l-1px border-l-[color:var(--border)]"},(s=e.children)==null?void 0:s.map(l=>createJsxElement(mn,{item:{...l,path:`${e.path}${l.path}`},root:t,onClick:r},l.title)))):createJsxElement(Ne,{...n,href:`${t}${e.path}`,isActive:It(`${t}${e.path}`),onClick:r,class:"m-l-18px m-y-1"},e.title))},Bl=({items:n,root:e})=>{const[t,r]=Re(!1),[o,a]=go(),i=()=>{const l=!t;r(l),l?o():a()},s=()=>{r(!1),a()};return createJsxElement(createJsxFragmentElement,null,createJsxElement("div",{class:["fixed top-[var(--nav-bar-height)]","w-[var(--side-bar-width)]","bg-[var(--primary)]","border-r border-r-solid border-r-[color:var(--border-low)]","overflow-hidden","hidden md:flex md:col"],style:{height:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:"col gap-2 overflow-auto p-y-10 w-[var(--side-bar-width)]",style:{height:"calc(100vh - var(--nav-bar-height))"}},n.map(l=>createJsxElement(mn,{item:l,root:e})))),createJsxElement("div",{class:"col md:hidden fixed right-0 left-0 top-[var(--nav-bar-height)] w-100%"},createJsxElement("p",{class:["text-[var(--text-low)] hover:text-[var(--text)]","p-y-1.5 w-100% cursor-pointer bg-[var(--primary)]","border-b p-x-6 border-b-solid border-b-[color:var(--border-low)]","h-[var(--side-bar-height)]"],onClick:()=>i()},"Menu"),createJsxElement("div",{class:["bg-[var(--primary)] fixed w-100% overflow-hidden",t?"bottom-0px opacity-100":"-bottom-100vh opacity-0"],style:{height:"calc(100vh - var(--nav-bar-height) - var(--side-bar-height))"}},createJsxElement("div",{class:"col gap-2 overflow-auto p-t-5 p-x-5",style:{height:"calc(100vh - var(--nav-bar-height) - var(--side-bar-height))"}},n.map(l=>createJsxElement(mn,{item:l,root:e,onClick:s}))))))},yo=(n,e)=>n.reduce((t,r)=>{const o=he.indexOf(e);if(r.versions.some(i=>{if(i.from===e||i.to===e)return!0;const s=he.indexOf(i.from);if(i.to){const l=he.indexOf(i.to);if(s<=o&&o<=l)return!0}else if(s<=o)return!0;return!1})){const i=r.children?yo(r.children,e):void 0,s={...r,children:i};t.push(s)}return t},[]),Sr=({rootURL:n,sideBarItems:e})=>{const{version:t}=Ut(),r=me(()=>yo(e,t),[e,t]);return createJsxElement(createJsxFragmentElement,null,createJsxElement(Bl,{items:r,root:n}),createJsxElement("div",{class:["row overflow-x-none flex-1 justify-stretch self-stretch","m-l-0 md:m-l-[var(--side-bar-width)]","p-l-0 md:p-l-10"]},createJsxElement(st,null)))},wo=()=>createJsxElement("div",null,createJsxElement("h1",null,"Not found"),createJsxElement(Ne,{href:"/",class:"p-x-0!"},"Go back to Home page")),on=({versions:n})=>{const{version:e}=Ut(),t=me(()=>{const r=he.indexOf(e);if(r===-1)throw"invalid version";for(const o of n){if(o.from===e||o.to===e)return o.md;const a=he.indexOf(o.from);if(o.to){const i=he.indexOf(o.to);if(a<=r&&r<=i)return o.md}else if(a<=r)return o.md}},[e,n]);return t?createJsxElement(Ue,{content:t}):createJsxElement(wo,null)},Il=`# Changelog
+`,Ar=[{path:"/quick-start",versions:[{from:"0.5.0",md:Rl}],title:"Quick Start"},{path:"/setup",versions:[{from:"0.5.0",md:_l}],title:"Setup"},{path:"/tutorial-todo",versions:[{from:"0.5.0",md:Bl}],title:"Tutorial : Todo"}],Tr=n=>createJsxElement("label",{...n,class:"switch rounded scale-55 u-border"},createJsxElement("input",{checked:n.checked,type:"checkbox","class:switch-input":!0}),createJsxElement("span",{class:"switch-slider rounded before:rounded"})),Ne=n=>{const{children:e,class:t,isActive:r}=n,o=me(()=>{let a="p-x-2 text-[0.9em]";return r?a+=" color-[var(--link)]":a+=" color-[var(--text-low)] hover:color-[var(--text-strong)]",Qr(a,t)},[t,r]);return createJsxElement("a",{...n,class:o},e)},Il=()=>{const{computedTheme:n,toggleTheme:e,isNavOpen:t,toggleNav:r,version:o,setVersion:a}=Ut(),i=bo(),s=me(()=>[{title:"Learn",href:"/learn"},{title:"Docs",href:"/docs"},{title:"Changelogs",href:"/changelogs"},{title:"Examples",href:"/examples"},{title:"Acknowledgment",href:"/acknowledgment"}]),l=me(()=>[{title:"GitHub",href:"https://github.com/RiadhAdrani/ruvy"}]);return createJsxElement(createJsxFragmentElement,null,createJsxElement("div",{class:["row-center","w-100%","bg-[color:var(--primary)]","p-x-5","h-[var(--nav-bar-height)]","border-b border-b-1px border-b-solid border-[color:var(--border-low)]","fixed top-0px z-[var(--nav-bar-z)]"]},createJsxElement("div",{class:"row justify-between items-center max-w-1200px flex-1 z-2"},createJsxElement("div",{class:"row items-center gap-8"},createJsxElement("a",{href:{name:"Home"},class:"p-x-1 row-center gap-3"},createJsxElement("img",{src:i,class:"h-25px w-25px"}),createJsxElement("h2",{class:"hidden md:inline-block"},"Ruvy")),createJsxElement("div",{class:"row hidden md:flex gap-1"},s.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank",isActive:It(c.href)},c.title)))),createJsxElement("div",{class:"row hidden gap-3 md:flex items-center"},createJsxElement("div",{class:"row gap-1"},l.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank"},c.title))),createJsxElement("select",{onChange:c=>a(c.target.value),class:"p-0.5"},he.map(c=>createJsxElement("option",{class:"p-y-0.5",key:c,selected:o===c,value:c},createJsxElement("div",null,"v",c)," ",createJsxElement("div",{class:"m-l-2",if:c===he.at(-1)},"@latest")))),createJsxElement(Tr,{checked:n===de.Dark,onChange:()=>e()})),createJsxElement("div",{class:"col md:hidden"},createJsxElement(At,{type:"text",class:["nav-bar-mobile-btn col-center",t?"nav-bar-mobile-btn-expanded":""],onClick:()=>r()})))),createJsxElement("div",{class:["col md:hidden",t?"top-[var(--nav-bar-height)] opacity-100":"-top-100vh opacity-0","fixed left-0px right-0px","bg-[color:var(--primary)]","overflow-y-auto","duration-[var(--t-long)]","p-5","z-1"],style:{height:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:["col gap-3 p-y-5","border-b border-b-solid border-b-1px border-[color:var(--border-low)]"]},s.map(c=>createJsxElement(Ne,{href:c.href,class:"",target:"_blank",isActive:It(c.href),onClick:()=>r(!1)},c.title))),createJsxElement("div",{class:["col gap-3 p-y-5","border-b border-b-solid border-b-1px border-[color:var(--border-low)]"]},l.map(c=>createJsxElement(Ne,{href:c.href,target:"_blank"},c.title))),createJsxElement("div",{class:"row items-center justify-between p-t-5"},createJsxElement("p",{class:"p-x-2"},"Version"),createJsxElement("select",{onChange:c=>a(c.target.value),class:"p-1"},he.map(c=>createJsxElement("option",{class:"p-y-1",key:c,selected:o===c,value:c},createJsxElement("div",null,"v",c)," ",createJsxElement("div",{class:"m-l-2",if:c===he.at(-1)},"@latest"))))),createJsxElement("div",{class:"row items-center justify-between p-y-5 text-[var(--text-low)]"},createJsxElement("p",{class:"p-x-2"},"Theme"),createJsxElement(Tr,{checked:n===de.Dark,onChange:()=>e()})),createJsxElement(fo,null)))},mn=n=>{var s;const{item:e,root:t,onClick:r}=n,[o,a]=Re(!1),i=dn(()=>a(!o),o);return createJsxElement(createJsxFragmentElement,null,e.children?createJsxElement("details",{open:o},createJsxElement("summary",{onClick:i},createJsxElement(Ne,{...n,href:`${t}${e.path}`,isActive:It(`${t}${e.path}`),onClick:r,class:"m-y-2"},e.title)),createJsxElement("div",{class:"m-l-2 col border-l-solid  border-l-1px border-l-[color:var(--border)]"},(s=e.children)==null?void 0:s.map(l=>createJsxElement(mn,{item:{...l,path:`${e.path}${l.path}`},root:t,onClick:r},l.title)))):createJsxElement(Ne,{...n,href:`${t}${e.path}`,isActive:It(`${t}${e.path}`),onClick:r,class:"m-l-18px m-y-1"},e.title))},Pl=({items:n,root:e})=>{const[t,r]=Re(!1),[o,a]=go(),i=()=>{const l=!t;r(l),l?o():a()},s=()=>{r(!1),a()};return createJsxElement(createJsxFragmentElement,null,createJsxElement("div",{class:["fixed top-[var(--nav-bar-height)]","w-[var(--side-bar-width)]","bg-[var(--primary)]","border-r border-r-solid border-r-[color:var(--border-low)]","overflow-hidden","hidden md:flex md:col"],style:{height:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:"col gap-2 overflow-auto p-y-10 w-[var(--side-bar-width)]",style:{height:"calc(100vh - var(--nav-bar-height))"}},n.map(l=>createJsxElement(mn,{item:l,root:e})))),createJsxElement("div",{class:"col md:hidden fixed right-0 left-0 top-[var(--nav-bar-height)] w-100%"},createJsxElement("p",{class:["text-[var(--text-low)] hover:text-[var(--text)]","p-y-1.5 w-100% cursor-pointer bg-[var(--primary)]","border-b p-x-6 border-b-solid border-b-[color:var(--border-low)]","h-[var(--side-bar-height)]"],onClick:()=>i()},"Menu"),createJsxElement("div",{class:["bg-[var(--primary)] fixed w-100% overflow-hidden",t?"bottom-0px opacity-100":"-bottom-100vh opacity-0"],style:{height:"calc(100vh - var(--nav-bar-height) - var(--side-bar-height))"}},createJsxElement("div",{class:"col gap-2 overflow-auto p-t-5 p-x-5",style:{height:"calc(100vh - var(--nav-bar-height) - var(--side-bar-height))"}},n.map(l=>createJsxElement(mn,{item:l,root:e,onClick:s}))))))},yo=(n,e)=>n.reduce((t,r)=>{const o=he.indexOf(e);if(r.versions.some(i=>{if(i.from===e||i.to===e)return!0;const s=he.indexOf(i.from);if(i.to){const l=he.indexOf(i.to);if(s<=o&&o<=l)return!0}else if(s<=o)return!0;return!1})){const i=r.children?yo(r.children,e):void 0,s={...r,children:i};t.push(s)}return t},[]),Sr=({rootURL:n,sideBarItems:e})=>{const{version:t}=Ut(),r=me(()=>yo(e,t),[e,t]);return createJsxElement(createJsxFragmentElement,null,createJsxElement(Pl,{items:r,root:n}),createJsxElement("div",{class:["row overflow-x-none flex-1 justify-stretch self-stretch","m-l-0 md:m-l-[var(--side-bar-width)]","p-l-0 md:p-l-10"]},createJsxElement(st,null)))},wo=()=>createJsxElement("div",null,createJsxElement("h1",null,"Not found"),createJsxElement(Ne,{href:"/",class:"p-x-0!"},"Go back to Home page")),on=({versions:n})=>{const{version:e}=Ut(),t=me(()=>{const r=he.indexOf(e);if(r===-1)throw"invalid version";for(const o of n){if(o.from===e||o.to===e)return o.md;const a=he.indexOf(o.from);if(o.to){const i=he.indexOf(o.to);if(a<=r&&r<=i)return o.md}else if(a<=r)return o.md}},[e,n]);return t?createJsxElement(Ue,{content:t}):createJsxElement(wo,null)},Ml=`# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -3835,4 +3854,4 @@ All notable changes to this project will be documented in this file.
 - Intuitive API that closely resembles React's patterns and conventions.
 - SPA Router.
 - key-value Store.
-`,Pl=()=>createJsxElement(Ue,{content:Il}),Ml=[{path:"/",element:createJsxElement(createJsxFragmentElement,null,createJsxElement(_l,null),createJsxElement("div",{class:"w-100% overflow-x-hidden row-center p-x-6 m-t-[var(--nav-bar-height)]",style:{minHeight:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:"col max-w-1200px flex-1 self-stretch overflow-x-hidden p-y-12 md:p-y-10"},createJsxElement(st,null)))),children:[{path:"",title:"Home",element:createJsxElement(mi,null),name:"Home"},{path:"/docs",title:"Docs",element:createJsxElement(Dr,null)},{path:"/learn",title:"Learn",element:createJsxElement(Fr,null),name:"Learn"},{path:"/changelogs",title:"Changelogs",element:createJsxElement(Pl,null),name:"ChangeLogs"},{path:"/acknowledgment",title:"Acknowledgment",element:createJsxElement(bi,null)},{path:"/examples",title:"Examples",element:createJsxElement(wi,null)},{path:"/*",element:createJsxElement(wo,null)},{path:"/learn",element:createJsxElement(Sr,{rootURL:"/learn",sideBarItems:Ar}),children:[{path:"",element:createJsxElement(Fr,null)},...Ar.map(n=>({path:n.path,element:createJsxElement(on,{versions:n.versions})}))]},{path:"/docs",element:createJsxElement(Sr,{rootURL:"/docs",sideBarItems:Cr}),children:[{path:"",element:createJsxElement(Dr,null)},...Cr.map(n=>({path:n.path,element:createJsxElement(st,null),children:[{path:"",element:createJsxElement(on,{versions:n.versions})},...n.children.map(e=>({path:e.path,element:createJsxElement(on,{versions:e.versions})}))]}))]}]}];Oa({routes:Ml,base:"/ruvy",transformTitle:n=>`${n} - Ruvy`,correctScrolling:!0});ka({app:createJsxElement(fs,null),host:document.querySelector("#app")});
+`,Ll=()=>createJsxElement(Ue,{content:Ml}),Nl=[{path:"/",element:createJsxElement(createJsxFragmentElement,null,createJsxElement(Il,null),createJsxElement("div",{class:"w-100% overflow-x-hidden row-center p-x-6 m-t-[var(--nav-bar-height)]",style:{minHeight:"calc(100vh - var(--nav-bar-height))"}},createJsxElement("div",{class:"col max-w-1200px flex-1 self-stretch overflow-x-hidden p-y-12 md:p-y-10"},createJsxElement(st,null)))),children:[{path:"",title:"Home",element:createJsxElement(mi,null),name:"Home"},{path:"/docs",title:"Docs",element:createJsxElement(Dr,null)},{path:"/learn",title:"Learn",element:createJsxElement(Fr,null),name:"Learn"},{path:"/changelogs",title:"Changelogs",element:createJsxElement(Ll,null),name:"ChangeLogs"},{path:"/acknowledgment",title:"Acknowledgment",element:createJsxElement(bi,null)},{path:"/examples",title:"Examples",element:createJsxElement(wi,null)},{path:"/*",element:createJsxElement(wo,null)},{path:"/learn",element:createJsxElement(Sr,{rootURL:"/learn",sideBarItems:Ar}),children:[{path:"",element:createJsxElement(Fr,null)},...Ar.map(n=>({path:n.path,element:createJsxElement(on,{versions:n.versions})}))]},{path:"/docs",element:createJsxElement(Sr,{rootURL:"/docs",sideBarItems:Cr}),children:[{path:"",element:createJsxElement(Dr,null)},...Cr.map(n=>({path:n.path,element:createJsxElement(st,null),children:[{path:"",element:createJsxElement(on,{versions:n.versions})},...n.children.map(e=>({path:e.path,element:createJsxElement(on,{versions:e.versions})}))]}))]}]}];Oa({routes:Nl,base:"/ruvy",transformTitle:n=>`${n} - Ruvy`,correctScrolling:!0});ka({app:createJsxElement(fs,null),host:document.querySelector("#app")});
