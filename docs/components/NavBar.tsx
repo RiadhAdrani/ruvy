@@ -62,7 +62,7 @@ export default () => {
               ))}
             </div>
             <select onChange={e => setVersion((e.target as any).value)} class="p-0.5">
-              {Versions.map(it => (
+              {Versions.toReversed().map(it => (
                 <option class="p-y-0.5" key={it} selected={version === it} value={it}>
                   <div>v{it}</div>{' '}
                   <div class="m-l-2" if={it === Versions.at(-1)}>

@@ -3,8 +3,6 @@ import replace from './docs/api/replace.md?raw';
 import batch from './docs/api/batch.md?raw';
 import createStore from './docs/api/createStore.md?raw';
 
-import more from './docs/more.md?raw';
-import classAttribute from './docs/more/class-attribute.md?raw';
 import joinClasses from './docs/more/joinClasses.md?raw';
 import ifDirective from './docs/more/if-directive.md?raw';
 import switchDirective from './docs/more/switch-directive.md?raw';
@@ -32,6 +30,9 @@ import fragment__versions from './docs/api/fragment/md.js';
 import portal__versions from './docs/api/portal/md.js';
 
 import docs__versions from './docs/api/index/md.js';
+
+import more_versions from './docs/more/index/md.js';
+import class_versions from './docs/more/class-attribute/md.js';
 
 import { DocItem } from '../types/index.js';
 
@@ -148,7 +149,7 @@ export const ApiSections: Array<DocItem> = [
 export const MoreSections: Array<DocItem> = [
   {
     path: '/class-attribute',
-    versions: [{ from: '0.5.0', md: classAttribute }],
+    versions: class_versions,
     title: 'Class attribute',
   },
   {
@@ -184,7 +185,7 @@ export const DocsSections: Array<DocItem> = [
     path: '/more',
     title: 'More',
     children: MoreSections,
-    versions: [{ from: '0.5.0', md: more }],
+    versions: more_versions,
   },
   {
     path: '/types',
