@@ -34,19 +34,19 @@ export const routes: Array<RawRoute<RuvyNode>> = [
       </>
     ),
     children: [
+      { path: '/*', element: <NotFound /> },
       { path: '', title: 'Home', element: <Home />, name: 'Home' },
-      { path: '/docs', title: 'Docs', element: <Docs /> },
-      { path: '/learn', title: 'Learn', element: <Learn />, name: 'Learn' },
       { path: '/changelogs', title: 'Changelogs', element: <Changelogs />, name: 'ChangeLogs' },
       { path: '/acknowledgment', title: 'Acknowledgment', element: <Acknowledgment /> },
       { path: '/examples', title: 'Examples', element: <Examples /> },
-      { path: '/*', element: <NotFound /> },
       {
         path: '/learn',
+        title: 'Learn',
         element: <DocWithSideBar rootURL="/learn" sideBarItems={LearnSections} />,
         children: [
           { path: '', element: <Learn /> },
           ...LearnSections.map(it => ({
+            title: it.title,
             path: it.path,
             element: <VersionedMarkdown versions={it.versions} />,
           })),
@@ -54,11 +54,13 @@ export const routes: Array<RawRoute<RuvyNode>> = [
       },
       {
         path: '/docs',
+        title: 'Docs',
         element: <DocWithSideBar rootURL="/docs" sideBarItems={DocsSections} />,
         children: [
           { path: '', element: <Docs /> },
           ...DocsSections.map(it => ({
             path: it.path,
+            title: it.title,
             element: <Outlet />,
             children: [
               {
@@ -67,6 +69,7 @@ export const routes: Array<RawRoute<RuvyNode>> = [
               },
               ...(it.children as Array<DocItem>).map(sub => ({
                 path: sub.path,
+                title: sub.title,
                 element: <VersionedMarkdown versions={sub.versions} />,
               })),
             ],
