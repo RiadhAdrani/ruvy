@@ -3,8 +3,6 @@ import replace from './docs/api/replace.md?raw';
 import batch from './docs/api/batch.md?raw';
 import createStore from './docs/api/createStore.md?raw';
 
-import eventModifiers from './docs/more/event-modifiers.md?raw';
-
 import createRouter__versions from './docs/api/createRouter/md.js';
 import createComposable__versions from './docs/api/createComposable/md.js';
 import createContext__versions from './docs/api/createContext/md.js';
@@ -33,6 +31,7 @@ import class_versions from './docs/more/class-attribute/md.js';
 import joinClasses_versions from './docs/more/join-classes/md.js';
 import if_directives_versions from './docs/more/if-directives/md.js';
 import switch_directives_versions from './docs/more/switch-directives/md.js';
+import event_modifiers_versions from './docs/more/event-modifiers/md.js';
 
 import { DocItem } from '../types/index.js';
 
@@ -169,7 +168,7 @@ export const MoreSections: Array<DocItem> = [
   },
   {
     path: '/event-modifiers',
-    versions: [{ from: '0.5.0', md: eventModifiers }],
+    versions: event_modifiers_versions,
     title: 'Event modifiers',
   },
 ];
