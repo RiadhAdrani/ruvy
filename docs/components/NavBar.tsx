@@ -61,7 +61,10 @@ export default () => {
                 </Link>
               ))}
             </div>
-            <select onChange={e => setVersion((e.target as any).value)} class="p-0.5">
+            <select
+              onChange={e => setVersion((e.target as any).value)}
+              class="py-0.5 px-1 border-[var(--border)] bg-[var(--secondary)] text-inherit"
+            >
               {Versions.toReversed().map(it => (
                 <option class="p-y-0.5" key={it} selected={version === it} value={it}>
                   <div>v{it}</div>{' '}

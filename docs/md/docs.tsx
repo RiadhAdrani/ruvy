@@ -3,7 +3,6 @@ import replace from './docs/api/replace.md?raw';
 import batch from './docs/api/batch.md?raw';
 import createStore from './docs/api/createStore.md?raw';
 
-import ifDirective from './docs/more/if-directive.md?raw';
 import switchDirective from './docs/more/switch-directive.md?raw';
 import eventModifiers from './docs/more/event-modifiers.md?raw';
 
@@ -33,6 +32,7 @@ import docs__versions from './docs/api/index/md.js';
 import more_versions from './docs/more/index/md.js';
 import class_versions from './docs/more/class-attribute/md.js';
 import joinClasses_versions from './docs/more/join-classes/md.js';
+import if_directives_versions from './docs/more/if-directives/md.js';
 
 import { DocItem } from '../types/index.js';
 
@@ -159,7 +159,7 @@ export const MoreSections: Array<DocItem> = [
   },
   {
     path: '/if-directive',
-    versions: [{ from: '0.5.0', md: ifDirective }],
+    versions: if_directives_versions,
     title: 'if directives',
   },
   {
