@@ -1,3 +1,4 @@
+import { HTMLElementProps, InputProps } from '@/dom.types.js';
 import { PropsWithUtility } from '../index.js';
 
 interface UToggleProps extends HTMLElementProps<HTMLLabelElement, InputProps> {

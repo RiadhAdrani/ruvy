@@ -1,9 +1,11 @@
 import { isActive } from '../utils/utils.js';
-import { PropsWithUtility, useCallback, useState } from '../index.js';
+import { useCallback, useState } from '../index.js';
 import { DocItem } from '../types/index.js';
 import Link from './Link.js';
 import { useScroll } from '../hooks/composables.js';
 import { PathRawRoute } from '@riadh-adrani/dom-router';
+import { AProps, HTMLElementProps } from '@/dom.types.js';
+import { PropsWithUtility } from '@/types.js';
 
 export interface SideBarProps {
   items: Array<DocItem>;

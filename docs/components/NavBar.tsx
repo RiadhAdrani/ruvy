@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Theme, Versions } from '../types/index.js';
+import { Theme, Version, Versions } from '../types/index.js';
 import { useApp } from '../context/UI.js';
 import Toggle from './Toggle.js';
 import Link from './Link.js';
@@ -62,7 +62,7 @@ export default () => {
               ))}
             </div>
             <select
-              onChange={e => setVersion((e.target as any).value)}
+              onChange={e => setVersion(e.currentTarget.value as Version)}
               class="py-0.5 px-1 border-[var(--border)] bg-[var(--secondary)] text-inherit"
             >
               {Versions.toReversed().map(it => (

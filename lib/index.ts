@@ -13,8 +13,8 @@ export {
 
 export { Outlet, Portal, Fragment } from './types.js';
 
-export type { RuvyNode } from './types.js';
-export * from './global.d.js';
+export type { RuvyNode, PropsWithUtility, JsxTemplate, UseState } from './types.js';
+export * from './dom.types.js';
 
 export { mountApp, unmountApp } from './core/index.js';
 
