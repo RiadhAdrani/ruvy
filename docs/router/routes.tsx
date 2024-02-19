@@ -2,7 +2,6 @@ import Home from '../pages/Home.js';
 import Docs from '../pages/Docs.js';
 import Acknowledgment from '../pages/Acknowledgment.js';
 import Examples from '../pages/Examples.js';
-import Learn from '../pages/Learn.js';
 import { DocsSections } from '../md/docs.js';
 
 import { LearnSections } from '../md/learn.js';
@@ -43,14 +42,11 @@ export const routes: Array<RawRoute<RuvyNode>> = [
         path: '/learn',
         title: 'Learn',
         element: <DocWithSideBar rootURL="/learn" sideBarItems={LearnSections} />,
-        children: [
-          { path: '', element: <Learn /> },
-          ...LearnSections.map(it => ({
-            title: it.title,
-            path: it.path,
-            element: <VersionedMarkdown versions={it.versions} />,
-          })),
-        ],
+        children: LearnSections.map(it => ({
+          title: it.title,
+          path: it.path,
+          element: <VersionedMarkdown versions={it.versions} />,
+        })),
       },
       {
         path: '/docs',

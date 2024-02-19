@@ -1,10 +1,10 @@
-import docMD from '../md/docs/docs.md?raw';
-import Markdown from '../components/Markdown.js';
+import versions from '../md/docs/index/md.js';
+import VersionedMarkdown from '../components/Versioned.markdown.js';
 
 export default () => {
   return (
     <>
-      <Markdown content={docMD} />
+      <VersionedMarkdown versions={versions} />
     </>
   );
 };
