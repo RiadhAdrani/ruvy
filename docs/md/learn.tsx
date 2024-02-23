@@ -1,6 +1,6 @@
 import { DocItem } from '../types/index.js';
 
-import tutorialTodo from './learn/tutorial-todo.md?raw';
+import todo__versions from './learn/tutorial-todo/md.js';
 import index__versions from './learn/index/md.js';
 import quickStart__versions from './learn/quick-start/md.js';
 import setup__versions from './learn/setup/md.js';
@@ -19,12 +19,7 @@ export const LearnSections: Array<DocItem> = [
   },
   {
     path: '/tutorial-todo',
-    versions: [
-      {
-        from: '0.5.0',
-        md: tutorialTodo,
-      },
-    ],
+    versions: todo__versions,
     title: 'Tutorial : Todo',
   },
 ];
