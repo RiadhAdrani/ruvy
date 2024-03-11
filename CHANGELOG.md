@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Changed
+
+- reworked typing.
+
 ## 0.5.5 - 2024-02-04
 
 ### Fixed
