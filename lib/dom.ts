@@ -1,5 +1,5 @@
 import { DestinationRequest } from '@riadh-adrani/dom-router';
-import { Key, RuvyNode, PropsWithUtility } from './types.ts';
+import { PropsWithUtility } from './types.js';
 import CSS from 'csstype';
 
 export type Arrayable<T> = T | Array<T>;

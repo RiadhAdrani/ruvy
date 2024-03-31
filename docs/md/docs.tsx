@@ -23,6 +23,8 @@ import navigate__versions from './docs/api/navigate/md.js';
 import outlet__versions from './docs/api/outlet/md.js';
 import fragment__versions from './docs/api/fragment/md.js';
 import portal__versions from './docs/api/portal/md.js';
+import errorBoundary__versions from './docs/api/error-boundary/md.js';
+import useErrorBoundary__versions from './docs/api/useErrorBoundary/md.js';
 
 import docs__versions from './docs/api/index/md.js';
 
@@ -92,6 +94,11 @@ export const ApiSections: Array<DocItem> = [
     title: 'useId',
   },
   {
+    path: '/useErrorBoundary',
+    versions: useErrorBoundary__versions,
+    title: 'useErrorBoundary',
+  },
+  {
     path: '/createContext',
     versions: createContext__versions,
     title: 'createContext',
@@ -142,6 +149,11 @@ export const ApiSections: Array<DocItem> = [
     path: '/portal',
     versions: portal__versions,
     title: '<Portal/>',
+  },
+  {
+    path: '/error-boundary',
+    versions: errorBoundary__versions,
+    title: '<ErrorBoundary/>',
   },
 ];
 

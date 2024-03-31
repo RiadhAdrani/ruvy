@@ -1,5 +1,5 @@
-import { JsxTemplate } from './types.ts';
-import type { CommonJSXAttributes, JSXElements } from './dom.types.js';
+import { JsxTemplate } from './types.js';
+import type { CommonJSXAttributes, JSXElements } from './dom.js';
 
 declare global {
   function createJsxElement(

@@ -6,7 +6,16 @@ export enum Theme {
   Device = 'device',
 }
 
-export const Versions = ['0.5.0', '0.5.2', '0.5.3', '0.5.4', '0.5.5', '0.5.6'] as const;
+export const Versions = [
+  '0.5.0',
+  '0.5.2',
+  '0.5.3',
+  '0.5.4',
+  '0.5.5',
+  '0.5.6',
+  '0.5.7',
+  '0.5.8',
+] as const;
 
 export type Version = (typeof Versions)[number];
 

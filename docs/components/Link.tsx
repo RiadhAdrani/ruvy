@@ -1,7 +1,7 @@
 import { Arrayable } from '@riadh-adrani/type-utils';
 import { joinClasses, useMemo } from '../index.js';
 import { PropsWithUtility } from '@/types.js';
-import { AProps, HTMLElementProps } from '@/dom.types.js';
+import { AProps, HTMLElementProps } from '@/dom.js';
 
 export interface LinkProps extends HTMLElementProps<HTMLAnchorElement, AProps> {
   isActive: boolean;

@@ -1,6 +1,6 @@
 import { join } from '../utils/utils.js';
 import { useMemo, joinClasses } from '../index.js';
-import { ButtonProps, HTMLElementProps } from '@/dom.types.js';
+import { ButtonProps, HTMLElementProps } from '@/dom.js';
 import { PropsWithUtility } from '@/types.js';
 
 interface UButtonProps extends HTMLElementProps<HTMLButtonElement, ButtonProps> {
