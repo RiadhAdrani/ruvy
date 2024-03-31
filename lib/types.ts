@@ -455,7 +455,7 @@ export type GetState<T = unknown> = () => T;
 
 export type UseState<T = unknown> = [T, SetState<T>, GetState<T>];
 
-export type UseErrorBoundary = [unknown, () => void];
+export type UseErrorBoundary = [Error | string, () => void];
 
 export interface ErrorHook {
   type: HookType.Error;

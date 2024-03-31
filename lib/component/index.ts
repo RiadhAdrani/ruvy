@@ -1889,7 +1889,7 @@ export const useErrorBoundary = (): UseErrorBoundary => {
     }
   }
 
-  return [error, recover];
+  return [error as Error, recover];
 };
 
 /**
