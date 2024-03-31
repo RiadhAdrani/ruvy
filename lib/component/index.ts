@@ -1,5 +1,5 @@
 import { Namespace, isClassProp, resolveClassProps } from '@riadh-adrani/domer';
-import { areEqual, hasProperty } from '@riadh-adrani/obj-utils';
+import { areEqual, hasProperty, isFunction } from '@riadh-adrani/obj-utils';
 import {
   Component,
   ComponentHandler,
@@ -65,6 +65,11 @@ import {
   ValueOrFalse,
   Composable,
   ComposableHook,
+  ErrorBoundary,
+  ErrorBoundaryTemplate,
+  ErrorBoundaryComponent,
+  ErrorHook,
+  UseErrorBoundary,
 } from '../types.js';
 import {
   createEffectCleanUpTask,
@@ -115,19 +120,43 @@ export const handleComponent = <T extends NonRootComponent = NonRootComponent>(
 
   const handler = handlerMap[tag];
 
-  const res = handler(template, current, parent, key, ctx);
+  const result = handler(template, current, parent, key, ctx);
 
   if (!current) {
-    const mountedTask = createSetMountedTask(res.component);
+    const mountedTask = createSetMountedTask(result.component);
 
-    pushTask(mountedTask, res.tasks);
+    pushTask(mountedTask, result.tasks);
   }
 
-  if (isParentComponent(res.component)) {
-    processChildren(res as ComponentHandlerResult<ParentComponent>);
+  if (isParentComponent(result.component)) {
+    try {
+      // if we still have a non-recovered error boundary, we replace children with the fallback
+      if (
+        result.component.tag === ComponentTag.ErrorBoundary &&
+        result.component.ctx.errorContext
+      ) {
+        result.children = [result.component.fallback];
+      }
+
+      const tasks = processChildren(result as ComponentHandlerResult<ParentComponent>);
+
+      pushBlukTasks(tasks, result.tasks);
+    } catch (error) {
+      if (result.component.tag === ComponentTag.ErrorBoundary) {
+        const tasks = onErrorCaught(
+          result as ComponentHandlerResult<ErrorBoundaryComponent>,
+          error
+        );
+
+        pushBlukTasks(tasks, result.tasks);
+      } else {
+        // just forward the error
+        throw error;
+      }
+    }
   }
 
-  return res as ComponentHandlerResult<T>;
+  return result as ComponentHandlerResult<T>;
 };
 
 /**
@@ -288,6 +317,9 @@ export const filterDomProps = (props: Props): Record<string, unknown> => {
        ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝                                                            
  */
 
+/**
+ * handle context component
+ */
 export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> = (
   template,
   current,
@@ -333,6 +365,10 @@ export const handleContext: ComponentHandler<ContextTemplate, ContextComponent> 
       ██║     ██║  ██║██║  ██║╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   
       ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝                                                                      
  */
+
+/**
+ * handle longhand fragment
+ */
 export const handleFragment: ComponentHandler<FragmentTemplate, FragmentComponent> = (
   template,
   current,
@@ -363,6 +399,9 @@ export const handleFragment: ComponentHandler<FragmentTemplate, FragmentComponen
   return { children, component, ctx, tasks };
 };
 
+/**
+ * handle shorthand fragment
+ */
 export const handleJsxFragment: ComponentHandler<JsxFragmentTemplate, JsxFragmentComponent> = (
   template,
   current,
@@ -398,6 +437,9 @@ export const handleJsxFragment: ComponentHandler<JsxFragmentTemplate, JsxFragmen
       ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝                                                               
  */
 
+/**
+ * handle functional component
+ */
 export const handleFunction: ComponentHandler<FunctionTemplate, FunctionComponent> = (
   template,
   current,
@@ -473,6 +515,10 @@ export const handleNull: ComponentHandler<NullTemplate, NullComponent> = (
       ╚██████╔╝╚██████╔╝   ██║   ███████╗███████╗   ██║   
        ╚═════╝  ╚═════╝    ╚═╝   ╚══════╝╚══════╝   ╚═╝                                                       
  */
+
+/**
+ * handle outlet components
+ */
 export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
   template,
   current,
@@ -517,6 +563,10 @@ export const handleOutlet: ComponentHandler<OutletTemplate, OutletComponent> = (
       ██╔═══╝ ██║   ██║██╔══██╗   ██║   ██╔══██║██║     
       ██║     ╚██████╔╝██║  ██║   ██║   ██║  ██║███████╗
       ╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝                                            
+ */
+
+/**
+ * handle portal component
  */
 export const handlePortal: ComponentHandler<PortalTemplate, PortalComponent> = (
   template,
@@ -620,6 +670,99 @@ export const handleText: ComponentHandler<TextTemplate, TextComponent> = (
 };
 
 /**
+      ███████╗██████╗ ██████╗  ██████╗ ██████╗ 
+      ██╔════╝██╔══██╗██╔══██╗██╔═══██╗██╔══██╗
+      █████╗  ██████╔╝██████╔╝██║   ██║██████╔╝
+      ██╔══╝  ██╔══██╗██╔══██╗██║   ██║██╔══██╗
+      ███████╗██║  ██║██║  ██║╚██████╔╝██║  ██║
+      ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝                                     
+ */
+
+/** handle error boundary component */
+export const handleErrorBoundary: ComponentHandler<
+  ErrorBoundaryTemplate,
+  ErrorBoundaryComponent
+> = (template, current, parent, key, _ctx) => {
+  const tasks = initComponentTasks();
+
+  const { props, type } = template;
+
+  const children = template.children as Array<Template>;
+
+  const ctx = cloneExecutionContext(_ctx, ctx => {
+    ctx.errorContext = undefined;
+  });
+
+  const errorEffect = isFunction(props.errorEffect) ? props.errorEffect : undefined;
+
+  const component: ErrorBoundaryComponent = current ?? {
+    type,
+    children: [],
+    key,
+    parent,
+    props,
+    ctx,
+    status: ComponentStatus.Mounting,
+    tag: ComponentTag.ErrorBoundary,
+    fallback: props.fallback as Template,
+    errorEffect,
+  };
+
+  if (current) {
+    component.props = props;
+    component.errorEffect = errorEffect;
+    component.fallback = props.fallback as Template;
+  }
+
+  return { children, component, ctx, tasks };
+};
+
+export const recoverErrorBoundary = (component: ErrorBoundaryComponent) => {
+  component.data = undefined;
+  component.ctx.errorContext = undefined;
+
+  queueRequest({ type: 'update', requester: component });
+};
+
+export const onErrorCaught = (
+  result: ComponentHandlerResult<ErrorBoundaryComponent>,
+  error: unknown
+): ComponentTasks => {
+  const { component } = result;
+
+  const errorData = {
+    error,
+    recover: () => recoverErrorBoundary(component),
+  };
+
+  // ! keep in sync
+  component.data = errorData;
+  component.ctx.errorContext = errorData;
+  result.ctx.errorContext = errorData;
+
+  const tasks = initComponentTasks();
+
+  if (component.errorEffect) {
+    const callback = () => {
+      component.errorEffect?.(error, () => recoverErrorBoundary(component));
+    };
+
+    // ? we are creating a floating effect task
+    const errorEffect = createEffectTask(component, { callback, deps: [], type: HookType.Effect });
+
+    pushTask(errorEffect, tasks);
+  }
+
+  result.children = [component.fallback];
+
+  const childrenTasks = processChildren(result);
+
+  pushBlukTasks(childrenTasks, tasks);
+
+  return tasks;
+};
+
+/**
       ██████╗  ██████╗  ██████╗ ████████╗
       ██╔══██╗██╔═══██╗██╔═══██╗╚══██╔══╝
       ██████╔╝██║   ██║██║   ██║   ██║   
@@ -661,6 +804,7 @@ const handlerMap = {
   [ComponentTag.Text]: handleText,
   [ComponentTag.Null]: handleNull,
   [ComponentTag.Portal]: handlePortal,
+  [ComponentTag.ErrorBoundary]: handleErrorBoundary,
 } as Record<string, ComponentHandler<Template, NonRootComponent>>;
 
 /**
@@ -695,6 +839,7 @@ export const isJsxComponent = (component: Component): component is JsxComponent 
     ComponentTag.JsxFragment,
     ComponentTag.Context,
     ComponentTag.Outlet,
+    ComponentTag.ErrorBoundary,
   ].includes(component.tag);
 };
 
@@ -805,6 +950,8 @@ export const getTagFromTemplate = (template: Template): ComponentTag => {
   if (isJsxTemplate(template)) {
     if (template.type === Portal) return ComponentTag.Portal;
 
+    if (template.type === ErrorBoundary) return ComponentTag.ErrorBoundary;
+
     if (template.type === ComponentTag.Context) return ComponentTag.Context;
 
     if (template.type === Outlet) return ComponentTag.Outlet;
@@ -833,6 +980,7 @@ export const isParentComponent = (component: Component): component is ParentComp
     ComponentTag.Function,
     ComponentTag.Portal,
     ComponentTag.Outlet,
+    ComponentTag.ErrorBoundary,
   ].includes(component.tag);
 };
 
@@ -1010,8 +1158,12 @@ export const processIfDirective = (
   }
 };
 
-export const processChildren = (res: ComponentHandlerResult<ParentComponent>): void => {
-  const parent = res.component as ParentComponent;
+export const processChildren = (
+  result: ComponentHandlerResult<ParentComponent>
+): ComponentTasks => {
+  const tasks = initComponentTasks();
+
+  const parent = result.component as ParentComponent;
 
   const switchControl = isSwitchController(parent as SwitchControllerComponent);
 
@@ -1023,10 +1175,10 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
 
   const childrenKeys = new Set<Key>([]);
 
-  const childrenCount = res.children.length;
+  const childrenCount = result.children.length;
 
   for (let i = 0; i < childrenCount; i++) {
-    const child = res.children[i];
+    const child = result.children[i];
 
     let nullify = false;
 
@@ -1097,15 +1249,15 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
 
     // check if we have an element template, which needs some props processing
     if (childTag === ComponentTag.Element) {
-      processElementTemplateProps(template as ElementTemplate, res.ctx);
+      processElementTemplateProps(template as ElementTemplate, result.ctx);
     }
 
     let childRes: ComponentHandlerResult<Component>;
 
-    const ctx = cloneExecutionContext(res.ctx, ctx => {
+    const ctx = cloneExecutionContext(result.ctx, ctx => {
       ctx.index = i;
       ctx.key = key;
-      ctx.parent = res.component;
+      ctx.parent = result.component;
     });
 
     // try and find the corresponding component
@@ -1126,7 +1278,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
       // mark the old component as mounted, so we don't unmount it
       oldComponent.component.status = ComponentStatus.Mounted;
 
-      childRes = handleComponent(template, oldComponent.component, parent, i, res.ctx);
+      childRes = handleComponent(template, oldComponent.component, parent, i, result.ctx);
 
       const currentIndex = parent.children.indexOf(oldComponent.component);
 
@@ -1147,7 +1299,7 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
     }
 
     // push tasks
-    pushBlukTasks(childRes.tasks, res.tasks);
+    pushBlukTasks(childRes.tasks, tasks);
   }
 
   // remove unused from the array of children
@@ -1155,13 +1307,15 @@ export const processChildren = (res: ComponentHandlerResult<ParentComponent>): v
     if (child.status === ComponentStatus.Unmounting) {
       const unmountTasks = unmountComponentOrComposable(child, {});
 
-      pushBlukTasks(unmountTasks, res.tasks);
+      pushBlukTasks(unmountTasks, tasks);
 
       return false;
     }
 
     return true;
   });
+
+  return tasks;
 };
 
 export const cloneExecutionContext = (
@@ -1685,6 +1839,58 @@ export const useComposable = <T = unknown>(name: string): T => {
  * @since v0.5.0
  */
 export const useId = () => useMemo(() => generateHexId());
+
+/**
+ * let you retrieve boundary error and recover from it.
+ *
+ * **``should only be used within error boundary's fallback.``**
+ *
+ * @example
+ * ```jsx
+ * const FallbackComponent = () => {
+ *  const [error,recover] = useErrorBoundary();
+ *
+ *  return <button onClick={recover}>{error.message}</button>;
+ * }
+ * ```
+ * @since v0.5.7
+ */
+export const useErrorBoundary = (): UseErrorBoundary => {
+  if (!caller) {
+    throw new RuvyError('cannot call "useErrorBoundary" outisde of a functional component body.');
+  }
+
+  if (isComposable(caller.component)) {
+    throw new RuvyError('cannot call "useErrorBoundary" inside a composable.');
+  }
+
+  if (!caller.ctx.errorContext) {
+    throw new RuvyError('cannot call "useErrorBoundary" outside of a fallback component.');
+  }
+
+  // increment hook index
+  hookIndex++;
+
+  let hook: ErrorHook;
+
+  const { recover, error } = caller.ctx.errorContext;
+
+  if (caller.component.status === ComponentStatus.Mounting) {
+    hook = {
+      type: HookType.Error,
+    };
+
+    caller.component.hooks.push(hook);
+  } else {
+    hook = caller.component.hooks[hookIndex] as ErrorHook;
+
+    if (!hook || hook.type !== HookType.Error) {
+      throw new RuvyError('unexpected hook type : expected error but got something else.');
+    }
+  }
+
+  return [error, recover];
+};
 
 /**
        ██████╗ ██████╗ ███╗   ███╗██████╗  ██████╗ ███████╗ █████╗ ██████╗ ██╗     ███████╗

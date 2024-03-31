@@ -13,6 +13,7 @@ import {
   PortalComponent,
   NodeComponent,
   Composable,
+  ErrorBoundaryComponent,
 } from '../types.js';
 import {
   element,
@@ -244,7 +245,7 @@ export const createUpdateTextTask = (component: TextComponent, data: string): Ta
 };
 
 export const createEffectTask = (
-  component: FunctionComponent | Composable,
+  component: FunctionComponent | Composable | ErrorBoundaryComponent,
   hook: EffectHook
 ): Task => {
   const execute = () => {

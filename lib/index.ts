@@ -9,9 +9,10 @@ export {
   useComposable,
   createContext,
   createComposable,
+  useErrorBoundary,
 } from './component/index.js';
 
-export { Outlet, Portal, Fragment } from './types.js';
+export { Outlet, Portal, Fragment, ErrorBoundary } from './types.js';
 
 export type { RuvyNode, PropsWithUtility, JsxTemplate, UseState } from './types.js';
 export * from './dom.types.d.js';

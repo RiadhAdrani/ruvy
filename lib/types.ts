@@ -1,7 +1,7 @@
 import { RouterConfig } from '@riadh-adrani/dom-router';
 import { Namespace } from '@riadh-adrani/domer';
 
-export type Requester = FunctionComponent | OutletComponent | Composable;
+export type Requester = FunctionComponent | OutletComponent | Composable | ErrorBoundaryComponent;
 
 export type RequestType = 'mount' | 'update' | 'route' | 'unmount';
 
@@ -64,6 +64,7 @@ export enum ComponentTag {
   Portal = '#-portal',
   Fragment = '#-fragment',
   JsxFragment = '#-jsx-fragment',
+  ErrorBoundary = '#-error-boundary',
 }
 
 export enum HookType {
@@ -73,6 +74,7 @@ export enum HookType {
   Ref = '#-ref',
   Context = '#-context',
   Composable = '#-composable',
+  Error = '#-error',
 }
 
 export enum ComponentStatus {
@@ -158,7 +160,7 @@ export interface PortalProps {
  * used to render the correct router segment element.
  *
  * @example
- * ```
+ * ```jsx
  * const App = () => {
  *  return <div><Outlet/></div>
  * }
@@ -193,6 +195,34 @@ export const Portal = (props: PortalProps) => props as unknown as JSX.Element;
  * @since v0.5.0
  */
 export const Fragment = () => null as unknown as JSX.Element;
+
+export type ErrorEffectHandler = (error: unknown, recover: () => void) => void;
+
+export type ErrorBoundaryProps = {
+  fallback?: RuvyNode;
+  errorEffect?: ErrorEffectHandler;
+};
+
+/**
+ * utility component used to catch errors and render a fallback component
+ * @example
+ * ```jsx
+ * const App = () => {
+ *  return <ErrorBoundary fallback={"Oops! App crashed !"}>
+ *      <ComponentThatMayThrowAnError/>
+ *  </ErrorBoundary>
+ * }
+ *
+ * ```
+ * @since v0.5.7
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const ErrorBoundary = (_props: PropsWithUtility<ErrorBoundaryProps>) =>
+  null as unknown as JSX.Element;
+
+export interface ErrorBoundaryTemplate extends CommonTemplate {
+  type: typeof ErrorBoundary;
+}
 
 export interface FunctionTemplate extends CommonTemplate {
   type: FunctionTemplateCallback;
@@ -237,7 +267,8 @@ export type Template =
   | ElementTemplate
   | TextTemplate
   | NullTemplate
-  | ContextTemplate;
+  | ContextTemplate
+  | ErrorBoundaryTemplate;
 
 export type NodeTemplate = TextTemplate | ElementTemplate;
 
@@ -248,7 +279,8 @@ export type JsxTemplate =
   | FragmentTemplate
   | JsxFragmentTemplate
   | ElementTemplate
-  | ContextTemplate;
+  | ContextTemplate
+  | ErrorBoundaryTemplate;
 
 export type PropsWithUtility<T extends object = object> = Partial<UtilityProps> & T;
 
@@ -278,6 +310,20 @@ export interface CommonComponent {
   status: ComponentStatus;
   key: Key;
   children: Array<NonRootComponent>;
+}
+
+export interface ErrorBoundaryContextData {
+  error: unknown;
+  recover: () => void;
+}
+
+export interface ErrorBoundaryComponent extends CommonComponent {
+  type: typeof ErrorBoundary;
+  tag: ComponentTag.ErrorBoundary;
+  ctx: ExecutionContext;
+  fallback: RuvyNode;
+  data?: ErrorBoundaryContextData;
+  errorEffect?: ErrorEffectHandler;
 }
 
 export interface FunctionComponent extends CommonComponent {
@@ -355,14 +401,16 @@ export type JsxComponent =
   | FragmentComponent
   | JsxFragmentComponent
   | ContextComponent
-  | OutletComponent;
+  | OutletComponent
+  | ErrorBoundaryComponent;
 
 export type SwitchControllerComponent =
   | FunctionComponent
   | ElementComponent
   | PortalComponent
   | FragmentComponent
-  | ContextComponent;
+  | ContextComponent
+  | ErrorBoundaryComponent;
 
 export type ParentComponent =
   | FunctionComponent
@@ -371,7 +419,8 @@ export type ParentComponent =
   | PortalComponent
   | JsxFragmentComponent
   | FragmentComponent
-  | ContextComponent;
+  | ContextComponent
+  | ErrorBoundaryComponent;
 
 export type NonRootComponent =
   | FunctionComponent
@@ -382,7 +431,8 @@ export type NonRootComponent =
   | PortalComponent
   | JsxFragmentComponent
   | FragmentComponent
-  | ContextComponent;
+  | ContextComponent
+  | ErrorBoundaryComponent;
 
 export type Component = NonRootComponent | RootComponent;
 
@@ -404,6 +454,12 @@ export type SetState<T = unknown> = (valueOrSetter: T | ((val: T) => T)) => void
 export type GetState<T = unknown> = () => T;
 
 export type UseState<T = unknown> = [T, SetState<T>, GetState<T>];
+
+export type UseErrorBoundary = [unknown, () => void];
+
+export interface ErrorHook {
+  type: HookType.Error;
+}
 
 export interface StateHook<T = unknown> {
   type: HookType.State;
@@ -456,7 +512,8 @@ export type Hook<T = unknown> =
   | MemoHook<T>
   | RefHook<T>
   | ContextHook<T>
-  | ComposableHook;
+  | ComposableHook
+  | ErrorHook;
 
 export enum TaskType {
   RenderElement = 'render-element',
@@ -507,6 +564,8 @@ export interface Task {
 export interface ExecutionContext {
   /** Store closest context values for easy of access */
   contexts: Record<string, unknown>;
+  /** Store closest error boundary context data */
+  errorContext?: ErrorBoundaryContextData;
   /** warn if there is a change of context */
   ns?: Namespace;
   /** current outlet depth */

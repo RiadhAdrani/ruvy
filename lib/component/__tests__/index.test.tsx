@@ -30,6 +30,9 @@ import {
   ContextComponent,
   ComponentTasks,
   Composable,
+  ErrorBoundary,
+  ErrorBoundaryTemplate,
+  ErrorBoundaryComponent,
 } from '../../types.js';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vitest } from 'vitest';
 import * as MOD from '@component/index.js';
@@ -65,6 +68,10 @@ const nonNodeComponents = Object.values(ComponentTag).filter(it => !nodeComponen
 
 const hostComponents = [ComponentTag.Element, ComponentTag.Portal, ComponentTag.Root];
 const nonHostComponents = Object.values(ComponentTag).filter(it => !hostComponents.includes(it));
+
+const ErrorComponent = () => {
+  throw new Error('test');
+};
 
 describe('component', () => {
   beforeAll(() => {
@@ -899,6 +906,88 @@ describe('component', () => {
     });
   });
 
+  describe('handleErrorBoundary', () => {
+    const errorEffect = vitest.fn(() => 0);
+    const fallback = 'fallback';
+
+    const template = (
+      <ErrorBoundary fallback={fallback} errorEffect={errorEffect} />
+    ) as unknown as ErrorBoundaryTemplate;
+
+    const res = MOD.handleErrorBoundary(template, undefined, root, 'id', exCtx);
+
+    it('should set key', () => {
+      expect(res.component.key).toBe('id');
+    });
+
+    it('should set parent', () => {
+      expect(res.component.parent).toStrictEqual(root);
+    });
+
+    it('should set status', () => {
+      expect(res.component.status).toStrictEqual(ComponentStatus.Mounting);
+    });
+
+    it('should set tag', () => {
+      expect(res.component.tag).toStrictEqual(ComponentTag.ErrorBoundary);
+    });
+
+    it('should set type', () => {
+      expect(res.component.type).toStrictEqual(ErrorBoundary);
+    });
+
+    it('should set props', () => {
+      expect(res.component.props).toStrictEqual({
+        children: [],
+        errorEffect,
+        fallback,
+      });
+    });
+
+    it('should set execution context and initialize errorContext', () => {
+      expect(res.component.ctx).toStrictEqual({ ...exCtx, errorContext: undefined });
+    });
+
+    it('should set fallback', () => {
+      expect(res.component.fallback).toStrictEqual('fallback');
+    });
+
+    it('should set errorEffect', () => {
+      expect(res.component.errorEffect).toStrictEqual(errorEffect);
+    });
+
+    describe('update phase', () => {
+      const errorEffect = vitest.fn(() => 0);
+      const fallback = 'fallback 2';
+
+      const template = (
+        <ErrorBoundary fallback={fallback} errorEffect={errorEffect} />
+      ) as unknown as ErrorBoundaryTemplate;
+
+      let update: ComponentHandlerResult<ErrorBoundaryComponent>;
+
+      beforeAll(() => {
+        update = MOD.handleErrorBoundary(template, res.component, root, 'id', exCtx);
+      });
+
+      it('should update props', () => {
+        expect(update.component.props).toStrictEqual({
+          children: [],
+          errorEffect,
+          fallback,
+        });
+      });
+
+      it('should update fallback', () => {
+        expect(update.component.fallback).toStrictEqual('fallback 2');
+      });
+
+      it('should update errorEffect', () => {
+        expect(update.component.errorEffect).toStrictEqual(errorEffect);
+      });
+    });
+  });
+
   describe('handleComponent', () => {
     it('should use correct handler (element)', () => {
       const res = MOD.handleComponent(
@@ -1024,6 +1113,72 @@ describe('component', () => {
       );
 
       expect(res.component.tag).toBe(ComponentTag.Outlet);
+    });
+
+    it('should forward error', () => {
+      const fn = () =>
+        MOD.handleComponent(
+          <ErrorComponent />,
+          undefined,
+          root as unknown as ParentComponent,
+          0,
+          exCtx
+        );
+
+      expect(fn).toThrow(new Error('test'));
+    });
+
+    it('should not throw when wrapped in an error boundary', () => {
+      const fn = () =>
+        MOD.handleComponent(
+          <ErrorBoundary>
+            <ErrorComponent />
+          </ErrorBoundary>,
+          undefined,
+          root as unknown as ParentComponent,
+          0,
+          exCtx
+        );
+
+      expect(fn).not.toThrow(new Error('test'));
+    });
+
+    it('should replace children with fallback', () => {
+      const result = MOD.handleComponent(
+        <ErrorBoundary fallback={'hello'}>
+          <ErrorComponent />
+        </ErrorBoundary>,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
+
+      expect(result.children).toStrictEqual(['hello']);
+    });
+
+    it('should replace children with fallback on subsequent rerenders', () => {
+      const old = MOD.handleComponent(
+        <ErrorBoundary fallback={'hello'}>
+          <ErrorComponent />
+        </ErrorBoundary>,
+        undefined,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
+
+      const result = MOD.handleComponent(
+        <ErrorBoundary fallback={'hello'}>
+          <ErrorComponent />
+        </ErrorBoundary>,
+        old.component,
+        root as unknown as ParentComponent,
+        0,
+        exCtx
+      );
+
+      expect(result.children).toStrictEqual(['hello']);
     });
   });
 
@@ -1443,6 +1598,61 @@ describe('component', () => {
         MOD.unmountComposable('ctx');
       });
     });
+
+    describe('useErrorBoundary', () => {
+      it('should throw when called outside of context', () => {
+        expect(() => MOD.useErrorBoundary()).toThrow(
+          'cannot call "useErrorBoundary" outisde of a functional component body.'
+        );
+      });
+
+      it('should throw when called in a composable', () => {
+        MOD.createComposable('ctx', () => {
+          MOD.useErrorBoundary();
+        });
+
+        const comp = MOD.getComposable('ctx');
+
+        expect(() => MOD.handleComposable(comp)).toThrow(
+          new RuvyError('cannot call "useErrorBoundary" inside a composable.')
+        );
+        MOD.unmountComposable('ctx');
+      });
+
+      it('should throw when called outside a fallback component', () => {
+        const fn = () => withCtx(() => MOD.useErrorBoundary());
+
+        expect(fn).toThrow(
+          new RuvyError('cannot call "useErrorBoundary" outside of a fallback component.')
+        );
+      });
+
+      it('should throw when component is already mounted and hook is not found', () => {
+        res.component.status = ComponentStatus.Mounted;
+
+        exCtx.errorContext = { error: new Error('test'), recover: vitest.fn() };
+
+        expect(() =>
+          withCtx(() => {
+            MOD.useErrorBoundary();
+          })
+        ).toThrow(new RuvyError('unexpected hook type : expected error but got something else.'));
+      });
+
+      it('should return the error data', () => {
+        const errorContext = { error: new Error('test'), recover: vitest.fn() };
+
+        exCtx.errorContext = errorContext;
+
+        let data: unknown;
+
+        withCtx(() => {
+          data = MOD.useErrorBoundary();
+        });
+
+        expect(data).toStrictEqual([errorContext.error, errorContext.recover]);
+      });
+    });
   });
 
   describe('isJsxComponent', () => {
@@ -1682,6 +1892,7 @@ describe('component', () => {
     const outlet = <Outlet />;
     const frg = <Fragment />;
     const jsxFrg = <></>;
+    const err = <ErrorBoundary />;
 
     it.each([
       [el, ComponentTag.Element],
@@ -1694,6 +1905,7 @@ describe('component', () => {
       [undefined, ComponentTag.Null],
       ['txt', ComponentTag.Text],
       [2, ComponentTag.Text],
+      [err, ComponentTag.ErrorBoundary],
     ])('should return correct tag', (temp, tag) => {
       expect(MOD.getTagFromTemplate(temp)).toBe(tag);
     });
@@ -2246,10 +2458,10 @@ describe('component', () => {
 
         res.children = children;
 
-        MOD.processChildren(res);
+        const tasks = MOD.processChildren(res);
 
         expect(
-          res.tasks[TaskType.SetComponentMounted].map(it => (it.component as Component).tag)
+          tasks[TaskType.SetComponentMounted].map(it => (it.component as Component).tag)
         ).toStrictEqual([ComponentTag.Element, ComponentTag.Null, ComponentTag.Text]);
       });
 
@@ -2290,9 +2502,9 @@ describe('component', () => {
 
         res.children = newChildren;
 
-        MOD.processChildren(res);
+        const tasks = MOD.processChildren(res);
 
-        expect(res.tasks[TaskType.ReorderElements].length).not.toBe(0);
+        expect(tasks[TaskType.ReorderElements].length).not.toBe(0);
       });
 
       it('should change order in the parent component array', () => {
@@ -2752,6 +2964,84 @@ describe('component', () => {
       it('should run tasks', () => {
         expect(cleanup).toHaveBeenCalledOnce();
       });
+    });
+  });
+
+  describe('recoverErrorBoundary', () => {
+    it('should reset data and ctx', () => {
+      const errorContext = { error: 'error', recover: vitest.fn() };
+
+      const component: ErrorBoundaryComponent = {
+        tag: ComponentTag.ErrorBoundary,
+        type: vitest.fn(),
+        children: [],
+        key: 0,
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounting,
+        ctx: { ...exCtx, errorContext },
+        fallback: 'fallback',
+        data: errorContext,
+        errorEffect: vitest.fn(),
+      };
+
+      MOD.recoverErrorBoundary(component);
+
+      expect(component.data).toBeUndefined();
+      expect(component.ctx.errorContext).toBeUndefined();
+    });
+  });
+
+  describe('onErrorCaught', () => {
+    const error = new Error('error');
+    const errorEffect = vitest.fn();
+
+    let result: ComponentHandlerResult<ErrorBoundaryComponent>;
+
+    beforeEach(() => {
+      const component: ErrorBoundaryComponent = {
+        tag: ComponentTag.ErrorBoundary,
+        type: vitest.fn(),
+        children: [],
+        key: 0,
+        parent: root,
+        props: {},
+        status: ComponentStatus.Mounting,
+        ctx: { ...exCtx, errorContext: undefined },
+        fallback: 'fallback',
+        data: undefined,
+        errorEffect,
+      };
+
+      result = {
+        children: [],
+        component,
+        ctx: exCtx,
+        tasks: initComponentTasks(),
+      };
+    });
+
+    it('should set error context data', () => {
+      MOD.onErrorCaught(result, error);
+
+      const data = { error, recover: expect.any(Function) };
+
+      expect(result.ctx.errorContext).toStrictEqual(data);
+      expect(result.component.data).toStrictEqual(data);
+    });
+
+    it('should register error effect', () => {
+      const tasks = MOD.onErrorCaught(result, error);
+
+      const expectedEffect = tasks['run-effect'][0];
+
+      expect(expectedEffect).toBeDefined();
+    });
+
+    it('should replace children with fallback', () => {
+      MOD.onErrorCaught(result, error);
+
+      expect(result.children).toStrictEqual(['fallback']);
     });
   });
 });

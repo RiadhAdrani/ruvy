@@ -1,6 +1,7 @@
 import '../component/jsx.js';
 import {
   Composable,
+  ErrorBoundaryComponent,
   GlobalContext,
   MountAppConfig,
   RenderRequest,
@@ -105,7 +106,7 @@ export const collectUniqueRequesters = (
 
 export const isAncestorComponent = (
   component: Component,
-  parent: FunctionComponent | OutletComponent
+  parent: FunctionComponent | OutletComponent | ErrorBoundaryComponent
 ): boolean => {
   if (component.tag === ComponentTag.Root) return false;
 
