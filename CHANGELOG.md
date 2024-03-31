@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.5.9 - 2024-03-31
+
 ## 0.5.8 - 2024-03-31
 ### Fixed
 - fix bad dom types export.
