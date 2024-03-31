@@ -7,7 +7,6 @@
     "moduleResolution": "NodeNext",
     "outDir": "build",
     "strict": true,
-    "rootDir": ".",
     "declaration": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
