@@ -15,6 +15,7 @@ export const Versions = [
   '0.5.6',
   '0.5.7',
   '0.5.8',
+  '0.5.9',
 ] as const;
 
 export type Version = (typeof Versions)[number];
