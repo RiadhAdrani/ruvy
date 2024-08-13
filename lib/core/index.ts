@@ -36,7 +36,7 @@ import {
   OutletComponent,
   ParentComponent,
 } from '../types.js';
-import toposort from 'toposort';
+import { toposort } from '@helpers/toposort.js';
 
 export const frameworkContext: GlobalContext = {};
 
@@ -161,7 +161,7 @@ export const optimizeRequesters = (requests: Array<Requester>): Array<Requester>
     return acc;
   }, [] as Array<[string, string]>);
 
-  const sorted = toposort.array(
+  const sorted = toposort(
     minimal.map((_, i) => i.toString()),
     deps
   );
