@@ -2,7 +2,7 @@ import { Theme, Version, Versions } from '../types/index.js';
 import { createComposable, useCallback, useEffect, useMemo, useState } from '../index.js';
 import { getLogo, isDarkMode } from '../utils/utils.js';
 import useLocalStorage from '../hooks/useLocalStorage.js';
-import { isBoolean } from '@riadh-adrani/obj-utils';
+import { isBoolean } from '../../lib/helpers/obj-utils.js';
 import { useScroll } from '../hooks/composables.js';
 
 export const useApp = createComposable('app', () => {

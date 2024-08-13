@@ -54,7 +54,7 @@ import {
   useContext,
 } from '../index.js';
 import '@core/index.js';
-import { omit } from '@riadh-adrani/obj-utils';
+import { omit } from '../../helpers/obj-utils.js';
 import { RuvyError } from '@/helpers/helpers.js';
 import { Namespace, element } from '@riadh-adrani/domer';
 import { createRouter, navigate, unmountRouter } from '@/router/router.js';

@@ -1,5 +1,5 @@
 import { Namespace, isClassProp, resolveClassProps } from '@riadh-adrani/domer';
-import { areEqual, hasProperty, isFunction } from '@riadh-adrani/obj-utils';
+import { areEqual, hasProperty, isFunction } from '../helpers/obj-utils.js';
 import {
   Component,
   ComponentHandler,

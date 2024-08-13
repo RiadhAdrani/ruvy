@@ -1,4 +1,4 @@
-import { Arrayable } from '@riadh-adrani/type-utils';
+import { Arrayable } from '../../lib/helpers/type-utils.js';
 import { joinClasses, useMemo } from '../index.js';
 import { PropsWithUtility } from '@/types.js';
 import { AProps, HTMLElementProps } from '@/dom.js';

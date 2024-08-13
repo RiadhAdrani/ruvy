@@ -1,5 +1,5 @@
-import { isArray, isFalsy } from '@riadh-adrani/obj-utils';
-import type { Arrayable } from '@riadh-adrani/type-utils';
+import { isArray, isFalsy } from '../helpers/obj-utils.js';
+import type { Arrayable } from '../helpers/type-utils.js';
 
 /**
  * filters the list of provided classes (removes `null` and `undefined`)
