@@ -36,7 +36,7 @@ import {
   OutletComponent,
   ParentComponent,
 } from '../types.js';
-import { toposort } from '@helpers/toposort.js';
+import { toposort } from '../helpers/toposort.js';
 
 export const frameworkContext: GlobalContext = {};
 
