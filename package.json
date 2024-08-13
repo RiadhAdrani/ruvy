@@ -81,7 +81,6 @@
     "@riadh-adrani/domer": "^0.0.5",
     "@riadh-adrani/obj-utils": "1.0.5",
     "@riadh-adrani/type-utils": "1.0.2",
-    "csstype": "^3.1.1",
-    "toposort": "^2.0.2"
+    "csstype": "^3.1.1"
   }
 }
