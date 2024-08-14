@@ -1585,6 +1585,26 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
 };
 
 /**
+ * let you execute an callback when the component is unmounted.
+ * @param callback the function containing your logic.
+ * @param deps (optional) dependency according to which the callback will be updated. `undefined` by default.
+ * @example
+ * ```
+ * const filtered = useUnmount(() => {
+ *    unsubscribe();
+ * });
+ * ```
+ * @since v0.5.10
+ */
+export const useUnmount = (callback: () => void): void => {
+  const fn = useRef(callback);
+
+  fn.value = callback;
+
+  useEffect(() => () => fn.value?.());
+};
+
+/**
  * let you cache a computation between re-renders.
  * @param callback the function that will compute the value you want to cache, it should not take arguments.
  * @param deps (optional) dependency according to which the computation will be re-evaluated. `undefined` by default.
