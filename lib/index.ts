@@ -10,6 +10,7 @@ export {
   createContext,
   createComposable,
   useErrorBoundary,
+  useUnmount,
 } from './component/index.js';
 
 export { Outlet, Portal, Fragment, ErrorBoundary } from './types.js';

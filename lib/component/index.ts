@@ -1526,7 +1526,7 @@ export const useState = <T = unknown>(create: CreateState<T>): UseState<T> => {
  * @param deps (optional) dependency according to which the effect will be re-executed. `undefined` by default.
  * @example
  * ```
- * const filtered = useEffect(() => {
+ * useEffect(() => {
  *    const unsubscribe = subscribeTo('some-external-store')
  *
  * return () => unsubscribe()
@@ -1590,7 +1590,7 @@ export const useEffect = (callback: Effect, deps?: unknown): void => {
  * @param deps (optional) dependency according to which the callback will be updated. `undefined` by default.
  * @example
  * ```
- * const filtered = useUnmount(() => {
+ * useUnmount(() => {
  *    unsubscribe();
  * });
  * ```
