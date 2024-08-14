@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- add `useUnmount` hook that let you execute a callback when a component is unmounted.
+
 ## 0.5.9 - 2024-03-31
 
 ### Fixed
