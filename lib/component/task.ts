@@ -88,7 +88,7 @@ export const createElementPropsUpdateTask = (
   comparison: Array<PropComparison>
 ): Task => {
   const execute = () => {
-    const element = component.instance as Element;
+    const element = component.instance;
 
     if (!element) {
       throw new RuvyError('unable to update element, component is not yet mounted.');
@@ -101,10 +101,10 @@ export const createElementPropsUpdateTask = (
 
       // it is an event
       if (eventDetails) {
-        const { event } = eventDetails;
+        const { event, modifiers } = eventDetails;
 
         if (operation === 'create' || operation === 'update') {
-          setEventListener(key, event, item.value, element);
+          setEventListener(key, event, item.value, element, modifiers);
         } else {
           removeEventListener(key, event, element);
         }

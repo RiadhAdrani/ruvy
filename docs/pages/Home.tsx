@@ -46,7 +46,7 @@ export default () => {
             </a>
           </div>
           <div class="cursor-pointer home-create-bash rounded self-center">
-            <Markdown content={createScript ?? ''} />
+            <Markdown content={createScript} />
           </div>
         </div>
         <Footer />
